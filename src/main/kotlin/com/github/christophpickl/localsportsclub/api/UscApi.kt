@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub.sync
+package com.github.christophpickl.localsportsclub.api
 
 import com.github.christophpickl.localsportsclub.kotlinxSerializer
 import com.github.christophpickl.localsportsclub.readFromClasspath
@@ -19,15 +19,33 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+
+private val httpClient = buildHttpClient()
+private fun buildHttpClient(engine: HttpClientEngine = CIO.create()) = HttpClient(engine) {
+    install(ContentNegotiation) {
+        json(Json {
+            isLenient = true
+            allowSpecialFloatingPointValues = true
+            allowStructuredMapKeys = true
+            prettyPrint = true
+            useArrayPolymorphism = false
+            ignoreUnknownKeys = true
+        })
+    }
+    expectSuccess = false
+}
+
 @Serializable
 data class StudiosMapJsonRoot(
     val success: Boolean,
     val data: StudiosMapJsonObject,
 )
+
 @Serializable
 data class StudiosMapJsonObject(
     val venues: List<StudiosMapVenue>
 )
+
 @Serializable
 data class StudiosMapVenue(
     val id: Int,
@@ -44,17 +62,20 @@ data class StudiosMapVenue(
     // - id, key, name, is_top_category, icon, category_group_id, translations, plan types...
     // featured
 )
+
 // ---
 @Serializable
 data class VenuesJsonRoot(
     val success: Boolean,
     val data: VenuesDataJson
 )
+
 @Serializable
 data class VenuesDataJson(
     val showMore: Boolean, // FIXME request more when this is true!
     // TODO ... add more content ...
 )
+
 // ---
 enum class District(val label: String, val id: Int, val parent: Int?) {
     Amsterdam("Amsterdam", 8749, null),
@@ -63,25 +84,31 @@ enum class District(val label: String, val id: Int, val parent: Int?) {
 
 object Playground {
     private val log = logger {}
-    private val http = buildHttpClient()
     private val jsonx = Json {
         prettyPrint = true
     }
-    private val apiLang = "en" // "nl"
+    private val apiLang = "nl" // "en"
     private val baseUrl = "https://urbansportsclub.com/$apiLang"
+
+    private val username = System.getProperty("username") ?: error("Please define -Dusername=xxx")
+    private val password = System.getProperty("password") ?: error("Please define -password=xxx")
 
     @JvmStatic
     fun main(args: Array<String>) {
         runBlocking {
             // FIXME request "workout filter page": https://urbansportsclub.com/en/online-courses?country=13&date=2024-10-13&plan_type=6
-            requestVenues()
-            println()
-            println("done")
+            val result = LoginApi(httpClient, baseUrl).login(username, password)
+            when(result) {
+                is LoginResult.Failure -> println("FAIL: ${result.message}")
+                is LoginResult.Success -> println("SUCCESS: PHP_SESSION_ID=${result.phpSessionId}")
+            }
+//            requestVenues()
         }
     }
 
+
     private suspend fun requestVenues() {
-        val response = http.get("$baseUrl/venues") {
+        val response = httpClient.get("$baseUrl/venues") {
             parameter("city_id", "1144")
             parameter("plan_type", "6")
             parameter("show-map", "")
@@ -99,7 +126,7 @@ object Playground {
     }
 
     private suspend fun requestStudiosMap() {
-        val response = http.get("$baseUrl/studios-map") {
+        val response = httpClient.get("$baseUrl/studios-map") {
             parameter("city", "1144")
             parameter("plan_type", "6")
         }
@@ -112,19 +139,6 @@ object Playground {
         println(root.data.venues.size)
     }
 
-    private fun buildHttpClient(engine: HttpClientEngine = CIO.create()) = HttpClient(engine) {
-        install(ContentNegotiation) {
-            json(Json {
-                isLenient = true
-                allowSpecialFloatingPointValues = true
-                allowStructuredMapKeys = true
-                prettyPrint = true
-                useArrayPolymorphism = false
-                ignoreUnknownKeys = true
-            })
-        }
-        expectSuccess = false
-    }
 
     private suspend fun logAndPrint(response: HttpResponse) {
         log.debug { "${response.status.value} GET ${response.request.url}" }
@@ -145,3 +159,5 @@ enum class PlanTypes(val id: Int, val label: String) {
     Large(3, "L"),
     ExtraLarge(6, "XL"),
 }
+
+class ApiException(message: String, cause: Exception? = null) : Exception(message, cause)

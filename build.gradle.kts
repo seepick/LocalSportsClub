@@ -37,6 +37,10 @@ dependencies {
     implementation("org.jsoup:jsoup:1.16.1")
 
     testImplementation(compose.desktop.uiTestJUnit4)
+    testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.6.2")
+    testImplementation("io.kotest:kotest-property:5.6.2")
+    testImplementation("io.mockk:mockk:1.13.5")
 }
 
 compose.desktop {
