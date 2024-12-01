@@ -1,0 +1,170 @@
+https://urbansportsclub.com/nl/class-details/75438276
+
+
+<div class="smm-class-details sticky"
+     data-appointment-id="75438276"
+     data-booking-state-error="Sorry, je verzoek kon niet worden voltooid. Probeer het alstublieft opnieuw.">
+
+    <button class="modal-close mobile modal-close--circle" type="button" data-dismiss="modal" aria-label="Close">
+        <span class="sr-only">Sluiten</span>
+    </button>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <button class="modal-close desktop modal-close--circle" type="button" data-dismiss="modal"
+                        aria-label="Close">
+                    <span class="sr-only">Sluiten</span>
+                </button>
+                <div class="smm-class-details__panel image">
+                    <div class="smm-class-details__image"
+                         style="background-image: url('https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FvenueCatalogOneColumn_962x542_qwxibvnkdojzn9fbnw12_172785800389100.png?generation=1727858004898129&amp;alt=media')">
+                    </div>
+                </div>
+
+                <div class="smm-class-details__panel general">
+                    <h3>Wellness</h3>
+
+                    <p class="smm-class-details__datetime">
+                        zondag 13. oktober                                            </p>
+
+                    <span class="smm-class-details__class-plans">
+                                                                                    <span class="smm-class-details__class-plan"
+                                      data-type="1">
+                                                                            S                                                                    </span>
+                                                                                                                <span class="smm-class-details__class-plan"
+                                      data-type="2">
+                                                                            M                                                                    </span>
+                                                                                                                <span class="smm-class-details__class-plan"
+                                      data-type="3">
+                                                                            L                                                                    </span>
+                                                                                                                <span class="smm-class-details__class-plan"
+                                      data-type="6">
+                                                                            XL                                                                    </span>
+                                                                        </span>
+
+                    <div class="booking-state-label-wrapper">
+
+
+                    </div>
+
+                    <p class="smm-class-details__hint">
+                        <span class="smm-class-details__icon disciplines"></span>
+                        Pilates, Yoga, Wellness                    </p>
+
+                    <p class="smm-class-details__hint">
+                        <span class="smm-class-details__icon full-address"></span>
+                                                    Wellcome Wellness,                                                 Hendrikje Stoffelsstraat 1, 1058 GC Amsterdam                    </p>
+                </div>
+
+                                    <div class="smm-class-details__panel important-info">
+                        <h4>Belangrijke Informatie:</h4>
+
+                                                    <p class="smm-class-details__text">
+                                <span class="smm-class-details__icon visit-limits"></span>
+                                <span
+                                    class="smm-class-details__pre-line">S-members kunnen tot 2x per maand bij deze locatie inchecken
+M-members kunnen tot 4x per maand bij deze locatie inchecken
+L &amp; XL-members kunnen tot 6x per maand bij deze locatie inchecken</span>
+                            </p>
+
+                                                    <p class="smm-class-details__text">
+                                <span class="smm-class-details__icon important-info"></span>
+                                <span
+                                    class="smm-class-details__pre-line">Let op! Als je deze locatie wilt bezoeken dien je van tevoren een reservering te maken via de WellCome Wellness website:
+https://fashion.wellcomewellness.nl/wellness/reserveren-voor-leden/
+als u geen reservering maakt is er een kans dat u geen gebruik kan maken van de faciliteiten.
+Bij binnenkomst laat u eerst uw reservering zien die u via onze website heeft gemaakt.
+wij controleren de reservering, U kunt daarna pas op locatie inchecken.
+het is niet toegestaan om een check-in te doen zonder te reserveren via onze website.
+doet u dit wel? dan kunnen wij de check-in niet terug draaien.
+
+Handdoeken, badjas, en slippers zijn niet inbegrepen
+Huur: handdoek € 3,50 / badjas €4,50
+koop slippers 2,50</span>
+                            </p>
+
+
+
+                                            </div>
+
+
+                                    <div class="smm-class-details__panel opening-times">
+                        <h4>Openingstijden:</h4>
+                        <p class="smm-class-details__text">
+                            <span
+                                class="smm-class-details__pre-line">Maandag: 07:00 - 22:00
+Dinsdag: 07:00 - 22:00
+Woensdag: 07:00 - 22:00
+Donderdag: 07:00 - 22:00
+Vrijdag: 07:00 - 22:00
+Zaterdag: 07:00 - 18:00
+Zondag: 12:00 - 18:00
+</span>
+                        </p>
+                    </div>
+                            </div>
+
+            <div class="col-md-4">
+                <div class="smm-class-details__panel controls">
+                                            <button type="button"
+                                                            class="smm-class-details__button booking wish form-button visible"
+                                data-href="/nl/search/wish/75438276"
+                            >
+
+
+                                                            Begin nu vanaf 24,00 €                                                    </button>
+
+
+                        <button class="smm-class-details__button booking cancel confirm form-button usc-button-rebrand usc-button-rebrand--default
+                            "
+                                type="button"
+                                data-href="/nl/search/cancel/75438276"
+                                data-book-cancel="{&quot;event&quot;:&quot;add_to_schedule_removed&quot;,&quot;user&quot;:{&quot;id&quot;:null,&quot;login_status&quot;:&quot;logged-out&quot;,&quot;membership_city&quot;:null,&quot;membership_country&quot;:null,&quot;membership_status&quot;:null,&quot;membership_plan&quot;:null,&quot;membership_b2b_type&quot;:null,&quot;membership_contract_duration&quot;:null,&quot;company_name&quot;:null},&quot;class&quot;:{&quot;id&quot;:&quot;75438276&quot;,&quot;name&quot;:&quot;Wellness&quot;,&quot;category&quot;:&quot;Wellness&quot;,&quot;type&quot;:&quot;instant booking&quot;},&quot;venue&quot;:{&quot;id&quot;:&quot;25950&quot;,&quot;name&quot;:&quot;Wellcome Wellness&quot;,&quot;category&quot;:&quot;Pilates, Yoga, Wellness&quot;}}"
+                            >
+
+                                                    </button>
+
+                        <div class="smm-spinner"></div>
+
+                                                                                            <p class="smm-class-details__hint booking new visible">
+                                            <span
+                                                class="smm-class-details__icon booking-hint"></span>
+                                            Dit is geen bindende reservering. Om je aankomende sportworkouts beter te kunnen plannen, kun je deze workout aan je schema toevoegen.                                        </p>
+                                                                                                            <p class="smm-class-details__hint booking scheduled ">
+                                            <span
+                                                class="smm-class-details__icon booking-hint"></span>
+                                            Deze workout is toegevoegd aan je persoonlijke schema. Kom alstublieft vroeg om een plekje te garanderen.                                        </p>
+                                                                                                                                                                                                        <p class="smm-class-details__hint cancellation new visible">
+                                            <span
+                                                class="smm-class-details__icon cancellation-hint"></span>
+                                            Omdat er geen reservering gemaakt kan worden, is er geen annuleringsbeleid.                                        </p>
+                                                                                                            <p class="smm-class-details__hint cancellation scheduled ">
+                                            <span
+                                                class="smm-class-details__icon cancellation-hint"></span>
+                                            Je kunt deze workout op elk moment uit je planning verwijderen.                                        </p>
+
+                                                                                        </div>
+
+
+<div class="usc-studio-map">
+    <div class="usc-google-map" data-static-map-urls='[{&quot;width&quot;:1280,&quot;url&quot;:&quot;https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FstaticMapMedium_1280x1280_amsterdam_14400_wellcome-wellness_1727259950669324.png?generation=1727259951192755&amp;alt=media&quot;},{&quot;width&quot;:640,&quot;url&quot;:&quot;https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FstaticMapSmall_640x640_amsterdam_14400_wellcome-wellness_1727259950669324.png?generation=1727259950921538&amp;alt=media&quot;}]'></div>
+
+    <span class="usc-map-marker"
+          data-full-address="Hendrikje Stoffelsstraat 1, 1058 GC Amsterdam">
+    </span>
+
+
+<div class="smm-info-window">
+    <p class="smm-info-window__text"></p>
+
+    <a class="smm-info-window__directions-link" href="#" target="_blank">
+        <span class="smm-info-window__directions-icon"></span>
+        <span>Krijg routebeschrijving</span>
+    </a>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>

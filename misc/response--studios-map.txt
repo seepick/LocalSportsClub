@@ -1,0 +1,205 @@
+https://urbansportsclub.com/nl/studios-map?city=1144&plan_type=6
+
+// "slug": "double-shift" => used to construct details URL
+https://urbansportsclub.com/nl/studios-map?city_id%5B%5D=1144&plan_type%5B%5D=6&business_type%5B%5D=b2c&district%5B%5D=8749&district%5B%5D=8760&district%5B%5D=8761&district%5B%5D=8763&district%5B%5D=8764&district%5B%5D=8765&district%5B%5D=8766&district%5B%5D=8767&district%5B%5D=8770&district%5B%5D=8771&district%5B%5D=8772&district%5B%5D=8773&district%5B%5D=8774&district%5B%5D=8775&district%5B%5D=8776&district%5B%5D=8777&venue%5B%5D=14380
+    via: https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=6&business_type%5B%5D=b2c&district[]=8749&district[]=8760&district[]=8761&district[]=8763&district[]=8764&district[]=8765&district[]=8766&district[]=8767&district[]=8770&district[]=8771&district[]=8772&district[]=8773&district[]=8774&district[]=8775&district[]=8776&district[]=8777&venue[]=14380&show-map
+{
+    "success": true,
+    "data": {
+        "venues": [
+            {
+                "id": 14380,
+                "name": "Aron Kovacs",
+                "addressId": 25913,
+                "address": "Lauriergracht 102, 1016 RP",
+                "district": "Centrum",
+                "location": {
+                    "lat": 52.371375100000002,
+                    "lng": 4.8799751999999996
+                },
+                "categories": [
+                    {
+                        "id": 1,
+                        "key": "40001",
+                        "name": "Fitness",
+                        "icon": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FcategoryIcon_80x80_icon-category-fitness.png?alt=media",
+                        "category_group_id": 2,
+                        "allowed_plan_types": [
+                            1,
+                            2,
+                            3,
+                            6
+                        ],
+                        "allowed_plan_types_b2b": [
+                            1,
+                            2,
+                            3,
+                            6
+                        ],
+                        "plan_types": [
+                            {
+                                "id": 1,
+                                "name": "S"
+                            },
+                            {
+                                "id": 2,
+                                "name": "M"
+                            },
+                            {
+                                "id": 3,
+                                "name": "L"
+                            },
+                            {
+                                "id": 6,
+                                "name": "XL"
+                            }
+                        ],
+                        "plan_types_b2b": [
+                            {
+                                "id": 1,
+                                "name": "S"
+                            },
+                            {
+                                "id": 2,
+                                "name": "M"
+                            },
+                            {
+                                "id": 3,
+                                "name": "L"
+                            },
+                            {
+                                "id": 6,
+                                "name": "XL"
+                            }
+                        ],
+                        "is_top_category": true,
+                        "translations": {
+                            "en_GB": "Fitness",
+                            "de_DE": "Fitness",
+                            "fr_FR": "Fitness",
+                            "pt_PT": "Fitness",
+                            "es_ES": "Fitness",
+                            "nl_NL": "Fitness"
+                        }
+                    }
+                ],
+                "planTypeIds": [
+                    {
+                        "id": 1,
+                        "name": "S"
+                    },
+                    {
+                        "id": 2,
+                        "name": "M"
+                    },
+                    {
+                        "id": 3,
+                        "name": "L"
+                    },
+                    {
+                        "id": 6,
+                        "name": "XL"
+                    }
+                ],
+                "featured": false,
+                "studioCovers": [
+                    {
+                        "id": 1459648,
+                        "title": "atqn8ungghqyfcjylryf_1727775068203733.png",
+                        "sortOrder": 1,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_atqn8ungghqyfcjylryf_1727775068203733.png?generation=1727775068404425&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_atqn8ungghqyfcjylryf_1727775068203733.png?generation=1727775068675024&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_atqn8ungghqyfcjylryf_1727775068203733.png?generation=1727775068774559&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_atqn8ungghqyfcjylryf_1727775068203733.png?generation=1727775069346270&alt=media"
+                    },
+                    {
+                        "id": 1459649,
+                        "title": "s5brjlw2rdyyp02oykl6_172777507014135.png",
+                        "sortOrder": 2,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_s5brjlw2rdyyp02oykl6_172777507014135.png?generation=1727775070196717&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_s5brjlw2rdyyp02oykl6_172777507014135.png?generation=1727775070488605&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_s5brjlw2rdyyp02oykl6_172777507014135.png?generation=1727775070599781&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_s5brjlw2rdyyp02oykl6_172777507014135.png?generation=1727775071242014&alt=media"
+                    },
+                    {
+                        "id": 1459650,
+                        "title": "r5hqj0rx9pbuxtu0pi4z_1727775071819227.png",
+                        "sortOrder": 3,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_r5hqj0rx9pbuxtu0pi4z_1727775071819227.png?generation=1727775071957230&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_r5hqj0rx9pbuxtu0pi4z_1727775071819227.png?generation=1727775072245479&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_r5hqj0rx9pbuxtu0pi4z_1727775071819227.png?generation=1727775072356694&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_r5hqj0rx9pbuxtu0pi4z_1727775071819227.png?generation=1727775072947506&alt=media"
+                    },
+                    {
+                        "id": 1459651,
+                        "title": "sy3imrl9dojphibxaolw_1727775073589587.png",
+                        "sortOrder": 4,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_sy3imrl9dojphibxaolw_1727775073589587.png?generation=1727775073738113&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_sy3imrl9dojphibxaolw_1727775073589587.png?generation=1727775074034892&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_sy3imrl9dojphibxaolw_1727775073589587.png?generation=1727775074152887&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_sy3imrl9dojphibxaolw_1727775073589587.png?generation=1727775074772248&alt=media"
+                    },
+                    {
+                        "id": 1459652,
+                        "title": "b2wckqkwjznmf3itkszm_1727775075441649.png",
+                        "sortOrder": 5,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_b2wckqkwjznmf3itkszm_1727775075441649.png?generation=1727775075581361&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_b2wckqkwjznmf3itkszm_1727775075441649.png?generation=1727775075882719&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_b2wckqkwjznmf3itkszm_1727775075441649.png?generation=1727775075991725&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_b2wckqkwjznmf3itkszm_1727775075441649.png?generation=1727775076625964&alt=media"
+                    },
+                    {
+                        "id": 1459653,
+                        "title": "v8wz0pzpvtrp3ddpokyl_1727775077278440.png",
+                        "sortOrder": 6,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_v8wz0pzpvtrp3ddpokyl_1727775077278440.png?generation=1727775077420218&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_v8wz0pzpvtrp3ddpokyl_1727775077278440.png?generation=1727775077710348&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_v8wz0pzpvtrp3ddpokyl_1727775077278440.png?generation=1727775077812993&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_v8wz0pzpvtrp3ddpokyl_1727775077278440.png?generation=1727775078422102&alt=media"
+                    },
+                    {
+                        "id": 1459654,
+                        "title": "zkas5yebzwunz06eq1em_1727775079143023.png",
+                        "sortOrder": 7,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_zkas5yebzwunz06eq1em_1727775079143023.png?generation=1727775079292784&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_zkas5yebzwunz06eq1em_1727775079143023.png?generation=1727775079589359&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_zkas5yebzwunz06eq1em_1727775079143023.png?generation=1727775079705366&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_zkas5yebzwunz06eq1em_1727775079143023.png?generation=1727775080341653&alt=media"
+                    },
+                    {
+                        "id": 1459655,
+                        "title": "dzwspatiuzga9mlgkys4_1727775081101329.png",
+                        "sortOrder": 8,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_dzwspatiuzga9mlgkys4_1727775081101329.png?generation=1727775081249407&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_dzwspatiuzga9mlgkys4_1727775081101329.png?generation=1727775081532894&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_dzwspatiuzga9mlgkys4_1727775081101329.png?generation=1727775081644778&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_dzwspatiuzga9mlgkys4_1727775081101329.png?generation=1727775082236461&alt=media"
+                    },
+                    {
+                        "id": 1459656,
+                        "title": "a6vivfxpmlbqivgorhnt_1727775082765285.png",
+                        "sortOrder": 9,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_a6vivfxpmlbqivgorhnt_1727775082765285.png?generation=1727775082913804&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_a6vivfxpmlbqivgorhnt_1727775082765285.png?generation=1727775083198212&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_a6vivfxpmlbqivgorhnt_1727775082765285.png?generation=1727775083316302&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_a6vivfxpmlbqivgorhnt_1727775082765285.png?generation=1727775083944012&alt=media"
+                    },
+                    {
+                        "id": 1459657,
+                        "title": "cfdnzcavtlvxibgc0u1u_1727775084577823.png",
+                        "sortOrder": 10,
+                        "cover150": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2Fthumbnail_150x150_cfdnzcavtlvxibgc0u1u_1727775084577823.png?generation=1727775084843103&alt=media",
+                        "cover1024": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueHome_1024x576_cfdnzcavtlvxibgc0u1u_1727775084577823.png?generation=1727775085537753&alt=media",
+                        "cover311": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_cfdnzcavtlvxibgc0u1u_1727775084577823.png?generation=1727775085791509&alt=media",
+                        "cover720": "https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueSalon_720x405_cfdnzcavtlvxibgc0u1u_1727775084577823.png?generation=1727775086904674&alt=media"
+                    }
+                ],
+                "slug": "double-shift"
+            }
+        ],
+        "venueAddressIds": [
+            "25913"
+        ],
+        "searchExecutedEvent": "{\"event\":\"search_executed\",\"search\":{\"type\":\"venue\",\"map\":false,\"activities\":null,\"districts\":\"Amsterdam\",\"venues\":\"Double Shift\",\"class_type\":null,\"plan\":\"XL\",\"results\":1,\"time\":null,\"city\":\"Amsterdam\",\"activity_type\":null,\"term\":null,\"date\":null,\"b2x_type\":\"b2c\"},\"user\":{\"id\":null,\"login_status\":\"logged-out\",\"membership_city\":null,\"membership_country\":null,\"membership_status\":null,\"membership_plan\":null,\"membership_b2b_type\":null,\"membership_contract_duration\":null,\"company_name\":null}}"
+    }
+}
