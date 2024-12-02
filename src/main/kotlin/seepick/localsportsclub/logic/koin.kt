@@ -6,10 +6,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val logicModule = module {
+fun logicModule() = module {
     singleOf(::MemoryReadWrite) {
         bind<Memory>()
         createdAtStart()
     }
-    singleOf(::ServiceImpl) bind Service::class
+    singleOf(::PartnersServiceImpl) bind PartnersService::class
 }

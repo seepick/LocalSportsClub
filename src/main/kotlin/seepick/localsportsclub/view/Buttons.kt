@@ -6,20 +6,24 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import org.koin.compose.koinInject
-import seepick.localsportsclub.logic.Service
+import seepick.localsportsclub.logic.PartnersService
 
 @Composable
 fun Buttons(
-    myService: Service = koinInject()
+    partnersService: PartnersService = koinInject(),
 ) {
 //    val myService = koinInject<Service>()
-
     MaterialTheme {
         Row {
             Button(onClick = {
-                println("clicked: ${myService.say()}")
+                partnersService.insert()
             }) {
-                Text("Haha")
+                Text("Save")
+            }
+            Button(onClick = {
+                partnersService.select()
+            }) {
+                Text("Load")
             }
         }
     }

@@ -8,13 +8,19 @@ Communistic Custom Client for Urban Sports Club.
 
 # TODOs
 
-* switch to latest dep versions (ktor 3)
+## Next up
+
 * syncing of data
-* persistence (exposed, liquibase, H2)
-* simple UI:
-  * workouts table
-  * search for text (title, partner, teacher), filter date
-  * button to go to website
+* persistence tests (keep it simple)
+
+## Backlog
+
+* partners table
+* search/filter: text, date
+* open USC website button
+
+## Later
+
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 * workout metadata teacher (von partner site scrapen)
 * alle QR codes von partner fotografieren, in app geben (prevent no-show-fee ;)
