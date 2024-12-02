@@ -1,8 +1,8 @@
-package com.github.christophpickl.localsportsclub.api
+package seepick.localsportsclub.api
 
-import com.github.christophpickl.localsportsclub.kotlinxSerializer
-import com.github.christophpickl.localsportsclub.readFromClasspath
-import com.github.christophpickl.localsportsclub.toPrettyString
+import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.readFromClasspath
+import seepick.localsportsclub.toPrettyString
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub
+package seepick.localsportsclub
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

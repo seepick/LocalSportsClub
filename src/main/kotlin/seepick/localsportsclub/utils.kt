@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub
+package seepick.localsportsclub
 
 private object ResourceLocator
 

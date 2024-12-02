@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub.api
+package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient

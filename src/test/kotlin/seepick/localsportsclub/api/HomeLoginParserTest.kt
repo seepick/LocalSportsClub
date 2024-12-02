@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub.api
+package seepick.localsportsclub.api
 
 import io.kotest.matchers.shouldBe
 import org.junit.Test

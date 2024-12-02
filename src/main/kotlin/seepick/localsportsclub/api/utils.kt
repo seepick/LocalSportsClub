@@ -1,4 +1,4 @@
-package com.github.christophpickl.localsportsclub.api
+package seepick.localsportsclub.api
 
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
