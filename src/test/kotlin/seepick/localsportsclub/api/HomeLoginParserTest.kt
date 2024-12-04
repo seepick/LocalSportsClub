@@ -1,23 +1,16 @@
 package seepick.localsportsclub.api
 
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.junit.Test
+import seepick.localsportsclub.readFromClasspath
 
-class HomeLoginParserTest {
-    @Test
-    fun testFoo() {
-        val html = readFromClasspath("/lsc/response_home.html")
-        val result = HomeLoginParser.parse(html)
-        result.loginSecret shouldBe ("UWZZNDJwNmEvaS9YTHZHN01XQ2QxQT09" to "SlVBNHExWEQ4bncyQTZiRnBrcVNYQT09")
-    }
-}
+class HomeLoginParserTest : StringSpec() {
+    init {
+        "When parse home response Then extract login secret" {
+            val result = HomeLoginParser.parse(readFromClasspath("/test_lsc/response_home.html"))
 
-private object ResourceLocator
-fun readFromClasspath(classpath: String): String {
-    val resource = ResourceLocator::class.java.getResourceAsStream(classpath)
-        ?: throw Exception("Classpath resource not found at: $classpath")
-    return resource.bufferedReader()
-        .use {
-            it.readText()
+            result.loginSecret shouldBe ("UWZZNDJwNmEvaS9YTHZHN01XQ2QxQT09" to "SlVBNHExWEQ4bncyQTZiRnBrcVNYQT09")
         }
+    }
 }

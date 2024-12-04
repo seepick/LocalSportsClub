@@ -1,3 +1,4 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -19,13 +20,15 @@ repositories {
 }
 
 dependencies {
+    val ktorVersion = "3.0.1"
+
     implementation(compose.desktop.currentOs)
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0") // enforce version for Exposed NoSuchMethodError
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
-    implementation("io.insert-koin:koin-compose:4.0.0")
-    implementation("io.insert-koin:koin-compose-viewmodel:4.0.0")
-    implementation("io.insert-koin:koin-compose-viewmodel-navigation:4.0.0")
+    listOf("compose", "compose-viewmodel", "compose-viewmodel-navigation").forEach {
+        implementation("io.insert-koin:koin-$it:4.0.0")
+    }
 
     // PERSISTENCE
     listOf("core", "dao", "jdbc", "java-time").forEach {
@@ -37,7 +40,7 @@ dependencies {
 
     // WEB
     listOf("client-core", "client-cio", "client-logging", "client-content-negotiation", "serialization-kotlinx-json").forEach {
-        implementation("io.ktor:ktor-$it:3.0.1")
+        implementation("io.ktor:ktor-$it:$ktorVersion")
     }
     implementation("org.jsoup:jsoup:1.18.3")
 
@@ -50,6 +53,7 @@ dependencies {
     listOf("runner-junit5", "assertions-core", "property").forEach {
         testImplementation("io.kotest:kotest-$it:5.9.1")
     }
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.13")
 }
 
@@ -65,13 +69,8 @@ compose.desktop {
     }
 }
 
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-    val rejectPatterns = listOf(".*-ea.*", ".*RC", ".*M1", ".*check", ".*dev.*", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }
-    rejectVersionIf {
-        rejectPatterns.any {
-            it.matches(candidate.version)
-        }
-    }
+tasks.withType<Test>().configureEach { // to be able to run kotests
+    useJUnitPlatform()
 }
 
 configure<ProcessResources>("processResources") {
@@ -83,6 +82,15 @@ configure<ProcessResources>("processResources") {
                 "version" to (project.properties["lsc.version"] ?: "0"),
             ),
         )
+    }
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    val rejectPatterns = listOf(".*-ea.*", ".*RC", ".*M1", ".*check", ".*dev.*", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }
+    rejectVersionIf {
+        rejectPatterns.any {
+            it.matches(candidate.version)
+        }
     }
 }
 

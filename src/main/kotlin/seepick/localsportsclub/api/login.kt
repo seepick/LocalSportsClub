@@ -39,13 +39,16 @@ class LoginApi(
     )
 
     private suspend fun loadHome(): HomeResponse {
+        log.debug { "Requesting home to extract basic session info." }
         val response = http.get(baseUrl)
         response.requireStatusOk()
         val html = HomeLoginParser.parse(response.bodyAsText())
         return HomeResponse(
             loginSecret = html.loginSecret,
             phpSessionId = response.phpSessionId,
-        )
+        ).also {
+            log.debug { "Extracted: $it" }
+        }
     }
 
     private data class LoginRequest(
@@ -72,9 +75,6 @@ class LoginApi(
                 "_tracking_consent",
                 "%7B%22con%22%3A%7B%22CMP%22%3A%7B%22a%22%3A%22%22%2C%22m%22%3A%22%22%2C%22p%22%3A%22%22%2C%22s%22%3A%22%22%7D%7D%2C%22v%22%3A%222.1%22%2C%22region%22%3A%22NLNH%22%2C%22reg%22%3A%22GDPR%22%7D"
             )
-//            headers {
-//                append()
-//            }
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
             header("accept-language", "nl-NL,nl;q=0.8")
             header("content-type", "application/x-www-form-urlencoded; charset=UTF-8")
@@ -109,13 +109,6 @@ class LoginApi(
         } catch (e: SerializationException) {
             return LoginResult.Failure("Seems username/password is wrong.")
         }
-        /*
-        <form action="/nl/login" id="login-form" class="smm-login-widget" data-dataLayer-view="{&quot;event&quot;:&quot;login_started&quot;,&quot;user&quot;:{&quot;id&quot;:null,&quot;login_status&quot;:&quot;logged-out&quot;,&quot;membership_city&quot;:null,&quot;membership_country&quot;:null,&quot;membership_status&quot;:null,&quot;membership_plan&quot;:null,&quot;membership_b2b_type&quot;:null,&quot;membership_contract_duration&quot;:null,&quot;company_name&quot;:null}}" data-dataLayer-failure="{&quot;event&quot;:&quot;login_failed&quot;,&quot;user&quot;:{&quot;id&quot;:null,&quot;login_status&quot;:&quot;logged-out&quot;,&quot;membership_city&quot;:null,&quot;membership_country&quot;:null,&quot;membership_status&quot;:null,&quot;membership_plan&quot;:null,&quot;membership_b2b_type&quot;:null,&quot;membership_contract_duration&quot;:null,&quot;company_name&quot;:null},&quot;login_method&quot;:&quot;email&quot;}" method="POST"><input type="hidden" id="dGV0U1RZeEUwZVprV2Z2ZDB3VDZCZz09" name="dGV0U1RZeEUwZVprV2Z2ZDB3VDZCZz09" value="UGlZdWY3RlFFN0RONUdQM1luRmpuUT09" /><input type="hidden" id="check" name="check" /><h5>Inloggen</h5><p><span>Nog geen lid?</span><a href="/nl/prices">Meld je hier aan.</a></p><div id="email-group" class="form-group"><input type="email" id="email" name="email" value="x" class="form-input form-control" placeholder="E-mail *" /></div><div id="password-group" class="form-group"><input type="password" id="password" name="password" value="y" class="form-input form-control" placeholder="Wachtwoord *" /><div class="form-group alert alert-danger">Gebruikersnaam en/of wachtwoord niet correct</div></div><div id="remember-me-group" class="form-group checkbox-group col-xs-6"><label for="remember-me"><input type="checkbox" id="remember-me" name="remember-me" value="1" class="form-control" group-class="checkbox-group col-xs-6" checked="checked" />Onthoud mij</label></div><div id="password-recovery-group" class="form-group col-xs-6"><a href="/nl/password-recovery" id="forgot-password-modal-link" class="forgot-password modal-trigger" data-target="#modal-login" data-toggle="modal">Je wachtwoord vergeten?</a></div><div id="login-group" class="form-group"><input type="submit" id="login" name="login" value="Inloggen" class="usc-button-rebrand usc-button-rebrand--default form_button btn btn-lg btn-primary btn-block" /></div></form>
-    <div class="login-failed-datalayer"
-         data-datalayer="{&quot;event&quot;:&quot;login_failed&quot;,&quot;user&quot;:{&quot;id&quot;:null,&quot;login_status&quot;:&quot;logged-out&quot;,&quot;membership_city&quot;:null,&quot;membership_country&quot;:null,&quot;membership_status&quot;:null,&quot;membership_plan&quot;:null,&quot;membership_b2b_type&quot;:null,&quot;membership_contract_duration&quot;:null,&quot;company_name&quot;:null},&quot;login_method&quot;:&quot;email&quot;,&quot;error_message&quot;:&quot;Gebruikersnaam en\/of wachtwoord niet correct&quot;}">
-    </div>
-         */
-        // {"success":true,"redirect":"\/nl\/activities"}
     }
 }
 
@@ -132,7 +125,7 @@ object HomeLoginParser {
 
     fun parse(html: String): HomeHtmlResponse {
         val body = Jsoup.parse(html).body()
-        val login = body.getElementById("login-form")!!
+        val login = body.getElementById("login-form") ?: error("login-form not found in HTML response:\n\n$html")
         val secret = login.getElementsByTag("input").single {
             it.attr("type") == "hidden" && it.id() != "check"
         }

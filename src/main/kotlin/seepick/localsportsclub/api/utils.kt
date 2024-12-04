@@ -5,7 +5,7 @@ import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.setCookie
 
-val HttpResponse.phpSessionId: String get() = setCookie().single { it.name == "PHPSESSID" }.value
+val HttpResponse.phpSessionId: String get() = setCookie().singleOrNull { it.name == "PHPSESSID" }?.value ?: error("PHPSESSID cookie is not set!")
 
 fun HttpResponse.requireStatusOk() {
     if(status != HttpStatusCode.OK) {
