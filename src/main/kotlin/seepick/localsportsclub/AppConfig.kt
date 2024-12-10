@@ -1,14 +1,20 @@
 package seepick.localsportsclub
 
 data class AppConfig(
-    val mockDb: Boolean,
+    val database: DatabaseMode,
 ) {
+    enum class DatabaseMode {
+        Exposed, InMemory
+    }
+    enum class ApiMode {
+        NoOp, Simulated, Real
+    }
     companion object {
         val development = AppConfig(
-            mockDb = false
+            database = DatabaseMode.Exposed
         )
         val production = AppConfig(
-            mockDb = false
+            database = DatabaseMode.Exposed
         )
     }
 }

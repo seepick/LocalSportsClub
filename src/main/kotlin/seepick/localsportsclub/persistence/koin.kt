@@ -13,13 +13,16 @@ import seepick.localsportsclub.logic.FileResolver
 private val log = logger {}
 
 fun persistenceModule(config: AppConfig) = module {
-    if(!config.mockDb) {
+    if (config.database == AppConfig.DatabaseMode.Exposed) {
         connectToDatabase()
     }
-    if(config.mockDb) {
-        singleOf(::InMemoryPartnersRepo) bind PartnersRepo::class
-    } else {
-        singleOf(::ExposedPartnersRepo) bind PartnersRepo::class
+    when(config.database) {
+        AppConfig.DatabaseMode.Exposed -> {
+            singleOf(::ExposedPartnersRepo) bind PartnersRepo::class
+        }
+        AppConfig.DatabaseMode.InMemory -> {
+            singleOf(::InMemoryPartnersRepo) bind PartnersRepo::class
+        }
     }
 }
 

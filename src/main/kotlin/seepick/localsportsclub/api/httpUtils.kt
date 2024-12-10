@@ -12,3 +12,5 @@ fun HttpResponse.requireStatusOk() {
         throw ApiException("Expected status 200 OK but was $status for URL $request.url")
     }
 }
+
+class ApiException(message: String, cause: Exception? = null) : Exception(message, cause)
