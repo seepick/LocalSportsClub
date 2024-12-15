@@ -34,7 +34,7 @@ private fun File.createIfNeededOrFail() = apply {
 }
 
 enum class FileEntry(val fileName: String) {
-//    Login("login.json"),
+    Login("login.json"),
 }
 
 enum class DirectoryEntry(val directoryName: String) {

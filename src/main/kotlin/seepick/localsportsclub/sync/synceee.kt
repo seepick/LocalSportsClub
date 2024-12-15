@@ -1,2 +1,0 @@
-package seepick.localsportsclub.sync
-

@@ -5,20 +5,13 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
+import seepick.localsportsclub.kotlinxSerializer
 
 val httpClient = buildHttpClient()
 
 private fun buildHttpClient(engine: HttpClientEngine = CIO.create()) = HttpClient(engine) {
     install(ContentNegotiation) {
-        json(Json {
-            isLenient = true
-            allowSpecialFloatingPointValues = true
-            allowStructuredMapKeys = true
-            prettyPrint = true
-            useArrayPolymorphism = false
-            ignoreUnknownKeys = true
-        })
+        json(kotlinxSerializer)
     }
     expectSuccess = false
 }

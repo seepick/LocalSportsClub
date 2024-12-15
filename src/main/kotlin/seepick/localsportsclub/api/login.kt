@@ -20,17 +20,21 @@ class LoginApi(
 
     private val log = logger {}
 
-    suspend fun login(username: String, password: String): LoginResult {
-        log.info { "login($username)" }
+    suspend fun login(credentials: Credentials): LoginResult {
+        log.info { "logging in as: ${credentials.username}" }
         val home = loadHome()
         return submitLogin(
             LoginRequest(
-                email = username,
-                password = password,
+                email = credentials.username,
+                password = credentials.password,
                 phpSessionId = home.phpSessionId,
                 secret = home.loginSecret,
             )
-        )
+        ).also {
+            if (it is LoginResult.Success) {
+                log.info { "Successfully logged in ✅👍🏻" }
+            }
+        }
     }
 
     private data class HomeResponse(
@@ -75,7 +79,7 @@ class LoginApi(
         try {
             val jsonRoot = Json.parseToJsonElement(jsonSuccessOrHtmlFail)
             LoginResult.Success(phpSessionId = login.phpSessionId)
-            return if(jsonRoot.jsonObject["success"].toString() == "true") {
+            return if (jsonRoot.jsonObject["success"].toString() == "true") {
                 LoginResult.Success(phpSessionId = login.phpSessionId)
             } else {
                 log.warn { "Returned JSON after login:\n$jsonSuccessOrHtmlFail" }

@@ -1,0 +1,2233 @@
+GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
+
+{
+    "success": true,
+    "data": {
+        "showMore": true,
+        "content": "\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25640\"\n    data-position=\"1\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/balanzs-nieuwe-achtergracht-1\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_zj5egzdqxzl44gum94kn_1727163645323814.png?generation=1727163646198074&amp;alt=media\"\n                        alt=\"Balanzs Nieuwe Achtergracht\"\n            title=\"Balanzs Nieuwe Achtergracht\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_zj5egzdqxzl44gum94kn_1727163645323814.png?generation=1727163646198074&amp;alt=media\"\n                    alt=\"Balanzs Nieuwe Achtergracht\"\n                    title=\"Balanzs Nieuwe Achtergracht\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/balanzs-nieuwe-achtergracht-1\">\n            Balanzs Nieuwe Achtergracht        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Centrum,\n            <span class=\"smm-studio-snippet__address-street\">\n                Nieuwe Achtergracht 11            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25639\"\n    data-position=\"2\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/balanzs-amsterdam-nl\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_v68yxh5txsqibuiy3gti_1727163758620440.png?generation=1727163759540853&amp;alt=media\"\n                        alt=\"Balanzs Prinseneiland\"\n            title=\"Balanzs Prinseneiland\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_v68yxh5txsqibuiy3gti_1727163758620440.png?generation=1727163759540853&amp;alt=media\"\n                    alt=\"Balanzs Prinseneiland\"\n                    title=\"Balanzs Prinseneiland\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/balanzs-amsterdam-nl\">\n            Balanzs Prinseneiland        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Barre &middot; Fitness &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Centrum,\n            <span class=\"smm-studio-snippet__address-street\">\n                Prinseneiland 20G            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25175\"\n    data-position=\"3\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/ballin-fit\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_cqqqtd62ah9axkep4olh_1726563998504176.png?generation=1726564001789588&amp;alt=media\"\n                        alt=\"Ballin Fit\"\n            title=\"Ballin Fit\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_cqqqtd62ah9axkep4olh_1726563998504176.png?generation=1726564001789588&amp;alt=media\"\n                    alt=\"Ballin Fit\"\n                    title=\"Ballin Fit\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/ballin-fit\">\n            Ballin Fit        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport &middot; Bootcamp &middot; Fitness &middot; Functionele Training &middot; Hyrox            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Noord,\n            <span class=\"smm-studio-snippet__address-street\">\n                Tt. Vasumweg 34D            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25749\"\n    data-position=\"4\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/basecampwest\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_z1liucdh0izztkxbh6ue_1727681843211280.png?generation=1727681844415145&amp;alt=media\"\n                        alt=\"BASECAMPWEST\"\n            title=\"BASECAMPWEST\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_z1liucdh0izztkxbh6ue_1727681843211280.png?generation=1727681844415145&amp;alt=media\"\n                    alt=\"BASECAMPWEST\"\n                    title=\"BASECAMPWEST\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/basecampwest\">\n            BASECAMPWEST        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bootcamp &middot; Gemengde Vechtsporten &middot; Pilates            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Van Alphenstraat 7H            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25754\"\n    data-position=\"5\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bbb-fysiotherapie\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_vs7cnc0ny8iey6tsb7st_1727685309850830.png?generation=1727685311066859&amp;alt=media\"\n                        alt=\"bbb fysiotherapie\"\n            title=\"bbb fysiotherapie\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_vs7cnc0ny8iey6tsb7st_1727685309850830.png?generation=1727685311066859&amp;alt=media\"\n                    alt=\"bbb fysiotherapie\"\n                    title=\"bbb fysiotherapie\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bbb-fysiotherapie\">\n            bbb fysiotherapie        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Hazenstraat 53            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25752\"\n    data-position=\"6\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bbb-health-boutique-amsterdam-amstel\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_okdkmnqpvdvhdkihyi61_1727333721976206.png?generation=1727333722576138&amp;alt=media\"\n                        alt=\"bbb health boutique Amsterdam Amstel\"\n            title=\"bbb health boutique Amsterdam Amstel\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_okdkmnqpvdvhdkihyi61_1727333721976206.png?generation=1727333722576138&amp;alt=media\"\n                    alt=\"bbb health boutique Amsterdam Amstel\"\n                    title=\"bbb health boutique Amsterdam Amstel\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bbb-health-boutique-amsterdam-amstel\">\n            bbb health boutique Amsterdam Amstel        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Centrum,\n            <span class=\"smm-studio-snippet__address-street\">\n                Amstel 163            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25755\"\n    data-position=\"7\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bbb-health-boutique-jordaan\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nh21hobdn26tynm6r7vw_1727335054838450.png?generation=1727335055453360&amp;alt=media\"\n                        alt=\"bbb health boutique Jordaan\"\n            title=\"bbb health boutique Jordaan\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nh21hobdn26tynm6r7vw_1727335054838450.png?generation=1727335055453360&amp;alt=media\"\n                    alt=\"bbb health boutique Jordaan\"\n                    title=\"bbb health boutique Jordaan\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bbb-health-boutique-jordaan\">\n            bbb health boutique Jordaan        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Barre &middot; Fitness &middot; Ontspanning &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Hazenstraat 51            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25689\"\n    data-position=\"8\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/beatzone-studio-ndsm\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_lqtmj4xp8jnmwgl557qq_1727692371670974.png?generation=1727692372285667&amp;alt=media\"\n                        alt=\"Beatzone Studio NDSM\"\n            title=\"Beatzone Studio NDSM\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_lqtmj4xp8jnmwgl557qq_1727692371670974.png?generation=1727692372285667&amp;alt=media\"\n                    alt=\"Beatzone Studio NDSM\"\n                    title=\"Beatzone Studio NDSM\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/beatzone-studio-ndsm\">\n            Beatzone Studio NDSM        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Dans            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Noord,\n            <span class=\"smm-studio-snippet__address-street\">\n                Tt. Vasumweg 34B            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25690\"\n    data-position=\"9\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/beatzone-studio-zuid-west\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_f3lo7bm0maa1zugolzgw_1727692287651400.png?generation=1727692288248669&amp;alt=media\"\n                        alt=\"Beatzone Studio Zuid\/West\"\n            title=\"Beatzone Studio Zuid\/West\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_f3lo7bm0maa1zugolzgw_1727692287651400.png?generation=1727692288248669&amp;alt=media\"\n                    alt=\"Beatzone Studio Zuid\/West\"\n                    title=\"Beatzone Studio Zuid\/West\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/beatzone-studio-zuid-west\">\n            Beatzone Studio Zuid\/West        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Dans            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Nieuw-West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Poeldijkstraat 391            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25007\"\n    data-position=\"10\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/be-boulder\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_uhs0ume9owpubjnhvbpa_1726235691485753.png?generation=1726235692999272&amp;alt=media\"\n                        alt=\"Be Boulder\"\n            title=\"Be Boulder\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_uhs0ume9owpubjnhvbpa_1726235691485753.png?generation=1726235692999272&amp;alt=media\"\n                    alt=\"Be Boulder\"\n                    title=\"Be Boulder\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/be-boulder\">\n            Be Boulder        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Boulderen            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Anthony Fokkerweg 75            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25774\"\n    data-position=\"11\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bien-fitness\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_oi6z1zlk4pfb5vtxrdsv_1727703731904635.png?generation=1727703732509648&amp;alt=media\"\n                        alt=\"Bien Fitness\"\n            title=\"Bien Fitness\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_oi6z1zlk4pfb5vtxrdsv_1727703731904635.png?generation=1727703732509648&amp;alt=media\"\n                    alt=\"Bien Fitness\"\n                    title=\"Bien Fitness\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bien-fitness\">\n            Bien Fitness        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuidoost,\n            <span class=\"smm-studio-snippet__address-street\">\n                Sijsjesbergweg 18            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"26224\"\n    data-position=\"12\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bijlmer-sportcentrum\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_fyqzhndw0ah2yqyyhwbo_1727859768896484.png?generation=1727859769481071&amp;alt=media\"\n                        alt=\"Bijlmer Sportcentrum\"\n            title=\"Bijlmer Sportcentrum\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_fyqzhndw0ah2yqyyhwbo_1727859768896484.png?generation=1727859769481071&amp;alt=media\"\n                    alt=\"Bijlmer Sportcentrum\"\n                    title=\"Bijlmer Sportcentrum\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bijlmer-sportcentrum\">\n            Bijlmer Sportcentrum        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport &middot; Crosstraining &middot; Dans &middot; Fitness &middot; Functionele Training &middot; Indoor Fietsen &middot; Pilates &middot; Trampoline &middot; Yoga &middot; Zwemmen            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuidoost,\n            <span class=\"smm-studio-snippet__address-street\">\n                Anton de Komplein 157            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"26969\"\n    data-position=\"13\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bluebirds-oost\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_xakrqnf2ptpbawkw15qf_1729259442795311.png?generation=1729259443963655&amp;alt=media\"\n                        alt=\"Bluebirds Oost\"\n            title=\"Bluebirds Oost\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_xakrqnf2ptpbawkw15qf_1729259442795311.png?generation=1729259443963655&amp;alt=media\"\n                    alt=\"Bluebirds Oost\"\n                    title=\"Bluebirds Oost\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bluebirds-oost\">\n            Bluebirds Oost        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness &middot; Meditatie &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Oost,\n            <span class=\"smm-studio-snippet__address-street\">\n                Louise Wentstraat 186            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"26970\"\n    data-position=\"14\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bluebirds-west\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_huz6nhwtv3r8th0ftlml_172925947124802.png?generation=1729259471895211&amp;alt=media\"\n                        alt=\"Bluebirds West\"\n            title=\"Bluebirds West\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_huz6nhwtv3r8th0ftlml_172925947124802.png?generation=1729259471895211&amp;alt=media\"\n                    alt=\"Bluebirds West\"\n                    title=\"Bluebirds West\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bluebirds-west\">\n            Bluebirds West        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness &middot; Meditatie &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Jan Evertsenstraat 4            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"26972\"\n    data-position=\"15\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bluebirds-zuid\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_umxmit74biwmnlzhjsi3_1729259531423240.png?generation=1729259532555443&amp;alt=media\"\n                        alt=\"Bluebirds Zuid\"\n            title=\"Bluebirds Zuid\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_umxmit74biwmnlzhjsi3_1729259531423240.png?generation=1729259532555443&amp;alt=media\"\n                    alt=\"Bluebirds Zuid\"\n                    title=\"Bluebirds Zuid\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bluebirds-zuid\">\n            Bluebirds Zuid        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness &middot; Ontspanning &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Rijnstraat 63 h            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25650\"\n    data-position=\"16\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bodybase-studios-amsterdam-nl\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_pcv6ht2cbzqs85g25tjk_1727170735418154.png?generation=1727170736373954&amp;alt=media\"\n                        alt=\"BodyBase Studios Amsterdam de Pijp\"\n            title=\"BodyBase Studios Amsterdam de Pijp\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_pcv6ht2cbzqs85g25tjk_1727170735418154.png?generation=1727170736373954&amp;alt=media\"\n                    alt=\"BodyBase Studios Amsterdam de Pijp\"\n                    title=\"BodyBase Studios Amsterdam de Pijp\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bodybase-studios-amsterdam-nl\">\n            BodyBase Studios Amsterdam de Pijp        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Barre &middot; Crosstraining &middot; Pilates &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Ceintuurbaan 223            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25199\"\n    data-position=\"17\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/boogieland-kick-boxing-club\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_mkulvbzuozhucdkz4ezp_1726572704854339.png?generation=1726572705611361&amp;alt=media\"\n                        alt=\"BOOGIELAND [KICK] BOXING CLUB\"\n            title=\"BOOGIELAND [KICK] BOXING CLUB\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_mkulvbzuozhucdkz4ezp_1726572704854339.png?generation=1726572705611361&amp;alt=media\"\n                    alt=\"BOOGIELAND [KICK] BOXING CLUB\"\n                    title=\"BOOGIELAND [KICK] BOXING CLUB\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/boogieland-kick-boxing-club\">\n            BOOGIELAND [KICK] BOXING CLUB        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport &middot; Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Noord,\n            <span class=\"smm-studio-snippet__address-street\">\n                Gedempt Hamerkanaal 38            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25786\"\n    data-position=\"18\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/boxfit-amsterdam\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_dyie1vm3cwdkkfzhs0cm_1727771208779683.png?generation=1727771209368665&amp;alt=media\"\n                        alt=\"Boxfit Amsterdam\"\n            title=\"Boxfit Amsterdam\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_dyie1vm3cwdkkfzhs0cm_1727771208779683.png?generation=1727771209368665&amp;alt=media\"\n                    alt=\"Boxfit Amsterdam\"\n                    title=\"Boxfit Amsterdam\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/boxfit-amsterdam\">\n            Boxfit Amsterdam        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Museumplein 10            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25703\"\n    data-position=\"19\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/abov-boxing-gym\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_xn8txakejy0lt2hpoid9_1727426453210330.png?generation=1727426454459745&amp;alt=media\"\n                        alt=\"Boxing Gym ABOV - Ter Meulen Amsterdam\"\n            title=\"Boxing Gym ABOV - Ter Meulen Amsterdam\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_xn8txakejy0lt2hpoid9_1727426453210330.png?generation=1727426454459745&amp;alt=media\"\n                    alt=\"Boxing Gym ABOV - Ter Meulen Amsterdam\"\n                    title=\"Boxing Gym ABOV - Ter Meulen Amsterdam\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/abov-boxing-gym\">\n            Boxing Gym ABOV - Ter Meulen Amsterdam        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Amstelkade 13            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"26700\"\n    data-position=\"20\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/brazilian-dance-studio-fidelinas\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_wub3wkcg0nsnsobvnvnu_1727865769170437.png?generation=1727865770234426&amp;alt=media\"\n                        alt=\"Brazilian dance studio Fidelinas\"\n            title=\"Brazilian dance studio Fidelinas\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_wub3wkcg0nsnsobvnvnu_1727865769170437.png?generation=1727865770234426&amp;alt=media\"\n                    alt=\"Brazilian dance studio Fidelinas\"\n                    title=\"Brazilian dance studio Fidelinas\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/brazilian-dance-studio-fidelinas\">\n            Brazilian dance studio Fidelinas        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Dans            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuidoost,\n            <span class=\"smm-studio-snippet__address-street\">\n                Geldershoofd 80            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25789\"\n    data-position=\"21\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/huis-van-de-wijk-de-havelaar\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_msajitq8g4tgtsi0gvsw_1727772977180650.png?generation=1727772978064956&amp;alt=media\"\n                        alt=\"Broosha - Huis van de Wijk De Havelaar\"\n            title=\"Broosha - Huis van de Wijk De Havelaar\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_msajitq8g4tgtsi0gvsw_1727772977180650.png?generation=1727772978064956&amp;alt=media\"\n                    alt=\"Broosha - Huis van de Wijk De Havelaar\"\n                    title=\"Broosha - Huis van de Wijk De Havelaar\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/huis-van-de-wijk-de-havelaar\">\n            Broosha - Huis van de Wijk De Havelaar        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Douwes Dekkerstraat 2            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25638\"\n    data-position=\"22\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bty-clb-oost\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_tvypdjgeerlpoxjvx8lq_1727101618732549.png?generation=1727101619321565&amp;alt=media\"\n                        alt=\"BTY CLB OOST\"\n            title=\"BTY CLB OOST\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_tvypdjgeerlpoxjvx8lq_1727101618732549.png?generation=1727101619321565&amp;alt=media\"\n                    alt=\"BTY CLB OOST\"\n                    title=\"BTY CLB OOST\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bty-clb-oost\">\n            BTY CLB OOST        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Oost,\n            <span class=\"smm-studio-snippet__address-street\">\n                Oranje-Vrijstaatkade 21            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25645\"\n    data-position=\"23\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/bty-clb-singel\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_kpclvtghurmtfaznbi4e_1727165979831427.png?generation=1727165980438595&amp;alt=media\"\n                        alt=\"BTY CLB SINGEL\"\n            title=\"BTY CLB SINGEL\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_kpclvtghurmtfaznbi4e_1727165979831427.png?generation=1727165980438595&amp;alt=media\"\n                    alt=\"BTY CLB SINGEL\"\n                    title=\"BTY CLB SINGEL\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/bty-clb-singel\">\n            BTY CLB SINGEL        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Centrum,\n            <span class=\"smm-studio-snippet__address-street\">\n                Singel 250            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25234\"\n    data-position=\"24\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/buenting-sport\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_ofuq7grbfydddxyuaqap_1732793741635843.png?generation=1732793742111909&amp;alt=media\"\n                        alt=\"BuentingSport\"\n            title=\"BuentingSport\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_ofuq7grbfydddxyuaqap_1732793741635843.png?generation=1732793742111909&amp;alt=media\"\n                    alt=\"BuentingSport\"\n                    title=\"BuentingSport\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/buenting-sport\">\n            BuentingSport        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Bokssport &middot; Bootcamp &middot; Fitness &middot; Gemengde Vechtsporten &middot; Pilates &middot; Traditionele Aziatische Vechtsporten &middot; Wellness &middot; Yoga            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Amstelveen,\n            <span class=\"smm-studio-snippet__address-street\">\n                Acacialaan 18            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25795\"\n    data-position=\"25\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/akhnaton-amsterdam\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_zwi8yyofld5hepxsbocj_1727776158957761.png?generation=1727776159548051&amp;alt=media\"\n                        alt=\"Butt Factory - Akhnaton Amsterdam\"\n            title=\"Butt Factory - Akhnaton Amsterdam\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_zwi8yyofld5hepxsbocj_1727776158957761.png?generation=1727776159548051&amp;alt=media\"\n                    alt=\"Butt Factory - Akhnaton Amsterdam\"\n                    title=\"Butt Factory - Akhnaton Amsterdam\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/akhnaton-amsterdam\">\n            Butt Factory - Akhnaton Amsterdam        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Centrum,\n            <span class=\"smm-studio-snippet__address-street\">\n                Nieuwezijds Kolk 25            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25793\"\n    data-position=\"26\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/inn-8pm-club\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_yhiq8uqexw4hyleqh6mm_172777584086772.png?generation=1727775840669013&amp;alt=media\"\n                        alt=\"Butt Factory - Inn 8PM Club\"\n            title=\"Butt Factory - Inn 8PM Club\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_yhiq8uqexw4hyleqh6mm_172777584086772.png?generation=1727775840669013&amp;alt=media\"\n                    alt=\"Butt Factory - Inn 8PM Club\"\n                    title=\"Butt Factory - Inn 8PM Club\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/inn-8pm-club\">\n            Butt Factory - Inn 8PM Club        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Lijnbaansgracht 238            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25794\"\n    data-position=\"27\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/rembrandtpark\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_liwmfly8x0skvaajpfek_1727775919782476.png?generation=1727775920344970&amp;alt=media\"\n                        alt=\"Butt Factory - Rembrandtpark\"\n            title=\"Butt Factory - Rembrandtpark\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_liwmfly8x0skvaajpfek_1727775919782476.png?generation=1727775920344970&amp;alt=media\"\n                    alt=\"Butt Factory - Rembrandtpark\"\n                    title=\"Butt Factory - Rembrandtpark\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/rembrandtpark\">\n            Butt Factory - Rembrandtpark        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Rembrandtpark,\n            <span class=\"smm-studio-snippet__address-street\">\n                Rembrandtpark            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25791\"\n    data-position=\"28\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/tapmarin-leidse\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nt9l25istmgqe22wyyfp_1727776001811615.png?generation=1727776002386634&amp;alt=media\"\n                        alt=\"Butt Factory - Tapmarin Leidse\"\n            title=\"Butt Factory - Tapmarin Leidse\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nt9l25istmgqe22wyyfp_1727776001811615.png?generation=1727776002386634&amp;alt=media\"\n                    alt=\"Butt Factory - Tapmarin Leidse\"\n                    title=\"Butt Factory - Tapmarin Leidse\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/tapmarin-leidse\">\n            Butt Factory - Tapmarin Leidse        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Zuid,\n            <span class=\"smm-studio-snippet__address-street\">\n                Lange Leidsedwarsstraat 70            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25792\"\n    data-position=\"29\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/vondelpark\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nb4x2qon9mdcugqb7jsa_1727776093842656.png?generation=1727776094427829&amp;alt=media\"\n                        alt=\"Butt Factory - Vondelpark\"\n            title=\"Butt Factory - Vondelpark\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_nb4x2qon9mdcugqb7jsa_1727776093842656.png?generation=1727776094427829&amp;alt=media\"\n                    alt=\"Butt Factory - Vondelpark\"\n                    title=\"Butt Factory - Vondelpark\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/vondelpark\">\n            Butt Factory - Vondelpark        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Vondelpark,\n            <span class=\"smm-studio-snippet__address-street\">\n                Vondelpark            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25228\"\n    data-position=\"30\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/calisthenics-amsterdam\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_etwp9qxbg33ssc7ko0qb_1726581507795303.png?generation=1726581510180246&amp;alt=media\"\n                        alt=\"Calisthenics Amsterdam\"\n            title=\"Calisthenics Amsterdam\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_etwp9qxbg33ssc7ko0qb_1726581507795303.png?generation=1726581510180246&amp;alt=media\"\n                    alt=\"Calisthenics Amsterdam\"\n                    title=\"Calisthenics Amsterdam\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/calisthenics-amsterdam\">\n            Calisthenics Amsterdam        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Noord,\n            <span class=\"smm-studio-snippet__address-street\">\n                Nieuwendammerdijk 538            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25229\"\n    data-position=\"31\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/calisthenics-amsterdam-rembrandtpark\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_jvur8o2pm1eaupocsf3s_1726581749308757.png?generation=1726581751774633&amp;alt=media\"\n                        alt=\"Calisthenics Amsterdam - Rembrandtpark\"\n            title=\"Calisthenics Amsterdam - Rembrandtpark\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_jvur8o2pm1eaupocsf3s_1726581749308757.png?generation=1726581751774633&amp;alt=media\"\n                    alt=\"Calisthenics Amsterdam - Rembrandtpark\"\n                    title=\"Calisthenics Amsterdam - Rembrandtpark\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/calisthenics-amsterdam-rembrandtpark\">\n            Calisthenics Amsterdam - Rembrandtpark        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Fitness            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Nieuw-West,\n            <span class=\"smm-studio-snippet__address-street\">\n                Saskia van Uijlenburgkade 184            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n\n<div\n    class=\"smm-studio-snippet b-studio-item\"\n    data-address-id=\"25805\"\n    data-position=\"32\"\n>\n    <a class=\"smm-studio-snippet__image-link\" href=\"\/nl\/venues\/canal-sup-x-fuse\">\n        <img class=\"smm-studio-snippet__lazy-image\"\n                            data-src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_e1xwsisaqgmfd0ebew3d_1727779021794268.png?generation=1727779022924658&amp;alt=media\"\n                        alt=\"Canal Sup x Fuse\"\n            title=\"Canal Sup x Fuse\">\n\n                    <noscript>\n                <img src=\"https:\/\/storage.googleapis.com\/download\/storage\/v1\/b\/usc-pro-uscweb-live-media\/o\/de-live%2FvenueCatalog_311x175_e1xwsisaqgmfd0ebew3d_1727779021794268.png?generation=1727779022924658&amp;alt=media\"\n                    alt=\"Canal Sup x Fuse\"\n                    title=\"Canal Sup x Fuse\">\n            <\/noscript>\n        \n        <span class=\"usc-button-rebrand usc-button-rebrand--dim usc-button-rebrand--small smm-studio-snippet__details-text\">\n            Meer details        <\/span>\n\n        <div class=\"usc-studio-status-label container\">\n            \n                    <\/div>\n\n            <\/a>\n\n    <p class=\"smm-studio-snippet__title\">\n        <a class=\"smm-studio-snippet__studio-link\" href=\"\/nl\/venues\/canal-sup-x-fuse\">\n            Canal Sup x Fuse        <\/a>\n            <\/p>\n\n    <h3 class=\"smm-studio-snippet__disciplines\">\n                    <div class=\"disciplines\">\n                Ontspanning            <\/div>\n            <\/h3>\n\n    <address class=\"smm-studio-snippet__addresses\">\n                <p class=\"smm-studio-snippet__address\">\n            Noord,\n            <span class=\"smm-studio-snippet__address-street\">\n                Revaleiland 500            <\/span>\n        <\/p>\n    <\/address>\n\n    <p class=\"smm-studio-snippet__studio-plans\">\n                                    <span class=\"smm-studio-snippet__studio-plan\" data-type=\"1\">\n                                            S                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"2\">\n                                            M                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"3\">\n                                            L                                    <\/span>\n                                                <span class=\"smm-studio-snippet__studio-plan\" data-type=\"6\">\n                                            XL                                    <\/span>\n                        <\/p>\n<\/div>\n",
+        "stats": {
+            "category": [
+                {
+                    "name": "Aqua",
+                    "attributes": {
+                        "value": "1002"
+                    }
+                },
+                {
+                    "name": "Barre",
+                    "attributes": {
+                        "value": "400528"
+                    }
+                },
+                {
+                    "name": "Bokssport",
+                    "attributes": {
+                        "value": "40076"
+                    }
+                },
+                {
+                    "name": "Bootcamp",
+                    "attributes": {
+                        "value": "1005"
+                    }
+                },
+                {
+                    "name": "Boulderen",
+                    "attributes": {
+                        "value": "40008"
+                    }
+                },
+                {
+                    "name": "Capoeira",
+                    "attributes": {
+                        "value": "40080"
+                    }
+                },
+                {
+                    "name": "Crosstraining",
+                    "attributes": {
+                        "value": "40066"
+                    }
+                },
+                {
+                    "name": "Dans",
+                    "attributes": {
+                        "value": "40005"
+                    }
+                },
+                {
+                    "name": "EMS",
+                    "attributes": {
+                        "value": "40053"
+                    }
+                },
+                {
+                    "name": "Familie Sport",
+                    "attributes": {
+                        "value": "1589"
+                    }
+                },
+                {
+                    "name": "Fietsen",
+                    "attributes": {
+                        "value": "40075"
+                    }
+                },
+                {
+                    "name": "Fitness",
+                    "attributes": {
+                        "value": "40001"
+                    }
+                },
+                {
+                    "name": "Functionele Training",
+                    "attributes": {
+                        "value": "40046"
+                    }
+                },
+                {
+                    "name": "Gemengde Vechtsporten",
+                    "attributes": {
+                        "value": "3054"
+                    }
+                },
+                {
+                    "name": "Hardlopen",
+                    "attributes": {
+                        "value": "40012"
+                    }
+                },
+                {
+                    "name": "Hyrox",
+                    "attributes": {
+                        "value": "400529"
+                    }
+                },
+                {
+                    "name": "IJsschaatsen",
+                    "attributes": {
+                        "value": "40081"
+                    }
+                },
+                {
+                    "name": "Indoor Fietsen",
+                    "attributes": {
+                        "value": "40055"
+                    }
+                },
+                {
+                    "name": "Klimmen",
+                    "attributes": {
+                        "value": "40007"
+                    }
+                },
+                {
+                    "name": "Luchtacrobatiek",
+                    "attributes": {
+                        "value": "6002"
+                    }
+                },
+                {
+                    "name": "Massage",
+                    "attributes": {
+                        "value": "40065"
+                    }
+                },
+                {
+                    "name": "Meditatie",
+                    "attributes": {
+                        "value": "40083"
+                    }
+                },
+                {
+                    "name": "Moderne Zelfverdediging",
+                    "attributes": {
+                        "value": "40078"
+                    }
+                },
+                {
+                    "name": "Ontspanning",
+                    "attributes": {
+                        "value": "1599"
+                    }
+                },
+                {
+                    "name": "Paal Dans",
+                    "attributes": {
+                        "value": "7509"
+                    }
+                },
+                {
+                    "name": "Padel",
+                    "attributes": {
+                        "value": "40063"
+                    }
+                },
+                {
+                    "name": "Parkour",
+                    "attributes": {
+                        "value": "40082"
+                    }
+                },
+                {
+                    "name": "Persoonlijke Training",
+                    "attributes": {
+                        "value": "40051"
+                    }
+                },
+                {
+                    "name": "Pilates",
+                    "attributes": {
+                        "value": "40003"
+                    }
+                },
+                {
+                    "name": "Pilates Reformer",
+                    "attributes": {
+                        "value": "411114"
+                    }
+                },
+                {
+                    "name": "Qi Gong en Tai Chi",
+                    "attributes": {
+                        "value": "40062"
+                    }
+                },
+                {
+                    "name": "Squash",
+                    "attributes": {
+                        "value": "40049"
+                    }
+                },
+                {
+                    "name": "Stand Up Paddling",
+                    "attributes": {
+                        "value": "40073"
+                    }
+                },
+                {
+                    "name": "Surfen",
+                    "attributes": {
+                        "value": "50055"
+                    }
+                },
+                {
+                    "name": "Tennis",
+                    "attributes": {
+                        "value": "40040"
+                    }
+                },
+                {
+                    "name": "Traditionele Aziatische Vechtsporten",
+                    "attributes": {
+                        "value": "40077"
+                    }
+                },
+                {
+                    "name": "Trampoline",
+                    "attributes": {
+                        "value": "2559"
+                    }
+                },
+                {
+                    "name": "Urban Sports Club - Community Evenement",
+                    "attributes": {
+                        "value": "2100"
+                    }
+                },
+                {
+                    "name": "Voetbal",
+                    "attributes": {
+                        "value": "40009"
+                    }
+                },
+                {
+                    "name": "Wandelen",
+                    "attributes": {
+                        "value": "400507"
+                    }
+                },
+                {
+                    "name": "Wellness",
+                    "attributes": {
+                        "value": "40048"
+                    }
+                },
+                {
+                    "name": "Yoga",
+                    "attributes": {
+                        "value": "40002"
+                    }
+                },
+                {
+                    "name": "Zwemmen",
+                    "attributes": {
+                        "value": "40011"
+                    }
+                }
+            ],
+            "district": {
+                "district": [],
+                "areas": [
+                    {
+                        "name": "Abcoude",
+                        "attributes": {
+                            "value": 9099,
+                            "class": "area"
+                        },
+                        "districts": [
+                            {
+                                "name": "Abcoude",
+                                "attributes": {
+                                    "value": 9100,
+                                    "class": "area-district"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Amstelveen",
+                        "attributes": {
+                            "value": 8751,
+                            "class": "area"
+                        },
+                        "districts": [
+                            {
+                                "name": "Amstelveen",
+                                "attributes": {
+                                    "value": 8758,
+                                    "class": "area-district"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Amsterdam",
+                        "attributes": {
+                            "value": 8749,
+                            "class": "area"
+                        },
+                        "districts": [
+                            {
+                                "name": "Amstelpark",
+                                "attributes": {
+                                    "value": 8764,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Centrum",
+                                "attributes": {
+                                    "value": 8777,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Duivendrecht",
+                                "attributes": {
+                                    "value": 8767,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Erasmuspark",
+                                "attributes": {
+                                    "value": 8763,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Nieuw-West",
+                                "attributes": {
+                                    "value": 8774,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Noord",
+                                "attributes": {
+                                    "value": 8776,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Noorderpark",
+                                "attributes": {
+                                    "value": 8761,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Oost",
+                                "attributes": {
+                                    "value": 8772,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Rembrandtpark",
+                                "attributes": {
+                                    "value": 8762,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Vondelpark",
+                                "attributes": {
+                                    "value": 8766,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "West",
+                                "attributes": {
+                                    "value": 8775,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Westpoort",
+                                "attributes": {
+                                    "value": 8770,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Zuid",
+                                "attributes": {
+                                    "value": 8773,
+                                    "class": "area-district"
+                                }
+                            },
+                            {
+                                "name": "Zuidoost",
+                                "attributes": {
+                                    "value": 8771,
+                                    "class": "area-district"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Diemen",
+                        "attributes": {
+                            "value": 8979,
+                            "class": "area"
+                        },
+                        "districts": [
+                            {
+                                "name": "Diemen",
+                                "attributes": {
+                                    "value": 9020,
+                                    "class": "area-district"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Ouderkerk aan de Amstel",
+                        "attributes": {
+                            "value": 8750,
+                            "class": "area"
+                        },
+                        "districts": [
+                            {
+                                "name": "Ouderkerk aan de Amstel",
+                                "attributes": {
+                                    "value": 8759,
+                                    "class": "area-district"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "venue": [
+                {
+                    "name": "24Seven",
+                    "attributes": {
+                        "value": 14267
+                    }
+                },
+                {
+                    "name": "4th GYM",
+                    "attributes": {
+                        "value": 13940
+                    }
+                },
+                {
+                    "name": "Active Circle",
+                    "attributes": {
+                        "value": 14686
+                    }
+                },
+                {
+                    "name": "Aerials Amsterdam",
+                    "attributes": {
+                        "value": 13871
+                    }
+                },
+                {
+                    "name": "AKHI Gym",
+                    "attributes": {
+                        "value": 14275
+                    }
+                },
+                {
+                    "name": "Amafitness Studios",
+                    "attributes": {
+                        "value": 13888
+                    }
+                },
+                {
+                    "name": "Amsfit",
+                    "attributes": {
+                        "value": 14281
+                    }
+                },
+                {
+                    "name": "Amy's Yoga",
+                    "attributes": {
+                        "value": 14283
+                    }
+                },
+                {
+                    "name": "AnaPFGoncalves",
+                    "attributes": {
+                        "value": 14285
+                    }
+                },
+                {
+                    "name": "Anima House",
+                    "attributes": {
+                        "value": 13808
+                    }
+                },
+                {
+                    "name": "Anytime Fitness Zuidas",
+                    "attributes": {
+                        "value": 14287
+                    }
+                },
+                {
+                    "name": "ApenkooiGym",
+                    "attributes": {
+                        "value": 14288
+                    }
+                },
+                {
+                    "name": "ArenaGym",
+                    "attributes": {
+                        "value": 13917
+                    }
+                },
+                {
+                    "name": "Arena PT",
+                    "attributes": {
+                        "value": 13905
+                    }
+                },
+                {
+                    "name": "ASCEND",
+                    "attributes": {
+                        "value": 13910
+                    }
+                },
+                {
+                    "name": "Ashtanga Yoga Room Amsterdam",
+                    "attributes": {
+                        "value": 14291
+                    }
+                },
+                {
+                    "name": "Atletico Amsterdam",
+                    "attributes": {
+                        "value": 13916
+                    }
+                },
+                {
+                    "name": "Bailemos Amsterdam",
+                    "attributes": {
+                        "value": 14294
+                    }
+                },
+                {
+                    "name": "Balanzs",
+                    "attributes": {
+                        "value": 13818
+                    }
+                },
+                {
+                    "name": "Ballin Fit",
+                    "attributes": {
+                        "value": 13950
+                    }
+                },
+                {
+                    "name": "BASECAMPWEST",
+                    "attributes": {
+                        "value": 14298
+                    }
+                },
+                {
+                    "name": "bbb health boutique",
+                    "attributes": {
+                        "value": 14301
+                    }
+                },
+                {
+                    "name": "bbb health boutique B.V.",
+                    "attributes": {
+                        "value": 14302
+                    }
+                },
+                {
+                    "name": "Beatzone",
+                    "attributes": {
+                        "value": 14271
+                    }
+                },
+                {
+                    "name": "Be Boulder Amsterdam B.V.",
+                    "attributes": {
+                        "value": 13815
+                    }
+                },
+                {
+                    "name": "Bien Fitness",
+                    "attributes": {
+                        "value": 14310
+                    }
+                },
+                {
+                    "name": "Bijlmer Sportcentrum",
+                    "attributes": {
+                        "value": 14540
+                    }
+                },
+                {
+                    "name": "Bluebirds",
+                    "attributes": {
+                        "value": 14849
+                    }
+                },
+                {
+                    "name": "BodyBase",
+                    "attributes": {
+                        "value": 13835
+                    }
+                },
+                {
+                    "name": "BOOGIELAND [KICK] BOXING CLUB",
+                    "attributes": {
+                        "value": 13967
+                    }
+                },
+                {
+                    "name": "Booty Club",
+                    "attributes": {
+                        "value": 14257
+                    }
+                },
+                {
+                    "name": "Boxfit Amsterdam",
+                    "attributes": {
+                        "value": 14323
+                    }
+                },
+                {
+                    "name": "Boxing Gym ABOV - Ter Meulen Amsterdam",
+                    "attributes": {
+                        "value": 14282
+                    }
+                },
+                {
+                    "name": "Brazilian dance studio Fidelinas",
+                    "attributes": {
+                        "value": 14725
+                    }
+                },
+                {
+                    "name": "Broosha",
+                    "attributes": {
+                        "value": 14326
+                    }
+                },
+                {
+                    "name": "BuentingSport bv.",
+                    "attributes": {
+                        "value": 13989
+                    }
+                },
+                {
+                    "name": "Butt Factory",
+                    "attributes": {
+                        "value": 14328
+                    }
+                },
+                {
+                    "name": "Calisthenics Amsterdam",
+                    "attributes": {
+                        "value": 13986
+                    }
+                },
+                {
+                    "name": "Canal Sup",
+                    "attributes": {
+                        "value": 14330
+                    }
+                },
+                {
+                    "name": "Capoeira Angola",
+                    "attributes": {
+                        "value": 14687
+                    }
+                },
+                {
+                    "name": "Change= Health Services",
+                    "attributes": {
+                        "value": 13833
+                    }
+                },
+                {
+                    "name": "Charged Health",
+                    "attributes": {
+                        "value": 14947
+                    }
+                },
+                {
+                    "name": "Charley Brown Gym ",
+                    "attributes": {
+                        "value": 14334
+                    }
+                },
+                {
+                    "name": "Chasse Dance Studios",
+                    "attributes": {
+                        "value": 13842
+                    }
+                },
+                {
+                    "name": "chavsgym",
+                    "attributes": {
+                        "value": 14335
+                    }
+                },
+                {
+                    "name": "Circling Europe",
+                    "attributes": {
+                        "value": 14336
+                    }
+                },
+                {
+                    "name": "CITY ALPS",
+                    "attributes": {
+                        "value": 14071
+                    }
+                },
+                {
+                    "name": "CN Capoeira",
+                    "attributes": {
+                        "value": 14342
+                    }
+                },
+                {
+                    "name": "COCOON GYM",
+                    "attributes": {
+                        "value": 14343
+                    }
+                },
+                {
+                    "name": "Convert2Fit",
+                    "attributes": {
+                        "value": 14031
+                    }
+                },
+                {
+                    "name": "Corendon City Hotel",
+                    "attributes": {
+                        "value": 13834
+                    }
+                },
+                {
+                    "name": "CPS Workout",
+                    "attributes": {
+                        "value": 14346
+                    }
+                },
+                {
+                    "name": "Critical Alignment",
+                    "attributes": {
+                        "value": 14644
+                    }
+                },
+                {
+                    "name": "Critical Alignment yoga & therapie Paul Braaksma",
+                    "attributes": {
+                        "value": 14347
+                    }
+                },
+                {
+                    "name": "CrossFit Vastberaden",
+                    "attributes": {
+                        "value": 13920
+                    }
+                },
+                {
+                    "name": "CrossFit Zeeburg \/\/ Yoga Zeeburg",
+                    "attributes": {
+                        "value": 14678
+                    }
+                },
+                {
+                    "name": "Danceout",
+                    "attributes": {
+                        "value": 14364
+                    }
+                },
+                {
+                    "name": "Dans Dansen",
+                    "attributes": {
+                        "value": 14365
+                    }
+                },
+                {
+                    "name": "DANSLAB Noord",
+                    "attributes": {
+                        "value": 14367
+                    }
+                },
+                {
+                    "name": "De Afrika Centrale",
+                    "attributes": {
+                        "value": 14371
+                    }
+                },
+                {
+                    "name": "De Gymzaal",
+                    "attributes": {
+                        "value": 14069
+                    }
+                },
+                {
+                    "name": "De Mirandabad",
+                    "attributes": {
+                        "value": 14599
+                    }
+                },
+                {
+                    "name": "De Nieuwe Yogaschool",
+                    "attributes": {
+                        "value": 13850
+                    }
+                },
+                {
+                    "name": "De Yoga Club",
+                    "attributes": {
+                        "value": 14375
+                    }
+                },
+                {
+                    "name": "Dope Camp",
+                    "attributes": {
+                        "value": 14379
+                    }
+                },
+                {
+                    "name": "Double Shift",
+                    "attributes": {
+                        "value": 14380
+                    }
+                },
+                {
+                    "name": "Dutch Strength",
+                    "attributes": {
+                        "value": 14382
+                    }
+                },
+                {
+                    "name": "Eastbound Gym",
+                    "attributes": {
+                        "value": 14124
+                    }
+                },
+                {
+                    "name": "Eigen Leefstijl",
+                    "attributes": {
+                        "value": 14621
+                    }
+                },
+                {
+                    "name": "Elite Trainers",
+                    "attributes": {
+                        "value": 14146
+                    }
+                },
+                {
+                    "name": "Empower Gym Amsterdam",
+                    "attributes": {
+                        "value": 13974
+                    }
+                },
+                {
+                    "name": "EMS Health Studio",
+                    "attributes": {
+                        "value": 14389
+                    }
+                },
+                {
+                    "name": "Equal Yoga",
+                    "attributes": {
+                        "value": 14156
+                    }
+                },
+                {
+                    "name": "Ettaki Gym",
+                    "attributes": {
+                        "value": 14394
+                    }
+                },
+                {
+                    "name": "Euphoria Dance Academy",
+                    "attributes": {
+                        "value": 14395
+                    }
+                },
+                {
+                    "name": "EveryBody Fit",
+                    "attributes": {
+                        "value": 14396
+                    }
+                },
+                {
+                    "name": "Fabulous Yoga",
+                    "attributes": {
+                        "value": 14399
+                    }
+                },
+                {
+                    "name": "FC Urban B.V.",
+                    "attributes": {
+                        "value": 14401
+                    }
+                },
+                {
+                    "name": "Femme Gym",
+                    "attributes": {
+                        "value": 14166
+                    }
+                },
+                {
+                    "name": "Fight District B.V.",
+                    "attributes": {
+                        "value": 14227
+                    }
+                },
+                {
+                    "name": "Fight IQ",
+                    "attributes": {
+                        "value": 13837
+                    }
+                },
+                {
+                    "name": "Fit aan 't IJ",
+                    "attributes": {
+                        "value": 13840
+                    }
+                },
+                {
+                    "name": "Fit by Foxy Roxy",
+                    "attributes": {
+                        "value": 14407
+                    }
+                },
+                {
+                    "name": "Fitclub24",
+                    "attributes": {
+                        "value": 14447
+                    }
+                },
+                {
+                    "name": "FITCORPS",
+                    "attributes": {
+                        "value": 13851
+                    }
+                },
+                {
+                    "name": "Fitmundo",
+                    "attributes": {
+                        "value": 14138
+                    }
+                },
+                {
+                    "name": "Fitness365 Amsterdam B.V.",
+                    "attributes": {
+                        "value": 13921
+                    }
+                },
+                {
+                    "name": "Fitness Academy Amsterdam",
+                    "attributes": {
+                        "value": 14420
+                    }
+                },
+                {
+                    "name": "Fitness Zuiver",
+                    "attributes": {
+                        "value": 14598
+                    }
+                },
+                {
+                    "name": "FittClub Diemen",
+                    "attributes": {
+                        "value": 13982
+                    }
+                },
+                {
+                    "name": "FIT with FIRE",
+                    "attributes": {
+                        "value": 14413
+                    }
+                },
+                {
+                    "name": "Flow-Motion",
+                    "attributes": {
+                        "value": 14423
+                    }
+                },
+                {
+                    "name": "Flow your way",
+                    "attributes": {
+                        "value": 14422
+                    }
+                },
+                {
+                    "name": "Fluentbody\u2122 ",
+                    "attributes": {
+                        "value": 14424
+                    }
+                },
+                {
+                    "name": "Flying Fish eFoil School",
+                    "attributes": {
+                        "value": 14425
+                    }
+                },
+                {
+                    "name": "FORM Studio",
+                    "attributes": {
+                        "value": 13866
+                    }
+                },
+                {
+                    "name": "Frans Otten Stadium Padel and Squash",
+                    "attributes": {
+                        "value": 13887
+                    }
+                },
+                {
+                    "name": "Fresh Health & Fitness",
+                    "attributes": {
+                        "value": 14426
+                    }
+                },
+                {
+                    "name": "FysioConcept",
+                    "attributes": {
+                        "value": 14429
+                    }
+                },
+                {
+                    "name": "Fysiotherapie & Training Amsterdam",
+                    "attributes": {
+                        "value": 14430
+                    }
+                },
+                {
+                    "name": "Fysio Westerpark",
+                    "attributes": {
+                        "value": 14428
+                    }
+                },
+                {
+                    "name": "Go! Health Clubs ",
+                    "attributes": {
+                        "value": 14432
+                    }
+                },
+                {
+                    "name": "GREATSTUDIOS B.V.",
+                    "attributes": {
+                        "value": 14109
+                    }
+                },
+                {
+                    "name": "Grow & Flow Studio",
+                    "attributes": {
+                        "value": 14436
+                    }
+                },
+                {
+                    "name": "Gym Forty Five Amsterdam",
+                    "attributes": {
+                        "value": 14084
+                    }
+                },
+                {
+                    "name": "Gymles Amsterdam",
+                    "attributes": {
+                        "value": 14440
+                    }
+                },
+                {
+                    "name": "Gym Noord",
+                    "attributes": {
+                        "value": 14671
+                    }
+                },
+                {
+                    "name": "Gympact Amsterdam",
+                    "attributes": {
+                        "value": 14221
+                    }
+                },
+                {
+                    "name": "gym-royale",
+                    "attributes": {
+                        "value": 14205
+                    }
+                },
+                {
+                    "name": "Gym Southpaw Amsterdam",
+                    "attributes": {
+                        "value": 14438
+                    }
+                },
+                {
+                    "name": "Health Club Jordaan",
+                    "attributes": {
+                        "value": 14252
+                    }
+                },
+                {
+                    "name": "Heiki",
+                    "attributes": {
+                        "value": 14452
+                    }
+                },
+                {
+                    "name": "Heldhaftig Yoga",
+                    "attributes": {
+                        "value": 14026
+                    }
+                },
+                {
+                    "name": "Het Gymlokaal",
+                    "attributes": {
+                        "value": 13889
+                    }
+                },
+                {
+                    "name": "Het Marnix",
+                    "attributes": {
+                        "value": 13883
+                    }
+                },
+                {
+                    "name": "Het Yoga Lokaal",
+                    "attributes": {
+                        "value": 14459
+                    }
+                },
+                {
+                    "name": "H&H Studios",
+                    "attributes": {
+                        "value": 14620
+                    }
+                },
+                {
+                    "name": "HIIT FIT",
+                    "attributes": {
+                        "value": 13893
+                    }
+                },
+                {
+                    "name": "Hotel & Wellness Zuiver Squash",
+                    "attributes": {
+                        "value": 14460
+                    }
+                },
+                {
+                    "name": "Hot Flow Yoga Jordaan",
+                    "attributes": {
+                        "value": 14199
+                    }
+                },
+                {
+                    "name": "Hot Flow Yoga Rivierenbuurt",
+                    "attributes": {
+                        "value": 14200
+                    }
+                },
+                {
+                    "name": "Hot Flow Yoga Zuid",
+                    "attributes": {
+                        "value": 14222
+                    }
+                },
+                {
+                    "name": "Hybrid Performance ",
+                    "attributes": {
+                        "value": 14461
+                    }
+                },
+                {
+                    "name": "IAMSTUFFED",
+                    "attributes": {
+                        "value": 14463
+                    }
+                },
+                {
+                    "name": "IMOOV",
+                    "attributes": {
+                        "value": 14465
+                    }
+                },
+                {
+                    "name": "ImoveAmsterdam",
+                    "attributes": {
+                        "value": 14226
+                    }
+                },
+                {
+                    "name": "Indoor Cliff Diving",
+                    "attributes": {
+                        "value": 14683
+                    }
+                },
+                {
+                    "name": "Innsaei",
+                    "attributes": {
+                        "value": 14470
+                    }
+                },
+                {
+                    "name": "In-Shape Fysiotherapie",
+                    "attributes": {
+                        "value": 14467
+                    }
+                },
+                {
+                    "name": "Iyengar Yoga Centrum Amsterdam",
+                    "attributes": {
+                        "value": 13914
+                    }
+                },
+                {
+                    "name": "Jaap Eden IJsbaan",
+                    "attributes": {
+                        "value": 13891
+                    }
+                },
+                {
+                    "name": "Jaap Eden Sportschool",
+                    "attributes": {
+                        "value": 14474
+                    }
+                },
+                {
+                    "name": "Jim's Gym P&TC",
+                    "attributes": {
+                        "value": 14140
+                    }
+                },
+                {
+                    "name": "JSXstyle",
+                    "attributes": {
+                        "value": 14157
+                    }
+                },
+                {
+                    "name": "JudyJump",
+                    "attributes": {
+                        "value": 14158
+                    }
+                },
+                {
+                    "name": "Jump4Joy",
+                    "attributes": {
+                        "value": 14480
+                    }
+                },
+                {
+                    "name": "Jumpsquare",
+                    "attributes": {
+                        "value": 14481
+                    }
+                },
+                {
+                    "name": "Karunika",
+                    "attributes": {
+                        "value": 13907
+                    }
+                },
+                {
+                    "name": "Kensho Premium Fitness",
+                    "attributes": {
+                        "value": 14270
+                    }
+                },
+                {
+                    "name": "Kettlebell Outdoor",
+                    "attributes": {
+                        "value": 14207
+                    }
+                },
+                {
+                    "name": "KLABU",
+                    "attributes": {
+                        "value": 14646
+                    }
+                },
+                {
+                    "name": "Leonie Emma Roxs | Tools to Bloom",
+                    "attributes": {
+                        "value": 15077
+                    }
+                },
+                {
+                    "name": "Limitless Fit B.V.",
+                    "attributes": {
+                        "value": 14229
+                    }
+                },
+                {
+                    "name": "Loopwijzer",
+                    "attributes": {
+                        "value": 14507
+                    }
+                },
+                {
+                    "name": "Louiszoon Health Club Amsterdam",
+                    "attributes": {
+                        "value": 14508
+                    }
+                },
+                {
+                    "name": "marinaYoga",
+                    "attributes": {
+                        "value": 15066
+                    }
+                },
+                {
+                    "name": "Mark Vicente Zumba",
+                    "attributes": {
+                        "value": 14721
+                    }
+                },
+                {
+                    "name": "Massage School ITM Thai Hand Amsterdam",
+                    "attributes": {
+                        "value": 14473
+                    }
+                },
+                {
+                    "name": "Mejiro Gym B.V.",
+                    "attributes": {
+                        "value": 14219
+                    }
+                },
+                {
+                    "name": "MentaliQi",
+                    "attributes": {
+                        "value": 14514
+                    }
+                },
+                {
+                    "name": "Mind Unlocked",
+                    "attributes": {
+                        "value": 15067
+                    }
+                },
+                {
+                    "name": "MMA Training Company",
+                    "attributes": {
+                        "value": 14217
+                    }
+                },
+                {
+                    "name": "M&M SUP Amsterdam",
+                    "attributes": {
+                        "value": 14510
+                    }
+                },
+                {
+                    "name": "Monkey Moves",
+                    "attributes": {
+                        "value": 14519
+                    }
+                },
+                {
+                    "name": "More-Real-Progression",
+                    "attributes": {
+                        "value": 14215
+                    }
+                },
+                {
+                    "name": "Motivated City",
+                    "attributes": {
+                        "value": 14521
+                    }
+                },
+                {
+                    "name": "Mountain Network Amsterdam",
+                    "attributes": {
+                        "value": 14522
+                    }
+                },
+                {
+                    "name": "Mousidgym",
+                    "attributes": {
+                        "value": 14523
+                    }
+                },
+                {
+                    "name": "Movement Amsterdam",
+                    "attributes": {
+                        "value": 14161
+                    }
+                },
+                {
+                    "name": "Movements",
+                    "attributes": {
+                        "value": 14067
+                    }
+                },
+                {
+                    "name": "Mukha Kids Yoga",
+                    "attributes": {
+                        "value": 14524
+                    }
+                },
+                {
+                    "name": "Natural High Yoga",
+                    "attributes": {
+                        "value": 14527
+                    }
+                },
+                {
+                    "name": "NDSM Padel",
+                    "attributes": {
+                        "value": 13941
+                    }
+                },
+                {
+                    "name": "No More Excuses",
+                    "attributes": {
+                        "value": 14532
+                    }
+                },
+                {
+                    "name": "Nyingma Centrum Nederland",
+                    "attributes": {
+                        "value": 14647
+                    }
+                },
+                {
+                    "name": "Odessa Amsterdam",
+                    "attributes": {
+                        "value": 14535
+                    }
+                },
+                {
+                    "name": "Oki Do Yoga",
+                    "attributes": {
+                        "value": 14536
+                    }
+                },
+                {
+                    "name": "Olympic Gym Amsterdam",
+                    "attributes": {
+                        "value": 14537
+                    }
+                },
+                {
+                    "name": "ONE - Human performance Institute",
+                    "attributes": {
+                        "value": 14538
+                    }
+                },
+                {
+                    "name": "Panta Rhei Studio",
+                    "attributes": {
+                        "value": 14545
+                    }
+                },
+                {
+                    "name": "Peakz Padel",
+                    "attributes": {
+                        "value": 14547
+                    }
+                },
+                {
+                    "name": "Performfit",
+                    "attributes": {
+                        "value": 14548
+                    }
+                },
+                {
+                    "name": "Personal & Fit",
+                    "attributes": {
+                        "value": 14549
+                    }
+                },
+                {
+                    "name": "Personal gym albert cuyp",
+                    "attributes": {
+                        "value": 14550
+                    }
+                },
+                {
+                    "name": "Personal Training Agency B.V.",
+                    "attributes": {
+                        "value": 14061
+                    }
+                },
+                {
+                    "name": "Pilates Noord",
+                    "attributes": {
+                        "value": 13911
+                    }
+                },
+                {
+                    "name": "Pilates West",
+                    "attributes": {
+                        "value": 14552
+                    }
+                },
+                {
+                    "name": "Play-Fit",
+                    "attributes": {
+                        "value": 14553
+                    }
+                },
+                {
+                    "name": "Plexus Amsterdam",
+                    "attributes": {
+                        "value": 14554
+                    }
+                },
+                {
+                    "name": "Pole Dance Factory Amsterdam",
+                    "attributes": {
+                        "value": 14058
+                    }
+                },
+                {
+                    "name": "Powerwalk Amsterdam",
+                    "attributes": {
+                        "value": 14559
+                    }
+                },
+                {
+                    "name": "Prime Shape",
+                    "attributes": {
+                        "value": 14036
+                    }
+                },
+                {
+                    "name": "Punto Cubano",
+                    "attributes": {
+                        "value": 14561
+                    }
+                },
+                {
+                    "name": "Qlife Studio",
+                    "attributes": {
+                        "value": 14016
+                    }
+                },
+                {
+                    "name": "Rasalila",
+                    "attributes": {
+                        "value": 13902
+                    }
+                },
+                {
+                    "name": "Ready 2 Rumble",
+                    "attributes": {
+                        "value": 14025
+                    }
+                },
+                {
+                    "name": "Relax Lounge Overtoom",
+                    "attributes": {
+                        "value": 14566
+                    }
+                },
+                {
+                    "name": "Reloadclub Ladies Only",
+                    "attributes": {
+                        "value": 14020
+                    }
+                },
+                {
+                    "name": "Reset yoga & beats",
+                    "attributes": {
+                        "value": 14570
+                    }
+                },
+                {
+                    "name": "Rijschool Atena",
+                    "attributes": {
+                        "value": 14072
+                    }
+                },
+                {
+                    "name": "Rocycle Netherlands",
+                    "attributes": {
+                        "value": 14729
+                    }
+                },
+                {
+                    "name": "RowStudio Amsterdam",
+                    "attributes": {
+                        "value": 13971
+                    }
+                },
+                {
+                    "name": "Royal Gym Amsterdam",
+                    "attributes": {
+                        "value": 14573
+                    }
+                },
+                {
+                    "name": "Rumah Yoga",
+                    "attributes": {
+                        "value": 13972
+                    }
+                },
+                {
+                    "name": "Sai Mithra Yoga",
+                    "attributes": {
+                        "value": 13998
+                    }
+                },
+                {
+                    "name": "Sai Yoga",
+                    "attributes": {
+                        "value": 14263
+                    }
+                },
+                {
+                    "name": "Salin Health and Yoga",
+                    "attributes": {
+                        "value": 14576
+                    }
+                },
+                {
+                    "name": "Salsa te Gusta",
+                    "attributes": {
+                        "value": 14578
+                    }
+                },
+                {
+                    "name": "Samana Yoga Center ",
+                    "attributes": {
+                        "value": 14581
+                    }
+                },
+                {
+                    "name": "Sanatana Yog Sandesh Amsterdam",
+                    "attributes": {
+                        "value": 14582
+                    }
+                },
+                {
+                    "name": "Shady Lady",
+                    "attributes": {
+                        "value": 14585
+                    }
+                },
+                {
+                    "name": "Shapes by Suzanne",
+                    "attributes": {
+                        "value": 14588
+                    }
+                },
+                {
+                    "name": "Shapeshifters",
+                    "attributes": {
+                        "value": 14587
+                    }
+                },
+                {
+                    "name": "Shinyu Aikido",
+                    "attributes": {
+                        "value": 14589
+                    }
+                },
+                {
+                    "name": "Shiva Yoga Center",
+                    "attributes": {
+                        "value": 14000
+                    }
+                },
+                {
+                    "name": "Sin City Boxing",
+                    "attributes": {
+                        "value": 14001
+                    }
+                },
+                {
+                    "name": "Sluisgym",
+                    "attributes": {
+                        "value": 14593
+                    }
+                },
+                {
+                    "name": "SMC Amsterdam",
+                    "attributes": {
+                        "value": 14006
+                    }
+                },
+                {
+                    "name": "Song of Yoga",
+                    "attributes": {
+                        "value": 14596
+                    }
+                },
+                {
+                    "name": "Soul Movement",
+                    "attributes": {
+                        "value": 14597
+                    }
+                },
+                {
+                    "name": "Space to Be",
+                    "attributes": {
+                        "value": 14600
+                    }
+                },
+                {
+                    "name": "SportCity",
+                    "attributes": {
+                        "value": 14528
+                    }
+                },
+                {
+                    "name": "Sportclub Match",
+                    "attributes": {
+                        "value": 13947
+                    }
+                },
+                {
+                    "name": "Sportfondsenbad Amsterdam-Oost",
+                    "attributes": {
+                        "value": 14857
+                    }
+                },
+                {
+                    "name": "Sport-Natural",
+                    "attributes": {
+                        "value": 14610
+                    }
+                },
+                {
+                    "name": "Sportplaza",
+                    "attributes": {
+                        "value": 14417
+                    }
+                },
+                {
+                    "name": "Sport Pride Fitness Festival",
+                    "attributes": {
+                        "value": 14608
+                    }
+                },
+                {
+                    "name": "Sportstudio 79",
+                    "attributes": {
+                        "value": 14630
+                    }
+                },
+                {
+                    "name": "SQM Gym",
+                    "attributes": {
+                        "value": 14051
+                    }
+                },
+                {
+                    "name": "Start To Finish Coaching",
+                    "attributes": {
+                        "value": 14633
+                    }
+                },
+                {
+                    "name": "*Stella Dance & Projects*",
+                    "attributes": {
+                        "value": 14637
+                    }
+                },
+                {
+                    "name": "Stembalans",
+                    "attributes": {
+                        "value": 14638
+                    }
+                },
+                {
+                    "name": "Stichting Survival Club",
+                    "attributes": {
+                        "value": 14059
+                    }
+                },
+                {
+                    "name": "Stretch and Fold BV",
+                    "attributes": {
+                        "value": 13890
+                    }
+                },
+                {
+                    "name": "Studio 108",
+                    "attributes": {
+                        "value": 13880
+                    }
+                },
+                {
+                    "name": "Studio 191 & The Cosmos",
+                    "attributes": {
+                        "value": 13828
+                    }
+                },
+                {
+                    "name": "Studio 205\/Jill Locke Works",
+                    "attributes": {
+                        "value": 14073
+                    }
+                },
+                {
+                    "name": "Studio 9 Pilates",
+                    "attributes": {
+                        "value": 14078
+                    }
+                },
+                {
+                    "name": "Studio AnnaMora",
+                    "attributes": {
+                        "value": 13860
+                    }
+                },
+                {
+                    "name": "Studio Damoves",
+                    "attributes": {
+                        "value": 15076
+                    }
+                },
+                {
+                    "name": "Studio Reyn",
+                    "attributes": {
+                        "value": 13844
+                    }
+                },
+                {
+                    "name": "Sukha Yoga B.V.",
+                    "attributes": {
+                        "value": 13841
+                    }
+                },
+                {
+                    "name": "SummerYoga\u201924 | YOGA DNA",
+                    "attributes": {
+                        "value": 14603
+                    }
+                },
+                {
+                    "name": "Super Strak met Sem ",
+                    "attributes": {
+                        "value": 14656
+                    }
+                },
+                {
+                    "name": "SUP&Meer",
+                    "attributes": {
+                        "value": 14657
+                    }
+                },
+                {
+                    "name": "SUP SUP CLUB",
+                    "attributes": {
+                        "value": 13800
+                    }
+                },
+                {
+                    "name": "Svaha Yoga",
+                    "attributes": {
+                        "value": 14091
+                    }
+                },
+                {
+                    "name": "Switch Workout",
+                    "attributes": {
+                        "value": 13832
+                    }
+                },
+                {
+                    "name": "Tangomatter",
+                    "attributes": {
+                        "value": 14660
+                    }
+                },
+                {
+                    "name": "The Base",
+                    "attributes": {
+                        "value": 14206
+                    }
+                },
+                {
+                    "name": "The Big Lab",
+                    "attributes": {
+                        "value": 14661
+                    }
+                },
+                {
+                    "name": "The Body Studio B.V.",
+                    "attributes": {
+                        "value": 14009
+                    }
+                },
+                {
+                    "name": "The Breathing Space",
+                    "attributes": {
+                        "value": 13849
+                    }
+                },
+                {
+                    "name": "The Crunch ",
+                    "attributes": {
+                        "value": 14663
+                    }
+                },
+                {
+                    "name": "The Dance Movement",
+                    "attributes": {
+                        "value": 14131
+                    }
+                },
+                {
+                    "name": "THE FLOOR | movement",
+                    "attributes": {
+                        "value": 14665
+                    }
+                },
+                {
+                    "name": "The Gym Republic - Zuid",
+                    "attributes": {
+                        "value": 13827
+                    }
+                },
+                {
+                    "name": "The Heartbeat of Bellydance by Aisa Lafour",
+                    "attributes": {
+                        "value": 14450
+                    }
+                },
+                {
+                    "name": "The Jungle Body",
+                    "attributes": {
+                        "value": 14667
+                    }
+                },
+                {
+                    "name": "The JYM Movement",
+                    "attributes": {
+                        "value": 14668
+                    }
+                },
+                {
+                    "name": "The Roll Studio",
+                    "attributes": {
+                        "value": 15095
+                    }
+                },
+                {
+                    "name": "The Temple Fitness The Temple Fitness en Meer",
+                    "attributes": {
+                        "value": 13886
+                    }
+                },
+                {
+                    "name": "The Trainers Holding B.V.",
+                    "attributes": {
+                        "value": 14147
+                    }
+                },
+                {
+                    "name": "The White Door Studio",
+                    "attributes": {
+                        "value": 13826
+                    }
+                },
+                {
+                    "name": "The Workout Lab",
+                    "attributes": {
+                        "value": 14171
+                    }
+                },
+                {
+                    "name": "THIS.IS.EDEN.",
+                    "attributes": {
+                        "value": 14674
+                    }
+                },
+                {
+                    "name": "Thrive Yoga",
+                    "attributes": {
+                        "value": 13819
+                    }
+                },
+                {
+                    "name": "TrainMore",
+                    "attributes": {
+                        "value": 14010
+                    }
+                },
+                {
+                    "name": "TRAINTOGETHER",
+                    "attributes": {
+                        "value": 14065
+                    }
+                },
+                {
+                    "name": "Transformational Meditation",
+                    "attributes": {
+                        "value": 14491
+                    }
+                },
+                {
+                    "name": "TRIB3",
+                    "attributes": {
+                        "value": 14792
+                    }
+                },
+                {
+                    "name": "TULA Yoga",
+                    "attributes": {
+                        "value": 13816
+                    }
+                },
+                {
+                    "name": "Underground Crew Magere Brug B.V.",
+                    "attributes": {
+                        "value": 14038
+                    }
+                },
+                {
+                    "name": "Uprising Yoga & Lifestyle",
+                    "attributes": {
+                        "value": 14021
+                    }
+                },
+                {
+                    "name": "Value People",
+                    "attributes": {
+                        "value": 14008
+                    }
+                },
+                {
+                    "name": "Vereniging Flevoparkbad",
+                    "attributes": {
+                        "value": 13876
+                    }
+                },
+                {
+                    "name": "Vitae Sport",
+                    "attributes": {
+                        "value": 14609
+                    }
+                },
+                {
+                    "name": "Vitalit\u00e9 Ferrier Reformer Pilates Studio",
+                    "attributes": {
+                        "value": 15118
+                    }
+                },
+                {
+                    "name": "Voice Gym",
+                    "attributes": {
+                        "value": 14254
+                    }
+                },
+                {
+                    "name": "Volksyoga",
+                    "attributes": {
+                        "value": 14150
+                    }
+                },
+                {
+                    "name": "Vondelgym",
+                    "attributes": {
+                        "value": 14844
+                    }
+                },
+                {
+                    "name": "Vos Gym Amsterdam",
+                    "attributes": {
+                        "value": 13996
+                    }
+                },
+                {
+                    "name": "Warisan Budaya",
+                    "attributes": {
+                        "value": 14688
+                    }
+                },
+                {
+                    "name": "WattCycling",
+                    "attributes": {
+                        "value": 13995
+                    }
+                },
+                {
+                    "name": " We Fighters",
+                    "attributes": {
+                        "value": 14691
+                    }
+                },
+                {
+                    "name": "Wellcome Wellness",
+                    "attributes": {
+                        "value": 14400
+                    }
+                },
+                {
+                    "name": "Wijs Fitness & Health Club",
+                    "attributes": {
+                        "value": 14693
+                    }
+                },
+                {
+                    "name": "Wladimir Dance Studios B.V.",
+                    "attributes": {
+                        "value": 13857
+                    }
+                },
+                {
+                    "name": "Workout Amsterdam Amstelkwartier B.V.",
+                    "attributes": {
+                        "value": 13992
+                    }
+                },
+                {
+                    "name": "Xavvage Gym",
+                    "attributes": {
+                        "value": 14698
+                    }
+                },
+                {
+                    "name": "XfitCheer",
+                    "attributes": {
+                        "value": 14700
+                    }
+                },
+                {
+                    "name": "Xing Yi Men Kungfu School Amsterdam",
+                    "attributes": {
+                        "value": 14701
+                    }
+                },
+                {
+                    "name": "Yagoy",
+                    "attributes": {
+                        "value": 13812
+                    }
+                },
+                {
+                    "name": "YKR Amsterdam",
+                    "attributes": {
+                        "value": 14702
+                    }
+                },
+                {
+                    "name": "Yoga Circle Amsterdam",
+                    "attributes": {
+                        "value": 13988
+                    }
+                },
+                {
+                    "name": "Yoga Den",
+                    "attributes": {
+                        "value": 13985
+                    }
+                },
+                {
+                    "name": "Yogamster",
+                    "attributes": {
+                        "value": 14634
+                    }
+                },
+                {
+                    "name": "Yogaschool Noord",
+                    "attributes": {
+                        "value": 13927
+                    }
+                },
+                {
+                    "name": "Yogaspot",
+                    "attributes": {
+                        "value": 13922
+                    }
+                },
+                {
+                    "name": "Yogazenter",
+                    "attributes": {
+                        "value": 13918
+                    }
+                },
+                {
+                    "name": "YogaZENtrum Nada",
+                    "attributes": {
+                        "value": 13932
+                    }
+                },
+                {
+                    "name": "YOTECHA",
+                    "attributes": {
+                        "value": 14714
+                    }
+                },
+                {
+                    "name": "You Can Yoga",
+                    "attributes": {
+                        "value": 13855
+                    }
+                },
+                {
+                    "name": "Yung Hap (Tang Soo Do)",
+                    "attributes": {
+                        "value": 14659
+                    }
+                },
+                {
+                    "name": "@Zensaties",
+                    "attributes": {
+                        "value": 14719
+                    }
+                },
+                {
+                    "name": "Zhembrovskyy",
+                    "attributes": {
+                        "value": 13813
+                    }
+                },
+                {
+                    "name": "Zuiderbad",
+                    "attributes": {
+                        "value": 14631
+                    }
+                }
+            ]
+        },
+        "searchExecutedEvent": "{\"event\":\"search_executed\",\"search\":{\"type\":\"venue\",\"map\":false,\"activities\":null,\"districts\":null,\"venues\":null,\"class_type\":null,\"plan\":\"L\",\"results\":464,\"time\":null,\"city\":\"Amsterdam\",\"activity_type\":null,\"term\":null,\"date\":null,\"b2x_type\":\"b2c\"},\"user\":{\"id\":\"d424b2ddf89e71cea39e57e3f3a3d919\",\"login_status\":\"logged-in\",\"membership_city\":\"Amsterdam\",\"membership_country\":\"Netherlands\",\"membership_status\":\"active\",\"membership_plan\":\"L\",\"membership_b2b_type\":\"b2c\",\"membership_contract_duration\":\"monthly\",\"company_name\":null}}",
+        "regionSelectorSelected": null
+    }
+}

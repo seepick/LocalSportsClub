@@ -1,0 +1,23 @@
+POST https://urbansportsclub.com/nl/search/book/84605192
+
+{
+    "success": true,
+    "data": {
+        "id": 84605192,
+        "state": "booked",
+        "label": "Gereserveerd",
+        "alert": "Je hebt succesvol een plek gereserveerd voor dit evenement. Als je je reservering niet kunt nakomen, annuleer deze dan op tijd zodat andere members een reservering kunnen maken. Als je je reservering niet op tijd annuleert, wordt er een bedrag van 5 euro in rekening gebracht.",
+        "isManual": true,
+        "cancelButton": {
+            "text": "Reservering annuleren",
+            "confirm": {
+                "title": "Weet je zeker dat je je reservering wilt annuleren?",
+                "button": "Ja, annuleer"
+            }
+        },
+        "freeSpots": {
+            "current": 2,
+            "maximum": 2
+        }
+    }
+}

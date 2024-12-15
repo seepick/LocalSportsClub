@@ -4,8 +4,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 val kotlinxSerializer = Json {
-    ignoreUnknownKeys = true
+    isLenient = true
+    allowSpecialFloatingPointValues = true
+    allowStructuredMapKeys = true
     prettyPrint = true
+    useArrayPolymorphism = false
+    ignoreUnknownKeys = true
 }
 
 fun Json.toPrettyString(jsonString: String) =

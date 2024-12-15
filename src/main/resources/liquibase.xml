@@ -7,12 +7,15 @@
     <changeSet id="1" author="owner" failOnError="true">
         <comment>setting up initial schema</comment>
 
-        <createTable tableName="PARTNERS">
+        <createTable tableName="VENUES">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="NAME" type="varchar(256)">
                 <constraints nullable="false"/>
+            </column>
+            <column name="SLUG" type="varchar(64)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="VENUES_SLUG_UNIQUE_INDEX"/>
             </column>
         </createTable>
     </changeSet>

@@ -4,20 +4,25 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Internal
 
-* To package deployable artifacts, simply run `./gradlew package` and see the results in `build/composebinaries/main/...` (built seperately on macOS, Linux, Windows).
+* To package deployable artifacts, simply run `./gradlew package` and see the results
+  in `build/composebinaries/main/...` (built seperately on macOS, Linux, Windows).
 
 # TODOs
 
 ## Next up
 
-* syncing of data
-* persistence tests (keep it simple)
-
-## Backlog
-
 * partners table
 * search/filter: text, date
 * open USC website button
+
+## Backlog
+
+* sync activities ("workouts")
+* sync reservations
+* mark reserved activities
+* show usage indicator
+* migrate old content from AllFit
+* download/display images
 
 ## Later
 

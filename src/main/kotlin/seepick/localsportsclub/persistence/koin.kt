@@ -1,6 +1,7 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import io.ktor.util.reflect.instanceOf
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.koin.core.module.dsl.singleOf
@@ -18,10 +19,10 @@ fun persistenceModule(config: AppConfig) = module {
     }
     when(config.database) {
         AppConfig.DatabaseMode.Exposed -> {
-            singleOf(::ExposedPartnersRepo) bind PartnersRepo::class
+            single { ExposedVenuesRepo } bind VenuesRepo::class
         }
         AppConfig.DatabaseMode.InMemory -> {
-            singleOf(::InMemoryPartnersRepo) bind PartnersRepo::class
+            singleOf(::InMemoryVenuesRepo) bind VenuesRepo::class
         }
     }
 }

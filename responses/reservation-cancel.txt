@@ -1,0 +1,15 @@
+POST https://urbansportsclub.com/nl/search/cancel/84605192
+
+{
+    "success": true,
+    "data": {
+        "id": 84605192,
+        "state": "cancel_customer",
+        "label": "Geannuleerd",
+        "alert": "Je reservering is geannuleerd.",
+        "freeSpots": {
+            "current": 1,
+            "maximum": 2
+        }
+    }
+}

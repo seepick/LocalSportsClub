@@ -20,6 +20,7 @@ class LoginApiTest : StringSpec() {
     private val baseUrl = "http://baseurl.test"
     private val anyUsername = "anyUsername"
     private val anyPassword = "anyPassword"
+    private val anyCredentials = Credentials(anyUsername, anyPassword)
     private val username = "username"
     private val password = "password"
     private val sessionId = "phpSessIdTestValue"
@@ -49,13 +50,13 @@ class LoginApiTest : StringSpec() {
 
                     else -> error("Unhandled request URL: [$requestUrl]")
                 }
-            }), baseUrl).login(username, password)
+            }), baseUrl).login(Credentials(username, password))
         }
 
         "Given successful login response When login Then succeed and return session Id" {
             val loginApi = mockedApi(isSuccess = true, sessionId = sessionId)
 
-            val result = loginApi.login(anyUsername, anyPassword)
+            val result = loginApi.login(anyCredentials)
 
             result.shouldBeInstanceOf<LoginResult.Success>().phpSessionId shouldBe sessionId
         }
@@ -63,7 +64,7 @@ class LoginApiTest : StringSpec() {
         "Given failing login response When login Then fail" {
             val loginApi = mockedApi(isSuccess = false)
 
-            val result = loginApi.login(anyUsername, anyPassword)
+            val result = loginApi.login(anyCredentials)
 
             result.shouldBeInstanceOf<LoginResult.Failure>()
         }
@@ -84,7 +85,7 @@ class LoginApiTest : StringSpec() {
     )
 }
 
-    private fun MockRequestHandleScope.homeRespond(sessionId: String) = respond(
+private fun MockRequestHandleScope.homeRespond(sessionId: String) = respond(
     content = readFromClasspath("/test_lsc/response_home.html"),
     status = HttpStatusCode.OK,
     headers = headersOf(HttpHeaders.SetCookie, "PHPSESSID=$sessionId")
