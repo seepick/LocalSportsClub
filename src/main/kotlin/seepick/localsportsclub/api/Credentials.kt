@@ -2,8 +2,8 @@ package seepick.localsportsclub.api
 
 import kotlinx.serialization.Serializable
 import seepick.localsportsclub.kotlinxSerializer
-import seepick.localsportsclub.logic.FileEntry
-import seepick.localsportsclub.logic.FileResolver
+import seepick.localsportsclub.service.FileEntry
+import seepick.localsportsclub.service.FileResolver
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.SecretKey

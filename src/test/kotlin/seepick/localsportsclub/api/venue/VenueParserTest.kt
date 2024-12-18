@@ -6,9 +6,22 @@ import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestJson
 
 fun main() {
-    val result = VenueParser.parseHtmlContent(readTestJson<VenuesJson>("response_venues.json").data.content)
-    result.forEach {
-        println(it)
+    val json = readTestJson<VenuesJson>("response_venues.json")
+
+    println("Stats.Venues (${json.data.stats.venue.size}):")
+    json.data.stats.venue.forEach {
+        println("- $it")
+    }
+    println("Stats.Categories (${json.data.stats.category.size}):")
+    json.data.stats.category.forEach {
+        println("- $it")
+    }
+    println("Stats.District:")
+    println(json.data.stats.district)
+    val htmls = VenueParser.parseHtmlContent(json.data.content)
+    println("htmls (${htmls.size}):")
+    htmls.forEach {
+        println("- $it")
     }
 }
 

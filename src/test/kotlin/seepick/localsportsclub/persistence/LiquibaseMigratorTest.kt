@@ -19,7 +19,7 @@ class LiquibaseMigratorTest : StringSpec() {
 
             val venue = Arb.venueDbo().next()
             ExposedVenuesRepo.persist(venue)
-            ExposedVenuesRepo.selectAll().shouldBeSingleton().first() shouldBe venue
+            ExposedVenuesRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = 1)
         }
     }
 }

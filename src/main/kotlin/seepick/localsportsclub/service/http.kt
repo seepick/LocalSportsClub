@@ -1,4 +1,4 @@
-package seepick.localsportsclub.logic
+package seepick.localsportsclub.service
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

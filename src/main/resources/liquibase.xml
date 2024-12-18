@@ -17,6 +17,52 @@
             <column name="SLUG" type="varchar(64)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="VENUES_SLUG_UNIQUE_INDEX"/>
             </column>
+            <column name="NOTE" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CITY_ID" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RATING" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FACILITIES" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OFFICIAL_WEBSITE" type="varchar(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_FAVORITED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_WISHLISTED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_HIDDEN" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_DELETED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <!--
+    val cityId: Int,
+    val officialWebsite: URI?,
+    -->
         </createTable>
+
+        <createTable tableName="VENUE_LINKS">
+            <column name="VENUE1_ID" type="integer">
+                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"/>
+            </column>
+            <column name="VENUE2_ID" type="integer">
+                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_VENUE_LINKS_VENUE1"
+                                 baseTableName="VENUE_LINKS" baseColumnNames="VENUE1_ID"
+                                 referencedTableName="VENUES" referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_VENUE_LINKS_VENUE2"
+                                 baseTableName="VENUE_LINKS" baseColumnNames="VENUE2_ID"
+                                 referencedTableName="VENUES" referencedColumnNames="ID"/>
     </changeSet>
 </databaseChangeLog>

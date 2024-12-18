@@ -12,13 +12,13 @@ import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.api.requireStatusOk
 
-data class VenueRequest(
+data class VenuesFilter(
     val city: City,
     val plan: PlanType,
 )
 
 interface VenueApi {
-    suspend fun fetchPages(request: VenueRequest): List<VenuesJsonPage>
+    suspend fun fetchPages(filter: VenuesFilter): List<VenuesJsonPage>
 }
 
 class VenueHttpApi(
@@ -27,16 +27,16 @@ class VenueHttpApi(
     private val phpSessionId: String,
 ) : VenueApi {
 
-    override suspend fun fetchPages(request: VenueRequest): List<VenuesJsonPage> =
-        fetchPageable { fetchPage(request, it) }
+    override suspend fun fetchPages(filter: VenuesFilter): List<VenuesJsonPage> =
+        fetchPageable { fetchPage(filter, it) }
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
-    private suspend fun fetchPage(request: VenueRequest, page: Int): VenuesJsonPage {
+    private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesJsonPage {
         val response = http.get("$baseUrl/venues") {
             cookie("PHPSESSID", phpSessionId)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
-            parameter("city_id", request.city.id)
-            parameter("plan_type", request.plan.id)
+            parameter("city_id", filter.city.id)
+            parameter("plan_type", filter.plan.id)
             parameter("page", page)
         }
         response.requireStatusOk()

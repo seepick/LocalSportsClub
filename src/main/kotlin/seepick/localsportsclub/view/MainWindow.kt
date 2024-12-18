@@ -6,7 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import org.koin.compose.koinInject
-import seepick.localsportsclub.logic.VenuesService
+import seepick.localsportsclub.api.domain.VenuesService
 import seepick.localsportsclub.sync.Syncer
 
 @Composable

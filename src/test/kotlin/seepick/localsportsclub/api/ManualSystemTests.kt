@@ -4,8 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.kotest.common.runBlocking
 import io.kotest.matchers.types.shouldBeInstanceOf
 import seepick.localsportsclub.api.venue.VenueHttpApi
-import seepick.localsportsclub.api.venue.VenueRequest
-import seepick.localsportsclub.logic.httpClient
+import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.service.httpClient
 
 object ManualSystemTests {
 
@@ -24,7 +24,7 @@ object ManualSystemTests {
         val phpSessionId = System.getProperty("phpSessionId") ?: login().phpSessionId
 //        println("phpSessionId: $phpSessionId")
         val venues = VenueHttpApi(httpClient, baseUrl, phpSessionId).fetchPages(
-            VenueRequest(
+            VenuesFilter(
                 city = City.Amsterdam,
                 plan = PlanType.Large
             )

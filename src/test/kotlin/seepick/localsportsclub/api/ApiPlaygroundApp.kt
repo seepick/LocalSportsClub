@@ -10,7 +10,7 @@ import io.ktor.client.statement.request
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import seepick.localsportsclub.jsonx
-import seepick.localsportsclub.logic.httpClient
+import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.readTestJson
 import seepick.localsportsclub.toPrettyString
 

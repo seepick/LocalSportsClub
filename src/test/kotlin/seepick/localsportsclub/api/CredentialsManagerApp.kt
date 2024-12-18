@@ -3,8 +3,8 @@ package seepick.localsportsclub.api
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.encodeToString
 import seepick.localsportsclub.kotlinxSerializer
-import seepick.localsportsclub.logic.FileEntry
-import seepick.localsportsclub.logic.FileResolver
+import seepick.localsportsclub.service.FileEntry
+import seepick.localsportsclub.service.FileResolver
 
 
 object CredentialsManagerApp {

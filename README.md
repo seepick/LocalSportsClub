@@ -11,7 +11,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* partners table
+* sync venue details
+* download partner pic
+* venues UI table
 * search/filter: text, date
 * open USC website button
 
@@ -22,7 +24,6 @@ Communistic Custom Client for Urban Sports Club.
 * mark reserved activities
 * show usage indicator
 * migrate old content from AllFit
-* download/display images
 
 ## Later
 
