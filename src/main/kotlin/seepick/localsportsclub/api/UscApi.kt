@@ -1,14 +1,15 @@
 package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.venue.VenueApi
 import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.api.venueDetails.VenueDetails
 
 interface UscApi {
     suspend fun fetchVenues(filter: VenuesFilter): List<VenueInfo>
+    suspend fun fetchVenueDetail(slug: String): VenueDetails
 }
 
 class MockUscApi : UscApi {
@@ -17,6 +18,9 @@ class MockUscApi : UscApi {
         log.debug { "Mock returning empty venues list." }
         return emptyList()
     }
+
+    override suspend fun fetchVenueDetail(slug: String): VenueDetails =
+        VenueDetails(emptyList(), null)
 }
 
 class UscApiAdapter(
@@ -26,4 +30,7 @@ class UscApiAdapter(
         venueApi.fetchPages(filter).flatMap {
             VenueParser.parseHtmlContent(it.content)
         }
+
+    override suspend fun fetchVenueDetail(slug: String): VenueDetails =
+        venueApi.fetchDetails(slug)
 }

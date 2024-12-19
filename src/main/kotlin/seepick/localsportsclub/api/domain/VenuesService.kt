@@ -21,22 +21,20 @@ class VenuesServiceImpl(
         log.info { "insert()" }
         transaction {
             val nextId = (venuesRepo.selectAll().maxOfOrNull { it.id } ?: 0) + 1
-            venuesRepo.persist(
-                listOf(
-                    VenueDbo(
-                        id = nextId,
-                        name = "name $nextId",
-                        slug = "slug${nextId}",
-                        facilities = "Gym",
-                        cityId = City.Amsterdam.id,
-                        officialWebsite = null,
-                        rating = 3,
-                        note = "some note",
-                        isFavorited = false,
-                        isWishlisted = false,
-                        isHidden = false,
-                        isDeleted = false,
-                    )
+            venuesRepo.insert(
+                VenueDbo(
+                    id = nextId,
+                    name = "name $nextId",
+                    slug = "slug${nextId}",
+                    facilities = "Gym",
+                    cityId = City.Amsterdam.id,
+                    officialWebsite = null,
+                    rating = 3,
+                    note = "some note",
+                    isFavorited = false,
+                    isWishlisted = false,
+                    isHidden = false,
+                    isDeleted = false,
                 )
             )
         }

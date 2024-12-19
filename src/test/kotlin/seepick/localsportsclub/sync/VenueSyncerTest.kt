@@ -17,20 +17,21 @@ import seepick.localsportsclub.api.venueInfo
 import seepick.localsportsclub.persistence.InMemoryVenuesRepo
 
 
-class RealSyncerTest : StringSpec() {
+class VenueSyncerTest : StringSpec() {
 
     private val remoteVenue = Arb.venueInfo().next()
 
     private lateinit var api: UscApi
     private lateinit var venuesRepo: InMemoryVenuesRepo
-    private lateinit var syncer: RealSyncer
+    private lateinit var syncer: VenueSyncer
     private val city = City.entries.random()
     private val plan = PlanType.entries.random()
 
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
         venuesRepo = InMemoryVenuesRepo()
-        syncer = RealSyncer(api, venuesRepo, city, plan)
+
+        syncer = VenueSyncer(api, venuesRepo, city, plan)
     }
 
     init {

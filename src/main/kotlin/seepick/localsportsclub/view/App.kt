@@ -4,21 +4,13 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import org.koin.compose.KoinApplication
 import seepick.localsportsclub.AppConfig
-import seepick.localsportsclub.api.apiModule
-import seepick.localsportsclub.service.logicModule
-import seepick.localsportsclub.persistence.persistenceModule
-import seepick.localsportsclub.sync.syncModule
+import seepick.localsportsclub.allModules
 
 @Composable
 @Preview
 fun App(config: AppConfig) {
     KoinApplication(application = {
-        modules(
-            persistenceModule(config),
-            apiModule(config),
-            logicModule(),
-            syncModule(),
-        )
+        modules(allModules(config))
     }) {
         MainWindow()
     }

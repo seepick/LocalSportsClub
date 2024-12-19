@@ -7,7 +7,11 @@ import androidx.compose.ui.window.rememberWindowState
 import seepick.localsportsclub.view.App
 
 fun main() = application {
-    val config = if (Environment.current == Environment.Development) AppConfig.development else AppConfig.production
+    val config = if (Environment.current == Environment.Development) {
+        AppConfig.development
+    } else {
+        AppConfig.production
+    }
 
     Window(
         onCloseRequest = ::exitApplication,

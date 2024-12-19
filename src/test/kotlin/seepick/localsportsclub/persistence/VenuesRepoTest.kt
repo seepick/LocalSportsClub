@@ -15,7 +15,6 @@ import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.persistence.testInfra.DbListener
-import seepick.localsportsclub.persistence.testInfra.persist
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class VenuesRepoTest : DescribeSpec() {
@@ -32,18 +31,19 @@ class VenuesRepoTest : DescribeSpec() {
         }
         describe("When persist") {
             it("Then saved") {
-                val venue = Arb.venueDbo().next().copy(id = 1)
-                repo.persist(venue)
+                val venue = Arb.venueDbo().next()
+                val inserted = repo.insert(venue)
                 transaction {
                     val stored = VenuesTable.selectAll().toList().shouldBeSingleton().first()
-                    stored[VenuesTable.id].value shouldBe venue.id
+                    stored[VenuesTable.id].value shouldBe inserted.id
+                    stored[VenuesTable.slug] shouldBe venue.slug
+                    // ...
                 }
             }
             it("Given same slug existing Then fail") {
-                repo.persist(Arb.venueDbo().next())
+                repo.insert(Arb.venueDbo().next().copy(slug = "duplicate"))
                 shouldThrow<ExposedSQLException> {
-                    repo.persist(Arb.venueDbo().next().copy(id = 1, slug = "duplicate"))
-                    repo.persist(Arb.venueDbo().next().copy(id = 2, slug = "duplicate"))
+                    repo.insert(Arb.venueDbo().next().copy(slug = "duplicate"))
                 }.shouldHaveCause { cause ->
                     cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>()
                         .message shouldContain "VENUES_SLUG_UNIQUE_INDEX"
@@ -52,8 +52,7 @@ class VenuesRepoTest : DescribeSpec() {
         }
         describe("When persist and select all") {
             it("Then returned") {
-                val venue = Arb.venueDbo().next().copy(id = 1)
-                repo.persist(venue)
+                val venue = repo.insert(Arb.venueDbo().next())
                 repo.selectAll().shouldBeSingleton().first() shouldBe venue
             }
         }

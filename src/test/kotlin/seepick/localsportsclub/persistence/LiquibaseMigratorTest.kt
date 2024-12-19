@@ -7,7 +7,6 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.Database
 import seepick.localsportsclub.persistence.testInfra.buildTestJdbcUrl
-import seepick.localsportsclub.persistence.testInfra.persist
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class LiquibaseMigratorTest : StringSpec() {
@@ -18,8 +17,8 @@ class LiquibaseMigratorTest : StringSpec() {
             Database.connect(jdbcUrl)
 
             val venue = Arb.venueDbo().next()
-            ExposedVenuesRepo.persist(venue)
-            ExposedVenuesRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = 1)
+            val inserted = ExposedVenuesRepo.insert(venue)
+            ExposedVenuesRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = inserted.id)
         }
     }
 }
