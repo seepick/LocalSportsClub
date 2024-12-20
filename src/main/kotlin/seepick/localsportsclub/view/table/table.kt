@@ -5,6 +5,7 @@ import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,19 +30,24 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun <T> Table(
+fun <T> RowScope.Table(
+    itemsLabel: String,
     items: List<T>,
+    allItemsCount: Int,
     columns: List<TableColumn<T>>,
+    selectedItem: T?,
     onItemClicked: (T) -> Unit,
     onHeaderClicked: (TableColumn<T>) -> Unit,
     sortColumn: TableColumn<T>,
 ) {
-    Box {
+    Box(Modifier.weight(1.0f)) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
-            modifier = Modifier
-                .padding(end = 12.dp), // for the scrollbar to the right
+            modifier = Modifier.padding(
+                end = 12.dp, // for the scrollbar to the right
+                bottom = 20.dp, // for the status bar
+            ),
         ) {
             stickyHeader {
                 Row(Modifier.background(Color.Gray)) {
@@ -56,12 +63,12 @@ fun <T> Table(
             }
             items(items) { item ->
                 var isHovered by remember { mutableStateOf(false) }
-                Row(Modifier.fillMaxWidth().background(color = if (isHovered) Color.Green else Color.White)
+                val bgColor = if (isHovered) Color.Green else if (selectedItem == item) Color.Red else Color.White
+                Row(Modifier.fillMaxWidth().background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                     // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
-                    .onClick { onItemClicked(item) }
-                ) {
+                    .onClick { onItemClicked(item) }) {
                     columns.forEach { col ->
                         when (col.renderer) {
                             is CellRenderer.CustomRenderer -> {
@@ -80,10 +87,13 @@ fun <T> Table(
             }
         }
         VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-            adapter = rememberScrollbarAdapter(
+            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
                 scrollState = tableScrollState
             )
+        )
+        Text(
+            text = "Showing ${items.size} of $allItemsCount $itemsLabel",
+            modifier = Modifier.align(Alignment.BottomStart)
         )
     }
 }

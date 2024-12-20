@@ -48,6 +48,14 @@ class Rating private constructor(val value: Int) : Comparable<Rating> {
         val values = listOf(R0, R1, R2, R3, R4, R5)
     }
 
+    val string = (0..<value).fold("") { acc, _ -> "${acc}⭐️" }
     override operator fun compareTo(other: Rating): Int =
         value.compareTo(other.value)
+
+    override fun toString(): String = "Rating$value"
+    override fun hashCode(): Int = value.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other !is Rating) return false
+        return value == other.value
+    }
 }

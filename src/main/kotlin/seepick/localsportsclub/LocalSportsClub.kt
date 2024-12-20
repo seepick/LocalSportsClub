@@ -19,11 +19,10 @@ object LocalSportsClub {
             onCloseRequest = ::exitApplication,
             title = "LocalSportsClub",
             state = rememberWindowState(
-                width = 1_000.dp, height = 800.dp,
+                width = 1_000.dp, height = 600.dp,
                 position = WindowPosition(100.dp, 100.dp),
             )
         ) {
-
             ComposeApp(window, config)
         }
     }
