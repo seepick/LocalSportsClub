@@ -1,37 +1,36 @@
 package seepick.localsportsclub.view
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import org.koin.compose.koinInject
-import seepick.localsportsclub.api.domain.VenuesService
-import seepick.localsportsclub.sync.Syncer
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.view.venue.VenuePanel
 
 @Composable
 fun MainWindow(
-    venuesService: VenuesService = koinInject(),
-    syncer: Syncer = koinInject(),
+//    syncer: Syncer = koinInject(),
+    viewModel: MainViewModel = koinViewModel(),
 ) {
-//    val myService = koinInject<Service>()
-    MaterialTheme {
+    val scope = rememberCoroutineScope()
+    Column {
         Row {
-            Button(onClick = {
-                venuesService.insert()
+            Button(enabled = !viewModel.isSyncing, onClick = {
+                scope.launch {
+                    viewModel.startSync()
+                }
             }) {
-                Text("Save")
+                Text(text = "Sync")
             }
-            Button(onClick = {
-                venuesService.select()
-            }) {
-                Text("Load")
-            }
-            Button(onClick = {
-                syncer.sync()
-            }) {
-                Text("Sync")
+            if (viewModel.isSyncing) {
+                LinearProgressIndicator()
             }
         }
+        VenuePanel()
     }
 }
+

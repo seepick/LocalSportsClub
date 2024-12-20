@@ -41,3 +41,14 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
         }
     }
 }
+
+class InMemoryVenueLinksRepo : VenueLinksRepo {
+    val stored = mutableMapOf<Int, Int>()
+    override fun selectAll(): List<Pair<Int, Int>> =
+        stored.toList()
+
+    override fun insert(venueId1: Int, venueId2: Int) {
+        stored += venueId1 to venueId2
+    }
+
+}

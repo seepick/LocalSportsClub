@@ -39,7 +39,13 @@ dependencies {
     implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
 
     // WEB
-    listOf("client-core", "client-cio", "client-logging", "client-content-negotiation", "serialization-kotlinx-json").forEach {
+    listOf(
+        "client-core",
+        "client-cio",
+        "client-logging",
+        "client-content-negotiation",
+        "serialization-kotlinx-json"
+    ).forEach {
         implementation("io.ktor:ktor-$it:$ktorVersion")
     }
     implementation("org.jsoup:jsoup:1.18.3")
@@ -59,7 +65,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "seepick.localsportsclub.MainKt"
+        mainClass = "seepick.localsportsclub.LocalSportsClub"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
@@ -86,7 +92,8 @@ configure<ProcessResources>("processResources") {
 }
 
 tasks.withType<DependencyUpdatesTask> {
-    val rejectPatterns = listOf(".*-ea.*", ".*RC", ".*M1", ".*check", ".*dev.*", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }
+    val rejectPatterns =
+        listOf(".*-ea.*", ".*RC", ".*M1", ".*check", ".*dev.*", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }
     rejectVersionIf {
         rejectPatterns.any {
             it.matches(candidate.version)

@@ -8,8 +8,10 @@ import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.api.venue.VenueInfo
+import seepick.localsportsclub.api.venueDetails.VenueDetails
 
 fun Arb.Companion.venueInfo() = arbitrary {
     VenueInfo(
@@ -20,5 +22,12 @@ fun Arb.Companion.venueInfo() = arbitrary {
         addressId = int(min = 1, max = 999).next(),
         addressDistrict = string(minSize = 3, maxSize = 5, codepoints = Codepoint.alphanumeric()).next(),
         addressStreet = string(minSize = 5, maxSize = 10, codepoints = Codepoint.alphanumeric()).next(),
+    )
+}
+
+fun Arb.Companion.venueDetails() = arbitrary {
+    VenueDetails(
+        linkedVenueSlugs = list(string(minSize = 3, maxSize = 5, codepoints = Codepoint.alphanumeric()), 0..3).next(),
+        websiteUrl = string(minSize = 3, maxSize = 8, codepoints = Codepoint.az()).orNull().next(),
     )
 }

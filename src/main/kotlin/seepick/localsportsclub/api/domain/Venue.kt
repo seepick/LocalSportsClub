@@ -17,8 +17,37 @@ data class Venue(
     val isWishlisted: Boolean,
     val isHidden: Boolean,
     val isDeleted: Boolean,
-)
+) {
+    companion object {
+        fun dummy() = Venue(
+            id = 42,
+            name = "Dummy Venue",
+            slug = "dummy-venue",
+            facilities = "Gym",
+            city = City.Amsterdam,
+            rating = Rating.R4,
+            note = "no note",
+            officialWebsite = null,
+            uscWebsite = URI("https://usc.com/en/dummy-venue"),
+            isFavorited = false,
+            isWishlisted = false,
+            isHidden = false,
+            isDeleted = false,
+        )
+    }
+}
 
-enum class Rating(val value: Int) {
-    R0(0), R1(1), R2(2), R3(3), R4(4), R5(5)
+class Rating private constructor(val value: Int) : Comparable<Rating> {
+    companion object {
+        val R0 = Rating(0)
+        val R1 = Rating(1)
+        val R2 = Rating(2)
+        val R3 = Rating(3)
+        val R4 = Rating(4)
+        val R5 = Rating(5)
+        val values = listOf(R0, R1, R2, R3, R4, R5)
+    }
+
+    override operator fun compareTo(other: Rating): Int =
+        value.compareTo(other.value)
 }

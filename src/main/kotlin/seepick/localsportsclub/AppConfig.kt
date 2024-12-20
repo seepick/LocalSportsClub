@@ -32,14 +32,14 @@ data class AppConfig(
     }
 
     enum class SyncMode {
-        Noop, Simulated, Real
+        Noop, Delayed, Real
     }
 
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
             api = ApiMode.Mock,
-            sync = SyncMode.Noop,
+            sync = SyncMode.Delayed,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
