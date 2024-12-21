@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 data class VenueDbo(
     val id: Int,
@@ -17,7 +18,7 @@ data class VenueDbo(
     val cityId: Int,
     val officialWebsite: String?,
     val rating: Int,
-    val note: String,
+    val notes: String,
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
     val isHidden: Boolean,
@@ -27,8 +28,9 @@ data class VenueDbo(
 }
 
 interface VenuesRepo {
-    fun selectAll(): List<VenueDbo>
+    fun selectAll(): List<VenueDbo> // FIXME filter out isDeleted
     fun insert(venue: VenueDbo): VenueDbo
+    fun update(venue: VenueDbo)
 }
 
 object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
@@ -38,7 +40,7 @@ object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
     val cityId = integer("CITY_ID") // usc config
     val officialWebsite = varchar("OFFICIAL_WEBSITE", 256).nullable() // sync details
     val rating = integer("RATING") // custom
-    val note = text("NOTE") // custom
+    val notes = text("NOTES") // custom
     val isFavorited = bool("IS_FAVORITED") // custom
     val isWishlisted = bool("IS_WISHLISTED") // custom
     val isHidden = bool("IS_HIDDEN") // custom
@@ -64,11 +66,21 @@ object ExposedVenuesRepo : VenuesRepo {
             venue.copy(id = nextId)
         }
 
+    override fun update(venue: VenueDbo) {
+        transaction {
+            val updated = VenuesTable.update(where = { VenuesTable.id.eq(venue.id) }) {
+                it[notes] = venue.notes
+                it[rating] = venue.rating
+            }
+            if (updated != 1) error("Expected 1 to be updated by ID $venue.id, but was: $updated")
+        }
+    }
+
     private fun VenueDbo.Companion.fromRow(row: ResultRow) = VenueDbo(
         id = row[VenuesTable.id].value,
         name = row[VenuesTable.name],
         slug = row[VenuesTable.slug],
-        note = row[VenuesTable.note],
+        notes = row[VenuesTable.notes],
         facilities = row[VenuesTable.facilities],
         cityId = row[VenuesTable.cityId],
         officialWebsite = row[VenuesTable.officialWebsite],
@@ -85,7 +97,7 @@ object ExposedVenuesRepo : VenuesRepo {
             it[VenuesTable.id] = EntityID(id, VenuesTable)
             it[name] = p.name
             it[slug] = p.slug
-            it[note] = p.note
+            it[notes] = p.notes
             it[facilities] = p.facilities
             it[cityId] = p.cityId
             it[officialWebsite] = p.officialWebsite
@@ -109,5 +121,10 @@ class InMemoryVenuesRepo : VenuesRepo {
         val newVenue = venue.copy(id = currentId++)
         stored[newVenue.id] = newVenue
         return newVenue
+    }
+
+    override fun update(venue: VenueDbo) {
+        require(stored[venue.id] != null)
+        stored[venue.id] = venue
     }
 }

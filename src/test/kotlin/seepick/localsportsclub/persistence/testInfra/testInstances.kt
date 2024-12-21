@@ -32,7 +32,7 @@ fun Arb.Companion.venueDbo() = arbitrary {
             codepoints = Codepoint.alphanumeric(),
         ).orNull().next(),
         rating = 0,
-        note = string(
+        notes = string(
             minSize = 0, maxSize = 20,
             codepoints = Codepoint.alphanumeric(),
         ).next(),

@@ -17,7 +17,7 @@
             <column name="SLUG" type="varchar(64)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="VENUES_SLUG_UNIQUE_INDEX"/>
             </column>
-            <column name="NOTE" type="longvarchar">
+            <column name="NOTES" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
             <column name="CITY_ID" type="integer">

@@ -1,7 +1,16 @@
 package seepick.localsportsclub.api
 
 enum class City(val id: Int) {
-    Amsterdam(1144)
+    Amsterdam(1144);
+
+    companion object {
+        private val cityById by lazy {
+            entries.associateBy { it.id }
+        }
+
+        fun byId(cityId: Int): City =
+            cityById[cityId] ?: error("Invalid city ID: $cityId")
+    }
 }
 
 enum class District(val label: String, val id: Int, val parent: Int?) {

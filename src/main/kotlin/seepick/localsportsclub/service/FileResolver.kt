@@ -39,7 +39,8 @@ enum class FileEntry(val fileName: String) {
 
 enum class DirectoryEntry(val directoryName: String) {
     Database("database"),
-//    JsonLogs("json_logs"),
+
+    //    JsonLogs("json_logs"),
 //    ApplicationLogs("app_logs"),
-//    ImagesPartners("images/partners"),
+    VenueImages("venueImages"),
 }

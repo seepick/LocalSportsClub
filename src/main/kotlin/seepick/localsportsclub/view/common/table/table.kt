@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.table
+package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
@@ -55,6 +55,7 @@ fun <T> RowScope.Table(
                         TableHeader(
                             text = col.headerLabel,
                             size = col.size,
+                            isSortEnabled = col.sortingEnabled,
                             isSortActive = col == sortColumn,
                             onClick = { onHeaderClicked(col) },
                         )

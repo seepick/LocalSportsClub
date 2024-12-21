@@ -11,7 +11,14 @@ object DummyDataGenerator {
     )
     private val suffix = listOf("v2", "ext", "beta", "super", "mega")
     private val officialWebsites = listOf("https://www.nu.nl", "https://www.ah.nl")
-    fun generateVenue(customSuffix: String? = null): Venue {
+
+    fun generateVenues(size: Int, customSuffix: String? = null): List<Venue> =
+        (1..size).map {
+            val venue = generateVenue(customSuffix)
+            venue.copy(id = it, slug = "$it-${venue.slug}")
+        }
+
+    private fun generateVenue(customSuffix: String? = null): Venue {
         val word = words.random()
         val suffix = customSuffix ?: if (Math.random() < 0.25) suffix.random() else null
         val number = if (Math.random() < 0.25) (1..5000).random() else null
@@ -23,14 +30,10 @@ object DummyDataGenerator {
             name = fullName,
             slug = word + if (suffix == null) "" else "-$suffix" +
                     if (number == null) "" else "-$number",
-            rating = Rating.values.random(),
+            rating = Rating.entries.random(),
             officialWebsite = if (Math.random() < 0.70) URI(officialWebsites.random()) else null,
-            note = "Some note for $fullName",
+            notes = "Some notes for $fullName",
         )
     }
 
-    fun generateVenues(size: Int, customSuffix: String? = null): List<Venue> =
-        (1..size).map {
-            generateVenue(customSuffix).copy(id = it)
-        }
 }

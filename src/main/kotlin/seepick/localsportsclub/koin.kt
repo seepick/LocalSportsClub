@@ -9,7 +9,7 @@ import seepick.localsportsclub.view.viewModule
 fun allModules(config: AppConfig) = listOf(
     persistenceModule(config),
     apiModule(config),
-    serviceModule(),
+    serviceModule(config),
     syncModule(config),
     viewModule(),
 )

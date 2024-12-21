@@ -5,11 +5,23 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.service.httpClient
 
 private val log = logger {}
 
 fun syncModule(config: AppConfig) = module {
-    single { VenueSyncer(get(), get(), get(), config.usc.city, config.usc.plan) }
+    single {
+        VenueSyncer(
+            api = get(),
+            venuesRepo = get(),
+            syncDispatcher = get(),
+            venueLinksRepo = get(),
+            imageFetcher = get(),
+            city = config.usc.city,
+            plan = config.usc.plan,
+            baseUrl = config.usc.baseUrl,
+        )
+    }
     log.debug { "Configuring sync mode: ${config.sync}" }
     when (config.sync) {
         AppConfig.SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
@@ -17,4 +29,5 @@ fun syncModule(config: AppConfig) = module {
         AppConfig.SyncMode.Real -> singleOf(::RealSyncerAdapter) bind Syncer::class
     }
     singleOf(::SyncDispatcher) bind SyncDispatcher::class
+    single { HttpImageFetcher(get(), httpClient) } bind ImageFetcher::class
 }

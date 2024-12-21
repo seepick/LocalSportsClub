@@ -23,7 +23,8 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
 
         val venueVM = koinViewModel<VenueViewModel>()
         val syncDispatcher = koinInject<SyncDispatcher>()
-        syncDispatcher.registerOnVenueAdded(venueVM::onVenueAdded)
+        syncDispatcher.registerVenueAdded(venueVM::onVenueAdded)
+        syncDispatcher.registerVenueUpdated(venueVM::onVenueUpdated)
 
         window.addWindowListener(object : WindowAdapter() {
             // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106

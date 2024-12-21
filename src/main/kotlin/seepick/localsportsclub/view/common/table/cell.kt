@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.table
+package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -51,14 +52,20 @@ sealed interface ColSize {
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun RowScope.TableHeader(text: String, size: ColSize, isSortActive: Boolean, onClick: () -> Unit) {
+fun RowScope.TableHeader(
+    text: String,
+    size: ColSize,
+    isSortEnabled: Boolean,
+    isSortActive: Boolean,
+    onClick: () -> Unit
+) {
     var isHovered by remember { mutableStateOf(false) }
     TableCell(text, size, modifier = Modifier
         .onPointerEvent(PointerEventType.Enter) { isHovered = true }
         .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-        .background(color = if (isHovered && !isSortActive) Color.LightGray else Color.White)
+        .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else Color.White)
         .let {
-            if (isSortActive) it else {
+            if (isSortActive || !isSortEnabled) it else {
                 it.onClick { onClick() }
             }
         }
@@ -80,7 +87,10 @@ fun RowScope.applyColSize(mod: Modifier, size: ColSize) = mod.let {
 
 @Composable
 fun RowScope.TableCell(text: String, size: ColSize, modifier: Modifier = Modifier) {
-    Text(text = text,
+    Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         modifier = Modifier
             .border(1.dp, Color.Black)
             .padding(8.dp)
