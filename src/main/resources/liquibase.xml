@@ -78,17 +78,39 @@
 
         <createTable tableName="VENUE_LINKS">
             <column name="VENUE1_ID" type="integer">
-                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"
+                             references="VENUES(ID)" foreignKeyName="FK_VENUE_LINKS_VENUE1"
+                />
             </column>
             <column name="VENUE2_ID" type="integer">
-                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_VENUE_LINKS" nullable="false"
+                             references="VENUES(ID)" foreignKeyName="FK_VENUE_LINKS_VENUE2"
+                />
             </column>
         </createTable>
-        <addForeignKeyConstraint constraintName="FK_VENUE_LINKS_VENUE1"
-                                 baseTableName="VENUE_LINKS" baseColumnNames="VENUE1_ID"
-                                 referencedTableName="VENUES" referencedColumnNames="ID"/>
-        <addForeignKeyConstraint constraintName="FK_VENUE_LINKS_VENUE2"
-                                 baseTableName="VENUE_LINKS" baseColumnNames="VENUE2_ID"
-                                 referencedTableName="VENUES" referencedColumnNames="ID"/>
+
+        <createTable tableName="ACTIVITIES">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FROM" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TO" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPOTS_LEFT" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VENUE_ID" type="integer">
+                <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_ACTIVITIES_VENUE_ID"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

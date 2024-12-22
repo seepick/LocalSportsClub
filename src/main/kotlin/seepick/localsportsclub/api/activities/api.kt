@@ -7,6 +7,7 @@ import io.ktor.client.request.cookie
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.request
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.fetchPageable
@@ -32,8 +33,7 @@ class ActivityHttpApi(
 
     // /activities?service_type=0&city=1144&date=2024-12-16&business_type[]=b2c&plan_type=3&type[]=onsite&page=2
     private suspend fun fetchPage(filter: ActivitiesFilter, page: Int): ActivitiesDataJson {
-        val fullUrl = "$baseUrl/venues"
-        log.debug { "Fetching venue page $page from: $fullUrl with $filter" }
+        val fullUrl = "$baseUrl/activities"
         val response = http.get(fullUrl) {
             cookie("PHPSESSID", phpSessionId)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
@@ -45,10 +45,11 @@ class ActivityHttpApi(
             parameter("service_type", filter.service.apiValue) // (scheduled) courses or free training (dropin)
             parameter("page", page)
         }
+        log.debug { "Fetched activities page $page from: ${response.request.url}" }
         response.requireStatusOk()
         val json = response.body<ActivitiesJson>()
         if (!json.success) {
-            throw ApiException("Venues endpoint returned failure!")
+            throw ApiException("Activities endpoint returned failure!")
         }
         return json.data
     }

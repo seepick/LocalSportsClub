@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
@@ -40,7 +42,7 @@ private val imageWidth = 300.dp
 private val imageHeight = 200.dp
 
 @Composable
-fun VenuesDetail(
+fun VenueDetail(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
     val venue = viewModel.selectedVenue
@@ -111,6 +113,13 @@ fun VenuesDetail(
 //        TextField(value = "foo", {}, label = { Text("Label") })
         val (notes, notesSetter) = viewModel.venueEdit.notes
         NotesTextField(notes, notesSetter)
+
+        LazyColumn {
+            items(viewModel.selectedVenue?.activities ?: emptyList()) { activity ->
+                Text(text = "${activity.name} - ${activity.fromToFormatted}")
+            }
+        }
+
         Button(
             { viewModel.updateVenue() },
             enabled = viewModel.selectedVenue != null

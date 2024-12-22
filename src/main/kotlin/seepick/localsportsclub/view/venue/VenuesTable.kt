@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.venue
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,13 +16,15 @@ import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 
 val venuesTableColumns = listOf<TableColumn<Venue>>(
-    TableColumn("Image", ColSize.Width(150.dp), CellRenderer.CustomRenderer { venue, colSize ->
-        Row(Modifier.height(30.dp)) {
+    TableColumn("ID", ColSize.Width(70.dp), TextRenderer { it.id }),
+    TableColumn("Image", ColSize.Width(100.dp), CellRenderer.CustomRenderer { venue, colSize ->
+        Row(Modifier.height(30.dp).width(100.dp)) {
             VenueImage(venue.imageFileName)
         }
     }, sortingEnabled = false),
     TableColumn("Name", ColSize.Weight(0.7f), TextRenderer { it.name }),
     TableColumn("Slug", ColSize.Weight(0.3f), TextRenderer { it.slug }),
+    TableColumn("Activities", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
     TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
 //    TableColumn("Rating2", ColSize.Width(150.dp), CellRenderer.CustomRenderer { venue, colSize ->
 //        Row(Modifier.let { applyColSize(it, colSize) }) {

@@ -24,12 +24,11 @@ class VenueEditModel {
         isFavorited = venue.isFavorited
     }
 
-    fun update(selectedVenue: Venue) =
-        selectedVenue.copy(
-            notes = notes.value,
-            rating = rating,
-            isFavorited = isFavorited,
-        )
+    fun updatePropertiesOf(selectedVenue: Venue) {
+        selectedVenue.notes = notes.value
+        selectedVenue.rating = rating
+        selectedVenue.isFavorited = isFavorited
+    }
 }
 
 class VenueViewModel(
@@ -51,27 +50,8 @@ class VenueViewModel(
     fun onStartUp() {
         log.info { "On startup: Filling initial data." }
 //        _allVenues.addAll(DummyDataGenerator.generateVenues(40))
-        _allVenues.addAll(dataStorage.selectVenues())
+        _allVenues.addAll(dataStorage.selectAllVenues())
         resetVenues()
-    }
-
-    fun onVenueAdded(venue: Venue) {
-        log.debug { "onVenueAdded($venue)" }
-        _allVenues.add(venue)
-        if (searching.matches(venue)) {
-            val index = searchIndexFor(_venues, venue, sortColumn.valueExtractor!!)
-            _venues.add(index, venue)
-        }
-    }
-
-    fun onVenueUpdated(venue: Venue) {
-        log.debug { "onVenueUpdated($venue)" }
-        _allVenues[_allVenues.indexOfFirst { it.id == venue.id }] = venue
-        val index = venues.indexOfFirst { it.id == venue.id }
-        if (index != -1) {
-            _venues[index] = venue
-            selectedVenue = venue
-        }
     }
 
     fun onVenueClicked(venue: Venue) {
@@ -81,7 +61,6 @@ class VenueViewModel(
     }
 
     fun setSearchTerm(term: String) {
-        log.debug { "set term [$term]" }
         term.trim().also {
             if (it.isEmpty()) {
                 searching.clearTerm()
@@ -100,6 +79,14 @@ class VenueViewModel(
         resetVenues()
     }
 
+    fun onVenueAdded(venue: Venue) {
+        _allVenues.add(venue)
+        if (searching.matches(venue)) {
+            val index = searchIndexFor(_venues, venue, sortColumn.valueExtractor!!)
+            _venues.add(index, venue)
+        }
+    }
+
     private fun resetVenues() {
         _venues.clear()
         _venues.addAll(_allVenues.filter { searching.matches(it) }.let {
@@ -110,8 +97,10 @@ class VenueViewModel(
     }
 
     fun updateVenue() {
-        val updatedVenue = venueEdit.update(selectedVenue!!)
-        log.debug { "Updating venue: $updatedVenue" }
-        dataStorage.update(updatedVenue)
+        selectedVenue!!.also { venue ->
+            venueEdit.updatePropertiesOf(venue)
+            log.debug { "Updating venue: $venue" }
+            dataStorage.update(venue)
+        }
     }
 }

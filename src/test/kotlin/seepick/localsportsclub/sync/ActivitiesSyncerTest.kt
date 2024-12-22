@@ -31,7 +31,7 @@ class ActivitiesSyncerTest : StringSpec() {
         activityRepo = InMemoryActivityRepo()
         venueRepo = InMemoryVenueRepo()
         val syncDispatcher = SyncDispatcher()
-        syncDispatcher.registerActivityAdded { syncActivityAdded += it }
+        syncDispatcher.registerActivityDboAdded { syncActivityAdded += it }
         syncer = ActivitiesSyncer(
             api = api,
             city = city,

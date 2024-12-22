@@ -5,7 +5,8 @@
         </encoder>
     </appender>
 
-    <logger name="io.ktor" level="WARN"/>
+    <logger name="io.ktor" level="INFO"/>
+    <logger name="liquibase" level="INFO"/>
     <root level="ALL">
         <appender-ref ref="STDOUT"/>
     </root>

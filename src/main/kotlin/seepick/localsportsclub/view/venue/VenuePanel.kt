@@ -17,7 +17,7 @@ fun VenuePanel() {
         Row(Modifier.weight(1.0f, true)) {
             VenuesTable()
             Spacer(Modifier.width(10.dp))
-            VenuesDetail()
+            VenueDetail()
         }
     }
 }

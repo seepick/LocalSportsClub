@@ -22,15 +22,15 @@ class ActivitiesSyncer(
     private val venueRepo: VenueRepo,
 ) {
     private val log = logger {}
-    private val daysAhead = 3 // FIXME 14
+    private val daysAhead = 2 // FIXME 14
 
     suspend fun sync() {
         log.info { "Syncing activities ..." }
         val allStoredActivities = activityRepo.selectAll()
-        val venues = venueRepo.selectAll().associateBy { it.slug }
+        val venuesBySlug = venueRepo.selectAll().associateBy { it.slug }
         (0..<daysAhead).forEach { dayAhead ->
             val day = LocalDate.now().plusDays(dayAhead.toLong())
-            syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venues)
+            syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
         }
         // FIXME delete old ones, before today, without a reservation on it
     }

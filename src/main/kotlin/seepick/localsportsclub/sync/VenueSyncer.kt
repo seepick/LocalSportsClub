@@ -12,7 +12,6 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.ImageStorage
-import seepick.localsportsclub.service.model.toVenue
 import seepick.localsportsclub.service.workParallel
 import java.io.ByteArrayOutputStream
 
@@ -32,7 +31,7 @@ class VenueSyncer(
     suspend fun sync() {
         log.info { "Syncing venues ..." }
         val remoteSlugs = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
-        val localSlugs = venueRepo.selectAll().associateBy { it.slug }
+        val localSlugs = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
 
         val markDeleted = localSlugs.minus(remoteSlugs.keys)
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
@@ -82,14 +81,14 @@ class VenueSyncer(
         val inserted = venueRepo.insert(
             details.toDbo()
         ).let {
-            if (details.originalImageUrl == null) it else enhanceImage(it, details.originalImageUrl)
+            if (details.originalImageUrl == null) it else downloadImageAndUpdate(it, details.originalImageUrl)
         }
 
-        syncDispatcher.dispatchVenueAdded(inserted.toVenue(baseUrl))
+        syncDispatcher.dispatchVenueDboAdded(inserted)
     }
 
     // can do that only AFTER was persisted, as we need the internal ID for the filename
-    private suspend fun enhanceImage(venue: VenueDbo, originalImageUrl: Url): VenueDbo {
+    private suspend fun downloadImageAndUpdate(venue: VenueDbo, originalImageUrl: Url): VenueDbo {
         val downloadedBytes = downloader.downloadVenueImage(originalImageUrl)
 
         val output = ByteArrayOutputStream()
@@ -102,7 +101,7 @@ class VenueSyncer(
         val resizedBytes = output.toByteArray()
 
         val fileName = "${venue.id}.png"
-        imageStorage.saveVenue(fileName, resizedBytes)
+        imageStorage.saveVenueImage(fileName, resizedBytes)
         return venueRepo.update(venue.copy(imageFileName = fileName))
     }
 

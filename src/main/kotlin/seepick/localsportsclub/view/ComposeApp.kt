@@ -8,6 +8,7 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.allModules
+import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.SyncDispatcher
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
@@ -23,8 +24,10 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
 
         val venueVM = koinViewModel<VenueViewModel>()
         val syncDispatcher = koinInject<SyncDispatcher>()
+        val dataStorage = koinInject<DataStorage>()
+        syncDispatcher.registerVenueDboAdded(dataStorage::onVenueDboAdded)
+        syncDispatcher.registerActivityDboAdded(dataStorage::onActivityDboAdded)
         syncDispatcher.registerVenueAdded(venueVM::onVenueAdded)
-        syncDispatcher.registerVenueUpdated(venueVM::onVenueUpdated)
 
         window.addWindowListener(object : WindowAdapter() {
             // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106

@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.Database
+import seepick.localsportsclub.persistence.testInfra.activityDbo
 import seepick.localsportsclub.persistence.testInfra.buildTestJdbcUrl
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 
@@ -16,9 +17,16 @@ class LiquibaseMigratorTest : StringSpec() {
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
             Database.connect(jdbcUrl)
 
-            val venue = Arb.venueDbo().next()
-            val inserted = ExposedVenueRepo.insert(venue)
-            ExposedVenueRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = inserted.id)
+            val raw1 = Arb.venueDbo().next()
+            val venue1 = ExposedVenueRepo.insert(raw1)
+            ExposedVenueRepo.selectAll().shouldBeSingleton().first() shouldBe venue1
+
+            val raw2 = Arb.venueDbo().next()
+            val venue2 = ExposedVenueRepo.insert(raw2)
+            ExposedVenueLinksRepo.insert(venue1.id, venue2.id)
+
+            val activity = Arb.activityDbo().next().copy(venueId = venue1.id)
+            ExposedActivityRepo.insert(activity)
         }
     }
 }

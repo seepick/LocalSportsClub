@@ -9,8 +9,9 @@ fun serviceModule(config: AppConfig) = module {
     single {
         DataStorage(
             venueRepo = get(),
-            dispatcher = get(),
             venueLinksRepo = get(),
+            activityRepo = get(),
+            dispatcher = get(),
             baseUrl = config.usc.baseUrl,
         )
     }

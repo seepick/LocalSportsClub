@@ -13,22 +13,21 @@ interface ImageStorage {
         val defaultVenueImageBitmap: ImageBitmap = loadImageBitmap(defaultVenueImage.inputStream())
     }
 
-    fun saveVenue(fileName: String, bytes: ByteArray)
+    fun saveVenueImage(fileName: String, bytes: ByteArray)
 }
 
 object NoopImageStorage : ImageStorage {
     private val log = logger {}
-    override fun saveVenue(fileName: String, bytes: ByteArray) {
+    override fun saveVenueImage(fileName: String, bytes: ByteArray) {
         log.debug { "Noop not saving venue image: $fileName" }
     }
 }
 
 class MemorizableImageStorage : ImageStorage {
-    val savedVenues = mutableListOf<Pair<String, ByteArray>>()
-    override fun saveVenue(fileName: String, bytes: ByteArray) {
-        savedVenues += fileName to bytes
+    val savedVenueImages = mutableListOf<Pair<String, ByteArray>>()
+    override fun saveVenueImage(fileName: String, bytes: ByteArray) {
+        savedVenueImages += fileName to bytes
     }
-
 }
 
 class FileSystemImageStorage(
@@ -36,10 +35,12 @@ class FileSystemImageStorage(
 ) : ImageStorage {
     private val log = logger {}
 
-    override fun saveVenue(fileName: String, bytes: ByteArray) {
+    override fun saveVenueImage(fileName: String, bytes: ByteArray) {
         val target = File(venueImagesFolder, fileName)
         log.debug { "Saving image to: ${target.absolutePath}" }
-        require(!target.exists())
+        if (target.exists()) {
+            target.delete()
+        }
         target.writeBytes(bytes)
     }
 }

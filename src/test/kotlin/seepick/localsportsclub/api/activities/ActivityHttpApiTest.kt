@@ -36,7 +36,7 @@ class ActivityHttpApiTest : StringSpec() {
         "Given data returned When fetch page Then return data" {
             val rootJson = buildActivitiesJson(success = true, showMore = false)
             val expectedUrl =
-                "$baseUrl/venues?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${filter.service.apiValue}&page=1"
+                "$baseUrl/activities?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${filter.service.apiValue}&page=1"
             val http =
                 buildMockClient(expectedUrl = expectedUrl, phpSessionId = phpSessionId, responsePayload = rootJson)
             val api = ActivityHttpApi(http = http, baseUrl = baseUrl, phpSessionId = phpSessionId)

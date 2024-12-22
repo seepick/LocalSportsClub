@@ -11,6 +11,8 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* venue links: only store one-way (no need to store it double; implicitly bi-directional)
+* if venue.importantInfo == "-" then nullify
 * sort case-IN-sensitive
 * support sorting asc/desc
 * BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)

@@ -1,6 +1,7 @@
 package seepick.localsportsclub.service.model
 
 import io.ktor.http.Url
+import seepick.localsportsclub.persistence.VenueDbo
 
 object DummyDataGenerator {
 
@@ -9,6 +10,9 @@ object DummyDataGenerator {
     )
     private val suffix = listOf("v2", "ext", "beta", "super", "mega")
     private val officialWebsites = listOf("https://www.nu.nl", "https://www.ah.nl")
+
+    fun randomVenueDbos(size: Int, customSuffix: String? = null): List<VenueDbo> =
+        randomVenues(size, customSuffix).map(Venue::toDbo)
 
     fun randomVenues(size: Int, customSuffix: String? = null): List<Venue> =
         (1..size).map {

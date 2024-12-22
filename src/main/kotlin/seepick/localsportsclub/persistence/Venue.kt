@@ -9,11 +9,12 @@ import org.jetbrains.exposed.sql.nextIntVal
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.model.SimpleVenue
 
 data class VenueDbo(
-    val id: Int,
-    val name: String,
-    val slug: String,
+    override val id: Int,
+    override val name: String,
+    override val slug: String,
     val facilities: String, // "," separated
     /** @see [seepick.localsportsclub.api.City] */
     val cityId: Int,
@@ -33,7 +34,7 @@ data class VenueDbo(
     val isWishlisted: Boolean,
     val isHidden: Boolean,
     val isDeleted: Boolean,
-) {
+) : SimpleVenue {
     companion object // for extensions
 }
 

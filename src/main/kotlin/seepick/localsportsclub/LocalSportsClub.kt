@@ -16,7 +16,11 @@ object LocalSportsClub {
             AppConfig.production
         }
         Window(
-            onCloseRequest = ::exitApplication,
+            onCloseRequest = {
+                println("close request")
+
+                exitApplication()
+            },
             title = "LocalSportsClub",
             state = rememberWindowState(
                 width = 1_500.dp, height = 1200.dp,

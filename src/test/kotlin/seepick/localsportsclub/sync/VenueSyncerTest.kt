@@ -20,9 +20,10 @@ import seepick.localsportsclub.api.venueInfo
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
+import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.testInfra.DbListener
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
-import seepick.localsportsclub.service.model.Venue
 
 
 class VenueSyncerTest : StringSpec() {
@@ -37,37 +38,18 @@ class VenueSyncerTest : StringSpec() {
     private val city = City.entries.random()
     private val plan = PlanType.entries.random()
     private val baseUrl = "https://test"
-    private val syncVenuesAdded = mutableListOf<Venue>()
-
-    override suspend fun beforeEach(testCase: TestCase) {
-        api = mockk<UscApi>()
-        venuesRepo = InMemoryVenueRepo()
-        venueLinksRepo = InMemoryVenueLinksRepo()
-        imageStorage = MemorizableImageStorage()
-        syncVenuesAdded.clear()
-
-        val syncDispatcher = SyncDispatcher()
-        syncDispatcher.registerVenueAdded { syncVenuesAdded += it }
-        syncer = VenueSyncer(
-            api = api,
-            venueRepo = venuesRepo,
-            venueLinksRepo = venueLinksRepo,
-            syncDispatcher = syncDispatcher,
-            downloader = NoopDownloader,
-            imageStorage = imageStorage,
-            city = city,
-            plan = plan,
-            baseUrl = baseUrl,
-        )
-    }
+    private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
 
     init {
+        extension(DbListener())
+
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
                 api.fetchVenues(eq(VenuesFilter(city, plan)))
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
-            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails.copy(linkedVenueSlugs = emptyList())
+            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
+                    remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
 
             syncer.sync()
 
@@ -77,9 +59,9 @@ class VenueSyncerTest : StringSpec() {
                 stored.name shouldBe remoteDetails.title
                 stored.slug shouldBe remoteDetails.slug
 
-                syncVenuesAdded.shouldBeSingleton().first().slug shouldBe remoteDetails.slug
+                syncVenueDbosAdded.shouldBeSingleton().first().slug shouldBe remoteDetails.slug
                 val expectedImageFileName = "${stored.id}.png"
-                imageStorage.savedVenues.shouldBeSingleton().first().first shouldBe expectedImageFileName
+                imageStorage.savedVenueImages.shouldBeSingleton().first().first shouldBe expectedImageFileName
             }
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
@@ -103,5 +85,28 @@ class VenueSyncerTest : StringSpec() {
                 it.shouldContain(2 to 1)
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        super.beforeEach(testCase)
+        api = mockk<UscApi>()
+        venuesRepo = InMemoryVenueRepo()
+        venueLinksRepo = InMemoryVenueLinksRepo()
+        imageStorage = MemorizableImageStorage()
+        syncVenueDbosAdded.clear()
+
+        val syncDispatcher = SyncDispatcher()
+        syncDispatcher.registerVenueDboAdded { syncVenueDbosAdded += it }
+        syncer = VenueSyncer(
+            api = api,
+            venueRepo = venuesRepo,
+            venueLinksRepo = venueLinksRepo,
+            syncDispatcher = syncDispatcher,
+            downloader = NoopDownloader,
+            imageStorage = imageStorage,
+            city = city,
+            plan = plan,
+            baseUrl = baseUrl,
+        )
     }
 }
