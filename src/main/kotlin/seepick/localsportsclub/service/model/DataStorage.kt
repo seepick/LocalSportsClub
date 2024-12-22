@@ -19,17 +19,13 @@ class DataStorage(
 ) {
     private val log = logger {}
 
-    private val allActivitiesByVenueId by lazy {
-        val venuesById = venueRepo.selectAll().associateBy { it.id }
-        activityRepo.selectAll().mapNotNull { activityDbo ->
+    private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
+        val venuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
+        activityRepo.selectAll().map { activityDbo ->
             val venueForActivity = venuesById[activityDbo.venueId]
-            if (venueForActivity == null) {
-                log.error { "Venue not found for activity: $activityDbo" }
-                null
-            } else {
-                activityDbo.toActivity(venueForActivity)
-            }
-        }.associateBy { it.venue.id }.toMutableMap()
+            require(venueForActivity != null) { "Venue not found for activity: $activityDbo" }
+            activityDbo.toActivity(venueForActivity)
+        }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
     private val allVenues: MutableList<Venue> by lazy {
@@ -56,18 +52,20 @@ class DataStorage(
     fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
         val venue = venueDbo.toVenue(baseUrl)
-        allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
-            venue.activities += activitiesForVenue
-        }
-
+        // no, not possible
+//        allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
+//            venue.activities += activitiesForVenue
+//        }
         allVenues += venue
         dispatcher.dispatchVenueAdded(venue)
     }
 
     fun onActivityDboAdded(activityDbo: ActivityDbo) {
-        val venue = allVenues.first { it.id == activityDbo.venueId }
+        val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
+            ?: error("Could not find venue for: $activityDbo\nVenues: $allVenues")
         val activity = activityDbo.toActivity(venue)
         venue.activities += activity
+        allActivitiesByVenueId.getOrPut(activityDbo.venueId) { mutableListOf() }.add(activity)
 //        dispatcher.dispatchActivityAdded(activity) // FIXME
     }
 

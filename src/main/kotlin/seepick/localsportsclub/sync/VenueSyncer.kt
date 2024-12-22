@@ -2,7 +2,6 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import net.coobird.thumbnailator.Thumbnails
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
@@ -12,8 +11,20 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.ImageStorage
+import seepick.localsportsclub.service.resizeImage
 import seepick.localsportsclub.service.workParallel
-import java.io.ByteArrayOutputStream
+
+private class VenueLink(
+    val slug1: String, val slug2: String
+) {
+    override fun toString() = "VenueLink[$slug1/$slug2]"
+    override fun hashCode() = slug1.hashCode() + slug2.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other !is VenueLink) return false
+        return (slug1 == other.slug1 && slug2 == other.slug2) ||
+                (slug1 == other.slug2 && slug2 == other.slug1)
+    }
+}
 
 class VenueSyncer(
     private val api: UscApi,
@@ -22,7 +33,6 @@ class VenueSyncer(
     private val city: City,
     private val plan: PlanType,
     private val syncDispatcher: SyncDispatcher,
-    private val baseUrl: String,
     private val downloader: Downloader,
     private val imageStorage: ImageStorage,
 ) {
@@ -30,102 +40,100 @@ class VenueSyncer(
 
     suspend fun sync() {
         log.info { "Syncing venues ..." }
-        val remoteSlugs = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
-        val localSlugs = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
+        val remoteVenuesBySlug = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
+        val localVenuesBySlug = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
 
-        val markDeleted = localSlugs.minus(remoteSlugs.keys)
+        val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         markDeleted.values.forEach {
             venueRepo.update(it.copy(isDeleted = true))
         }
 
-        val missingVenues = remoteSlugs.minus(localSlugs.keys)
+        val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
         log.debug { "Fetching details for ${missingVenues.size} missing venues to be inserted." }
-        val newVenueLinksBySlugs = mutableListOf<Pair<String, String>>()
-        workParallel(5, missingVenues.values.toList()) { venue ->
-            fetchDetails(venue.slug, newVenueLinksBySlugs)
-        }
-
-        linkVenues(newVenueLinksBySlugs)
+        val newLinks = mutableSetOf<VenueLink>()
+        fetchAllInsertDispatch(missingVenues.keys.toList(), newLinks)
     }
 
-    private suspend fun linkVenues(newLinks: MutableList<Pair<String, String>>) {
+    private suspend fun linkVenues(newLinks: MutableSet<VenueLink>) {
         val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
 
         val missingVenuesBySlug = (newLinks.mapNotNull {
-            if (existingVenues.containsKey(it.first)) null else it.first
+            if (existingVenues.containsKey(it.slug1)) null else it.slug1
         } + newLinks.mapNotNull {
-            if (existingVenues.containsKey(it.second)) null else it.second
+            if (existingVenues.containsKey(it.slug2)) null else it.slug2
         }).distinct().sorted()
 
         if (missingVenuesBySlug.isEmpty()) {
             newLinks.map {
-                existingVenues[it.first]!! to existingVenues[it.second]!!
+                existingVenues[it.slug1]!! to existingVenues[it.slug2]!!
             }.forEach {
                 venueLinksRepo.insert(it.first, it.second)
             }
         } else {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
-            workParallel(5, missingVenuesBySlug) { slug ->
-                fetchDetails(slug, newLinks)
-            }
-            linkVenues(newLinks)
+            fetchAllInsertDispatch(missingVenuesBySlug, newLinks)
         }
     }
 
-    private suspend fun fetchDetails(slug: String, venueLinks: MutableList<Pair<String, String>>) {
+    private suspend fun fetchAllInsertDispatch(
+        venueSlugs: List<String>,
+        newLinks: MutableSet<VenueLink>
+    ) {
+        val dbos = workParallel(5, venueSlugs) { slug ->
+            fetchDetailsDownloadImage(slug, newLinks)
+        }.map { dbo ->
+            venueRepo.insert(dbo)
+        }
+        linkVenues(newLinks)
+        dbos.forEach { dbo ->
+            syncDispatcher.dispatchVenueDboAdded(dbo)
+        }
+    }
+
+    private suspend fun fetchDetailsDownloadImage(
+        slug: String,
+        venueLinks: MutableSet<VenueLink>
+    ): VenueDbo {
         val details = api.fetchVenueDetail(slug)
         details.linkedVenueSlugs.forEach {
-            venueLinks += details.slug to it
+            venueLinks += VenueLink(details.slug, it)
         }
-        val inserted = venueRepo.insert(
-            details.toDbo()
-        ).let {
-            if (details.originalImageUrl == null) it else downloadImageAndUpdate(it, details.originalImageUrl)
+        val dbo = details.toDbo(city.id)
+        return if (details.originalImageUrl == null) dbo else {
+            val fileName = "${details.slug}.png"
+            downloadAndSaveImage(fileName, details.originalImageUrl)
+            dbo.copy(imageFileName = fileName)
         }
-
-        syncDispatcher.dispatchVenueDboAdded(inserted)
     }
 
-    // can do that only AFTER was persisted, as we need the internal ID for the filename
-    private suspend fun downloadImageAndUpdate(venue: VenueDbo, originalImageUrl: Url): VenueDbo {
+    private suspend fun downloadAndSaveImage(fileName: String, originalImageUrl: Url) {
         val downloadedBytes = downloader.downloadVenueImage(originalImageUrl)
-
-        val output = ByteArrayOutputStream()
-        Thumbnails.of(downloadedBytes.inputStream())
-            .size(400, 400)
-            .keepAspectRatio(true)
-            .outputFormat("png")
-            .outputQuality(1.0)
-            .toOutputStream(output)
-        val resizedBytes = output.toByteArray()
-
-        val fileName = "${venue.id}.png"
+        val resizedBytes = resizeImage(downloadedBytes, 400 to 400)
         imageStorage.saveVenueImage(fileName, resizedBytes)
-        return venueRepo.update(venue.copy(imageFileName = fileName))
     }
-
-    private fun VenueDetails.toDbo() = VenueDbo(
-        id = -1,
-        name = title,
-        slug = slug,
-        cityId = city.id,
-        imageFileName = null, // not yet set
-        postalCode = postalCode,
-        street = streetAddress,
-        addressLocality = addressLocality,
-        latitude = latitude,
-        longitude = longitude,
-        facilities = disciplines.joinToString(","),
-        officialWebsite = websiteUrl?.toString(),
-        description = description,
-        openingTimes = openingTimes,
-        importantInfo = importantInfo,
-        rating = 0,
-        notes = "",
-        isFavorited = false,
-        isWishlisted = false,
-        isHidden = false,
-        isDeleted = false,
-    )
 }
+
+private fun VenueDetails.toDbo(cityId: Int) = VenueDbo(
+    id = -1,
+    name = title,
+    slug = slug,
+    cityId = cityId,
+    imageFileName = null, // will be set later after image download
+    postalCode = postalCode,
+    street = streetAddress,
+    addressLocality = addressLocality,
+    latitude = latitude,
+    longitude = longitude,
+    facilities = disciplines.joinToString(","),
+    officialWebsite = websiteUrl?.toString(),
+    description = description,
+    openingTimes = openingTimes,
+    importantInfo = importantInfo,
+    rating = 0,
+    notes = "",
+    isFavorited = false,
+    isWishlisted = false,
+    isHidden = false,
+    isDeleted = false,
+)

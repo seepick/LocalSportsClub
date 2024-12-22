@@ -11,6 +11,7 @@ interface SimpleVenue {
     val id: Int
     val slug: String
     val name: String
+    // TODO rating, isFavorited, isWishlisted
 }
 
 data class SimpleVenueImpl(
@@ -82,8 +83,8 @@ class Venue(
 
     fun copy(
         id: Int = this.id,
-        name: String = this.name,
         slug: String = this.slug,
+        name: String = this.name,
         description: String = this.description,
         facilities: List<String> = this.facilities,
         city: City = this.city,
@@ -105,8 +106,8 @@ class Venue(
         isFavorited: Boolean = this.isFavorited,
     ) = Venue(
         id = id,
-        name = name,
         slug = slug,
+        name = name,
         description = description,
         facilities = facilities,
         city = city,
@@ -129,6 +130,13 @@ class Venue(
     )
 
     override fun toString() = "Venue[id=$id, slug=$slug, name=$name]"
+    override fun hashCode() = slug.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other !is Venue) return false
+        return id == other.id && slug == other.slug && name == other.name && description == other.description && facilities == other.facilities && city == other.city &&
+//                name == other.name &&
+                notes == other.notes && imageFileName == other.imageFileName && isFavorited == other.isFavorited && rating == other.rating
+    }
 }
 
 class Rating private constructor(val value: Int) : Comparable<Rating> {
@@ -137,8 +145,7 @@ class Rating private constructor(val value: Int) : Comparable<Rating> {
             entries.associateBy { it.value }
         }
 
-        fun byValue(rating: Int): Rating =
-            ratingByValue[rating] ?: error("Invalid rating value: $rating")
+        fun byValue(rating: Int): Rating = ratingByValue[rating] ?: error("Invalid rating value: $rating")
 
         val R0 = Rating(0)
         val R1 = Rating(1)
@@ -150,8 +157,7 @@ class Rating private constructor(val value: Int) : Comparable<Rating> {
     }
 
     val string = (0..<value).fold("") { acc, _ -> "${acc}⭐️" }
-    override operator fun compareTo(other: Rating): Int =
-        value.compareTo(other.value)
+    override operator fun compareTo(other: Rating): Int = value.compareTo(other.value)
 
     override fun toString(): String = "Rating$value"
     override fun hashCode(): Int = value.hashCode()

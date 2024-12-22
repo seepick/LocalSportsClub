@@ -45,12 +45,12 @@ class SyncDispatcher {
         venueAddedListeners += onVenueAdded
     }
 
-    suspend fun dispatchVenueAdded(venue: Venue) {
-        withContext(Dispatchers.Main) {
-            venueAddedListeners.forEach {
-                it(venue)
-            }
+    fun dispatchVenueAdded(venue: Venue) {
+//        withContext(Dispatchers.Main) { // TODO switch back to UI pool?!
+        venueAddedListeners.forEach {
+            it(venue)
         }
+//        }
     }
 }
 
@@ -86,7 +86,7 @@ class DelayedSyncer(
                 syncDispatcher.dispatchVenueDboAdded(venueDbo)
             } else {
                 val inserted = venueRepo.insert(venueDbo)
-                imageStorage.saveVenueImage("${inserted.id}.png", bytes)
+                imageStorage.saveVenueImage("${inserted.slug}.png", bytes)
                 syncDispatcher.dispatchVenueDboAdded(inserted)
             }
         }

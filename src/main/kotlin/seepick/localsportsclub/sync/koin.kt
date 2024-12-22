@@ -20,7 +20,6 @@ fun syncModule(config: AppConfig) = module {
             imageStorage = get(),
             city = config.usc.city,
             plan = config.usc.plan,
-            baseUrl = config.usc.baseUrl,
         )
     }
     single {

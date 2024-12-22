@@ -37,7 +37,6 @@ class VenueSyncerTest : StringSpec() {
     private lateinit var syncer: VenueSyncer
     private val city = City.entries.random()
     private val plan = PlanType.entries.random()
-    private val baseUrl = "https://test"
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
 
     init {
@@ -106,7 +105,6 @@ class VenueSyncerTest : StringSpec() {
             imageStorage = imageStorage,
             city = city,
             plan = plan,
-            baseUrl = baseUrl,
         )
     }
 }
