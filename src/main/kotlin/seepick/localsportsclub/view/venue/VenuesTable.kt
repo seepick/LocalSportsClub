@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.api.domain.Venue
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.ColSize
@@ -15,10 +15,9 @@ import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 
 val venuesTableColumns = listOf<TableColumn<Venue>>(
-//    TableColumn("ID", ColSize.Width(50.dp), TextRenderer { it.id }),
     TableColumn("Image", ColSize.Width(150.dp), CellRenderer.CustomRenderer { venue, colSize ->
         Row(Modifier.height(30.dp)) {
-            VenueImage(venue.id)
+            VenueImage(venue.imageFileName)
         }
     }, sortingEnabled = false),
     TableColumn("Name", ColSize.Weight(0.7f), TextRenderer { it.name }),

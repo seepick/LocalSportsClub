@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.domain.Rating
-import seepick.localsportsclub.api.domain.Venue
-import seepick.localsportsclub.service.VenuesService
+import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.model.Rating
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.searchIndexFor
 import seepick.localsportsclub.view.common.table.TableColumn
 
@@ -16,21 +16,24 @@ class VenueEditModel {
 
     var notes = mutableStateOf("")
     var rating by mutableStateOf(Rating.R0)
+    var isFavorited by mutableStateOf(false)
 
     fun init(venue: Venue) {
         notes.value = venue.notes
         rating = venue.rating
+        isFavorited = venue.isFavorited
     }
 
     fun update(selectedVenue: Venue) =
         selectedVenue.copy(
             notes = notes.value,
             rating = rating,
+            isFavorited = isFavorited,
         )
 }
 
 class VenueViewModel(
-    private val venuesService: VenuesService,
+    private val dataStorage: DataStorage,
 ) : ViewModel() {
 
     private val log = logger {}
@@ -48,7 +51,7 @@ class VenueViewModel(
     fun onStartUp() {
         log.info { "On startup: Filling initial data." }
 //        _allVenues.addAll(DummyDataGenerator.generateVenues(40))
-        _allVenues.addAll(venuesService.selectAll())
+        _allVenues.addAll(dataStorage.selectVenues())
         resetVenues()
     }
 
@@ -109,6 +112,6 @@ class VenueViewModel(
     fun updateVenue() {
         val updatedVenue = venueEdit.update(selectedVenue!!)
         log.debug { "Updating venue: $updatedVenue" }
-        venuesService.update(updatedVenue)
+        dataStorage.update(updatedVenue)
     }
 }

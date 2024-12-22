@@ -17,7 +17,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.api.domain.Venue
+import seepick.localsportsclub.service.model.Venue
 
 class VenueSearch {
 

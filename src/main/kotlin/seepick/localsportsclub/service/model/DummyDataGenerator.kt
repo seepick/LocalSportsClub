@@ -1,7 +1,5 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.service.model
 
-import seepick.localsportsclub.api.domain.Rating
-import seepick.localsportsclub.api.domain.Venue
 import java.net.URI
 
 object DummyDataGenerator {
@@ -12,13 +10,13 @@ object DummyDataGenerator {
     private val suffix = listOf("v2", "ext", "beta", "super", "mega")
     private val officialWebsites = listOf("https://www.nu.nl", "https://www.ah.nl")
 
-    fun generateVenues(size: Int, customSuffix: String? = null): List<Venue> =
+    fun randomVenues(size: Int, customSuffix: String? = null): List<Venue> =
         (1..size).map {
-            val venue = generateVenue(customSuffix)
+            val venue = randomVenue(customSuffix)
             venue.copy(id = it, slug = "$it-${venue.slug}")
         }
 
-    private fun generateVenue(customSuffix: String? = null): Venue {
+    private fun randomVenue(customSuffix: String? = null): Venue {
         val word = words.random()
         val suffix = customSuffix ?: if (Math.random() < 0.25) suffix.random() else null
         val number = if (Math.random() < 0.25) (1..5000).random() else null

@@ -40,7 +40,7 @@ class LoginApiTest : StringSpec() {
                     "$baseUrl/login" -> {
                         val headers = request.headers.toFlatMap()
                         headers["Cookie"].shouldContain("PHPSESSID=$sessionId")
-                        headers shouldContain ("response_venue_detail-linked0.html-requested-with" to "XMLHttpRequest")
+                        headers shouldContain ("x-requested-with" to "XMLHttpRequest")
                         val formData = (request.body as FormDataContent).formData.toFlatMap()
                         formData shouldContain ("email" to username)
                         formData shouldContain ("password" to password)

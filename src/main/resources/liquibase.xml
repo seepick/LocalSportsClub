@@ -7,6 +7,9 @@
     <changeSet id="1" author="owner" failOnError="true">
         <comment>setting up initial schema</comment>
 
+        <createSequence sequenceName="SEQ_VENUES_ID" dataType="int"
+                        startValue="1" incrementBy="1" ordered="true" cycle="false"/>
+
         <createTable tableName="VENUES">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
@@ -20,16 +23,43 @@
             <column name="NOTES" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
+            <column name="IMAGE_FILE_NAME" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
             <column name="CITY_ID" type="integer">
                 <constraints nullable="false"/>
             </column>
             <column name="RATING" type="integer">
                 <constraints nullable="false"/>
             </column>
+            <column name="POSTAL_CODE" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="STREET" type="varchar(128)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ADDRESS_LOCALITY" type="varchar(128)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="LATITUDE" type="varchar(16)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="LONGITUDE" type="varchar(16)">
+                <constraints nullable="true"/>
+            </column>
             <column name="FACILITIES" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
             <column name="OFFICIAL_WEBSITE" type="varchar(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DESCRIPTION" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IMPORTANT_INFO" type="longvarchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="OPENING_TIMES" type="longvarchar">
                 <constraints nullable="true"/>
             </column>
             <column name="IS_FAVORITED" type="boolean">
@@ -44,10 +74,6 @@
             <column name="IS_DELETED" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <!--
-    val cityId: Int,
-    val officialWebsite: URI?,
-    -->
         </createTable>
 
         <createTable tableName="VENUE_LINKS">

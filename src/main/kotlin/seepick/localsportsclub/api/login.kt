@@ -12,6 +12,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.jsoup.Jsoup
+import seepick.localsportsclub.service.phpSessionId
+import seepick.localsportsclub.service.requireStatusOk
 
 class LoginApi(
     private val http: HttpClient,

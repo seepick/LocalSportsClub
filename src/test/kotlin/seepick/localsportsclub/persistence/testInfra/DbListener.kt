@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import seepick.localsportsclub.persistence.ExposedVenuesRepo
 import seepick.localsportsclub.persistence.allTables
 
 class DbListener : BeforeEachListener, AfterEachListener {
@@ -18,6 +19,7 @@ class DbListener : BeforeEachListener, AfterEachListener {
         db = Database.connect(buildTestJdbcUrl("test"))
         transaction {
             SchemaUtils.create(*allTables)
+            SchemaUtils.createSequence(ExposedVenuesRepo.idSequence)
         }
     }
 

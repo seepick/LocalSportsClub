@@ -23,7 +23,7 @@ object ManualSystemTests {
     private suspend fun manualTest() {
         val phpSessionId = System.getProperty("phpSessionId") ?: login().phpSessionId
 //        println("phpSessionId: $phpSessionId")
-        val venues = VenueHttpApi(httpClient, baseUrl, phpSessionId).fetchPages(
+        val venues = VenueHttpApi(httpClient, baseUrl, phpSessionId, false).fetchPages(
             VenuesFilter(
                 city = City.Amsterdam,
                 plan = PlanType.Large

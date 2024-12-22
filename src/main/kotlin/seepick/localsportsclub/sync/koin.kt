@@ -16,7 +16,8 @@ fun syncModule(config: AppConfig) = module {
             venuesRepo = get(),
             syncDispatcher = get(),
             venueLinksRepo = get(),
-            imageFetcher = get(),
+            downloader = get(),
+            imageStorage = get(),
             city = config.usc.city,
             plan = config.usc.plan,
             baseUrl = config.usc.baseUrl,
@@ -29,5 +30,5 @@ fun syncModule(config: AppConfig) = module {
         AppConfig.SyncMode.Real -> singleOf(::RealSyncerAdapter) bind Syncer::class
     }
     singleOf(::SyncDispatcher) bind SyncDispatcher::class
-    single { HttpImageFetcher(get(), httpClient) } bind ImageFetcher::class
+    single { HttpDownloader(httpClient) } bind Downloader::class
 }

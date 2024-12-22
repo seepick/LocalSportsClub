@@ -35,5 +35,6 @@ private fun connectToDatabase() {
     log.info { "Connecting to database: $jdbcUrl" }
     LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
     Database.connect(jdbcUrl, databaseConfig = DatabaseConfig {
+        useNestedTransactions = true
     })
 }

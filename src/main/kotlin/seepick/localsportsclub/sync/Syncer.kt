@@ -1,10 +1,13 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import seepick.localsportsclub.api.domain.Venue
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import seepick.localsportsclub.persistence.VenuesRepo
-import seepick.localsportsclub.service.DummyDataGenerator
+import seepick.localsportsclub.service.ImageStorage
+import seepick.localsportsclub.service.model.DummyDataGenerator
+import seepick.localsportsclub.service.model.Venue
 
 interface Syncer {
     suspend fun sync()
@@ -41,21 +44,28 @@ class RealSyncerAdapter(
     private val log = logger {}
     override suspend fun sync() {
         log.debug { "Syncing ..." }
-        venueSyncer.sync()
+        newSuspendedTransaction(Dispatchers.IO) {
+            venueSyncer.sync()
+        }
     }
 }
 
 class DelayedSyncer(
     private val venuesRepo: VenuesRepo,
     private val syncDispatcher: SyncDispatcher,
+    private val imageStorage: ImageStorage,
 ) : Syncer {
     private val log = logger {}
 
     override suspend fun sync() {
         log.info { "Delayed syncer delaying" }
-        DummyDataGenerator.generateVenues(5, customSuffix = "sync").forEachIndexed { index, venue ->
+//        val bytes = withContext(Dispatchers.IO) {
+//            DelayedSyncer::class.java.getResourceAsStream("/defaultVenueImage.png")!!.readAllBytes()
+//        }
+        DummyDataGenerator.randomVenues(5, customSuffix = "sync").forEach { venue ->
             delay(500)
-//            venuesRepo.insert(venue.toDbo())
+//            val dbo = venuesRepo.insert(venue.toDbo())
+//            imageStorage.saveVenue(dbo.id, bytes, "png")
             syncDispatcher.dispatchVenueAdded(venue)
         }
         log.info { "Delay sync done." }

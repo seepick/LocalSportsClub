@@ -6,7 +6,9 @@ import seepick.localsportsclub.AppConfig.ApiMode
 import seepick.localsportsclub.AppConfig.DatabaseMode
 import seepick.localsportsclub.AppConfig.SyncMode
 import seepick.localsportsclub.persistence.VenuesRepo
-import seepick.localsportsclub.sync.RealSyncerAdapter
+import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.sync.Downloader
+import seepick.localsportsclub.sync.Syncer
 
 class AppStartupKoinTest : StringSpec() {
     init {
@@ -22,8 +24,10 @@ class AppStartupKoinTest : StringSpec() {
                     )
                 )
             }.koin.also { koin ->
-                koin.get<RealSyncerAdapter>()
+                koin.get<Syncer>()
                 koin.get<VenuesRepo>()
+                koin.get<DataStorage>()
+                koin.get<Downloader>()
             }
         }
     }

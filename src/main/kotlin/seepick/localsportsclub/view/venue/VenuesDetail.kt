@@ -2,9 +2,13 @@ package seepick.localsportsclub.view.venue
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -29,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.api.domain.Rating
+import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.view.common.Tooltip
+
+private val imageWidth = 300.dp
+private val imageHeight = 200.dp
 
 @Composable
 fun VenuesDetail(
@@ -40,7 +47,12 @@ fun VenuesDetail(
     // https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
     Column(Modifier.width(300.dp)) {
         val uriHandler = LocalUriHandler.current
-
+        /*
+            val isFavorited: Boolean,
+            val isWishlisted: Boolean,
+            val isHidden: Boolean,
+            ...
+         */
         Text(
             text = venue?.name ?: "N/A",
             fontSize = 25.sp,
@@ -48,8 +60,37 @@ fun VenuesDetail(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        VenueImage(venue?.id)
-        Text("Facilities: ${venue?.facilities ?: ""}")
+        if (venue == null) {
+            Spacer(Modifier.height(imageHeight))
+        } else {
+            Row(modifier = Modifier.width(imageWidth).height(imageHeight)) {
+                VenueImage(venue.imageFileName)
+            }
+        }
+        Text("Facilities: ${venue?.facilities?.joinToString(", ") ?: ""}")
+        Row {
+            Text("Description:", fontWeight = FontWeight.Bold)
+            Text(venue?.description ?: "", fontSize = 10.sp, maxLines = 2)
+        }
+        venue?.importantInfo?.also { info ->
+            Row {
+                Text("Info:", fontWeight = FontWeight.Bold)
+                Text(info, fontSize = 10.sp, maxLines = 2)
+            }
+        }
+        venue?.openingTimes?.also { times ->
+            Row {
+                Text("Times:", fontWeight = FontWeight.Bold)
+                Text(times, fontSize = 10.sp, maxLines = 2)
+            }
+        }
+
+        Row {
+            Checkbox(viewModel.venueEdit.isFavorited, { viewModel.venueEdit.isFavorited = it })
+            Text("Favorited")
+        }
+
+        RatingPanel()
 
         Tooltip(venue?.uscWebsite?.toString()) {
             Button({
@@ -66,7 +107,6 @@ fun VenuesDetail(
             }
         }
 
-        RatingPanel()
 
 //        TextField(value = "foo", {}, label = { Text("Label") })
         val (notes, notesSetter) = viewModel.venueEdit.notes

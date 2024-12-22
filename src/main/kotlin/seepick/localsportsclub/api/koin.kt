@@ -27,7 +27,8 @@ fun apiModule(config: AppConfig) = module {
             VenueHttpApi(
                 http = httpClient,
                 baseUrl = config.usc.baseUrl,
-                phpSessionId = phpSessionId
+                phpSessionId = phpSessionId,
+                storeResponses = config.usc.storeResponses,
             )
         } bind VenueApi::class
         single { UscApiAdapter(get()) } bind UscApi::class

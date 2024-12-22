@@ -7,6 +7,7 @@ data class UscConfig(
     val baseUrl: String = "https://urbansportsclub.com/${UscLang.English.urlCode}",
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
+    val storeResponses: Boolean = false,
 )
 
 enum class UscLang(val urlCode: String) {
@@ -38,8 +39,8 @@ data class AppConfig(
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.Mock,
-            sync = SyncMode.Delayed,
+            api = ApiMode.Real,
+            sync = SyncMode.Real,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
