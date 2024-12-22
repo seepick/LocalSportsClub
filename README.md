@@ -9,37 +9,29 @@ Communistic Custom Client for Urban Sports Club.
 
 # TODOs
 
-## Big Features
-
-* link partner venues
-* activities
-* reserved activities overview
-* usage
-* reserve/cancel button
-
 ## Next up
 
-* mutable venue object
 * sort case-IN-sensitive
-* enable up/down arrow for table
 * support sorting asc/desc
 * BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 * description/info has "\n"... replace them
-* sync more venue details
 * linked venues
 * official website as editable textfield
 * finish rendering (editable) venue fields
 * fine tune UI (table, details, colors)
-* dry run venue sync; optimizations
+
+## Big Features
+
+* activities
+* reserved activities (sync, overview; mark as reserved)
+* usage (sync, UI indicator)
+* reserve/cancel button
 
 ## Backlog
 
-* free trainings
+* enable up/down arrow for table
+* sync free/"dropin" activities
 * if textfield elipse ("foo...") => show tooltip full text
-* sync activities ("workouts")
-* sync reservations
-* mark reserved activities
-* show usage indicator
 * migrate old content from AllFit
 
 ## Later
