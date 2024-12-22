@@ -25,7 +25,7 @@ data class VenuesFilter(
 )
 
 interface VenueApi {
-    suspend fun fetchPages(filter: VenuesFilter): List<VenuesJsonPage>
+    suspend fun fetchPages(filter: VenuesFilter): List<VenuesDataJson>
     suspend fun fetchDetails(slug: String): VenueDetails
 }
 
@@ -38,11 +38,11 @@ class VenueHttpApi(
 
     private val log = logger {}
 
-    override suspend fun fetchPages(filter: VenuesFilter): List<VenuesJsonPage> =
+    override suspend fun fetchPages(filter: VenuesFilter): List<VenuesDataJson> =
         fetchPageable { fetchPage(filter, it) }
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
-    private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesJsonPage {
+    private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
         val fullUrl = "$baseUrl/venues"
         log.debug { "Fetching venue page $page from: $fullUrl?page=$page&city_id=${filter.city.id}&plan_type=${filter.plan.id}" }
         val response = http.get(fullUrl) {

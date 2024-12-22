@@ -6,6 +6,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.api.activities.ActivityApi
+import seepick.localsportsclub.api.activities.ActivityHttpApi
 import seepick.localsportsclub.api.venue.VenueApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.service.httpClient
@@ -31,6 +33,14 @@ fun apiModule(config: AppConfig) = module {
                 storeResponses = config.usc.storeResponses,
             )
         } bind VenueApi::class
-        single { UscApiAdapter(get()) } bind UscApi::class
+        single {
+            ActivityHttpApi(
+                http = httpClient,
+                baseUrl = config.usc.baseUrl,
+                phpSessionId = phpSessionId,
+            )
+        } bind ActivityApi::class
+
+        singleOf(::UscApiAdapter) bind UscApi::class
     }
 }

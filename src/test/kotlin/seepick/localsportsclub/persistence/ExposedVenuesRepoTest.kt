@@ -20,7 +20,7 @@ import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class ExposedVenuesRepoTest : DescribeSpec() {
 
-    private val repo = ExposedVenuesRepo
+    private val repo = ExposedVenueRepo
 
     init {
         extension(DbListener())

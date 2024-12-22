@@ -37,7 +37,7 @@ data class VenueDbo(
     companion object // for extensions
 }
 
-interface VenuesRepo {
+interface VenueRepo {
     fun selectAll(): List<VenueDbo> // FIXME filter out isDeleted
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
@@ -66,7 +66,7 @@ object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
     val isDeleted = bool("IS_DELETED") // custom
 }
 
-object ExposedVenuesRepo : VenuesRepo {
+object ExposedVenueRepo : VenueRepo {
 
     val idSequence = Sequence("SEQ_VENUES_ID")
 
@@ -78,35 +78,34 @@ object ExposedVenuesRepo : VenuesRepo {
         }
     }
 
-    override fun insert(venue: VenueDbo): VenueDbo =
-        transaction {
-            log.debug { "Inserting $venue" }
-            val nextSeq = idSequence.nextIntVal()
-            val nextId = VenuesTable.insertAndGetId {
-                it[id] = nextSeq
-                it[name] = venue.name
-                it[slug] = venue.slug
-                it[notes] = venue.notes
-                it[facilities] = venue.facilities
-                it[cityId] = venue.cityId
-                it[officialWebsite] = venue.officialWebsite
-                it[rating] = venue.rating
-                it[street] = venue.street
-                it[addressLocality] = venue.addressLocality
-                it[postalCode] = venue.postalCode
-                it[longitude] = venue.longitude
-                it[latitude] = venue.latitude
-                it[description] = venue.description
-                it[imageFileName] = venue.imageFileName
-                it[openingTimes] = venue.openingTimes
-                it[importantInfo] = venue.importantInfo
-                it[isFavorited] = venue.isFavorited
-                it[isWishlisted] = venue.isWishlisted
-                it[isHidden] = venue.isHidden
-                it[isDeleted] = venue.isDeleted
-            }.value
-            venue.copy(id = nextId)
-        }
+    override fun insert(venue: VenueDbo): VenueDbo = transaction {
+        log.debug { "Inserting $venue" }
+        val nextSeq = idSequence.nextIntVal()
+        val nextId = VenuesTable.insertAndGetId {
+            it[id] = nextSeq
+            it[name] = venue.name
+            it[slug] = venue.slug
+            it[notes] = venue.notes
+            it[facilities] = venue.facilities
+            it[cityId] = venue.cityId
+            it[officialWebsite] = venue.officialWebsite
+            it[rating] = venue.rating
+            it[street] = venue.street
+            it[addressLocality] = venue.addressLocality
+            it[postalCode] = venue.postalCode
+            it[longitude] = venue.longitude
+            it[latitude] = venue.latitude
+            it[description] = venue.description
+            it[imageFileName] = venue.imageFileName
+            it[openingTimes] = venue.openingTimes
+            it[importantInfo] = venue.importantInfo
+            it[isFavorited] = venue.isFavorited
+            it[isWishlisted] = venue.isWishlisted
+            it[isHidden] = venue.isHidden
+            it[isDeleted] = venue.isDeleted
+        }.value
+        venue.copy(id = nextId)
+    }
 
     override fun update(venue: VenueDbo): VenueDbo =
         transaction {
@@ -120,7 +119,7 @@ object ExposedVenuesRepo : VenuesRepo {
                 it[isDeleted] = venue.isDeleted
                 it[officialWebsite] = venue.officialWebsite
             }
-            if (updated != 1) error("Expected 1 to be updated by ID $venue.id, but was: $updated")
+            if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
             venue
         }
 
@@ -149,7 +148,7 @@ object ExposedVenuesRepo : VenuesRepo {
     )
 }
 
-class InMemoryVenuesRepo : VenuesRepo {
+class InMemoryVenueRepo : VenueRepo {
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 

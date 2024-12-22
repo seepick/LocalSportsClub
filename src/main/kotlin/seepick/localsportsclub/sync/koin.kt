@@ -13,7 +13,7 @@ fun syncModule(config: AppConfig) = module {
     single {
         VenueSyncer(
             api = get(),
-            venuesRepo = get(),
+            venueRepo = get(),
             syncDispatcher = get(),
             venueLinksRepo = get(),
             downloader = get(),
@@ -21,6 +21,16 @@ fun syncModule(config: AppConfig) = module {
             city = config.usc.city,
             plan = config.usc.plan,
             baseUrl = config.usc.baseUrl,
+        )
+    }
+    single {
+        ActivitiesSyncer(
+            api = get(),
+            syncDispatcher = get(),
+            activityRepo = get(),
+            venueRepo = get(),
+            city = config.usc.city,
+            plan = config.usc.plan,
         )
     }
     log.debug { "Configuring sync mode: ${config.sync}" }

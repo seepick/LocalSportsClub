@@ -8,7 +8,7 @@ import seepick.localsportsclub.service.model.DataStorage
 fun serviceModule(config: AppConfig) = module {
     single {
         DataStorage(
-            venuesRepo = get(),
+            venueRepo = get(),
             dispatcher = get(),
             venueLinksRepo = get(),
             baseUrl = config.usc.baseUrl,

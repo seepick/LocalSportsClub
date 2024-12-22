@@ -9,6 +9,14 @@ Communistic Custom Client for Urban Sports Club.
 
 # TODOs
 
+## Big Features
+
+* link partner venues
+* activities
+* reserved activities overview
+* usage
+* reserve/cancel button
+
 ## Next up
 
 * mutable venue object
@@ -26,6 +34,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Backlog
 
+* free trainings
 * if textfield elipse ("foo...") => show tooltip full text
 * sync activities ("workouts")
 * sync reservations

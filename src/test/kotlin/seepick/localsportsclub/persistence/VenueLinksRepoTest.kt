@@ -14,7 +14,7 @@ import seepick.localsportsclub.persistence.testInfra.DbListener
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class VenueLinksRepoTest : StringSpec() {
-    private val venueRepo = ExposedVenuesRepo
+    private val venueRepo = ExposedVenueRepo
     private val repo = ExposedVenueLinksRepo
     private val nonExistingVenueId1 = 41
     private val nonExistingVenueId2 = 42

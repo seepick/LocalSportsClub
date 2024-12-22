@@ -18,12 +18,12 @@ fun persistenceModule(config: AppConfig) = module {
     }
     when (config.database) {
         AppConfig.DatabaseMode.Exposed -> {
-            single { ExposedVenuesRepo } bind VenuesRepo::class
+            single { ExposedVenueRepo } bind VenueRepo::class
             single { ExposedVenueLinksRepo } bind VenueLinksRepo::class
         }
 
         AppConfig.DatabaseMode.InMemory -> {
-            singleOf(::InMemoryVenuesRepo) bind VenuesRepo::class
+            singleOf(::InMemoryVenueRepo) bind VenueRepo::class
             singleOf(::InMemoryVenueLinksRepo) bind VenueLinksRepo::class
         }
     }

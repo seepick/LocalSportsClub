@@ -5,11 +5,11 @@ import io.ktor.http.Url
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenuesRepo
+import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.sync.SyncDispatcher
 
 class DataStorage(
-    private val venuesRepo: VenuesRepo,
+    private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
     private val dispatcher: SyncDispatcher,
     private val baseUrl: String,
@@ -17,7 +17,7 @@ class DataStorage(
     private val log = logger {}
 
     fun selectVenues(): List<Venue> {
-        val allVenues = venuesRepo.selectAll()
+        val allVenues = venueRepo.selectAll()
         // FIXME write test first for linking
 //        val allVenuesById = allVenues.associateBy { it.id }
 //        val allLinksById = venueLinksRepo.selectAll()
@@ -27,7 +27,7 @@ class DataStorage(
 
     fun update(venue: Venue) {
         log.debug { "updating venue" }
-        venuesRepo.update(venue.toDbo())
+        venueRepo.update(venue.toDbo())
         dispatcher.dispatchVenueUpdated(venue)
     }
 }

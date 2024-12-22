@@ -19,7 +19,7 @@ import seepick.localsportsclub.api.venueDetails
 import seepick.localsportsclub.api.venueInfo
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
-import seepick.localsportsclub.persistence.InMemoryVenuesRepo
+import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.service.model.Venue
@@ -30,7 +30,7 @@ class VenueSyncerTest : StringSpec() {
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
     private lateinit var api: UscApi
-    private lateinit var venuesRepo: InMemoryVenuesRepo
+    private lateinit var venuesRepo: InMemoryVenueRepo
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
     private lateinit var imageStorage: MemorizableImageStorage
     private lateinit var syncer: VenueSyncer
@@ -41,7 +41,7 @@ class VenueSyncerTest : StringSpec() {
 
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
-        venuesRepo = InMemoryVenuesRepo()
+        venuesRepo = InMemoryVenueRepo()
         venueLinksRepo = InMemoryVenueLinksRepo()
         imageStorage = MemorizableImageStorage()
         syncVenuesAdded.clear()
@@ -50,7 +50,7 @@ class VenueSyncerTest : StringSpec() {
         syncDispatcher.registerVenueAdded { syncVenuesAdded += it }
         syncer = VenueSyncer(
             api = api,
-            venuesRepo = venuesRepo,
+            venueRepo = venuesRepo,
             venueLinksRepo = venueLinksRepo,
             syncDispatcher = syncDispatcher,
             downloader = NoopDownloader,

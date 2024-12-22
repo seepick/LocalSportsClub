@@ -1,0 +1,28 @@
+{
+  "event": "page_viewed",
+  "user": {
+    "id": null,
+    "login_status": "logged-out",
+    "membership_city": null,
+    "membership_country": null,
+    "membership_status": null,
+    "membership_plan": null,
+    "membership_b2b_type": null,
+    "membership_contract_duration": null,
+    "company_name": null
+  },
+  "class": {
+    "id": "74626938",
+    "name": "Kickboks zaktraining",
+    "category": "Mixed Martial Arts",
+    "type": "instant booking",
+    "spots_left": "7",
+    "search_position": 1
+  },
+  "type": "class details",
+  "language": "nl",
+  "city": "Amsterdam",
+  "country": "Netherlands",
+  "environment": "de-live",
+  "referrer": "https:\\/\\/urbansportsclub.com\\/nl\\/venues\\/basecampwest?date=2024-10-15\\u0026business_type%5B%5D=b2c\\u0026plan_type=6"
+}

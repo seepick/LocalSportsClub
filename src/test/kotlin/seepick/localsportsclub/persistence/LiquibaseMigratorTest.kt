@@ -17,8 +17,8 @@ class LiquibaseMigratorTest : StringSpec() {
             Database.connect(jdbcUrl)
 
             val venue = Arb.venueDbo().next()
-            val inserted = ExposedVenuesRepo.insert(venue)
-            ExposedVenuesRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = inserted.id)
+            val inserted = ExposedVenueRepo.insert(venue)
+            ExposedVenueRepo.selectAll().shouldBeSingleton().first() shouldBe venue.copy(id = inserted.id)
         }
     }
 }

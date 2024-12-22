@@ -10,7 +10,7 @@ import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenuesRepo
+import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.model.toVenue
 import seepick.localsportsclub.service.workParallel
@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream
 
 class VenueSyncer(
     private val api: UscApi,
-    private val venuesRepo: VenuesRepo,
+    private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
     private val city: City,
     private val plan: PlanType,
@@ -32,15 +32,16 @@ class VenueSyncer(
     suspend fun sync() {
         log.info { "Syncing venues ..." }
         val remoteSlugs = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
-        val localSlugs = venuesRepo.selectAll().associateBy { it.slug }
+        val localSlugs = venueRepo.selectAll().associateBy { it.slug }
 
         val markDeleted = localSlugs.minus(remoteSlugs.keys)
+        log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         markDeleted.values.forEach {
-            venuesRepo.update(it.copy(isDeleted = true))
+            venueRepo.update(it.copy(isDeleted = true))
         }
 
         val missingVenues = remoteSlugs.minus(localSlugs.keys)
-        log.debug { "Fetching details for ${missingVenues.size} venues." }
+        log.debug { "Fetching details for ${missingVenues.size} missing venues to be inserted." }
         val newVenueLinksBySlugs = mutableListOf<Pair<String, String>>()
         workParallel(5, missingVenues.values.toList()) { venue ->
             fetchDetails(venue.slug, newVenueLinksBySlugs)
@@ -50,7 +51,7 @@ class VenueSyncer(
     }
 
     private suspend fun linkVenues(newLinks: MutableList<Pair<String, String>>) {
-        val existingVenues = venuesRepo.selectAll().associate { it.slug to it.id }
+        val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
 
         val missingVenuesBySlug = (newLinks.mapNotNull {
             if (existingVenues.containsKey(it.first)) null else it.first
@@ -78,7 +79,7 @@ class VenueSyncer(
         details.linkedVenueSlugs.forEach {
             venueLinks += details.slug to it
         }
-        val inserted = venuesRepo.insert(
+        val inserted = venueRepo.insert(
             details.toDbo()
         ).let {
             if (details.originalImageUrl == null) it else enhanceImage(it, details.originalImageUrl)
@@ -102,7 +103,7 @@ class VenueSyncer(
 
         val fileName = "${venue.id}.png"
         imageStorage.saveVenue(fileName, resizedBytes)
-        return venuesRepo.update(venue.copy(imageFileName = fileName))
+        return venueRepo.update(venue.copy(imageFileName = fileName))
     }
 
     private fun VenueDetails.toDbo() = VenueDbo(

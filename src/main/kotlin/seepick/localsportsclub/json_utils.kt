@@ -14,4 +14,3 @@ val kotlinxSerializer = Json {
 
 fun Json.toPrettyString(jsonString: String) =
     encodeToString(parseToJsonElement(jsonString))
-
