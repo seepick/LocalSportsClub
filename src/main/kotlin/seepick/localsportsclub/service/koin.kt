@@ -10,6 +10,7 @@ fun serviceModule(config: AppConfig) = module {
         DataStorage(
             venuesRepo = get(),
             dispatcher = get(),
+            venueLinksRepo = get(),
             baseUrl = config.usc.baseUrl,
         )
     }

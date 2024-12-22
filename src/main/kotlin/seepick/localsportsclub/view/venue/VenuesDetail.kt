@@ -94,14 +94,14 @@ fun VenuesDetail(
 
         Tooltip(venue?.uscWebsite?.toString()) {
             Button({
-                uriHandler.openUri(venue?.uscWebsite?.toString() ?: "")
+                uriHandler.openUri(venue?.uscWebsite?.toString()!!)
             }, enabled = venue?.uscWebsite != null) {
                 Text("Open USC Website")
             }
         }
         Tooltip(venue?.officialWebsite?.toString()) {
             Button({
-                uriHandler.openUri(venue?.officialWebsite?.toString() ?: "")
+                uriHandler.openUri(venue?.officialWebsite?.toString()!!)
             }, enabled = venue?.officialWebsite != null) {
                 Text("Open Official Website")
             }

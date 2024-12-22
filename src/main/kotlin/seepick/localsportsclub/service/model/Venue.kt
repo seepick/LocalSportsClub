@@ -1,13 +1,19 @@
 package seepick.localsportsclub.service.model
 
+import io.ktor.http.Url
 import seepick.localsportsclub.api.City
-import java.net.URI
+
+data class SimpleVenue(
+    val id: Int,
+    val slug: String,
+    val name: String,
+)
 
 data class Venue(
     val id: Int,
     val name: String,
-    val description: String,
     val slug: String,
+    val description: String,
     val facilities: List<String>,
     val city: City,
     val rating: Rating,
@@ -17,15 +23,16 @@ data class Venue(
     val addressLocality: String,
     val latitude: String,
     val longitude: String,
-    val officialWebsite: URI?,
+    val officialWebsite: Url?,
     val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
-    val uscWebsite: URI, // inferred by static URL + slug
+    val uscWebsite: Url, // inferred by static URL + slug
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
     val isHidden: Boolean,
     val isDeleted: Boolean,
+//    val linkedVenues: List<SimpleVenue>,
 ) {
     companion object {
         fun dummy() = Venue(
@@ -41,7 +48,7 @@ data class Venue(
             openingTimes = null,
             importantInfo = null,
             imageFileName = null,
-            uscWebsite = URI("https://usc.com/en/dummy-venue"),
+            uscWebsite = Url("https://usc.com/en/dummy-venue"),
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
@@ -51,6 +58,7 @@ data class Venue(
             addressLocality = "Amsterdam, Netherlands",
             latitude = "0.1",
             longitude = "0.2",
+//            linkedVenues = emptyList(),
         )
     }
 }

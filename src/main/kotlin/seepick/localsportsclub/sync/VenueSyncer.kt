@@ -117,7 +117,7 @@ class VenueSyncer(
         latitude = latitude,
         longitude = longitude,
         facilities = disciplines.joinToString(","),
-        officialWebsite = websiteUrl.toString(),
+        officialWebsite = websiteUrl?.toString(),
         description = description,
         openingTimes = openingTimes,
         importantInfo = importantInfo,

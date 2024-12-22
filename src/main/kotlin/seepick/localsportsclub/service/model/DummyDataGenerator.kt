@@ -1,6 +1,6 @@
 package seepick.localsportsclub.service.model
 
-import java.net.URI
+import io.ktor.http.Url
 
 object DummyDataGenerator {
 
@@ -29,7 +29,7 @@ object DummyDataGenerator {
             slug = word + if (suffix == null) "" else "-$suffix" +
                     if (number == null) "" else "-$number",
             rating = Rating.entries.random(),
-            officialWebsite = if (Math.random() < 0.70) URI(officialWebsites.random()) else null,
+            officialWebsite = if (Math.random() < 0.70) Url(officialWebsites.random()) else null,
             notes = "Some notes for $fullName",
         )
     }

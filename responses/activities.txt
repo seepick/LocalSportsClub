@@ -1,4 +1,4 @@
-https://urbansportsclub.com/nl/activities?service_type=0&address_id=25749&city=1144&date=2024-10-15&business_type%5B%5D=b2c&plan_type=6
+https://urbansportsclub.com/nl/activities?service_type=0&address_id=25749&city=1144&date=2024-10-15&business_type%5B%5D=b2c&plan_type=3
 (or: service_type=1)
 
 requested by: https://urbansportsclub.com/nl/venues/basecampwest?date=2024-10-15&business_type%5B%5D=b2c&plan_type=6
