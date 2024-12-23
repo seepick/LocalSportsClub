@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,7 +65,8 @@ fun <T> RowScope.Table(
             }
             items(items) { item ->
                 var isHovered by remember { mutableStateOf(false) }
-                val bgColor = if (isHovered) Color.Green else if (selectedItem == item) Color.Red else Color.White
+                val bgColor =
+                    if (isHovered) Color.Green else if (selectedItem == item) Color.Red else MaterialTheme.colors.background
                 Row(Modifier.fillMaxWidth().background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }

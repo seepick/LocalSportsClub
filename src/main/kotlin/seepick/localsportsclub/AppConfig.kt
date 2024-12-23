@@ -39,8 +39,8 @@ data class AppConfig(
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.Real,
-            sync = SyncMode.Real,
+            api = ApiMode.Mock,
+            sync = SyncMode.Delayed,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,

@@ -20,8 +20,6 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
     KoinApplication(application = {
         modules(allModules(config))
     }) {
-        MainWindow()
-
         val venueVM = koinViewModel<VenueViewModel>()
         val syncDispatcher = koinInject<SyncDispatcher>()
         val dataStorage = koinInject<DataStorage>()
@@ -32,8 +30,11 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
         window.addWindowListener(object : WindowAdapter() {
             // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
             override fun windowOpened(e: WindowEvent?) {
+                // maybe could also have done a LaunchedEffect(true) hack...?
                 venueVM.onStartUp()
             }
         })
+
+        MainWindow()
     }
 }

@@ -1,5 +1,8 @@
 package seepick.localsportsclub.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Button
@@ -30,7 +33,11 @@ fun MainWindow(
             }) {
                 Text(text = "Sync")
             }
-            if (viewModel.isSyncing) {
+            AnimatedVisibility(
+                visible = viewModel.isSyncing,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 CircularProgressIndicator()
             }
         }

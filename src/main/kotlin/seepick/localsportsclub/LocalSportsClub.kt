@@ -1,5 +1,9 @@
 package seepick.localsportsclub
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
@@ -17,17 +21,21 @@ object LocalSportsClub {
         }
         Window(
             onCloseRequest = {
-                println("close request")
-
+                println("close requested...")
                 exitApplication()
-            },
-            title = "LocalSportsClub",
-            state = rememberWindowState(
+            }, title = "LocalSportsClub", state = rememberWindowState(
                 width = 1_500.dp, height = 1200.dp,
                 position = WindowPosition(100.dp, 100.dp),
             )
         ) {
-            ComposeApp(window, config)
+            LscTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background,
+                ) {
+                    ComposeApp(window, config)
+                }
+            }
         }
     }
 }

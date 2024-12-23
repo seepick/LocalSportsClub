@@ -11,6 +11,8 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* use theme colors only (dark/light mode)
+* !! sync activities not always next 14 days, but check the newest activity date, and sync from there
 * venue links: only store one-way (no need to store it double; implicitly bi-directional)
 * if venue.importantInfo == "-" then nullify
 * sort case-IN-sensitive

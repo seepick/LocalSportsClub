@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.onClick
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,7 +64,7 @@ fun RowScope.TableHeader(
     TableCell(text, size, modifier = Modifier
         .onPointerEvent(PointerEventType.Enter) { isHovered = true }
         .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-        .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else Color.White)
+        .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.background)
         .let {
             if (isSortActive || !isSortEnabled) it else {
                 it.onClick { onClick() }
