@@ -5,16 +5,16 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.ktor.http.Url
-import seepick.localsportsclub.readFromClasspath
+import seepick.localsportsclub.readTestResponse
 
 class VenueDetailsParserTest : DescribeSpec() {
     init {
         fun readAndParse(fileName: String) =
-            VenueDetailsParser.parse(readFromClasspath("/test_lsc/$fileName"))
+            VenueDetailsParser.parse(readTestResponse(fileName))
 
-        fun read0() = readAndParse("response_venue_detail-linked0.html")
-        fun read1() = readAndParse("response_venue_detail-linked1.html")
-        fun readn() = readAndParse("response_venue_detail-linkedn.html")
+        fun read0() = readAndParse("venue_detail-linked0.html")
+        fun read1() = readAndParse("venue_detail-linked1.html")
+        fun readn() = readAndParse("venue_detail-linkedn.html")
 
         describe("Misc") {
             it("title") {

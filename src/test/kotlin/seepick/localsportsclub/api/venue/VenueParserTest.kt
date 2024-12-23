@@ -5,10 +5,10 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.http.Url
-import seepick.localsportsclub.readTestJson
+import seepick.localsportsclub.readTestResponse
 
 fun main() {
-    val json = readTestJson<VenuesJson>("response_venues.json")
+    val json = readTestResponse<VenuesJson>("venues.json")
 
     println("Stats.Venues (${json.data.stats.venue.size}):")
     json.data.stats.venue.forEach {
@@ -29,12 +29,12 @@ fun main() {
 
 class VenueParserTest : StringSpec() {
     private fun read(fileName: String): List<VenueInfo> {
-        return VenueParser.parseHtmlContent(readTestJson<VenuesJson>(fileName).data.content)
+        return VenueParser.parseHtmlContent(readTestResponse<VenuesJson>(fileName).data.content)
     }
 
     init {
         "When parse simplified venues Then parse data from HTML" {
-            val result = read("response_venues.simplified.json")
+            val result = read("venues.simplified.json")
 
             result.shouldBeSingleton().first() shouldBe VenueInfo(
                 addressId = 25678,
@@ -47,7 +47,7 @@ class VenueParserTest : StringSpec() {
             )
         }
         "When merchant venue catalog image is set Then parse null" {
-            val result = read("response_venues.noImage.json")
+            val result = read("venues.noImage.json")
             result.shouldBeSingleton().first().imageUrl.shouldBeNull()
         }
     }

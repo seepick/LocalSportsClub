@@ -22,7 +22,7 @@ class ActivitiesSyncer(
     private val venueRepo: VenueRepo,
 ) {
     private val log = logger {}
-    private val daysAhead = 2 // FIXME 14
+    private val daysAhead = 14
 
     suspend fun sync() {
         log.info { "Syncing activities ..." }

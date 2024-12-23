@@ -13,7 +13,7 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import seepick.localsportsclub.readFromClasspath
+import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.toFlatMap
 
 class LoginApiTest : StringSpec() {
@@ -86,7 +86,7 @@ class LoginApiTest : StringSpec() {
 }
 
 private fun MockRequestHandleScope.homeRespond(sessionId: String) = respond(
-    content = readFromClasspath("/test_lsc/response_home.html"),
+    content = readTestResponse<String>("home.html"),
     status = HttpStatusCode.OK,
     headers = headersOf(HttpHeaders.SetCookie, "PHPSESSID=$sessionId")
 )

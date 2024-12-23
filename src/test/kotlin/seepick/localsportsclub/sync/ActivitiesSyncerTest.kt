@@ -43,13 +43,13 @@ class ActivitiesSyncerTest : StringSpec() {
     }
 
     init {
-        "Given venue and activity fetched When sync Then inserted and dispatched" {
+        "Given venue stored and activity returned When sync Then inserted and dispatched" {
             val venue = Arb.venueDbo().next()
             val activityInfo = Arb.activityInfo().next().copy(venueSlug = venue.slug)
             venueRepo.stored[venue.id] = venue
             coEvery {
                 api.fetchActivities(any())
-            } returnsMany (1..14).map {
+            } returnsMany (1..14).map { // TODO need to rewrite test once syncer changed
                 when (it) {
                     3 -> listOf(activityInfo)
                     else -> emptyList()

@@ -10,8 +10,8 @@ import io.ktor.client.statement.request
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import seepick.localsportsclub.jsonx
+import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.httpClient
-import seepick.localsportsclub.readTestJson
 import seepick.localsportsclub.toPrettyString
 
 object ApiPlaygroundApp {
@@ -65,7 +65,7 @@ object ApiPlaygroundApp {
     }
 
     private fun readStudiosMap() {
-        val root = readTestJson<StudiosMapJsonRoot>("response_studios_map.many.json")
+        val root = readTestResponse<StudiosMapJsonRoot>("studios_map.many.json")
         println(root)
         println(root.data.venues.size)
     }

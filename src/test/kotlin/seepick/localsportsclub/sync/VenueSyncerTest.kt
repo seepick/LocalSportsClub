@@ -59,7 +59,7 @@ class VenueSyncerTest : StringSpec() {
                 stored.slug shouldBe remoteDetails.slug
 
                 syncVenueDbosAdded.shouldBeSingleton().first().slug shouldBe remoteDetails.slug
-                val expectedImageFileName = "${stored.id}.png"
+                val expectedImageFileName = "${stored.slug}.png"
                 imageStorage.savedVenueImages.shouldBeSingleton().first().first shouldBe expectedImageFileName
             }
         }
