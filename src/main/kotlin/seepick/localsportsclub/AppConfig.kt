@@ -29,7 +29,8 @@ data class AppConfig(
     val database: DatabaseMode,
     val api: ApiMode,
     val sync: SyncMode,
-    val usc: UscConfig = UscConfig()
+    val usc: UscConfig = UscConfig(),
+    val logFileEnabled: Boolean = false,
 ) {
     enum class DatabaseMode {
         Exposed, InMemory
@@ -48,6 +49,7 @@ data class AppConfig(
             database = DatabaseMode.Exposed,
             api = ApiMode.Real,
             sync = SyncMode.Real,
+            logFileEnabled = true,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,

@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -14,6 +15,8 @@ import io.ktor.http.setCookie
 import io.ktor.serialization.kotlinx.json.json
 import seepick.localsportsclub.kotlinxSerializer
 import java.net.ConnectException
+
+private val log = KotlinLogging.logger {}
 
 val httpClient = HttpClient(Java) {
     install(ContentNegotiation) {
@@ -40,6 +43,7 @@ suspend fun HttpClient.safeGet(url: Url, block: HttpRequestBuilder.() -> Unit = 
         e.printStackTrace()
         error("Failed to GET: $url")
     }
+    log.debug { "Received response from: ${response.request.url}" }
     response.requireStatusOk {
         "Response body was: ${response.bodyAsText()}"
     }

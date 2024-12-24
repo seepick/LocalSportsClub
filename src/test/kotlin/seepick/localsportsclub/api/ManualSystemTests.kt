@@ -24,6 +24,7 @@ object ManualSystemTests {
         plan = PlanType.Large,
         storeResponses = false,
     )
+    private val responseStorage = ResponseStorageImpl()
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -37,7 +38,7 @@ object ManualSystemTests {
     }
 
     private suspend fun testVenues(phpSessionId: PhpSessionId) {
-        val pages = VenueHttpApi(httpClient, phpSessionId, uscConfig).fetchPages(
+        val pages = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig).fetchPages(
             VenuesFilter(
                 city = City.Amsterdam,
                 plan = PlanType.Large
@@ -51,7 +52,7 @@ object ManualSystemTests {
 
     private suspend fun testActivities(phpSessionId: PhpSessionId) {
         val today = LocalDate.now()
-        val pages = ActivityHttpApi(httpClient, phpSessionId, uscConfig, SystemClock).fetchPages(
+        val pages = ActivityHttpApi(httpClient, phpSessionId, responseStorage, uscConfig, SystemClock).fetchPages(
             ActivitiesFilter(
                 city = City.Amsterdam, plan = PlanType.Large, date = today, service = ServiceTye.Courses
             )
@@ -66,7 +67,7 @@ object ManualSystemTests {
     }
 
     private suspend fun testSchedule(phpSessionId: PhpSessionId) {
-        val ids = ScheduleHttpApi(httpClient, phpSessionId, uscConfig).fetchScheduleRows()
+        val ids = ScheduleHttpApi(httpClient, phpSessionId, responseStorage, uscConfig).fetchScheduleRows()
         println("Got ${ids.size} activity IDs back: $ids")
     }
 

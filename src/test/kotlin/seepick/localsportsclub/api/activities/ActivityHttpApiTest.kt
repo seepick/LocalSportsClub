@@ -17,6 +17,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
 import seepick.localsportsclub.TestableClock
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.api.NoopResponseStorage
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.StatsDistrictJson
@@ -45,7 +46,13 @@ class ActivityHttpApiTest : StringSpec() {
                 "${uscConfig.baseUrl}/activities?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${filter.service.apiValue}&page=1"
             val http =
                 buildMockClient(expectedUrl = expectedUrl, phpSessionId = phpSessionId, responsePayload = rootJson)
-            val api = ActivityHttpApi(http = http, phpSessionId = phpSessionId, uscConfig = uscConfig, clock = clock)
+            val api = ActivityHttpApi(
+                http = http,
+                phpSessionId = phpSessionId,
+                uscConfig = uscConfig,
+                clock = clock,
+                responseStorage = NoopResponseStorage
+            )
 
             val response = api.fetchPages(filter)
 

@@ -1,18 +1,17 @@
 package seepick.localsportsclub.api.activities
 
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.request
 import io.ktor.http.Url
 import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
+import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.service.ApiException
 import seepick.localsportsclub.service.Clock
@@ -53,11 +52,11 @@ data class ActivityDetail(
 class ActivityHttpApi(
     private val http: HttpClient,
     private val phpSessionId: PhpSessionId,
+    private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
     private val clock: Clock,
 ) : ActivityApi {
 
-    private val log = logger {}
     private val baseUrl = uscConfig.baseUrl
 
     override suspend fun fetchPages(filter: ActivitiesFilter): List<ActivitiesDataJson> =
@@ -83,7 +82,7 @@ class ActivityHttpApi(
             parameter("service_type", filter.service.apiValue) // (scheduled) courses or free training (dropin)
             parameter("page", page)
         }
-        log.debug { "Fetched activities page $page from: ${response.request.url}" }
+        responseStorage.store(response, "ActivtiesPage$page")
         val json = response.body<ActivitiesJson>()
         if (!json.success) {
             throw ApiException("Activities endpoint returned failure!")

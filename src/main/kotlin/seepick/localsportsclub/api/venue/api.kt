@@ -4,23 +4,18 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
-import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.request
+import io.ktor.http.Url
 import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
+import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.api.fetchPageable
-import seepick.localsportsclub.kotlinxSerializer
 import seepick.localsportsclub.service.ApiException
-import seepick.localsportsclub.service.DirectoryEntry
-import seepick.localsportsclub.service.FileResolver
-import seepick.localsportsclub.service.requireStatusOk
-import java.io.File
-import java.net.ConnectException
+import seepick.localsportsclub.service.safeGet
 
 data class VenuesFilter(
     val city: City,
@@ -35,10 +30,10 @@ interface VenueApi {
 class VenueHttpApi(
     private val http: HttpClient,
     private val phpSessionId: PhpSessionId,
+    private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
 ) : VenueApi {
     private val baseUrl = uscConfig.baseUrl
-    private val storeResponses = uscConfig.storeResponses
 
     private val log = logger {}
 
@@ -47,25 +42,15 @@ class VenueHttpApi(
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
     private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
-        val fullUrl = "$baseUrl/venues"
-        val response = http.get(fullUrl) {
+        val response = http.safeGet(Url("$baseUrl/venues")) {
             cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
             parameter("city_id", filter.city.id)
             parameter("plan_type", filter.plan.id)
             parameter("page", page)
         }
-        log.debug { "Fetched ${response.request.url}" }
-        response.requireStatusOk()
-
-        val json = if (storeResponses) {
-            val target = File(FileResolver.resolve(DirectoryEntry.ApiLogs), "VenuePage-$page.json")
-            val responseText = response.bodyAsText()
-            target.writeText(responseText)
-            kotlinxSerializer.decodeFromString<VenuesJson>(responseText)
-        } else {
-            response.body<VenuesJson>()
-        }
+        responseStorage.store(response, "VenuesPage$page")
+        val json = response.body<VenuesJson>()
         if (!json.success) {
             throw ApiException("Venues endpoint returned failure!")
         }
@@ -74,16 +59,10 @@ class VenueHttpApi(
 
     override suspend fun fetchDetails(slug: String): VenueDetails {
         log.debug { "Fetching details for: [$slug]" }
-        val fullUrl = "$baseUrl/venues/$slug"
-        val response = try {
-            http.get(fullUrl) {
-                cookie("PHPSESSID", phpSessionId.value)
-            }
-        } catch (e: ConnectException) {
-            e.printStackTrace()
-            error("Failed to load details for: $fullUrl")
+        val response = http.safeGet(Url("$baseUrl/venues/$slug")) {
+            cookie("PHPSESSID", phpSessionId.value)
         }
-        response.requireStatusOk()
+        responseStorage.store(response, "VenueDetails-$slug")
         return VenueDetailsParser.parse(response.bodyAsText())
     }
 }

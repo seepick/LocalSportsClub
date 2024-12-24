@@ -6,6 +6,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.Url
 import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.PhpSessionId
+import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.service.safeGet
 
 interface ScheduleApi {
@@ -15,6 +16,7 @@ interface ScheduleApi {
 class ScheduleHttpApi(
     private val http: HttpClient,
     private val phpSessionId: PhpSessionId,
+    private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
 ) : ScheduleApi {
 
@@ -24,6 +26,7 @@ class ScheduleHttpApi(
         val response = http.safeGet(Url("$baseUrl/profile/schedule")) {
             cookie("PHPSESSID", phpSessionId.value)
         }
+        responseStorage.store(response, "Schedule")
         return ScheduleParser.parse(response.bodyAsText()).rows
     }
 }

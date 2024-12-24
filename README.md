@@ -15,6 +15,7 @@ Communistic Custom Client for Urban Sports Club.
 * MIN: description/info has "\n"... replace them
 * MIN: if venue.importantInfo == "-" then nullify
 * MIN: sort case-IN-sensitive
+* cleanup tasktags
 
 ## Backlog
 

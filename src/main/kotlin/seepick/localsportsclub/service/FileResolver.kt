@@ -41,5 +41,5 @@ enum class DirectoryEntry(val directoryName: String) {
     Database("database"),
     ApiLogs("api_logs"),
     VenueImages("venueImages"),
-    //    ApplicationLogs("app_logs"),
+    ApplicationLogs("app_logs"),
 }

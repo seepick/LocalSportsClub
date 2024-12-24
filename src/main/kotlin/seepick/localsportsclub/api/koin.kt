@@ -32,8 +32,8 @@ fun apiModule(config: AppConfig) = module {
             require(result is LoginResult.Success) { "Login failed: $result" }
             result.phpSessionId
         }
+        single { if (config.usc.storeResponses) ResponseStorageImpl() else NoopResponseStorage } bind ResponseStorage::class
         single { PhpSessionId(phpSessionId) } bind PhpSessionId::class
-
         singleOf(::VenueHttpApi) bind VenueApi::class
         singleOf(::ActivityHttpApi) bind ActivityApi::class
         singleOf(::ScheduleHttpApi) bind ScheduleApi::class
