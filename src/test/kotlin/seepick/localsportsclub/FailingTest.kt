@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 class FailingTest : StringSpec() {
     init {
         "nope" {
+            // yep, fail
             1 shouldBe 2
         }
     }
