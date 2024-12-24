@@ -14,6 +14,7 @@ class SyncDispatcher {
     private val venueDboAddedListeners = mutableListOf<(VenueDbo) -> Unit>()
     private val venueAddedListeners = mutableListOf<(Venue) -> Unit>()
     private val activityDboAddedListeners = mutableListOf<(ActivityDbo) -> Unit>()
+    private val activityDboUpdatedListeners = mutableListOf<(ActivityDbo, ActivityFieldUpdate) -> Unit>()
 
     fun registerVenueDboAdded(onVenueDboAdded: (VenueDbo) -> Unit) {
         venueDboAddedListeners += onVenueDboAdded
@@ -46,6 +47,20 @@ class SyncDispatcher {
         }
 //        }
     }
+
+    fun registerActivityDboUpdated(onActivityUpdated: (ActivityDbo, ActivityFieldUpdate) -> Unit) {
+        activityDboUpdatedListeners += onActivityUpdated
+    }
+
+    fun dispatchActivityDboUpdated(activity: ActivityDbo, field: ActivityFieldUpdate) {
+        activityDboUpdatedListeners.forEach {
+            it(activity, field)
+        }
+    }
+}
+
+enum class ActivityFieldUpdate {
+    Scheduled
 }
 
 object NoopSyncer : Syncer {

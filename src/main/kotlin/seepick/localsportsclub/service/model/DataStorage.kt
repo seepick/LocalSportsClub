@@ -8,6 +8,7 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncDispatcher
 
 class DataStorage(
@@ -69,6 +70,13 @@ class DataStorage(
 //        dispatcher.dispatchActivityAdded(activity) // FIXME
     }
 
+    fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+        val stored = allActivitiesByVenueId[activityDbo.venueId]!!.single { it.id == activityDbo.id }
+        when (field) {
+            ActivityFieldUpdate.Scheduled -> stored.scheduled = activityDbo.scheduled
+        }
+    }
+
     fun update(venue: Venue) {
         log.debug { "updating $venue" }
         venueRepo.update(venue.toDbo())
@@ -83,6 +91,7 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     spotsLeft = spotsLeft,
     from = from,
     to = to,
+    scheduled = scheduled
 )
 
 fun Venue.toDbo() = VenueDbo(

@@ -8,6 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.fetchPageable
@@ -44,7 +45,6 @@ class VenueHttpApi(
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
     private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
         val fullUrl = "$baseUrl/venues"
-        log.debug { "Fetching venue page $page from: $fullUrl?page=$page&city_id=${filter.city.id}&plan_type=${filter.plan.id}" }
         val response = http.get(fullUrl) {
             cookie("PHPSESSID", phpSessionId)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
@@ -52,6 +52,7 @@ class VenueHttpApi(
             parameter("plan_type", filter.plan.id)
             parameter("page", page)
         }
+        log.debug { "Fetched ${response.request.url}" }
         response.requireStatusOk()
 
         val json = if (storeResponses) {

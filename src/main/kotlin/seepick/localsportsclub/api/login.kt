@@ -80,9 +80,8 @@ class LoginApi(
         val jsonSuccessOrHtmlFail = response.bodyAsText()
         try {
             val jsonRoot = Json.parseToJsonElement(jsonSuccessOrHtmlFail)
-            LoginResult.Success(phpSessionId = login.phpSessionId)
             return if (jsonRoot.jsonObject["success"].toString() == "true") {
-                LoginResult.Success(phpSessionId = login.phpSessionId)
+                LoginResult.Success(phpSessionId = response.phpSessionId)
             } else {
                 log.warn { "Returned JSON after login:\n$jsonSuccessOrHtmlFail" }
                 LoginResult.Failure("Invalid JSON returned!")

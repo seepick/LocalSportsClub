@@ -25,6 +25,7 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
         val dataStorage = koinInject<DataStorage>()
         syncDispatcher.registerVenueDboAdded(dataStorage::onVenueDboAdded)
         syncDispatcher.registerActivityDboAdded(dataStorage::onActivityDboAdded)
+        syncDispatcher.registerActivityDboUpdated(dataStorage::onActivityDboUpdated)
         syncDispatcher.registerVenueAdded(venueVM::onVenueAdded)
 
         window.addWindowListener(object : WindowAdapter() {

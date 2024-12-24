@@ -30,13 +30,15 @@ fun syncModule(config: AppConfig) = module {
             venueRepo = get(),
             city = config.usc.city,
             plan = config.usc.plan,
+            clock = get(),
         )
     }
+    singleOf(::ScheduleSyncer)
     log.debug { "Configuring sync mode: ${config.sync}" }
     when (config.sync) {
         AppConfig.SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
         AppConfig.SyncMode.Delayed -> singleOf(::DelayedSyncer) bind Syncer::class
-        AppConfig.SyncMode.Real -> singleOf(::RealSyncerAdapter) bind Syncer::class
+        AppConfig.SyncMode.Real -> singleOf(::SyncerFacade) bind Syncer::class
     }
     singleOf(::SyncDispatcher) bind SyncDispatcher::class
     single { HttpDownloader(httpClient) } bind Downloader::class

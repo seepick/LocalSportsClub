@@ -1,6 +1,7 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.jetbrains.annotations.TestOnly
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
@@ -11,6 +12,7 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.Clock
 import java.time.LocalDate
 
 class ActivitiesSyncer(
@@ -20,19 +22,33 @@ class ActivitiesSyncer(
     private val syncDispatcher: SyncDispatcher,
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
+    private val clock: Clock,
+    private val syncDaysAhead: Int = 14
 ) {
     private val log = logger {}
-    private val daysAhead = 14
+
+    init {
+        require(syncDaysAhead >= 1)
+    }
 
     suspend fun sync() {
         log.info { "Syncing activities ..." }
         val allStoredActivities = activityRepo.selectAll()
         val venuesBySlug = venueRepo.selectAll().associateBy { it.slug }
-        (0..<daysAhead).forEach { dayAhead ->
-            val day = LocalDate.now().plusDays(dayAhead.toLong())
+
+        daysToSync().also { log.debug { "Syncing days: $it" } }.forEach { day ->
             syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
         }
         // FIXME delete old ones, before today, without a reservation on it
+    }
+
+    @TestOnly
+    fun daysToSync(): List<LocalDate> {
+        val today = clock.today()
+        val furthestAwaySyncDayIncl = today.plusDays(syncDaysAhead.toLong() - 1)
+        val futureMostActivity = activityRepo.selectFutureMostDate() ?: today.minusDays(1)
+        val startingPoint = if (futureMostActivity < today) today else futureMostActivity
+        return startingPoint.datesUntil(furthestAwaySyncDayIncl.plusDays(1)).toList()
     }
 
     private suspend fun syncForDay(day: LocalDate, stored: List<ActivityDbo>, venuesBySlug: Map<String, VenueDbo>) {
@@ -57,6 +73,7 @@ class ActivitiesSyncer(
         spotsLeft = spotsLeft,
         from = from,
         to = to,
+        scheduled = false,
     )
 
     private suspend fun fetchRemoteActivities(date: LocalDate) = api.fetchActivities(

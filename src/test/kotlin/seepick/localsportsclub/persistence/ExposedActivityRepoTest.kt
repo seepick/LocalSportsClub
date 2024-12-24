@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveCause
@@ -17,6 +18,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.persistence.testInfra.DbListener
 import seepick.localsportsclub.persistence.testInfra.activityDbo
 import seepick.localsportsclub.persistence.testInfra.venueDbo
+import java.time.LocalDateTime
 
 class ExposedActivityRepoTest : DescribeSpec() {
     private val activityRepo = ExposedActivityRepo
@@ -28,6 +30,19 @@ class ExposedActivityRepoTest : DescribeSpec() {
         describe("When select all") {
             it("Then return empty") {
                 activityRepo.selectAll().shouldBeEmpty()
+            }
+        }
+        describe("When select future most date") {
+            it("Given two different Then most future returned") {
+                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val today = LocalDateTime.now()
+                val tomorrow = today.plusDays(1)
+                activityRepo.insert(Arb.activityDbo().next().copy(from = tomorrow, venueId = venue.id))
+                activityRepo.insert(Arb.activityDbo().next().copy(from = today, venueId = venue.id))
+                activityRepo.selectFutureMostDate() shouldBe tomorrow.toLocalDate()
+            }
+            it("Given nothing Then null") {
+                activityRepo.selectFutureMostDate().shouldBeNull()
             }
         }
         describe("When insert") {

@@ -82,6 +82,7 @@ class LoginApiTest : StringSpec() {
     private fun MockRequestHandleScope.loginRespond(isSuccess: Boolean) = respond(
         content = if (isSuccess) loginResponseSuccess else loginResponseFail,
         status = HttpStatusCode.OK,
+        headers = headersOf(HttpHeaders.SetCookie, "PHPSESSID=$sessionId")
     )
 }
 

@@ -35,7 +35,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.Clock
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.view.common.Tooltip
 
@@ -45,7 +47,10 @@ private val imageHeight = 200.dp
 @Composable
 fun VenueDetail(
     viewModel: VenueViewModel = koinViewModel(),
+    clock: Clock = koinInject()
 ) {
+    val currentYear by remember { mutableStateOf(clock.today().year) }
+
     val venue = viewModel.selectedVenue
     // https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
     Column(Modifier.width(300.dp)) {
@@ -118,7 +123,12 @@ fun VenueDetail(
 
         LazyColumn {
             items(viewModel.selectedVenue?.activities ?: emptyList()) { activity ->
-                Text(text = "${activity.name} - ${activity.fromToFormatted}")
+                Row {
+                    if (activity.scheduled) {
+                        Text(text = "⭐️")
+                    }
+                    Text(text = "${activity.name} - ${activity.fromToFormatted(currentYear)}")
+                }
             }
         }
 
@@ -144,15 +154,13 @@ fun NotesTextField(notes: String, setter: (String) -> Unit) {
 fun RatingPanel(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
-
     Column {
-        var ratingText = viewModel.venueEdit.rating.string
         var isMenuExpanded by remember { mutableStateOf(false) }
         var textFieldSize by remember { mutableStateOf(Size.Zero) }
         val icon = if (isMenuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
         OutlinedTextField(
-            value = ratingText,
+            value = viewModel.venueEdit.rating.string,
             onValueChange = { /* no-op */ },
             readOnly = true,
             modifier = Modifier

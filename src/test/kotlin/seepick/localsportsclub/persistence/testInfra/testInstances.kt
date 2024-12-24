@@ -53,5 +53,6 @@ fun Arb.Companion.activityDbo() = arbitrary {
         spotsLeft = int(min = 0, max = 10).next(),
         from = from,
         to = from.plusMinutes(long(min = 30, max = 120).next()),
+        scheduled = boolean().next(),
     )
 }

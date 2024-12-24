@@ -108,6 +108,9 @@
             <column name="SPOTS_LEFT" type="integer">
                 <constraints nullable="false"/>
             </column>
+            <column name="SCHEDULED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
             <column name="VENUE_ID" type="integer">
                 <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_ACTIVITIES_VENUE_ID"/>
             </column>

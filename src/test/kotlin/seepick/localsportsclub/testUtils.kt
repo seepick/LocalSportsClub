@@ -3,6 +3,10 @@ package seepick.localsportsclub
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
+import seepick.localsportsclub.service.Clock
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 fun StringValues.toFlatMap(): Map<String, String> =
     toMap().mapValues { it.value.single() }
@@ -18,3 +22,21 @@ val jsonx = Json {
     isLenient = false
 }
 
+class TestableClock(
+    private var now: LocalDateTime,
+    private var today: LocalDate = now.toLocalDate(),
+) : Clock {
+
+    fun setSeperately(time: LocalTime, day: LocalDate) {
+        now = day.atTime(time)
+        today = day
+    }
+
+    fun setNowAndToday(now: LocalDateTime) {
+        this.now = now
+        today = now.toLocalDate()
+    }
+
+    override fun now() = now
+    override fun today() = today
+}

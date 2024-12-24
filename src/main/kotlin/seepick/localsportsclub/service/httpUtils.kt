@@ -3,6 +3,7 @@ package seepick.localsportsclub.service
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -32,9 +33,9 @@ suspend fun HttpResponse.requireStatusOk(message: suspend () -> String = { "" })
 
 class ApiException(message: String, cause: Exception? = null) : Exception(message, cause)
 
-suspend fun HttpClient.safeGet(url: Url): HttpResponse {
+suspend fun HttpClient.safeGet(url: Url, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
     val response = try {
-        get(url)
+        get(url, block)
     } catch (e: ConnectException) {
         e.printStackTrace()
         error("Failed to GET: $url")

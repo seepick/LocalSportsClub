@@ -6,6 +6,7 @@ import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.service.model.DataStorage
 
 fun serviceModule(config: AppConfig) = module {
+    single { SystemClock } bind Clock::class
     single {
         DataStorage(
             venueRepo = get(),

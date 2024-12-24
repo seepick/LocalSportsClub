@@ -3,7 +3,6 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -16,15 +15,17 @@ class Activity(
     val from: LocalDateTime,
     val to: LocalDateTime,
     spotsLeft: Int,
+    scheduled: Boolean,
 ) {
     var spotsLeft: Int by mutableStateOf(spotsLeft)
-    val fromToFormatted = buildDateTimeFormatted(from, to)
+    var scheduled: Boolean by mutableStateOf(scheduled)
+    fun fromToFormatted(currentYear: Int) = buildDateTimeFormatted(from, to, currentYear)
 
     override fun toString() = "Activity[id=$id, name=$name, venue.slug=${venue.slug}]"
 }
 
-private fun buildDateTimeFormatted(from: LocalDateTime, to: LocalDateTime): String =
-    from.format(if (from.year != LocalDate.now().year) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter) + "-" +
+private fun buildDateTimeFormatted(from: LocalDateTime, to: LocalDateTime, currentYear: Int): String =
+    from.format(if (from.year != currentYear) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter) + "-" +
             to.format(timeOnlyFormatter)
 
 private val dayDateYearAndTimeFormatter = DateTimeFormatter.ofPattern("E dd.MM.yy HH:mm", Locale.ENGLISH)

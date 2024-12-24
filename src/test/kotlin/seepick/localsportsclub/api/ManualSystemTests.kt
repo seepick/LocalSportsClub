@@ -7,6 +7,7 @@ import seepick.localsportsclub.api.activities.ActivitiesFilter
 import seepick.localsportsclub.api.activities.ActivitiesParser
 import seepick.localsportsclub.api.activities.ActivityHttpApi
 import seepick.localsportsclub.api.activities.ServiceTye
+import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.service.httpClient
@@ -23,7 +24,8 @@ object ManualSystemTests {
             log.info { "Manual test running..." }
             val phpSessionId = getSessionId()
 //            testVenues(phpSessionId)
-            testActivities(phpSessionId)
+//            testActivities(phpSessionId)
+            testSchedule(phpSessionId)
         }
     }
 
@@ -51,6 +53,11 @@ object ManualSystemTests {
         }
         println("In total ${activities.size} activities:")
         activities.forEach { println("- $it") }
+    }
+
+    private suspend fun testSchedule(phpSessionId: String) {
+        val ids = ScheduleHttpApi(httpClient, baseUrl, phpSessionId).fetchActivityIds()
+        println("Got ${ids.size} activity IDs back: $ids")
     }
 
     private suspend fun getSessionId(): String {

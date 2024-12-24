@@ -8,6 +8,8 @@ import org.koin.dsl.module
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.api.activities.ActivityApi
 import seepick.localsportsclub.api.activities.ActivityHttpApi
+import seepick.localsportsclub.api.schedule.ScheduleApi
+import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.service.httpClient
@@ -40,6 +42,13 @@ fun apiModule(config: AppConfig) = module {
                 phpSessionId = phpSessionId,
             )
         } bind ActivityApi::class
+        single {
+            ScheduleHttpApi(
+                http = httpClient,
+                baseUrl = config.usc.baseUrl,
+                phpSessionId = phpSessionId,
+            )
+        } bind ScheduleApi::class
 
         singleOf(::UscApiAdapter) bind UscApi::class
     }
