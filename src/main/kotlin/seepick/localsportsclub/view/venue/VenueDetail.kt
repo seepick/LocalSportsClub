@@ -127,7 +127,7 @@ fun VenueDetail(
                     if (activity.scheduled) {
                         Text(text = "⭐️")
                     }
-                    Text(text = "${activity.name} - ${activity.fromToFormatted(currentYear)}")
+                    Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")
                 }
             }
         }

@@ -1,0 +1,26 @@
+{
+  "event": "booking_succeeded",
+  "user": {
+    "id": "abcde1234",
+    "login_status": "logged-in",
+    "membership_city": "Amsterdam",
+    "membership_country": "Netherlands",
+    "membership_status": "active",
+    "membership_plan": "L",
+    "membership_b2b_type": "b2c",
+    "membership_contract_duration": "monthly",
+    "company_name": null
+  },
+  "class": {
+    "id": "84810748",
+    "name": "RESTORATIVE YOGA",
+    "category": "Yoga",
+    "type": "instant booking",
+    "spots_left": "2"
+  },
+  "venue": {
+    "id": "25336",
+    "name": "Movements City",
+    "category": "Pilates, Yoga, Meditation"
+  }
+}

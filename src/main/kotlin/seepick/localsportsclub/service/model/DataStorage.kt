@@ -9,6 +9,7 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.DateTimeRange
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 
@@ -106,8 +107,7 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     name = name,
     category = category,
     spotsLeft = spotsLeft,
-    from = from,
-    to = to,
+    dateTimeRange = DateTimeRange(from, to),
     scheduled = scheduled
 )
 

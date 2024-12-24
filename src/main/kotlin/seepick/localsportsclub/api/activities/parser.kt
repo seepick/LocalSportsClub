@@ -4,12 +4,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import seepick.localsportsclub.api.HtmlDateParser
+import seepick.localsportsclub.api.TimePairs
 import seepick.localsportsclub.kotlinxSerializer
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
-private typealias TimePairs = Pair<Pair<Int, Int>, Pair<Int, Int>>
 
 data class ActivityInfo(
     val id: Int,
@@ -45,9 +45,9 @@ object ActivitiesParser {
         val document = Jsoup.parse(htmlString)
         val html = document.childNodes()[0] as Element
         val body = html.children()[1]
-        val children = body.children()
-        log.debug { "Parsing ${children.size} activities." }
-        return children.map { div ->
+        val divs = body.children()
+        log.debug { "Parsing ${divs.size} activities." }
+        return divs.map { div ->
             parseSingle(div, date)
         }
     }
@@ -56,7 +56,7 @@ object ActivitiesParser {
         val dataLayerJsonString = div.select("a[href=\"#modal-class\"]").first()!!.attr("data-datalayer")
         val dataLayer = kotlinxSerializer.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
         val (from, to) = convertFromToDateTime(
-            date, parseTime(div.select("p.smm-class-snippet__class-time").text())
+            date, HtmlDateParser.parseTime(div.select("p.smm-class-snippet__class-time").text())
         )
         require(
             div.attr("data-appointment-id").toInt() == dataLayer.id.toInt()
@@ -74,17 +74,39 @@ object ActivitiesParser {
 }
 
 private fun convertFromToDateTime(date: LocalDate, times: TimePairs): Pair<LocalDateTime, LocalDateTime> =
-    LocalDateTime.of(date, LocalTime.of(times.first.first, times.first.second)) to
-            LocalDateTime.of(date, LocalTime.of(times.second.first, times.second.second))
+    LocalDateTime.of(date, times.from) to LocalDateTime.of(date, times.to)
 
-private fun parseTime(text: String): TimePairs =
-    text.split("—")
-        .map { twoTimes ->
-            twoTimes.trim().split(":").let { numberParts ->
-                require(numberParts.size == 2) { "Expected to be 2 number parts: ${numberParts.size} ($text)" }
-                numberParts[0].toInt() to numberParts[1].toInt()
-            }
-        }.let { twoTimesList ->
-            require(twoTimesList.size == 2) { "Times list expected to be 2 but was: ${twoTimesList.size} ($text)" }
-            twoTimesList[0] to twoTimesList[1]
-        }
+@Serializable
+data class ActivitySingleDataJson(
+    val `class`: ActivityDataLayerClassJson,
+    val venue: ActivityDataLayerVenueJson,
+)
+
+@Serializable
+data class ActivityDataLayerVenueJson(
+    val id: Int,
+    val name: String,
+)
+
+object ActivityParser {
+    fun parse(html: String, currentYear: Int): ActivityDetail {
+        val document = Jsoup.parse(html)
+        val htmlEl = document.childNodes()[0] as Element
+        val body = htmlEl.children()[1]
+        val div = body.children().first()!!
+
+        val dateString = div.select("p.smm-class-details__datetime").text()
+        val dateRange = HtmlDateParser.parseDateTimeRange(dateString, currentYear)
+        val json = div.select("button.book").attr("data-book-success")
+        val data = kotlinxSerializer.decodeFromString<ActivitySingleDataJson>(json)
+        require(div.select("h3").first()!!.text() == data.`class`.name)
+        return ActivityDetail(
+            name = data.`class`.name,
+            dateTimeRange = dateRange,
+            venueId = data.venue.id,
+            venueName = data.venue.name,
+            category = data.`class`.category,
+            spotsLeft = data.`class`.spots_left.toInt(),
+        )
+    }
+}

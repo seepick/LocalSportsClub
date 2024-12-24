@@ -15,6 +15,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
+import seepick.localsportsclub.TestableClock
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
@@ -29,6 +30,7 @@ import java.time.format.DateTimeFormatter
 class ActivityHttpApiTest : StringSpec() {
     private val uscConfig = Arb.uscConfig().next()
     private val phpSessionId = PhpSessionId("testPhpSessionId")
+    private val clock = TestableClock()
     private val filter = ActivitiesFilter(
         city = City.Amsterdam,
         plan = PlanType.Medium,
@@ -43,7 +45,7 @@ class ActivityHttpApiTest : StringSpec() {
                 "${uscConfig.baseUrl}/activities?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${filter.service.apiValue}&page=1"
             val http =
                 buildMockClient(expectedUrl = expectedUrl, phpSessionId = phpSessionId, responsePayload = rootJson)
-            val api = ActivityHttpApi(http = http, phpSessionId = phpSessionId, uscConfig = uscConfig)
+            val api = ActivityHttpApi(http = http, phpSessionId = phpSessionId, uscConfig = uscConfig, clock = clock)
 
             val response = api.fetchPages(filter)
 

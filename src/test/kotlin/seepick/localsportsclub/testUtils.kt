@@ -23,7 +23,7 @@ val jsonx = Json {
 }
 
 class TestableClock(
-    private var now: LocalDateTime,
+    private var now: LocalDateTime = LocalDateTime.now(),
     private var today: LocalDate = now.toLocalDate(),
 ) : Clock {
 

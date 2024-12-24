@@ -1735,7 +1735,7 @@ https://urbansportsclub.com/en/profile/schedule
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/build/frontend/account.19177aa19abf4267855f.js" type="4bbd6e60893ec1875ad69c39-text/javascript"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&language=en&key=asdf" type="4bbd6e60893ec1875ad69c39-text/javascript"></script>
 
-    <script type="4bbd6e60893ec1875ad69c39-text/javascript">if (typeof dataLayer == "undefined") { dataLayer=[]; }dataLayer.push({"event":"page_viewed","user":{"id":"d424b2ddf89e71cea39e57e3f3a3d919","login_status":"logged-in","membership_city":"Amsterdam","membership_country":"Netherlands","membership_status":"active","membership_plan":"L","membership_b2b_type":"b2c","membership_contract_duration":"monthly","company_name":null},"type":"profile","language":"en","city":"Amsterdam","country":"Netherlands","environment":"de-live","referrer":"https:\/\/urbansportsclub.com\/en\/activities"});</script>
+    <script type="4bbd6e60893ec1875ad69c39-text/javascript">if (typeof dataLayer == "undefined") { dataLayer=[]; }dataLayer.push({"event":"page_viewed","user":{"id":"abcde1234","login_status":"logged-in","membership_city":"Amsterdam","membership_country":"Netherlands","membership_status":"active","membership_plan":"L","membership_b2b_type":"b2c","membership_contract_duration":"monthly","company_name":null},"type":"profile","language":"en","city":"Amsterdam","country":"Netherlands","environment":"de-live","referrer":"https:\/\/urbansportsclub.com\/en\/activities"});</script>
 
 <script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="4bbd6e60893ec1875ad69c39-|49" defer></script></body>
 </html>

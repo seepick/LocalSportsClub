@@ -11,6 +11,7 @@ import seepick.localsportsclub.api.activities.ServiceTye
 import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.service.SystemClock
 import seepick.localsportsclub.service.httpClient
 import java.time.LocalDate
 
@@ -46,7 +47,7 @@ object ManualSystemTests {
 
     private suspend fun testActivities(phpSessionId: PhpSessionId) {
         val today = LocalDate.now()
-        val pages = ActivityHttpApi(httpClient, phpSessionId, uscConfig).fetchPages(
+        val pages = ActivityHttpApi(httpClient, phpSessionId, uscConfig, SystemClock).fetchPages(
             ActivitiesFilter(
                 city = City.Amsterdam, plan = PlanType.Large, date = today, service = ServiceTye.Courses
             )
