@@ -8,8 +8,13 @@ data class UscConfig(
     val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
-    val storeResponses: Boolean = false,
-)
+    val storeResponses: Boolean = true,
+    val syncActivitiesDaysAhead: Int = 3,
+) {
+    init {
+        require(syncActivitiesDaysAhead >= 1)
+    }
+}
 
 enum class UscLang(val urlCode: String) {
     English("en"),

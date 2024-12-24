@@ -47,6 +47,7 @@ interface VenueRepo {
     fun selectAll(): List<VenueDbo> // FIXME filter out isDeleted
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
+    fun selectBySlug(slug: String): VenueDbo?
 }
 
 object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
@@ -82,6 +83,12 @@ object ExposedVenueRepo : VenueRepo {
         VenuesTable.selectAll().map {
             VenueDbo.fromRow(it)
         }
+    }
+
+    override fun selectBySlug(slug: String): VenueDbo? = transaction {
+        VenuesTable.selectAll().where { VenuesTable.slug.eq(slug) }.map {
+            VenueDbo.fromRow(it)
+        }.singleOrNull()
     }
 
     override fun insert(venue: VenueDbo): VenueDbo = transaction {
@@ -163,6 +170,7 @@ class InMemoryVenueRepo : VenueRepo {
 
     override fun insert(venue: VenueDbo): VenueDbo {
         val newVenue = venue.copy(id = currentId++)
+        require(stored.values.none { it.slug == venue.slug })
         stored[newVenue.id] = newVenue
         return newVenue
     }
@@ -172,4 +180,7 @@ class InMemoryVenueRepo : VenueRepo {
         stored[venue.id] = venue
         return venue
     }
+
+    override fun selectBySlug(slug: String): VenueDbo? =
+        stored.values.firstOrNull { it.slug == slug }
 }

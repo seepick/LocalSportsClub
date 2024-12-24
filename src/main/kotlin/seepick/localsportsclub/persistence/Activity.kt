@@ -51,7 +51,7 @@ interface ActivityRepo {
     fun selectAllScheduled(): List<ActivityDbo>
     fun insert(activity: ActivityDbo)
     fun update(activity: ActivityDbo)
-    fun selectById(id: Int): ActivityDbo
+    fun selectById(id: Int): ActivityDbo?
     fun selectFutureMostDate(): LocalDate?
 //     fun deleteAllBefore exceptWithCheckin (untilExclusive: LocalDate)
 }
@@ -66,8 +66,8 @@ class InMemoryActivityRepo : ActivityRepo {
     override fun selectAllScheduled() =
         stored.filter { it.value.scheduled }.values.toList()
 
-    override fun selectById(id: Int): ActivityDbo =
-        stored[id]!!
+    override fun selectById(id: Int): ActivityDbo? =
+        stored[id]
 
     override fun selectFutureMostDate(): LocalDate? =
         stored.values.maxByOrNull { it.from }?.from?.toLocalDate()
@@ -95,7 +95,7 @@ object ExposedActivityRepo : ActivityRepo {
     override fun selectById(id: Int) = transaction {
         ActivitiesTable.selectAll().where { ActivitiesTable.id.eq(id) }.map {
             ActivityDbo.fromRow(it)
-        }.single()
+        }.singleOrNull()
     }
 
     override fun selectAllScheduled(): List<ActivityDbo> = transaction {

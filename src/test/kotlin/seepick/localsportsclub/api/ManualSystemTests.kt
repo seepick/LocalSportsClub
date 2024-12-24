@@ -10,6 +10,7 @@ import seepick.localsportsclub.api.activities.ActivityHttpApi
 import seepick.localsportsclub.api.activities.ServiceTye
 import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
+import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.service.SystemClock
 import seepick.localsportsclub.service.httpClient
@@ -29,20 +30,23 @@ object ManualSystemTests {
         runBlocking {
             log.info { "Manual test running..." }
             val phpSessionId = getSessionId()
-//            testVenues(phpSessionId)
+            testVenues(phpSessionId)
 //            testActivities(phpSessionId)
-            testSchedule(phpSessionId)
+//            testSchedule(phpSessionId)
         }
     }
 
-    private suspend fun testVenues(phpSessionId: String) {
-        val pages = VenueHttpApi(httpClient, PhpSessionId(phpSessionId), uscConfig).fetchPages(
+    private suspend fun testVenues(phpSessionId: PhpSessionId) {
+        val pages = VenueHttpApi(httpClient, phpSessionId, uscConfig).fetchPages(
             VenuesFilter(
                 city = City.Amsterdam,
                 plan = PlanType.Large
             )
         )
-        println("venue pages: ${pages.size}")
+        pages
+            .flatMap { VenueParser.parseHtmlContent(it.content) }.sortedBy { it.slug }
+            .also { println("Received ${it.size} venues (without those missing from linkings)") }
+            .forEach(::println)
     }
 
     private suspend fun testActivities(phpSessionId: PhpSessionId) {
@@ -62,7 +66,7 @@ object ManualSystemTests {
     }
 
     private suspend fun testSchedule(phpSessionId: PhpSessionId) {
-        val ids = ScheduleHttpApi(httpClient, phpSessionId, uscConfig).fetchActivityIds()
+        val ids = ScheduleHttpApi(httpClient, phpSessionId, uscConfig).fetchScheduleRows()
         println("Got ${ids.size} activity IDs back: $ids")
     }
 

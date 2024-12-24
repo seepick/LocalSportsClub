@@ -33,7 +33,7 @@ object VenueParser {
 
 data class VenueInfo(
     val title: String,
-    val slug: String, // e.g.: "/nl/venues/{slug}"
+    val slug: String, // e.g. to be used as "/en/venues/{slug}"
     val imageUrl: Url?,
     val disciplines: List<String>,
     val addressId: Int,

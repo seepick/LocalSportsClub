@@ -11,31 +11,27 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* enable CI
-* !! new field: Activity.wasCheckedin
-* !! sync activities not always next 14 days, but check the newest activity date, and sync from there
-* !! sync past checkins (might require fetching old activities (not yet synced/in DB))
-* MIN: change from/to to DateRange object
+* !! sync past checkins (might require fetching old activities (not yet synced/in DB)); new field: Activity.wasCheckedin
 * MIN: description/info has "\n"... replace them
 * MIN: if venue.importantInfo == "-" then nullify
 * MIN: sort case-IN-sensitive
 
 ## Backlog
 
+* FEATURE: introduce tabbed content: activities
+* FEATURE: notes textarea (tabbed content)
 * UI: display usage UI (progress bar like again)
 * UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
-* finish rendering (editable) venue fields
-* UI: official website as editable textfield
-* UI: fine tune UI (table, details, colors)
-* UI: use theme colors only (dark/light mode)
-* UI: support sorting asc/desc
+* UI: finish rendering (editable) venue fields; official website as editable textfield
 * FEATURE: also sync free/"dropin" activities
-* migrate old content from AllFit
-* FEATURE: reserve/cancel button
+* FEATURE: migrate old content from AllFit
 
 ## Later
 
+* UI: support sorting asc/desc
+* FEATURE: reserve/cancel button
+* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
 * UI: if textfield elipse ("foo...") => show tooltip full text
 * enable up/down arrow for table
 * sync with google calendar

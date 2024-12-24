@@ -18,7 +18,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.persistence.testInfra.DbListener
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 
-class ExposedVenuesRepoTest : DescribeSpec() {
+class ExposedVenueRepoTest : DescribeSpec() {
 
     private val repo = ExposedVenueRepo
 

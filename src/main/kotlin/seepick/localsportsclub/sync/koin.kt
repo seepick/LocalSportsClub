@@ -16,6 +16,8 @@ fun syncModule(config: AppConfig) = module {
         AppConfig.SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
         AppConfig.SyncMode.Delayed -> singleOf(::DelayedSyncer) bind Syncer::class
         AppConfig.SyncMode.Real -> {
+            singleOf(::DataSyncRescuer) bind DataSyncRescuer::class
+            singleOf(::VenueSyncInserter) bind VenueSyncInserter::class
             singleOf(::VenueSyncer) bind VenueSyncer::class
             singleOf(::ActivitiesSyncer) bind ActivitiesSyncer::class
             singleOf(::ScheduleSyncer) bind ScheduleSyncer::class

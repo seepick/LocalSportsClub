@@ -16,7 +16,6 @@ class ActivityParserTest : StringSpec() {
                     start = LocalDateTime.of(year, 12, 27, 10, 0),
                     end = LocalDateTime.of(year, 12, 27, 11, 15)
                 ),
-                venueId = 25336,
                 venueName = "Movements City",
                 category = "Yoga",
                 spotsLeft = 2,

@@ -84,7 +84,7 @@ data class ActivitySingleDataJson(
 
 @Serializable
 data class ActivityDataLayerVenueJson(
-    val id: Int,
+    val id: Int, // that's the USC internal ID, don't use it (not stable anyway)
     val name: String,
 )
 
@@ -103,7 +103,6 @@ object ActivityParser {
         return ActivityDetail(
             name = data.`class`.name,
             dateTimeRange = dateRange,
-            venueId = data.venue.id,
             venueName = data.venue.name,
             category = data.`class`.category,
             spotsLeft = data.`class`.spots_left.toInt(),

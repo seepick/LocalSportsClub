@@ -6,10 +6,16 @@ import seepick.localsportsclub.readTestResponse
 
 class ScheduleParserTest : StringSpec() {
     init {
-        "When parse Then return activity IDs" {
+        "When parse Then return entries" {
             val schedule = ScheduleParser.parse(readTestResponse("schedule.html"))
 
-            schedule shouldBe ScheduleInfo(activityIds = listOf(84742854, 84726253, 84810748))
+            schedule shouldBe ScheduleHtml(
+                rows = listOf(
+                    ScheduleRow(84742854, "studio-108-3"),
+                    ScheduleRow(84726253, "yoga-spot-olympisch-stadion"),
+                    ScheduleRow(84810748, "movements-city"),
+                )
+            )
         }
     }
 }

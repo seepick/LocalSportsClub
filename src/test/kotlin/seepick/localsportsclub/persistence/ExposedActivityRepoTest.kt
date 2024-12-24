@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 
 class ExposedActivityRepoTest : DescribeSpec() {
     private val activityRepo = ExposedActivityRepo
-    private val venuesRepo = ExposedVenueRepo
+    private val venueRepo = ExposedVenueRepo
 
     init {
         extension(DbListener())
@@ -34,7 +34,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When select future most date") {
             it("Given two different Then most future returned") {
-                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val venue = venueRepo.insert(Arb.venueDbo().next())
                 val today = LocalDateTime.now()
                 val tomorrow = today.plusDays(1)
                 activityRepo.insert(Arb.activityDbo().next().copy(from = tomorrow, venueId = venue.id))
@@ -56,7 +56,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 }
             }
             it("Given venue Then saved successfully") {
-                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val venue = venueRepo.insert(Arb.venueDbo().next())
                 val activity = Arb.activityDbo().next().copy(venueId = venue.id)
                 activityRepo.insert(activity)
                 transaction {
@@ -67,7 +67,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 }
             }
             it("Given same ID existing Then fail") {
-                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val venue = venueRepo.insert(Arb.venueDbo().next())
                 val activity1 = Arb.activityDbo().next().copy(venueId = venue.id)
                 val activity2 = Arb.activityDbo().next().copy(id = activity1.id)
                 activityRepo.insert(activity1)
@@ -82,7 +82,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When insert and select all") {
             it("Then returned") {
-                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val venue = venueRepo.insert(Arb.venueDbo().next())
                 val activity = Arb.activityDbo().next().copy(venueId = venue.id)
                 activityRepo.insert(activity)
                 activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity
@@ -90,7 +90,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When update") {
             it("Given venue and activity Then update successful") {
-                val venue = venuesRepo.insert(Arb.venueDbo().next())
+                val venue = venueRepo.insert(Arb.venueDbo().next())
                 val activity = Arb.activityDbo().next().copy(venueId = venue.id)
                 activityRepo.insert(activity)
 

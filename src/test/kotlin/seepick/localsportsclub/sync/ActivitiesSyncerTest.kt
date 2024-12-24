@@ -23,7 +23,6 @@ import seepick.localsportsclub.uscConfig
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
-    private val uscConfig = Arb.uscConfig().next()
     private val syncActivityAdded = mutableListOf<ActivityDbo>()
     private lateinit var api: UscApi
     private lateinit var activityRepo: InMemoryActivityRepo
@@ -32,7 +31,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = TestableClock(todayNow)
     private val syncDaysAhead = 4
-    
+
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
         activityRepo = InMemoryActivityRepo()
@@ -46,14 +45,13 @@ class ActivitiesSyncerTest : DescribeSpec() {
         clock.setNowAndToday(LocalDateTime.now())
     }
 
-    private fun syncer(daysAhead: Int = syncDaysAhead) = ActivitiesSyncer(
+    private fun syncer(daysAhead: Int) = ActivitiesSyncer(
         api = api,
         activityRepo = activityRepo,
         venueRepo = venueRepo,
         clock = clock,
-        syncDaysAhead = daysAhead,
         dispatcher = syncerListenerDispatcher,
-        uscConfig = uscConfig,
+        uscConfig = Arb.uscConfig().next().copy(syncActivitiesDaysAhead = daysAhead),
     )
 
     init {
@@ -64,13 +62,13 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 venueRepo.stored[venue.id] = venue
                 coEvery {
                     api.fetchActivities(any())
-                } returnsMany (1..syncDaysAhead).map { // TODO need to rewrite test once syncer changed
+                } returnsMany (1..syncDaysAhead).map {
                     when (it) {
                         1 -> listOf(activityInfo)
                         else -> emptyList()
                     }
                 }
-                syncer().sync()
+                syncer(syncDaysAhead).sync()
 
                 activityRepo.stored.values.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id

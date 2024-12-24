@@ -22,16 +22,12 @@ class ActivitiesSyncer(
     private val venueRepo: VenueRepo,
     private val clock: Clock,
     private val dispatcher: SyncerListenerDispatcher,
-    private val syncDaysAhead: Int = 14,
     uscConfig: UscConfig,
 ) {
     private val log = logger {}
     private val city: City = uscConfig.city
     private val plan: PlanType = uscConfig.plan
-
-    init {
-        require(syncDaysAhead >= 1)
-    }
+    private val syncDaysAhead: Int = uscConfig.syncActivitiesDaysAhead
 
     suspend fun sync() {
         log.info { "Syncing activities ..." }

@@ -45,7 +45,6 @@ enum class ServiceTye(val apiValue: Int) {
 data class ActivityDetail(
     val name: String,
     val dateTimeRange: DateTimeRange,
-    val venueId: Int,
     val venueName: String,
     val category: String,
     val spotsLeft: Int,

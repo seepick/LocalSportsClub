@@ -32,7 +32,7 @@ class VenueSyncerTest : StringSpec() {
     private val uscConfig = Arb.uscConfig().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
-    private lateinit var venuesRepo: InMemoryVenueRepo
+    private lateinit var venueRepo: InMemoryVenueRepo
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
     private lateinit var imageStorage: MemorizableImageStorage
     private lateinit var syncer: VenueSyncer
@@ -50,7 +50,7 @@ class VenueSyncerTest : StringSpec() {
 
             syncer.sync()
 
-            venuesRepo.stored.should {
+            venueRepo.stored.should {
                 val stored = it.values.shouldBeSingleton().first()
                 // can't test on ID
                 stored.name shouldBe remoteDetails.title
@@ -63,14 +63,14 @@ class VenueSyncerTest : StringSpec() {
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
             coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns emptyList()
-            venuesRepo.insert(Arb.venueDbo().next().copy(isDeleted = false))
+            venueRepo.insert(Arb.venueDbo().next().copy(isDeleted = false))
 
             syncer.sync()
 
-            venuesRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
+            venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
         }
         "Given api returns 1 with linked and db has this 1 When sync Then link them" {
-            val yetExisting = venuesRepo.insert(Arb.venueDbo().next())
+            val yetExisting = venueRepo.insert(Arb.venueDbo().next())
             coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns listOf(remoteVenue)
             coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails
                 .copy(linkedVenueSlugs = listOf(yetExisting.slug))
@@ -87,7 +87,7 @@ class VenueSyncerTest : StringSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         super.beforeEach(testCase)
         api = mockk<UscApi>()
-        venuesRepo = InMemoryVenueRepo()
+        venueRepo = InMemoryVenueRepo()
         venueLinksRepo = InMemoryVenueLinksRepo()
         imageStorage = MemorizableImageStorage()
         syncVenueDbosAdded.clear()
@@ -100,11 +100,16 @@ class VenueSyncerTest : StringSpec() {
         })
         syncer = VenueSyncer(
             api = api,
-            venueRepo = venuesRepo,
-            venueLinksRepo = venueLinksRepo,
-            downloader = NoopDownloader,
-            imageStorage = imageStorage,
-            dispatcher = syncerListenerDispatcher,
+            venueRepo = venueRepo,
+            venueSyncInserter = VenueSyncInserter(
+                api,
+                venueRepo,
+                venueLinksRepo,
+                NoopDownloader,
+                imageStorage,
+                syncerListenerDispatcher,
+                uscConfig
+            ),
             uscConfig = uscConfig,
         )
     }
