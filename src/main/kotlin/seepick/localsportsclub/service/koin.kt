@@ -1,21 +1,15 @@
 package seepick.localsportsclub.service
 
+import io.ktor.client.HttpClient
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.service.model.DataStorage
 
-fun serviceModule(config: AppConfig) = module {
+fun serviceModule() = module {
     single { SystemClock } bind Clock::class
-    single {
-        DataStorage(
-            venueRepo = get(),
-            venueLinksRepo = get(),
-            activityRepo = get(),
-            dispatcher = get(),
-            baseUrl = config.usc.baseUrl,
-        )
-    }
+    single { httpClient } bind HttpClient::class
+    singleOf(::DataStorage) bind DataStorage::class
     single {
         FileSystemImageStorage(
             venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),

@@ -7,6 +7,7 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.Url
 import io.ktor.http.parameters
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -17,7 +18,7 @@ import seepick.localsportsclub.service.requireStatusOk
 
 class LoginApi(
     private val http: HttpClient,
-    private val baseUrl: String,
+    private val baseUrl: Url,
 ) {
 
     private val log = logger {}

@@ -11,8 +11,6 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.api.venueDetails
@@ -24,20 +22,20 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.testInfra.DbListener
 import seepick.localsportsclub.persistence.testInfra.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
+import seepick.localsportsclub.uscConfig
 
 
 class VenueSyncerTest : StringSpec() {
 
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
+    private val uscConfig = Arb.uscConfig().next()
+    private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
     private lateinit var venuesRepo: InMemoryVenueRepo
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
     private lateinit var imageStorage: MemorizableImageStorage
     private lateinit var syncer: VenueSyncer
-    private val city = City.entries.random()
-    private val plan = PlanType.entries.random()
-    private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
 
     init {
         extension(DbListener())
@@ -45,7 +43,7 @@ class VenueSyncerTest : StringSpec() {
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
-                api.fetchVenues(eq(VenuesFilter(city, plan)))
+                api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan)))
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
             coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
                     remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
@@ -64,7 +62,7 @@ class VenueSyncerTest : StringSpec() {
             }
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
-            coEvery { api.fetchVenues(eq(VenuesFilter(city, plan))) } returns emptyList()
+            coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns emptyList()
             venuesRepo.insert(Arb.venueDbo().next().copy(isDeleted = false))
 
             syncer.sync()
@@ -73,7 +71,7 @@ class VenueSyncerTest : StringSpec() {
         }
         "Given api returns 1 with linked and db has this 1 When sync Then link them" {
             val yetExisting = venuesRepo.insert(Arb.venueDbo().next())
-            coEvery { api.fetchVenues(eq(VenuesFilter(city, plan))) } returns listOf(remoteVenue)
+            coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns listOf(remoteVenue)
             coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails
                 .copy(linkedVenueSlugs = listOf(yetExisting.slug))
 
@@ -94,17 +92,20 @@ class VenueSyncerTest : StringSpec() {
         imageStorage = MemorizableImageStorage()
         syncVenueDbosAdded.clear()
 
-        val syncDispatcher = SyncDispatcher()
-        syncDispatcher.registerVenueDboAdded { syncVenueDbosAdded += it }
+        val syncerListenerDispatcher = SyncerListenerDispatcher()
+        syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
+            override fun onVenueDboAdded(venueDbo: VenueDbo) {
+                syncVenueDbosAdded += venueDbo
+            }
+        })
         syncer = VenueSyncer(
             api = api,
             venueRepo = venuesRepo,
             venueLinksRepo = venueLinksRepo,
-            syncDispatcher = syncDispatcher,
             downloader = NoopDownloader,
             imageStorage = imageStorage,
-            city = city,
-            plan = plan,
+            dispatcher = syncerListenerDispatcher,
+            uscConfig = uscConfig,
         )
     }
 }

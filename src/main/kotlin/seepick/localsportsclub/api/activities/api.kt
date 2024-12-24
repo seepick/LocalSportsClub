@@ -8,7 +8,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.request
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.service.ApiException
@@ -22,11 +24,13 @@ interface ActivityApi {
 
 class ActivityHttpApi(
     private val http: HttpClient,
-    private val baseUrl: String,
-    private val phpSessionId: String,
+    private val phpSessionId: PhpSessionId,
+    uscConfig: UscConfig,
 ) : ActivityApi {
 
     private val log = logger {}
+    private val baseUrl = uscConfig.baseUrl
+
 
     override suspend fun fetchPages(filter: ActivitiesFilter): List<ActivitiesDataJson> =
         fetchPageable { fetchPage(filter, it) }
@@ -35,7 +39,7 @@ class ActivityHttpApi(
     private suspend fun fetchPage(filter: ActivitiesFilter, page: Int): ActivitiesDataJson {
         val fullUrl = "$baseUrl/activities"
         val response = http.get(fullUrl) {
-            cookie("PHPSESSID", phpSessionId)
+            cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
             parameter("city_id", filter.city.id)
             parameter("date", filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)) // 2024-12-16

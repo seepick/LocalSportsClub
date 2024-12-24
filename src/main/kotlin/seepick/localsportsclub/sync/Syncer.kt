@@ -6,35 +6,23 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.service.model.Venue
 
 interface Syncer {
+    fun registerListener(listener: SyncerListener)
     suspend fun sync()
 }
 
-class SyncDispatcher {
+interface SyncerListener {
+    fun onVenueDboAdded(venueDbo: VenueDbo)
+    fun onActivityDboAdded(activityDbo: ActivityDbo)
+    fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
+}
 
-    private val venueDboAddedListeners = mutableListOf<(VenueDbo) -> Unit>()
+enum class ActivityFieldUpdate {
+    Scheduled
+}
+
+class SyncDispatcherX {
+
     private val venueAddedListeners = mutableListOf<(Venue) -> Unit>()
-    private val activityDboAddedListeners = mutableListOf<(ActivityDbo) -> Unit>()
-    private val activityDboUpdatedListeners = mutableListOf<(ActivityDbo, ActivityFieldUpdate) -> Unit>()
-
-    fun registerVenueDboAdded(onVenueDboAdded: (VenueDbo) -> Unit) {
-        venueDboAddedListeners += onVenueDboAdded
-    }
-
-    fun dispatchVenueDboAdded(venueDbo: VenueDbo) {
-        venueDboAddedListeners.forEach {
-            it(venueDbo)
-        }
-    }
-
-    fun registerActivityDboAdded(onActivityDboAdded: (ActivityDbo) -> Unit) {
-        activityDboAddedListeners += onActivityDboAdded
-    }
-
-    fun dispatchActivityDboAdded(activityDbo: ActivityDbo) {
-        activityDboAddedListeners.forEach {
-            it(activityDbo)
-        }
-    }
 
     fun registerVenueAdded(onVenueAdded: (Venue) -> Unit) {
         venueAddedListeners += onVenueAdded
@@ -47,25 +35,40 @@ class SyncDispatcher {
         }
 //        }
     }
-
-    fun registerActivityDboUpdated(onActivityUpdated: (ActivityDbo, ActivityFieldUpdate) -> Unit) {
-        activityDboUpdatedListeners += onActivityUpdated
-    }
-
-    fun dispatchActivityDboUpdated(activity: ActivityDbo, field: ActivityFieldUpdate) {
-        activityDboUpdatedListeners.forEach {
-            it(activity, field)
-        }
-    }
-}
-
-enum class ActivityFieldUpdate {
-    Scheduled
 }
 
 object NoopSyncer : Syncer {
     private val log = logger {}
+
+    override fun registerListener(listener: SyncerListener) {
+    }
+
     override suspend fun sync() {
         log.info { "Noop syncer not doing anything." }
+    }
+}
+
+class SyncerListenerDispatcher {
+    private val listeners = mutableListOf<SyncerListener>()
+    fun registerListener(listener: SyncerListener) {
+        listeners += listener
+    }
+
+    fun dispatchOnVenueDboAdded(venueDbo: VenueDbo) {
+        listeners.forEach {
+            it.onVenueDboAdded(venueDbo)
+        }
+    }
+
+    fun dispatchOnActivityDboAdded(activityDbo: ActivityDbo) {
+        listeners.forEach {
+            it.onActivityDboAdded(activityDbo)
+        }
+    }
+
+    fun dispatchOnActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+        listeners.forEach {
+            it.onActivityDboUpdated(activityDbo, field)
+        }
     }
 }

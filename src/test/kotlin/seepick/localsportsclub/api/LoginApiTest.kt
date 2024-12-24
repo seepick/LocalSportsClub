@@ -12,12 +12,13 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.http.headersOf
 import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.toFlatMap
 
 class LoginApiTest : StringSpec() {
-    private val baseUrl = "http://baseurl.test"
+    private val baseUrl = Url("http://baseurl.test")
     private val anyUsername = "anyUsername"
     private val anyPassword = "anyPassword"
     private val anyCredentials = Credentials(anyUsername, anyPassword)
@@ -36,7 +37,7 @@ class LoginApiTest : StringSpec() {
         "When login Then sent right data to login endpoint" {
             LoginApi(HttpClient(MockEngine { request ->
                 when (val requestUrl = request.url.toString()) {
-                    baseUrl -> homeRespond(sessionId)
+                    baseUrl.toString() -> homeRespond(sessionId)
                     "$baseUrl/login" -> {
                         val headers = request.headers.toFlatMap()
                         headers["Cookie"].shouldContain("PHPSESSID=$sessionId")
@@ -73,7 +74,7 @@ class LoginApiTest : StringSpec() {
     private fun mockedApi(isSuccess: Boolean, sessionId: String = anySessionId) =
         LoginApi(HttpClient(MockEngine { request ->
             when (val requestUrl = request.url.toString()) {
-                baseUrl -> homeRespond(sessionId)
+                baseUrl.toString() -> homeRespond(sessionId)
                 "$baseUrl/login" -> loginRespond(isSuccess)
                 else -> error("Unhandled request URL: [$requestUrl]")
             }

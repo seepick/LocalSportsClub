@@ -8,9 +8,10 @@ import seepick.localsportsclub.persistence.ActivityRepo
 class ScheduleSyncer(
     private val scheduleApi: ScheduleApi,
     private val activityRepo: ActivityRepo,
-    private val syncDispatcher: SyncDispatcher,
+    private val dispatcher: SyncerListenerDispatcher,
 ) {
     private val log = logger {}
+
     suspend fun sync() {
         log.debug { "Syncing scheduled activities." }
         val remoteScheduledIds = scheduleApi.fetchActivityIds()
@@ -29,7 +30,7 @@ class ScheduleSyncer(
             require(activity.scheduled != toBeScheduled)
             val updatedActivity = activity.copy(scheduled = toBeScheduled)
             activityRepo.update(updatedActivity)
-            syncDispatcher.dispatchActivityDboUpdated(updatedActivity, ActivityFieldUpdate.Scheduled)
+            dispatcher.dispatchOnActivityDboUpdated(updatedActivity, ActivityFieldUpdate.Scheduled)
         }
     }
 }

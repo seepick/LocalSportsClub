@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -9,16 +10,22 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.sync.ActivityFieldUpdate
-import seepick.localsportsclub.sync.SyncDispatcher
+import seepick.localsportsclub.sync.SyncerListener
+
+interface DataStorageListener {
+    fun onVenueAdded(venue: Venue)
+}
 
 class DataStorage(
     private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
-    private val dispatcher: SyncDispatcher,
-    private val baseUrl: String,
-) {
+    uscConfig: UscConfig,
+) : SyncerListener {
+
+    private val baseUrl = uscConfig.baseUrl
     private val log = logger {}
+    private val listeners = mutableListOf<DataStorageListener>()
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         val venuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
@@ -45,12 +52,22 @@ class DataStorage(
             }.toMutableList()
     }
 
+    fun registerListener(listener: DataStorageListener) {
+        listeners += listener
+    }
+
+    fun dispatchOnVenueAdded(venue: Venue) {
+        listeners.forEach {
+            it.onVenueAdded(venue)
+        }
+    }
+
     // invoked on startup
     fun selectAllVenues(): List<Venue> {
         return allVenues
     }
 
-    fun onVenueDboAdded(venueDbo: VenueDbo) {
+    override fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
         val venue = venueDbo.toVenue(baseUrl)
         // no, not possible
@@ -58,10 +75,10 @@ class DataStorage(
 //            venue.activities += activitiesForVenue
 //        }
         allVenues += venue
-        dispatcher.dispatchVenueAdded(venue)
+        dispatchOnVenueAdded(venue)
     }
 
-    fun onActivityDboAdded(activityDbo: ActivityDbo) {
+    override fun onActivityDboAdded(activityDbo: ActivityDbo) {
         val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
             ?: error("Could not find venue for: $activityDbo\nVenues: $allVenues")
         val activity = activityDbo.toActivity(venue)
@@ -70,7 +87,7 @@ class DataStorage(
 //        dispatcher.dispatchActivityAdded(activity) // FIXME
     }
 
-    fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         val stored = allActivitiesByVenueId[activityDbo.venueId]!!.single { it.id == activityDbo.id }
         when (field) {
             ActivityFieldUpdate.Scheduled -> stored.scheduled = activityDbo.scheduled
@@ -118,7 +135,7 @@ fun Venue.toDbo() = VenueDbo(
     isDeleted = isDeleted,
 )
 
-fun VenueDbo.toVenue(baseUrl: String) = Venue(
+fun VenueDbo.toVenue(baseUrl: Url) = Venue(
     id = id,
     name = name,
     slug = slug,

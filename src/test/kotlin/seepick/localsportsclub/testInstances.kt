@@ -5,9 +5,22 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
+import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
 import io.ktor.http.Url
+import seepick.localsportsclub.api.City
+import seepick.localsportsclub.api.PlanType
+
+fun Arb.Companion.uscConfig() = arbitrary {
+    UscConfig(
+        baseUrl = url().next(),
+        city = enum<City>().next(),
+        plan = enum<PlanType>().next(),
+        storeResponses = boolean().next(),
+    )
+}
 
 fun Arb.Companion.url() = arbitrary {
     Url(

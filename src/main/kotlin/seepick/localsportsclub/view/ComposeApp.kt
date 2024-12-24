@@ -9,7 +9,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.allModules
 import seepick.localsportsclub.service.model.DataStorage
-import seepick.localsportsclub.sync.SyncDispatcher
+import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -20,19 +20,17 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
     KoinApplication(application = {
         modules(allModules(config))
     }) {
-        val venueVM = koinViewModel<VenueViewModel>()
-        val syncDispatcher = koinInject<SyncDispatcher>()
+        val venueViewModel = koinViewModel<VenueViewModel>()
+        val syncer = koinInject<Syncer>()
         val dataStorage = koinInject<DataStorage>()
-        syncDispatcher.registerVenueDboAdded(dataStorage::onVenueDboAdded)
-        syncDispatcher.registerActivityDboAdded(dataStorage::onActivityDboAdded)
-        syncDispatcher.registerActivityDboUpdated(dataStorage::onActivityDboUpdated)
-        syncDispatcher.registerVenueAdded(venueVM::onVenueAdded)
+        syncer.registerListener(dataStorage)
+        dataStorage.registerListener(venueViewModel)
 
         window.addWindowListener(object : WindowAdapter() {
             // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
             override fun windowOpened(e: WindowEvent?) {
                 // maybe could also have done a LaunchedEffect(true) hack...?
-                venueVM.onStartUp()
+                venueViewModel.onStartUp()
             }
         })
 

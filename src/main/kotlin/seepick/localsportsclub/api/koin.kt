@@ -16,6 +16,11 @@ import seepick.localsportsclub.service.httpClient
 
 private val log = logger {}
 
+@JvmInline
+value class PhpSessionId(val value: String) {
+    override fun toString() = value
+}
+
 fun apiModule(config: AppConfig) = module {
     if (config.api == AppConfig.ApiMode.Mock) {
         log.debug { "Wiring mocked USC API." }
@@ -24,32 +29,14 @@ fun apiModule(config: AppConfig) = module {
     } else if (config.api == AppConfig.ApiMode.Real) {
         val phpSessionId = runBlocking {
             val result = LoginApi(httpClient, config.usc.baseUrl).login(Credentials.load())
-            require(result is LoginResult.Success) { "Login failed! ${result}" }
+            require(result is LoginResult.Success) { "Login failed: $result" }
             result.phpSessionId
         }
-        single {
-            VenueHttpApi(
-                http = httpClient,
-                baseUrl = config.usc.baseUrl,
-                phpSessionId = phpSessionId,
-                storeResponses = config.usc.storeResponses,
-            )
-        } bind VenueApi::class
-        single {
-            ActivityHttpApi(
-                http = httpClient,
-                baseUrl = config.usc.baseUrl,
-                phpSessionId = phpSessionId,
-            )
-        } bind ActivityApi::class
-        single {
-            ScheduleHttpApi(
-                http = httpClient,
-                baseUrl = config.usc.baseUrl,
-                phpSessionId = phpSessionId,
-            )
-        } bind ScheduleApi::class
+        single { PhpSessionId(phpSessionId) } bind PhpSessionId::class
 
+        singleOf(::VenueHttpApi) bind VenueApi::class
+        singleOf(::ActivityHttpApi) bind ActivityApi::class
+        singleOf(::ScheduleHttpApi) bind ScheduleApi::class
         singleOf(::UscApiAdapter) bind UscApi::class
     }
 }

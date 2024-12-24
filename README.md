@@ -11,9 +11,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* refactor sync: get rid of SyncDispatcher, make it a SyncListener, implement by DataStorage; wire DataStorage and
-  ViewModel together
-* inject into DI context: ApiBaseUrl, ApiSessionId (custom type); CitySync/PlanType
+* enable CI
 * !! new field: Activity.wasCheckedin
 * !! sync activities not always next 14 days, but check the newest activity date, and sync from there
 * !! sync past checkins (might require fetching old activities (not yet synced/in DB))

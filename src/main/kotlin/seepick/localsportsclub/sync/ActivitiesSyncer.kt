@@ -2,6 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.annotations.TestOnly
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
@@ -17,15 +18,16 @@ import java.time.LocalDate
 
 class ActivitiesSyncer(
     private val api: UscApi,
-    private val city: City,
-    private val plan: PlanType,
-    private val syncDispatcher: SyncDispatcher,
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
     private val clock: Clock,
-    private val syncDaysAhead: Int = 14
+    private val dispatcher: SyncerListenerDispatcher,
+    private val syncDaysAhead: Int = 14,
+    uscConfig: UscConfig,
 ) {
     private val log = logger {}
+    private val city: City = uscConfig.city
+    private val plan: PlanType = uscConfig.plan
 
     init {
         require(syncDaysAhead >= 1)
@@ -61,7 +63,7 @@ class ActivitiesSyncer(
             val venueId = venuesBySlug[activity.venueSlug]?.id ?: error("Unable to find venue by slug for: $activity")
             val dbo = activity.toDbo(venueId)
             activityRepo.insert(dbo)
-            syncDispatcher.dispatchActivityDboAdded(dbo)
+            dispatcher.dispatchOnActivityDboAdded(dbo)
         }
     }
 

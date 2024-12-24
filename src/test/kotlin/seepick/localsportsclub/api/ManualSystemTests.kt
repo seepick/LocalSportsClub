@@ -3,6 +3,7 @@ package seepick.localsportsclub.api
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.kotest.common.runBlocking
 import io.kotest.matchers.types.shouldBeInstanceOf
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.activities.ActivitiesFilter
 import seepick.localsportsclub.api.activities.ActivitiesParser
 import seepick.localsportsclub.api.activities.ActivityHttpApi
@@ -16,7 +17,11 @@ import java.time.LocalDate
 object ManualSystemTests {
 
     private val log = logger {}
-    private const val baseUrl = "https://urbansportsclub.com/en"
+    private val uscConfig = UscConfig(
+        city = City.Amsterdam,
+        plan = PlanType.Large,
+        storeResponses = false,
+    )
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -30,7 +35,7 @@ object ManualSystemTests {
     }
 
     private suspend fun testVenues(phpSessionId: String) {
-        val pages = VenueHttpApi(httpClient, baseUrl, phpSessionId, false).fetchPages(
+        val pages = VenueHttpApi(httpClient, PhpSessionId(phpSessionId), uscConfig).fetchPages(
             VenuesFilter(
                 city = City.Amsterdam,
                 plan = PlanType.Large
@@ -39,9 +44,9 @@ object ManualSystemTests {
         println("venue pages: ${pages.size}")
     }
 
-    private suspend fun testActivities(phpSessionId: String) {
+    private suspend fun testActivities(phpSessionId: PhpSessionId) {
         val today = LocalDate.now()
-        val pages = ActivityHttpApi(httpClient, baseUrl, phpSessionId).fetchPages(
+        val pages = ActivityHttpApi(httpClient, phpSessionId, uscConfig).fetchPages(
             ActivitiesFilter(
                 city = City.Amsterdam, plan = PlanType.Large, date = today, service = ServiceTye.Courses
             )
@@ -55,16 +60,16 @@ object ManualSystemTests {
         activities.forEach { println("- $it") }
     }
 
-    private suspend fun testSchedule(phpSessionId: String) {
-        val ids = ScheduleHttpApi(httpClient, baseUrl, phpSessionId).fetchActivityIds()
+    private suspend fun testSchedule(phpSessionId: PhpSessionId) {
+        val ids = ScheduleHttpApi(httpClient, phpSessionId, uscConfig).fetchActivityIds()
         println("Got ${ids.size} activity IDs back: $ids")
     }
 
-    private suspend fun getSessionId(): String {
+    private suspend fun getSessionId(): PhpSessionId {
         val syspropSessionId = System.getProperty("phpSessionId")
         if (syspropSessionId != null) {
             println("Using system property's session ID: $syspropSessionId")
-            return syspropSessionId
+            return PhpSessionId(syspropSessionId)
         }
         val syspropUsername = System.getProperty("username")
         val syspropPassword = System.getProperty("password")
@@ -73,11 +78,12 @@ object ManualSystemTests {
         } else {
             Credentials.load()
         }
-        return LoginApi(httpClient, baseUrl)
+        return LoginApi(httpClient, uscConfig.baseUrl)
             .login(credentials)
             .shouldBeInstanceOf<LoginResult.Success>()
-            .phpSessionId.also {
+            .phpSessionId.let {
                 println("New session ID is: $it")
+                PhpSessionId(it)
             }
     }
 

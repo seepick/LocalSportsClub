@@ -12,8 +12,6 @@ import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.TestableClock
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityInfo
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -21,42 +19,46 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.testInfra.activityDbo
 import seepick.localsportsclub.persistence.testInfra.venueDbo
+import seepick.localsportsclub.uscConfig
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
-    private val city = City.Amsterdam
-    private val plan = PlanType.Medium
+    private val uscConfig = Arb.uscConfig().next()
     private val syncActivityAdded = mutableListOf<ActivityDbo>()
     private lateinit var api: UscApi
     private lateinit var activityRepo: InMemoryActivityRepo
     private lateinit var venueRepo: InMemoryVenueRepo
-    private lateinit var syncDispatcher: SyncDispatcher
+    private lateinit var syncerListenerDispatcher: SyncerListenerDispatcher
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = TestableClock(todayNow)
     private val syncDaysAhead = 4
+    
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
         activityRepo = InMemoryActivityRepo()
         venueRepo = InMemoryVenueRepo()
-        syncDispatcher = SyncDispatcher()
-        syncDispatcher.registerActivityDboAdded { syncActivityAdded += it }
+        syncerListenerDispatcher = SyncerListenerDispatcher()
+        syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
+            override fun onActivityDboAdded(activityDbo: ActivityDbo) {
+                syncActivityAdded += activityDbo
+            }
+        })
         clock.setNowAndToday(LocalDateTime.now())
     }
 
     private fun syncer(daysAhead: Int = syncDaysAhead) = ActivitiesSyncer(
         api = api,
-        city = city,
-        plan = plan,
-        syncDispatcher = syncDispatcher,
         activityRepo = activityRepo,
         venueRepo = venueRepo,
         clock = clock,
         syncDaysAhead = daysAhead,
+        dispatcher = syncerListenerDispatcher,
+        uscConfig = uscConfig,
     )
 
     init {
         describe("When full sync") {
-            it("Given venue stored and activity returned Then inserted and dispatched") {
+            it("Given venue stored and activity fetched Then inserted and dispatched") {
                 val venue = Arb.venueDbo().next()
                 val activityInfo = Arb.activityInfo().next().copy(venueSlug = venue.slug)
                 venueRepo.stored[venue.id] = venue
@@ -64,7 +66,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
                     api.fetchActivities(any())
                 } returnsMany (1..syncDaysAhead).map { // TODO need to rewrite test once syncer changed
                     when (it) {
-                        3 -> listOf(activityInfo)
+                        1 -> listOf(activityInfo)
                         else -> emptyList()
                     }
                 }

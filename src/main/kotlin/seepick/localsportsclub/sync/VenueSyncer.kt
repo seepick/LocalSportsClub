@@ -2,6 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
@@ -30,13 +31,14 @@ class VenueSyncer(
     private val api: UscApi,
     private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
-    private val city: City,
-    private val plan: PlanType,
-    private val syncDispatcher: SyncDispatcher,
     private val downloader: Downloader,
     private val imageStorage: ImageStorage,
+    private val dispatcher: SyncerListenerDispatcher,
+    uscConfig: UscConfig,
 ) {
     private val log = logger {}
+    private val city: City = uscConfig.city
+    private val plan: PlanType = uscConfig.plan
 
     suspend fun sync() {
         log.info { "Syncing venues ..." }
@@ -87,7 +89,7 @@ class VenueSyncer(
         }
         linkVenues(newLinks)
         dbos.forEach { dbo ->
-            syncDispatcher.dispatchVenueDboAdded(dbo)
+            dispatcher.dispatchOnVenueDboAdded(dbo)
         }
     }
 

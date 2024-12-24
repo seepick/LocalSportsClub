@@ -1,10 +1,11 @@
 package seepick.localsportsclub
 
+import io.ktor.http.Url
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 
 data class UscConfig(
-    val baseUrl: String = "https://urbansportsclub.com/${UscLang.English.urlCode}",
+    val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
     val storeResponses: Boolean = false,

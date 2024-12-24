@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.searchIndexFor
@@ -33,7 +34,7 @@ class VenueEditModel {
 
 class VenueViewModel(
     private val dataStorage: DataStorage,
-) : ViewModel() {
+) : ViewModel(), DataStorageListener {
 
     private val log = logger {}
     private val _allVenues = mutableStateListOf<Venue>()
@@ -79,7 +80,7 @@ class VenueViewModel(
         resetVenues()
     }
 
-    fun onVenueAdded(venue: Venue) {
+    override fun onVenueAdded(venue: Venue) {
         _allVenues.add(venue)
         if (searching.matches(venue)) {
             val index = searchIndexFor(_venues, venue, sortColumn.valueExtractor!!)

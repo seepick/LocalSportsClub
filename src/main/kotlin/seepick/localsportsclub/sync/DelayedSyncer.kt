@@ -10,8 +10,8 @@ import seepick.localsportsclub.service.model.DummyDataGenerator
 
 class DelayedSyncer(
     private val venueRepo: VenueRepo,
-    private val syncDispatcher: SyncDispatcher,
     private val imageStorage: ImageStorage,
+    private val dispatcher: SyncerListenerDispatcher,
 ) : Syncer {
     private val log = logger {}
 
@@ -20,7 +20,12 @@ class DelayedSyncer(
     override suspend fun sync() {
         log.info { "Delayed syncer delaying" }
         delay(2_000)
+        // generate()
         log.info { "Delay sync done." }
+    }
+
+    override fun registerListener(listener: SyncerListener) {
+        dispatcher.registerListener(listener)
     }
 
     private suspend fun generate() {
@@ -30,11 +35,11 @@ class DelayedSyncer(
         DummyDataGenerator.randomVenueDbos(5, customSuffix = "sync").forEach { venueDbo ->
             delay(500)
             if (dispatchOnly) {
-                syncDispatcher.dispatchVenueDboAdded(venueDbo)
+                dispatcher.dispatchOnVenueDboAdded(venueDbo)
             } else {
                 val inserted = venueRepo.insert(venueDbo)
                 imageStorage.saveVenueImage("${inserted.slug}.png", bytes)
-                syncDispatcher.dispatchVenueDboAdded(inserted)
+                dispatcher.dispatchOnVenueDboAdded(inserted)
             }
         }
     }

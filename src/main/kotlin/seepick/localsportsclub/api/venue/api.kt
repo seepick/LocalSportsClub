@@ -9,7 +9,9 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.kotlinxSerializer
@@ -32,10 +34,11 @@ interface VenueApi {
 
 class VenueHttpApi(
     private val http: HttpClient,
-    private val baseUrl: String,
-    private val phpSessionId: String,
-    private val storeResponses: Boolean,
+    private val phpSessionId: PhpSessionId,
+    uscConfig: UscConfig,
 ) : VenueApi {
+    private val baseUrl = uscConfig.baseUrl
+    private val storeResponses = uscConfig.storeResponses
 
     private val log = logger {}
 
@@ -46,7 +49,7 @@ class VenueHttpApi(
     private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
         val fullUrl = "$baseUrl/venues"
         val response = http.get(fullUrl) {
-            cookie("PHPSESSID", phpSessionId)
+            cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
             parameter("city_id", filter.city.id)
             parameter("plan_type", filter.plan.id)
@@ -74,7 +77,7 @@ class VenueHttpApi(
         val fullUrl = "$baseUrl/venues/$slug"
         val response = try {
             http.get(fullUrl) {
-                cookie("PHPSESSID", phpSessionId)
+                cookie("PHPSESSID", phpSessionId.value)
             }
         } catch (e: ConnectException) {
             e.printStackTrace()
