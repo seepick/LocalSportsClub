@@ -28,21 +28,27 @@ data class TableColumn<T>(
     val size: ColSize,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,
-    var valueExtractor: ((T) -> Comparable<Any>)? = null,
+    var sortValueExtractor: ((T) -> Comparable<Any>)? = null,
 ) {
     init {
-        if (valueExtractor == null) {
+        if (sortValueExtractor == null) {
             @Suppress("UNCHECKED_CAST")
             when (renderer) {
-                is CellRenderer.CustomRenderer -> if (sortingEnabled) error("No value extract defined and not a TextRenderer!")
-                is CellRenderer.TextRenderer -> valueExtractor = renderer.extractor as (T) -> Comparable<Any>
+                is CellRenderer.CustomRenderer -> if (sortingEnabled) error("No sort value extractor defined and not a TextRenderer!")
+                is CellRenderer.TextRenderer -> sortValueExtractor = renderer.sortExtractor as (T) -> Comparable<Any>
             }
         }
     }
 }
 
 sealed interface CellRenderer<T> {
-    data class TextRenderer<T>(val extractor: (T) -> Any) : CellRenderer<T>
+    data class TextRenderer<T>(val extractor: (T) -> Any, val sortExtractor: (T) -> Any) : CellRenderer<T> {
+        companion object {
+            operator fun <T> invoke(extractor: (T) -> Any): TextRenderer<T> =
+                TextRenderer(extractor, extractor)
+        }
+    }
+
     data class CustomRenderer<T>(val invoke: @Composable RowScope.(T, ColSize) -> Unit) : CellRenderer<T>
 }
 

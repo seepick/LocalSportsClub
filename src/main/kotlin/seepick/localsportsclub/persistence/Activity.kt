@@ -20,7 +20,7 @@ data class ActivityDbo(
     val spotsLeft: Int,
     val from: LocalDateTime,
     val to: LocalDateTime,
-    val scheduled: Boolean,
+    val isBooked: Boolean,
 ) {
     companion object {
         fun fromRow(row: ResultRow) = ActivityDbo(
@@ -31,7 +31,7 @@ data class ActivityDbo(
             from = row[ActivitiesTable.from],
             to = row[ActivitiesTable.to],
             spotsLeft = row[ActivitiesTable.spotsLeft],
-            scheduled = row[ActivitiesTable.scheduled],
+            isBooked = row[ActivitiesTable.isBooked],
         )
     }
 }
@@ -43,7 +43,7 @@ object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
     val from = datetime("FROM")
     val to = datetime("TO")
     val spotsLeft = integer("SPOTS_LEFT")
-    val scheduled = bool("SCHEDULED")
+    val isBooked = bool("IS_BOOKED")
 }
 
 interface ActivityRepo {
@@ -64,7 +64,7 @@ class InMemoryActivityRepo : ActivityRepo {
         stored.values.toList()
 
     override fun selectAllScheduled() =
-        stored.filter { it.value.scheduled }.values.toList()
+        stored.filter { it.value.isBooked }.values.toList()
 
     override fun selectById(id: Int): ActivityDbo? =
         stored[id]
@@ -99,7 +99,7 @@ object ExposedActivityRepo : ActivityRepo {
     }
 
     override fun selectAllScheduled(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().where { ActivitiesTable.scheduled.eq(true) }.map {
+        ActivitiesTable.selectAll().where { ActivitiesTable.isBooked.eq(true) }.map {
             ActivityDbo.fromRow(it)
         }
     }
@@ -122,14 +122,14 @@ object ExposedActivityRepo : ActivityRepo {
             it[spotsLeft] = activity.spotsLeft
             it[from] = activity.from
             it[to] = activity.to
-            it[scheduled] = activity.scheduled
+            it[isBooked] = activity.isBooked
         }
     }
 
     override fun update(activity: ActivityDbo): Unit = transaction {
         val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
             it[spotsLeft] = activity.spotsLeft
-            it[scheduled] = activity.scheduled
+            it[isBooked] = activity.isBooked
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${activity.id}, but was: $updated")
     }

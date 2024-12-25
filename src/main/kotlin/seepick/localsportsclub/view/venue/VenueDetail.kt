@@ -124,7 +124,7 @@ fun VenueDetail(
         LazyColumn {
             items(viewModel.selectedVenue?.activities ?: emptyList()) { activity ->
                 Row {
-                    if (activity.scheduled) {
+                    if (activity.isBooked) {
                         Text(text = "⭐️")
                     }
                     Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")

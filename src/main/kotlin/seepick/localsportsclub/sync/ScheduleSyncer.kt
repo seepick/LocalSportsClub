@@ -23,7 +23,11 @@ class ScheduleSyncer(
 
         updateAndDispatch(toMarkScheduledYes.values.toList(), true) { schedule ->
             activityRepo.selectById(schedule.activityId) ?: suspend {
-                dataSyncRescuer.rescueActivity(schedule.activityId, schedule.venueSlug)
+                dataSyncRescuer.rescueActivity(
+                    schedule.activityId,
+                    schedule.venueSlug,
+                    "[SYNC] refetch due to missing from booked activity"
+                )
             }()
         }
         updateAndDispatch(toMarkScheduledNo.values.toList(), false) { it }
@@ -36,8 +40,8 @@ class ScheduleSyncer(
     ) {
         activities.forEach {
             val activity = extractor(it)
-            require(activity.scheduled != toBeScheduled) { "Expected activity to be scheduled=${!toBeScheduled} ($activity)" }
-            val updatedActivity = activity.copy(scheduled = toBeScheduled)
+            require(activity.isBooked != toBeScheduled) { "Expected activity to be scheduled=${!toBeScheduled} ($activity)" }
+            val updatedActivity = activity.copy(isBooked = toBeScheduled)
             activityRepo.update(updatedActivity)
             dispatcher.dispatchOnActivityDboUpdated(updatedActivity, ActivityFieldUpdate.Scheduled)
         }

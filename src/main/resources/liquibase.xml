@@ -108,7 +108,7 @@
             <column name="SPOTS_LEFT" type="integer">
                 <constraints nullable="false"/>
             </column>
-            <column name="SCHEDULED" type="boolean">
+            <column name="IS_BOOKED" type="boolean">
                 <constraints nullable="false"/>
             </column>
             <column name="VENUE_ID" type="integer">

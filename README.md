@@ -11,16 +11,12 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* rename "isScheduled" to "isBooked"
-* write venue.notes when venue is synced via links, or via DataRescuer; prefill it from system, so user will see it ;)
 * !! sync past checkins (might require fetching old activities (not yet synced/in DB)); new field: Activity.wasCheckedin
-* MIN: description/info has "\n"... replace them
-* MIN: if venue.importantInfo == "-" then nullify
-* MIN: sort case-IN-sensitive
 * cleanup tasktags
 
 ## Backlog
 
+* MIN: description/info has "\n"... replace them
 * FEATURE: introduce tabbed content: activities
 * FEATURE: notes textarea (tabbed content)
 * UI: display usage UI (progress bar like again)

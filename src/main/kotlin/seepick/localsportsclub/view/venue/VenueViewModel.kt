@@ -73,7 +73,7 @@ class VenueViewModel(
         resetVenues()
     }
 
-    fun updateSorting(column: TableColumn<Venue>) {
+    fun onHeaderClicked(column: TableColumn<Venue>) {
         if (sortColumn == column) return
         require(sortColumn.sortingEnabled)
         log.debug { "update sorting for: ${column.headerLabel}" }
@@ -84,7 +84,7 @@ class VenueViewModel(
     override fun onVenueAdded(venue: Venue) {
         _allVenues.add(venue)
         if (searching.matches(venue)) {
-            val index = searchIndexFor(_venues, venue, sortColumn.valueExtractor!!)
+            val index = searchIndexFor(_venues, venue, sortColumn.sortValueExtractor!!)
             _venues.add(index, venue)
         }
     }
@@ -93,7 +93,7 @@ class VenueViewModel(
         _venues.clear()
         _venues.addAll(_allVenues.filter { searching.matches(it) }.let {
             it.sortedBy { venue ->
-                sortColumn.valueExtractor!!.invoke(venue)
+                sortColumn.sortValueExtractor!!.invoke(venue)
             }
         })
     }

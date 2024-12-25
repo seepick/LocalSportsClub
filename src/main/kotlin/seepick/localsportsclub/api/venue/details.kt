@@ -49,18 +49,18 @@ data class VenueDetailEmbedGeo(
 object VenueDetailsParser {
 
     private object EnglishLabels {
-        val otherLocations = "Other Locations:"
-        val website = "Website:"
-        val importantInfo = "Important Info:"
-        val openingTimes = "Opening Times:"
+        const val OTHER_LOCATIONS = "Other Locations:"
+        const val WEBSITE = "Website:"
+        const val IMPORTANT_INFO = "Important Info:"
+        const val OPENING_TIMES = "Opening Times:"
     }
 
-    private val importantInfoDefault = "."
-    private val openingTimesDefaultValueNL =
+    private val importantInfoDefaults = listOf(".", "-")
+    private const val OPENING_TIMES_DEFAULT_VALUE_NL =
         "De openingstijden zijn afhankelijk van de cursustijden/afspraken, of zijn niet bekend. Je kunt meer informatie vinden op de partnerwebsite."
-    private val openingTimesDefaultValueEN =
+    private const val OPENING_TIMES_DEFAULT_VALUE_EN =
         "The opening hours depend on the course times / agreed appointments or are not known. You can find more information on the partner website."
-    private val noImageSetUrl = "https://urbansportsclub.com/images/merchant/venueHome.jpg"
+    private const val NO_IMAGE_SET_URL = "https://urbansportsclub.com/images/merchant/venueHome.jpg"
 
     fun parse(htmlString: String): VenueDetails {
         val document = Jsoup.parse(htmlString)
@@ -80,25 +80,25 @@ object VenueDetailsParser {
         val description = body.select("p.description").text()
         body.select("div.studio-info-section").forEach { div ->
             when (div.select("h3").single().text()) {
-                EnglishLabels.otherLocations -> {
+                EnglishLabels.OTHER_LOCATIONS -> {
                     div.select("a").forEach { a ->
                         linkedVenues += a.attr("href").substringAfterLast("/")
                     }
                 }
 
-                EnglishLabels.website -> {
+                EnglishLabels.WEBSITE -> {
                     website = div.select("a").first()!!.attr("href")
                 }
 
-                EnglishLabels.importantInfo -> {
+                EnglishLabels.IMPORTANT_INFO -> {
                     importantInfo = div.select("p span.pre-line").text().trim().let {
-                        if (it == importantInfoDefault) null else it
+                        if (importantInfoDefaults.contains(it)) null else it
                     }
                 }
 
-                EnglishLabels.openingTimes -> {
+                EnglishLabels.OPENING_TIMES -> {
                     openingTimes = div.select("p span.pre-line").text().trim().let {
-                        if (it == openingTimesDefaultValueEN || it == openingTimesDefaultValueNL) null else it
+                        if (it == OPENING_TIMES_DEFAULT_VALUE_EN || it == OPENING_TIMES_DEFAULT_VALUE_NL) null else it
                     }
                 }
             }
@@ -112,7 +112,7 @@ object VenueDetailsParser {
             description = description,
             importantInfo = importantInfo,
             openingTimes = openingTimes,
-            originalImageUrl = detail.image.let { if (it == noImageSetUrl) null else Url(it) },
+            originalImageUrl = detail.image.let { if (it == NO_IMAGE_SET_URL) null else Url(it) },
             latitude = detail.geo.latitude,
             longitude = detail.geo.longitude,
             streetAddress = detail.address.streetAddress,

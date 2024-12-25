@@ -91,7 +91,7 @@ class DataStorage(
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         val stored = allActivitiesByVenueId[activityDbo.venueId]!!.single { it.id == activityDbo.id }
         when (field) {
-            ActivityFieldUpdate.Scheduled -> stored.scheduled = activityDbo.scheduled
+            ActivityFieldUpdate.Scheduled -> stored.isBooked = activityDbo.isBooked
         }
     }
 
@@ -108,7 +108,7 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     category = category,
     spotsLeft = spotsLeft,
     dateTimeRange = DateTimeRange(from, to),
-    scheduled = scheduled
+    isBooked = isBooked
 )
 
 fun Venue.toDbo() = VenueDbo(

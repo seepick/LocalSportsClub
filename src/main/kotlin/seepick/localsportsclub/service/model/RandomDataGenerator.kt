@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.model
 import io.ktor.http.Url
 import seepick.localsportsclub.persistence.VenueDbo
 
-object DummyDataGenerator {
+object RandomDataGenerator {
 
     private val words = listOf(
         "foo", "bar", "hans", "xerox", "apple", "tree", "house", "gak", "meh",

@@ -26,7 +26,7 @@ fun apiModule(config: AppConfig) = module {
         log.debug { "Wiring mocked USC API." }
         singleOf(::MockUscApi) bind UscApi::class
 
-    } else if (config.api == AppConfig.ApiMode.Real) {
+    } else if (config.api == AppConfig.ApiMode.RealHttp) {
         val phpSessionId = runBlocking {
             val result = LoginApi(httpClient, config.usc.baseUrl).login(Credentials.load())
             require(result is LoginResult.Success) { "Login failed: $result" }

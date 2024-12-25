@@ -71,7 +71,7 @@ class ActivitiesSyncer(
         spotsLeft = spotsLeft,
         from = from,
         to = to,
-        scheduled = false,
+        isBooked = false,
     )
 
     private suspend fun fetchRemoteActivities(date: LocalDate) = api.fetchActivities(

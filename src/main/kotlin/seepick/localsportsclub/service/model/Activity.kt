@@ -12,10 +12,10 @@ class Activity(
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
     spotsLeft: Int,
-    scheduled: Boolean,
+    isBooked: Boolean,
 ) {
     var spotsLeft: Int by mutableStateOf(spotsLeft)
-    var scheduled: Boolean by mutableStateOf(scheduled)
+    var isBooked: Boolean by mutableStateOf(isBooked)
 
     override fun toString() = "Activity[id=$id, name=$name, venue.slug=${venue.slug}]"
 }

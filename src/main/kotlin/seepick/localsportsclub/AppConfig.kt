@@ -37,23 +37,23 @@ data class AppConfig(
     }
 
     enum class ApiMode {
-        Mock, Real
+        Mock, RealHttp
     }
 
     enum class SyncMode {
-        Noop, Delayed, Real
+        Noop, Delayed, Dummy, Real
     }
 
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.Real,
-            sync = SyncMode.Real,
+            api = ApiMode.RealHttp,
+            sync = SyncMode.Dummy,
             logFileEnabled = true,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.Real,
+            api = ApiMode.RealHttp,
             sync = SyncMode.Real,
         )
     }

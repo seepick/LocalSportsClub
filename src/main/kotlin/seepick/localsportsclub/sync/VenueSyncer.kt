@@ -15,6 +15,33 @@ import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.resizeImage
 import seepick.localsportsclub.service.workParallel
 
+class VenueSyncer(
+    private val api: UscApi,
+    private val venueRepo: VenueRepo,
+    private val venueSyncInserter: VenueSyncInserter,
+    uscConfig: UscConfig,
+) {
+    private val log = logger {}
+    private val city: City = uscConfig.city
+    private val plan: PlanType = uscConfig.plan
+
+    suspend fun sync() {
+        log.info { "Syncing venues ..." }
+        val remoteVenuesBySlug = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
+        val localVenuesBySlug = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
+
+        val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
+        log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
+        markDeleted.values.forEach {
+            venueRepo.update(it.copy(isDeleted = true))
+        }
+
+        val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
+        venueSyncInserter.fetchAllInsertDispatch(missingVenues.keys.toList())
+    }
+
+}
+
 class VenueLink(
     val slug1: String, val slug2: String
 ) {
@@ -40,18 +67,20 @@ class VenueSyncInserter(
     private val city = uscConfig.city
 
     suspend fun fetchAllInsertDispatch(
-        venueSlugs: List<String>
+        venueSlugs: List<String>,
+        prefilledNotes: String = "",
     ) {
         log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
-        fetchAllInsertDispatch(venueSlugs, mutableSetOf())
+        fetchAllInsertDispatch(venueSlugs, mutableSetOf(), prefilledNotes)
     }
 
     private suspend fun fetchAllInsertDispatch(
         venueSlugs: List<String>,
-        newLinks: MutableSet<VenueLink>
+        newLinks: MutableSet<VenueLink>,
+        prefilledNotes: String = "",
     ) {
         val dbos = workParallel(5, venueSlugs) { slug ->
-            fetchDetailsDownloadImage(slug, newLinks)
+            fetchDetailsDownloadImage(slug, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
@@ -78,7 +107,7 @@ class VenueSyncInserter(
             }
         } else {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
-            fetchAllInsertDispatch(missingVenuesBySlug, newLinks)
+            fetchAllInsertDispatch(missingVenuesBySlug, newLinks, "[SYNC] refetch due to missing venue link")
         }
     }
 
@@ -103,33 +132,6 @@ class VenueSyncInserter(
         val resizedBytes = resizeImage(downloadedBytes, 400 to 400)
         imageStorage.saveVenueImage(fileName, resizedBytes)
     }
-}
-
-class VenueSyncer(
-    private val api: UscApi,
-    private val venueRepo: VenueRepo,
-    private val venueSyncInserter: VenueSyncInserter,
-    uscConfig: UscConfig,
-) {
-    private val log = logger {}
-    private val city: City = uscConfig.city
-    private val plan: PlanType = uscConfig.plan
-
-    suspend fun sync() {
-        log.info { "Syncing venues ..." }
-        val remoteVenuesBySlug = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
-        val localVenuesBySlug = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
-
-        val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
-        log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
-        markDeleted.values.forEach {
-            venueRepo.update(it.copy(isDeleted = true))
-        }
-
-        val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
-        venueSyncInserter.fetchAllInsertDispatch(missingVenues.keys.toList())
-    }
-
 }
 
 private fun VenueDetails.toDbo(cityId: Int) = VenueDbo(

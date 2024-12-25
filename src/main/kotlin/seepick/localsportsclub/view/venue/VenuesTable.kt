@@ -22,7 +22,7 @@ val venuesTableColumns = listOf<TableColumn<Venue>>(
             VenueImage(venue.imageFileName)
         }
     }, sortingEnabled = false),
-    TableColumn("Name", ColSize.Weight(0.7f), TextRenderer { it.name }),
+    TableColumn("Name", ColSize.Weight(0.7f), TextRenderer({ it.name }, { it.name.lowercase() })),
     TableColumn("Slug", ColSize.Weight(0.3f), TextRenderer { it.slug }),
     TableColumn("Activities", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
     TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
@@ -44,7 +44,7 @@ fun RowScope.VenuesTable(
         allItemsCount = viewModel.allVenues.size,
         items = viewModel.venues,
         onItemClicked = { viewModel.onVenueClicked(it) },
-        onHeaderClicked = { viewModel.updateSorting(it) },
+        onHeaderClicked = { viewModel.onHeaderClicked(it) },
         columns = venuesTableColumns,
         sortColumn = viewModel.sortColumn,
         selectedItem = viewModel.selectedVenue,
