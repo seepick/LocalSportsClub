@@ -44,7 +44,8 @@ data class VenueDbo(
 }
 
 interface VenueRepo {
-    fun selectAll(): List<VenueDbo> // FIXME filter out isDeleted
+    /** Doesn't do any filtering, not even the deleted ones. */
+    fun selectAll(): List<VenueDbo>
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
     fun selectBySlug(slug: String): VenueDbo?

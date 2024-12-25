@@ -6,9 +6,9 @@ import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activities.ActivitiesFilter
-import seepick.localsportsclub.api.activities.ActivityInfo
-import seepick.localsportsclub.api.activities.ServiceTye
+import seepick.localsportsclub.api.activity.ActivitiesFilter
+import seepick.localsportsclub.api.activity.ActivityInfo
+import seepick.localsportsclub.api.activity.ServiceTye
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
@@ -37,7 +37,6 @@ class ActivitiesSyncer(
         daysToSync().also { log.debug { "Syncing days: $it" } }.forEach { day ->
             syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
         }
-        // FIXME delete old ones, before today, without a reservation on it
     }
 
     @TestOnly
@@ -72,6 +71,7 @@ class ActivitiesSyncer(
         from = from,
         to = to,
         isBooked = false,
+        wasCheckedin = false,
     )
 
     private suspend fun fetchRemoteActivities(date: LocalDate) = api.fetchActivities(

@@ -49,7 +49,7 @@ class VenueHttpApi(
             parameter("plan_type", filter.plan.id)
             parameter("page", page)
         }
-        responseStorage.store(response, "VenuesPage$page")
+        responseStorage.store(response, "VenuesPage-$page")
         val json = response.body<VenuesJson>()
         if (!json.success) {
             throw ApiException("Venues endpoint returned failure!")

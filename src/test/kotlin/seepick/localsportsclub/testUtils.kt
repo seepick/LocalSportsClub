@@ -3,6 +3,7 @@ package seepick.localsportsclub
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
+import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.service.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -40,3 +41,5 @@ class TestableClock(
     override fun now() = now
     override fun today() = today
 }
+
+fun ActivityDbo.anotherOne() = copy(id = id + 1, name = "${name}X")

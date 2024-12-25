@@ -1,4 +1,4 @@
-package seepick.localsportsclub.api.activities
+package seepick.localsportsclub.api.activity
 
 import kotlinx.serialization.Serializable
 import seepick.localsportsclub.api.Pageable

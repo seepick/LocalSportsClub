@@ -11,7 +11,6 @@ interface SimpleVenue {
     val id: Int
     val slug: String
     val name: String
-    // TODO rating, isFavorited, isWishlisted
 }
 
 data class SimpleVenueImpl(
@@ -37,7 +36,7 @@ class Venue(
     val openingTimes: String?,
     val uscWebsite: Url, // inferred by static URL + slug
 
-    // TODO those down below also mutable
+    // those down below also mutable...
     val officialWebsite: Url?,
     val isWishlisted: Boolean,
     val isHidden: Boolean,

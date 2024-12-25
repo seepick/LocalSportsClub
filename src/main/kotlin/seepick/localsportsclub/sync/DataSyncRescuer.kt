@@ -1,21 +1,25 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.activities.ActivityApi
+import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueRepo
 
-class DataSyncRescuer(
+interface DataSyncRescuer {
+    suspend fun rescueActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
+}
+
+class DataSyncRescuerImpl(
     private val activityRepo: ActivityRepo,
     private val activityApi: ActivityApi,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
-) {
+) : DataSyncRescuer {
     private val log = logger {}
 
-    suspend fun rescueActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo {
+    override suspend fun rescueActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
 
@@ -35,6 +39,7 @@ class DataSyncRescuer(
             from = activityDetails.dateTimeRange.start,
             to = activityDetails.dateTimeRange.end,
             isBooked = false,
+            wasCheckedin = false,
         )
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDboAdded(dbo)

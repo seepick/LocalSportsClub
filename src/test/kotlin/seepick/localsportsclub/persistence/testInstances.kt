@@ -1,4 +1,4 @@
-package seepick.localsportsclub.persistence.testInfra
+package seepick.localsportsclub.persistence
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
@@ -13,8 +13,6 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.VenueDbo
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).next()
@@ -54,5 +52,6 @@ fun Arb.Companion.activityDbo() = arbitrary {
         from = from,
         to = from.plusMinutes(long(min = 30, max = 120).next()),
         isBooked = boolean().next(),
+        wasCheckedin = boolean().next(),
     )
 }

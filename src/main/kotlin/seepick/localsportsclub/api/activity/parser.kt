@@ -1,4 +1,4 @@
-package seepick.localsportsclub.api.activities
+package seepick.localsportsclub.api.activity
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.Serializable
@@ -77,9 +77,22 @@ private fun convertFromToDateTime(date: LocalDate, times: TimePairs): Pair<Local
     LocalDateTime.of(date, times.from) to LocalDateTime.of(date, times.to)
 
 @Serializable
-data class ActivitySingleDataJson(
+data class ActivityBookDataJson(
     val `class`: ActivityDataLayerClassJson,
     val venue: ActivityDataLayerVenueJson,
+)
+
+@Serializable
+data class ActivityCancelDataJson(
+    val `class`: ActivityDataLayerCancelClassJson,
+    val venue: ActivityDataLayerVenueJson,
+)
+
+@Serializable
+data class ActivityDataLayerCancelClassJson(
+    val id: String,
+    val name: String,
+    val category: String,
 )
 
 @Serializable
@@ -91,21 +104,34 @@ data class ActivityDataLayerVenueJson(
 object ActivityParser {
     fun parse(html: String, currentYear: Int): ActivityDetail {
         val document = Jsoup.parse(html)
-        val htmlEl = document.childNodes()[0] as Element
-        val body = htmlEl.children()[1]
+        val root = document.childNodes()[0] as Element
+        val body = root.children()[1]
         val div = body.children().first()!!
 
         val dateString = div.select("p.smm-class-details__datetime").text()
         val dateRange = HtmlDateParser.parseDateTimeRange(dateString, currentYear)
-        val json = div.select("button.book").attr("data-book-success")
-        val data = kotlinxSerializer.decodeFromString<ActivitySingleDataJson>(json)
-        require(div.select("h3").first()!!.text() == data.`class`.name)
-        return ActivityDetail(
-            name = data.`class`.name,
-            dateTimeRange = dateRange,
-            venueName = data.venue.name,
-            category = data.`class`.category,
-            spotsLeft = data.`class`.spots_left.toInt(),
-        )
+        val buttonBook = div.select("button.book")
+        return if (buttonBook.hasAttr("data-book-success")) {
+            val json = buttonBook.attr("data-book-success")
+            val data = kotlinxSerializer.decodeFromString<ActivityBookDataJson>(json)
+            ActivityDetail(
+                name = data.`class`.name.trim(),
+                dateTimeRange = dateRange,
+                venueName = data.venue.name.trim(),
+                category = data.`class`.category.trim(),
+                spotsLeft = data.`class`.spots_left.toInt(),
+            )
+        } else {
+            val buttonCancel = div.select("button.cancel")
+            val json = buttonCancel.attr("data-book-cancel")
+            val data = kotlinxSerializer.decodeFromString<ActivityCancelDataJson>(json)
+            ActivityDetail(
+                name = data.`class`.name.trim(),
+                dateTimeRange = dateRange,
+                venueName = data.venue.name.trim(),
+                category = data.`class`.category.trim(),
+                spotsLeft = 0,
+            )
+        }
     }
 }

@@ -2,10 +2,14 @@ package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import seepick.localsportsclub.api.activities.ActivitiesFilter
-import seepick.localsportsclub.api.activities.ActivitiesParser
-import seepick.localsportsclub.api.activities.ActivityApi
-import seepick.localsportsclub.api.activities.ActivityInfo
+import seepick.localsportsclub.api.activity.ActivitiesFilter
+import seepick.localsportsclub.api.activity.ActivitiesParser
+import seepick.localsportsclub.api.activity.ActivityApi
+import seepick.localsportsclub.api.activity.ActivityInfo
+import seepick.localsportsclub.api.checkin.CheckinApi
+import seepick.localsportsclub.api.checkin.CheckinsPage
+import seepick.localsportsclub.api.schedule.ScheduleApi
+import seepick.localsportsclub.api.schedule.ScheduleRow
 import seepick.localsportsclub.api.venue.VenueApi
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
@@ -16,10 +20,13 @@ interface UscApi {
     suspend fun fetchVenues(filter: VenuesFilter): List<VenueInfo>
     suspend fun fetchVenueDetail(slug: String): VenueDetails
     suspend fun fetchActivities(filter: ActivitiesFilter): List<ActivityInfo>
+    suspend fun fetchScheduleRows(): List<ScheduleRow>
+    suspend fun fetchCheckinsPage(pageNr: Int): CheckinsPage
 }
 
 class MockUscApi : UscApi {
     private val log = logger {}
+
     override suspend fun fetchVenues(filter: VenuesFilter): List<VenueInfo> {
         log.debug { "Mock returning empty venues list." }
         return emptyList()
@@ -47,22 +54,41 @@ class MockUscApi : UscApi {
         log.debug { "Mock returning empty activities list." }
         return emptyList()
     }
+
+    override suspend fun fetchScheduleRows(): List<ScheduleRow> {
+        log.debug { "Mock returning empty schedule list." }
+        return emptyList()
+    }
+
+    override suspend fun fetchCheckinsPage(pageNr: Int): CheckinsPage {
+        log.debug { "Mock returning empty checkins page." }
+        return CheckinsPage.empty
+    }
 }
 
 class UscApiAdapter(
     private val venueApi: VenueApi,
     private val activityApi: ActivityApi,
+    private val scheduleApi: ScheduleApi,
+    private val checkinApi: CheckinApi,
 ) : UscApi {
-    override suspend fun fetchVenues(filter: VenuesFilter): List<VenueInfo> =
+
+    override suspend fun fetchVenues(filter: VenuesFilter) =
         venueApi.fetchPages(filter).flatMap {
             VenueParser.parseHtmlContent(it.content)
         }
 
-    override suspend fun fetchVenueDetail(slug: String): VenueDetails =
+    override suspend fun fetchVenueDetail(slug: String) =
         venueApi.fetchDetails(slug)
 
-    override suspend fun fetchActivities(filter: ActivitiesFilter): List<ActivityInfo> =
+    override suspend fun fetchActivities(filter: ActivitiesFilter) =
         activityApi.fetchPages(filter).flatMap {
             ActivitiesParser.parse(it.content, filter.date)
         }
+
+    override suspend fun fetchScheduleRows() =
+        scheduleApi.fetchScheduleRows()
+
+    override suspend fun fetchCheckinsPage(pageNr: Int) =
+        checkinApi.fetchPage(pageNr)
 }

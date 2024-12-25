@@ -111,6 +111,9 @@
             <column name="IS_BOOKED" type="boolean">
                 <constraints nullable="false"/>
             </column>
+            <column name="WAS_CHECKEDIN" type="boolean">
+                <constraints nullable="false"/>
+            </column>
             <column name="VENUE_ID" type="integer">
                 <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_ACTIVITIES_VENUE_ID"/>
             </column>

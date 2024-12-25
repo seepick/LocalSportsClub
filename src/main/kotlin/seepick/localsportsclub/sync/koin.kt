@@ -17,11 +17,13 @@ fun syncModule(config: AppConfig) = module {
         AppConfig.SyncMode.Delayed -> singleOf(::DelayedSyncer) bind Syncer::class
         AppConfig.SyncMode.Dummy -> singleOf(::DummySyncer) bind Syncer::class
         AppConfig.SyncMode.Real -> {
-            singleOf(::DataSyncRescuer) bind DataSyncRescuer::class
+            singleOf(::DataSyncRescuerImpl) bind DataSyncRescuer::class
             singleOf(::VenueSyncInserter) bind VenueSyncInserter::class
             singleOf(::VenueSyncer) bind VenueSyncer::class
             singleOf(::ActivitiesSyncer) bind ActivitiesSyncer::class
             singleOf(::ScheduleSyncer) bind ScheduleSyncer::class
+            singleOf(::CheckinSyncer) bind CheckinSyncer::class
+            singleOf(::CleanupSyncer) bind CleanupSyncer::class
             singleOf(::SyncerFacade) bind Syncer::class
         }
     }

@@ -39,7 +39,7 @@ class DataStorage(
 
     private val allVenues: MutableList<Venue> by lazy {
         val allVenueDbos = venueRepo.selectAll()
-        // FIXME write test first for linking
+        // FIXME implement venue linking (test first!)
 //        val allVenuesById = allVenues.associateBy { it.id }
 //        val allLinksById = venueLinksRepo.selectAll()
         allVenueDbos
@@ -81,17 +81,19 @@ class DataStorage(
 
     override fun onActivityDboAdded(activityDbo: ActivityDbo) {
         val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
-            ?: error("Could not find venue for: $activityDbo\nVenues: $allVenues")
+            ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
         val activity = activityDbo.toActivity(venue)
         venue.activities += activity
         allActivitiesByVenueId.getOrPut(activityDbo.venueId) { mutableListOf() }.add(activity)
-//        dispatcher.dispatchActivityAdded(activity) // FIXME
+        // FIXME dispatch activity added (once ActivityTable is setup)
+//        dispatcher.dispatchActivityAdded(activity)
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         val stored = allActivitiesByVenueId[activityDbo.venueId]!!.single { it.id == activityDbo.id }
         when (field) {
-            ActivityFieldUpdate.Scheduled -> stored.isBooked = activityDbo.isBooked
+            ActivityFieldUpdate.IsBooked -> stored.isBooked = activityDbo.isBooked
+            ActivityFieldUpdate.WasCheckedin -> stored.wasCheckedin = activityDbo.wasCheckedin
         }
     }
 
@@ -108,7 +110,8 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     category = category,
     spotsLeft = spotsLeft,
     dateTimeRange = DateTimeRange(from, to),
-    isBooked = isBooked
+    isBooked = isBooked,
+    wasCheckedin = wasCheckedin,
 )
 
 fun Venue.toDbo() = VenueDbo(

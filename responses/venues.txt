@@ -2227,7 +2227,7 @@ GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
                 }
             ]
         },
-        "searchExecutedEvent": "{\"event\":\"search_executed\",\"search\":{\"type\":\"venue\",\"map\":false,\"activities\":null,\"districts\":null,\"venues\":null,\"class_type\":null,\"plan\":\"L\",\"results\":464,\"time\":null,\"city\":\"Amsterdam\",\"activity_type\":null,\"term\":null,\"date\":null,\"b2x_type\":\"b2c\"},\"user\":{\"id\":\"d424b2ddf89e71cea39e57e3f3a3d919\",\"login_status\":\"logged-in\",\"membership_city\":\"Amsterdam\",\"membership_country\":\"Netherlands\",\"membership_status\":\"active\",\"membership_plan\":\"L\",\"membership_b2b_type\":\"b2c\",\"membership_contract_duration\":\"monthly\",\"company_name\":null}}",
+        "searchExecutedEvent": "{\"event\":\"search_executed\",\"search\":{\"type\":\"venue\",\"map\":false,\"activities\":null,\"districts\":null,\"venues\":null,\"class_type\":null,\"plan\":\"L\",\"results\":464,\"time\":null,\"city\":\"Amsterdam\",\"activity_type\":null,\"term\":null,\"date\":null,\"b2x_type\":\"b2c\"},\"user\":{\"id\":\"asdf\",\"login_status\":\"logged-in\",\"membership_city\":\"Amsterdam\",\"membership_country\":\"Netherlands\",\"membership_status\":\"active\",\"membership_plan\":\"L\",\"membership_b2b_type\":\"b2c\",\"membership_contract_duration\":\"monthly\",\"company_name\":null}}",
         "regionSelectorSelected": null
     }
 }

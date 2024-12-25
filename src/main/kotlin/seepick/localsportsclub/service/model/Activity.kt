@@ -13,9 +13,11 @@ class Activity(
     val dateTimeRange: DateTimeRange,
     spotsLeft: Int,
     isBooked: Boolean,
+    wasCheckedin: Boolean,
 ) {
     var spotsLeft: Int by mutableStateOf(spotsLeft)
     var isBooked: Boolean by mutableStateOf(isBooked)
+    var wasCheckedin: Boolean by mutableStateOf(wasCheckedin)
 
     override fun toString() = "Activity[id=$id, name=$name, venue.slug=${venue.slug}]"
 }

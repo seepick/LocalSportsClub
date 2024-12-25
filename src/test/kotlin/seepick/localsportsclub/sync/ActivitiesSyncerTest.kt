@@ -17,8 +17,8 @@ import seepick.localsportsclub.api.activityInfo
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
-import seepick.localsportsclub.persistence.testInfra.activityDbo
-import seepick.localsportsclub.persistence.testInfra.venueDbo
+import seepick.localsportsclub.persistence.activityDbo
+import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDateTime
 

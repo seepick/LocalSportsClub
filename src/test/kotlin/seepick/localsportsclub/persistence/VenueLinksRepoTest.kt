@@ -10,8 +10,6 @@ import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import seepick.localsportsclub.persistence.testInfra.DbListener
-import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class VenueLinksRepoTest : StringSpec() {
     private val venueRepo = ExposedVenueRepo

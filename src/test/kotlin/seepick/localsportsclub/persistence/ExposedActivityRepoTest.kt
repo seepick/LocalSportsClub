@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.nulls.shouldBeNull
@@ -15,14 +16,23 @@ import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import seepick.localsportsclub.persistence.testInfra.DbListener
-import seepick.localsportsclub.persistence.testInfra.activityDbo
-import seepick.localsportsclub.persistence.testInfra.venueDbo
 import java.time.LocalDateTime
 
 class ExposedActivityRepoTest : DescribeSpec() {
+
     private val activityRepo = ExposedActivityRepo
     private val venueRepo = ExposedVenueRepo
+    private val todayTime = LocalDateTime.now()
+    private val todayDate = todayTime.toLocalDate()
+    private val yesterdayTime = todayTime.minusDays(1)
+    private lateinit var testRepo: TestRepoFacade
+
+    private fun venue() = Arb.venueDbo().next()
+    private fun activity() = Arb.activityDbo().next()
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        testRepo = TestRepoFacade(activityRepo, venueRepo)
+    }
 
     init {
         extension(DbListener())
@@ -34,30 +44,71 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When select future most date") {
             it("Given two different Then most future returned") {
-                val venue = venueRepo.insert(Arb.venueDbo().next())
-                val today = LocalDateTime.now()
-                val tomorrow = today.plusDays(1)
-                activityRepo.insert(Arb.activityDbo().next().copy(from = tomorrow, venueId = venue.id))
-                activityRepo.insert(Arb.activityDbo().next().copy(from = today, venueId = venue.id))
+                val venue = venueRepo.insert(venue())
+                val tomorrow = todayTime.plusDays(1)
+                activityRepo.insert(activity().copy(from = tomorrow, venueId = venue.id))
+                activityRepo.insert(activity().copy(from = todayTime, venueId = venue.id))
                 activityRepo.selectFutureMostDate() shouldBe tomorrow.toLocalDate()
             }
             it("Given nothing Then null") {
                 activityRepo.selectFutureMostDate().shouldBeNull()
             }
         }
+        describe("When select newest checkedin date") {
+            it("Given nothing Then return null") {
+                activityRepo.selectNewestCheckedinDate().shouldBeNull()
+            }
+            it("Given 2 checkedin Then return newest") {
+                val venue = venueRepo.insert(venue())
+                val activity1 = activity().copy(
+                    wasCheckedin = true,
+                    from = todayTime.plusDays(7),
+                    to = todayTime.plusDays(7).plusHours(1),
+                    venueId = venue.id
+                )
+                val activity2 = activity().copy(
+                    wasCheckedin = true,
+                    from = todayTime.plusDays(3),
+                    to = todayTime.plusDays(3).plusHours(1),
+                    venueId = venue.id
+                )
+                activityRepo.insert(activity1)
+                activityRepo.insert(activity2)
+
+                activityRepo.selectNewestCheckedinDate() shouldBe activity1.from.toLocalDate()
+            }
+            it("Given 1 old checkedin and 1 new non-checkedin Then return old one") {
+                val venue = venueRepo.insert(venue())
+                val activity1 = activity().copy(
+                    wasCheckedin = false,
+                    from = todayTime.plusDays(7),
+                    to = todayTime.plusDays(7).plusHours(1),
+                    venueId = venue.id
+                )
+                val activity2 = activity().copy(
+                    wasCheckedin = true,
+                    from = todayTime.plusDays(3),
+                    to = todayTime.plusDays(3).plusHours(1),
+                    venueId = venue.id
+                )
+                activityRepo.insert(activity1)
+                activityRepo.insert(activity2)
+
+                activityRepo.selectNewestCheckedinDate() shouldBe activity2.from.toLocalDate()
+            }
+        }
         describe("When insert") {
             it("Given no venue Then fail") {
-                val activity = Arb.activityDbo().next()
+                val activity = activity()
                 shouldThrow<ExposedSQLException> {
                     activityRepo.insert(activity)
                 }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>()
-                        .message.shouldContain("FK_ACTIVITIES_VENUE_ID")
+                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>().message.shouldContain("FK_ACTIVITIES_VENUE_ID")
                 }
             }
             it("Given venue Then saved successfully") {
-                val venue = venueRepo.insert(Arb.venueDbo().next())
-                val activity = Arb.activityDbo().next().copy(venueId = venue.id)
+                val venue = venueRepo.insert(venue())
+                val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
                 transaction {
                     val stored = ActivitiesTable.selectAll().toList().shouldBeSingleton().first()
@@ -67,31 +118,30 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 }
             }
             it("Given same ID existing Then fail") {
-                val venue = venueRepo.insert(Arb.venueDbo().next())
-                val activity1 = Arb.activityDbo().next().copy(venueId = venue.id)
-                val activity2 = Arb.activityDbo().next().copy(id = activity1.id)
+                val venue = venueRepo.insert(venue())
+                val activity1 = activity().copy(venueId = venue.id)
+                val activity2 = activity().copy(id = activity1.id)
                 activityRepo.insert(activity1)
 
                 shouldThrow<ExposedSQLException> {
                     activityRepo.insert(activity2)
                 }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>()
-                        .message shouldContain "Unique index or primary key violation"
+                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>().message shouldContain "Unique index or primary key violation"
                 }
             }
         }
         describe("When insert and select all") {
             it("Then returned") {
-                val venue = venueRepo.insert(Arb.venueDbo().next())
-                val activity = Arb.activityDbo().next().copy(venueId = venue.id)
+                val venue = venueRepo.insert(venue())
+                val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
                 activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity
             }
         }
         describe("When update") {
             it("Given venue and activity Then update successful") {
-                val venue = venueRepo.insert(Arb.venueDbo().next())
-                val activity = Arb.activityDbo().next().copy(venueId = venue.id)
+                val venue = venueRepo.insert(venue())
+                val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
 
                 activityRepo.update(activity.copy(spotsLeft = activity.spotsLeft + 1))
@@ -99,11 +149,49 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 activityRepo.selectAll().shouldBeSingleton().first().spotsLeft shouldBe activity.spotsLeft + 1
             }
             it("Given no activity Then fail") {
-                val activity = Arb.activityDbo().next()
                 shouldThrow<IllegalStateException> {
-                    activityRepo.update(activity)
+                    activityRepo.update(activity())
                 }.message shouldContain "Expected 1 to be updated by ID"
             }
         }
+        describe("When delete non-booked and non-checkedin before") {
+            it("Given older but was checkedin Then keep") {
+                testRepo.insertActivity(wasCheckedin = true, from = yesterdayTime, createVenue = true)
+
+                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+
+                activityRepo.selectAll().shouldBeSingleton()
+            }
+            it("Given older but is booked Then keep") {
+                testRepo.insertActivity(isBooked = true, from = yesterdayTime, createVenue = true)
+
+                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+
+                activityRepo.selectAll().shouldBeSingleton()
+            }
+            it("Given same date Then keep") {
+                createActivityForDeletion(todayTime)
+
+                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+
+                activityRepo.selectAll().shouldBeSingleton()
+            }
+            it("Given older date Then delete") {
+                createActivityForDeletion(yesterdayTime)
+
+                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+
+                activityRepo.selectAll().shouldBeEmpty()
+            }
+        }
+    }
+
+    private fun createActivityForDeletion(date: LocalDateTime) {
+        testRepo.insertActivity(
+            wasCheckedin = false,
+            isBooked = false,
+            from = date,
+            createVenue = true
+        )
     }
 }

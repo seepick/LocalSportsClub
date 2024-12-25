@@ -7,12 +7,14 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
+import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
-import seepick.localsportsclub.api.activities.ActivityInfo
+import seepick.localsportsclub.api.activity.ActivityInfo
+import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.imageUrl
@@ -60,5 +62,13 @@ fun Arb.Companion.activityInfo() = arbitrary {
         spotsLeft = int(min = 0, max = 10).next(),
         from = from,
         to = from.plusMinutes(long(min = 30, max = 120).next()),
+    )
+}
+
+fun Arb.Companion.checkinEntry() = arbitrary {
+    CheckinEntry(
+        date = localDate().next(),
+        activityId = int(min = 1).next(),
+        venueSlug = slug().next(),
     )
 }

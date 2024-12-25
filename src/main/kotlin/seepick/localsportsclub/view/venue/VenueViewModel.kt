@@ -16,18 +16,18 @@ import seepick.localsportsclub.view.common.table.TableColumn
 class VenueEditModel {
 
     var notes = mutableStateOf("")
-    var rating by mutableStateOf(Rating.R0)
+    var rating = mutableStateOf(Rating.R0)
     var isFavorited by mutableStateOf(false)
 
     fun init(venue: Venue) {
         notes.value = venue.notes
-        rating = venue.rating
+        rating.value = venue.rating
         isFavorited = venue.isFavorited
     }
 
     fun updatePropertiesOf(selectedVenue: Venue) {
         selectedVenue.notes = notes.value
-        selectedVenue.rating = rating
+        selectedVenue.rating = rating.value
         selectedVenue.isFavorited = isFavorited
     }
 }

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.api.activities
+package seepick.localsportsclub.api.activity
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -66,6 +66,7 @@ class ActivityHttpApi(
         val response = http.safeGet(Url("$baseUrl/class-details/$id")) {
             cookie("PHPSESSID", phpSessionId.value)
         }
+        responseStorage.store(response, "ActivtiesDetails-$id")
         return ActivityParser.parse(response.bodyAsText(), clock.today().year)
     }
 
@@ -82,7 +83,7 @@ class ActivityHttpApi(
             parameter("service_type", filter.service.apiValue) // (scheduled) courses or free training (dropin)
             parameter("page", page)
         }
-        responseStorage.store(response, "ActivtiesPage$page")
+        responseStorage.store(response, "ActivtiesPage-$page")
         val json = response.body<ActivitiesJson>()
         if (!json.success) {
             throw ApiException("Activities endpoint returned failure!")

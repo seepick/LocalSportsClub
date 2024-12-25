@@ -24,7 +24,6 @@ enum class UscLang(val urlCode: String) {
     // PT, ES
 }
 
-// TODO inject this into koin context, so it can be automagically ctor injected
 data class AppConfig(
     val database: DatabaseMode,
     val api: ApiMode,
@@ -48,13 +47,14 @@ data class AppConfig(
         val development = AppConfig(
             database = DatabaseMode.Exposed,
             api = ApiMode.RealHttp,
-            sync = SyncMode.Dummy,
+            sync = SyncMode.Real,
             logFileEnabled = true,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
             api = ApiMode.RealHttp,
             sync = SyncMode.Real,
+            logFileEnabled = true,
         )
     }
 }

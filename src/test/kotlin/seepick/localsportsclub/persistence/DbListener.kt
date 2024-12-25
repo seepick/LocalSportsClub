@@ -1,4 +1,4 @@
-package seepick.localsportsclub.persistence.testInfra
+package seepick.localsportsclub.persistence
 
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
@@ -8,8 +8,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
-import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.persistence.allTables
 
 class DbListener : BeforeEachListener, AfterEachListener {
 
@@ -27,3 +25,6 @@ class DbListener : BeforeEachListener, AfterEachListener {
         TransactionManager.closeAndUnregister(db)
     }
 }
+
+fun buildTestJdbcUrl(namePrefix: String): String =
+    "jdbc:h2:mem:$namePrefix-${System.currentTimeMillis()};DB_CLOSE_DELAY=-1"

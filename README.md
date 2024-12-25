@@ -11,8 +11,10 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* !! sync past checkins (might require fetching old activities (not yet synced/in DB)); new field: Activity.wasCheckedin
-* cleanup tasktags
+* FEATURE: also sync free/"dropin" activities
+* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
+* UI: finish rendering (editable) venue fields; official website as editable textfield
+* UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 
 ## Backlog
 
@@ -20,19 +22,15 @@ Communistic Custom Client for Urban Sports Club.
 * FEATURE: introduce tabbed content: activities
 * FEATURE: notes textarea (tabbed content)
 * UI: display usage UI (progress bar like again)
-* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
-* UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
-* UI: finish rendering (editable) venue fields; official website as editable textfield
-* FEATURE: also sync free/"dropin" activities
+* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
+* UI: support sorting asc/desc
 * FEATURE: migrate old content from AllFit
 
 ## Later
 
-* UI: support sorting asc/desc
 * FEATURE: reserve/cancel button
-* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
 * UI: if textfield elipse ("foo...") => show tooltip full text
-* enable up/down arrow for table
+* enable up/down arrow for table (would require a global listener, and knowing which table got focus...)
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 
 ## Later Later

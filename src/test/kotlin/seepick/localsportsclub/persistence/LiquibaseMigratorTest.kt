@@ -6,9 +6,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.Database
-import seepick.localsportsclub.persistence.testInfra.activityDbo
-import seepick.localsportsclub.persistence.testInfra.buildTestJdbcUrl
-import seepick.localsportsclub.persistence.testInfra.venueDbo
 
 class LiquibaseMigratorTest : StringSpec() {
     init {

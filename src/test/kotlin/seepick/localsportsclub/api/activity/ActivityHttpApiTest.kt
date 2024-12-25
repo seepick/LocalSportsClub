@@ -1,4 +1,4 @@
-package seepick.localsportsclub.api.activities
+package seepick.localsportsclub.api.activity
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton

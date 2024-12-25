@@ -97,7 +97,7 @@ class DummySyncer(
         val now = clock.now().withMinute(0).withSecond(0)
         return ActivityDbo(
             id = activityId, venueId = venueId, name = "No Name", category = "", spotsLeft = 4, from = now.plusDays(1),
-            to = now.plusDays(1).plusMinutes(75), isBooked = false,
+            to = now.plusDays(1).plusMinutes(75), isBooked = false, wasCheckedin = false,
         )
     }
 

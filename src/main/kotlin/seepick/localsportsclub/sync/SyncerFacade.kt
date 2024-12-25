@@ -6,6 +6,8 @@ class SyncerFacade(
     private val venueSyncer: VenueSyncer,
     private val activitiesSyncer: ActivitiesSyncer,
     private val scheduleSyncer: ScheduleSyncer,
+    private val checkinSyncer: CheckinSyncer,
+    private val cleanupSyncer: CleanupSyncer,
     private val dispatcher: SyncerListenerDispatcher,
 ) : Syncer {
     private val log = logger {}
@@ -19,5 +21,7 @@ class SyncerFacade(
         venueSyncer.sync()
         activitiesSyncer.sync()
         scheduleSyncer.sync()
+        checkinSyncer.sync()
+        cleanupSyncer.sync()
     }
 }

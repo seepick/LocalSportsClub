@@ -23,7 +23,6 @@ object ScheduleParser {
         val body = htmlTag.childNodes().single { it.nodeName() == "body" } as Element
         val divs = body.select("div.reservations div.timetable div[class=\"smm-class-snippet row\"]").toList()
 
-
         return ScheduleHtml(rows = divs.map { div ->
             ScheduleRow(
                 activityId = div.attr("data-appointment-id").toInt(),

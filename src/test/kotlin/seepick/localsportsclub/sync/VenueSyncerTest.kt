@@ -16,11 +16,11 @@ import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.api.venueDetails
 import seepick.localsportsclub.api.venueInfo
 import seepick.localsportsclub.imageUrl
+import seepick.localsportsclub.persistence.DbListener
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.testInfra.DbListener
-import seepick.localsportsclub.persistence.testInfra.venueDbo
+import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.uscConfig
 

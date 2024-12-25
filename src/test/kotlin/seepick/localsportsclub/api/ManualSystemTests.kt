@@ -4,10 +4,10 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.kotest.common.runBlocking
 import io.kotest.matchers.types.shouldBeInstanceOf
 import seepick.localsportsclub.UscConfig
-import seepick.localsportsclub.api.activities.ActivitiesFilter
-import seepick.localsportsclub.api.activities.ActivitiesParser
-import seepick.localsportsclub.api.activities.ActivityHttpApi
-import seepick.localsportsclub.api.activities.ServiceTye
+import seepick.localsportsclub.api.activity.ActivitiesFilter
+import seepick.localsportsclub.api.activity.ActivitiesParser
+import seepick.localsportsclub.api.activity.ActivityHttpApi
+import seepick.localsportsclub.api.activity.ServiceTye
 import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.api.venue.VenueParser
