@@ -5,9 +5,8 @@
         </encoder>
     </appender>
 
-    <logger name="io.ktor" level="INFO"/>
-    <logger name="liquibase" level="INFO"/>
-    <root level="ALL">
+    <logger name="seepick.localsportsclub" level="TRACE"/>
+    <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

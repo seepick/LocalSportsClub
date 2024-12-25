@@ -15,33 +15,35 @@ import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
 import java.io.File
 
-fun reconfigureLog(useFileAppender: Boolean) {
+fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext
     val rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME)
     rootLogger.detachAndStopAllAppenders()
-
-    if (useFileAppender) {
-        rootLogger.addFileAppender(context)
-    }
-    rootLogger.addConsoleAppender(context)
     rootLogger.level = Level.WARN
 
-    mapOf(
-        "seepick.localsportsclub" to Level.TRACE,
-        "liquibase" to Level.INFO,
-        "Exposed" to Level.INFO,
-    ).forEach { (packageName, logLevel) ->
+    rootLogger.addAppender(buildConsoleAppender(context, Level.TRACE))
+
+    if (useFileAppender) {
+        rootLogger.addAppender(buildFileAppender(context, Level.DEBUG))
+        rootLogger.addAppender(buildFileAppender(context, Level.WARN, "-warn"))
+    }
+
+    packageSettings.forEach { (packageName, logLevel) ->
         context.getLogger(packageName).level = logLevel
     }
 }
 
-private fun Logger.addFileAppender(context: LoggerContext) {
+private fun buildFileAppender(
+    context: LoggerContext,
+    level: Level,
+    suffix: String = ""
+): RollingFileAppender<ILoggingEvent> {
     val logsDir = FileResolver.resolve(DirectoryEntry.ApplicationLogs)
-    val targetLogFile = File(logsDir, "lsc.log")
-    println("[LSC] Writing logs to: ${targetLogFile.absolutePath}")
-    addAppender(RollingFileAppender<ILoggingEvent>().also { appender ->
+    val targetLogFile = File(logsDir, "app_logs$suffix.log")
+    println("Writing logs to: ${targetLogFile.absolutePath}")
+    return RollingFileAppender<ILoggingEvent>().also { appender ->
         appender.context = context
-        appender.name = "LSCFileAppender"
+        appender.name = "CustomFileAppender$suffix"
         appender.encoder = buildPattern(context)
         appender.file = targetLogFile.absolutePath
         appender.isAppend = true
@@ -49,23 +51,26 @@ private fun Logger.addFileAppender(context: LoggerContext) {
         appender.rollingPolicy = TimeBasedRollingPolicy<ILoggingEvent>().also { policy ->
             policy.context = context
             policy.setParent(appender)
-            policy.fileNamePattern = "${logsDir.absolutePath}/lsc-%d{yyyy-MM-dd}.log"
+            policy.fileNamePattern = "${logsDir.absolutePath}/app_logs$suffix-%d{yyyy-MM-dd}.log"
             policy.maxHistory = 3
             policy.start()
         }
         appender.start()
-        appender.addFilter(MyThresholdFilter(Level.TRACE))
-    })
+        appender.addFilter(MyThresholdFilter(level))
+    }
 }
 
-private fun Logger.addConsoleAppender(context: LoggerContext) {
-    addAppender(ConsoleAppender<ILoggingEvent>().also { appender ->
+private fun buildConsoleAppender(
+    context: LoggerContext,
+    level: Level,
+): ConsoleAppender<ILoggingEvent> {
+    return ConsoleAppender<ILoggingEvent>().also { appender ->
         appender.context = context
-        appender.name = "LSCConsoleAppender"
+        appender.name = "CustomConsoleAppender"
         appender.encoder = buildPattern(context)
         appender.start()
-        appender.addFilter(MyThresholdFilter(Level.TRACE))
-    })
+        appender.addFilter(MyThresholdFilter(level))
+    }
 }
 
 private fun buildPattern(context: LoggerContext) = PatternLayoutEncoder().also { encoder ->

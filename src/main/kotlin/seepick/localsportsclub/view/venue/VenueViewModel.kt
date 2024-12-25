@@ -50,6 +50,7 @@ class VenueViewModel(
 
     fun onStartUp() {
         log.info { "On startup: Filling initial data." }
+        log.warn { "Just a test" }
 //        _allVenues.addAll(DummyDataGenerator.generateVenues(40))
         _allVenues.addAll(dataStorage.selectAllVenues())
         resetVenues()

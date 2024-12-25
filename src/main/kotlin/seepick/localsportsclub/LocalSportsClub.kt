@@ -9,6 +9,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import ch.qos.logback.classic.Level
 import seepick.localsportsclub.view.ComposeApp
 
 object LocalSportsClub {
@@ -19,7 +20,14 @@ object LocalSportsClub {
         } else {
             AppConfig.production
         }
-        reconfigureLog(useFileAppender = config.logFileEnabled)
+        reconfigureLog(
+            useFileAppender = config.logFileEnabled,
+            packageSettings = mapOf(
+                "seepick.localsportsclub" to Level.TRACE,
+                "liquibase" to Level.INFO,
+                "Exposed" to Level.INFO,
+            )
+        )
         application {
             Window(
                 onCloseRequest = {

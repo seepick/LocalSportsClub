@@ -11,6 +11,8 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* rename "isScheduled" to "isBooked"
+* write venue.notes when venue is synced via links, or via DataRescuer; prefill it from system, so user will see it ;)
 * !! sync past checkins (might require fetching old activities (not yet synced/in DB)); new field: Activity.wasCheckedin
 * MIN: description/info has "\n"... replace them
 * MIN: if venue.importantInfo == "-" then nullify
@@ -35,9 +37,10 @@ Communistic Custom Client for Urban Sports Club.
 * UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
 * UI: if textfield elipse ("foo...") => show tooltip full text
 * enable up/down arrow for table
-* sync with google calendar
-* reserve/cancel request
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
+
+## Later Later
+
+* sync with google calendar
 * workout metadata teacher (von partner site scrapen)
-* alle QR codes von partner fotografieren, in app geben (prevent no-show-fee ;)
-* switch to ZonedDate
+* (switch to ZonedDate?)
