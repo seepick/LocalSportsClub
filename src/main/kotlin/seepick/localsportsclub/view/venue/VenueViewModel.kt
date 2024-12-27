@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
+import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.searchIndexFor
@@ -34,7 +35,7 @@ class VenueEditModel {
 
 class VenueViewModel(
     private val dataStorage: DataStorage,
-) : ViewModel(), DataStorageListener {
+) : ViewModel(), DataStorageListener by NoopDataStorageListener {
 
     private val log = logger {}
     private val _allVenues = mutableStateListOf<Venue>()

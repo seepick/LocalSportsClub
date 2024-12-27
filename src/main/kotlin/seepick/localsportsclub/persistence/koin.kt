@@ -21,12 +21,14 @@ fun persistenceModule(config: AppConfig) = module {
             single { ExposedVenueRepo } bind VenueRepo::class
             single { ExposedVenueLinksRepo } bind VenueLinksRepo::class
             single { ExposedActivityRepo } bind ActivityRepo::class
+            single { ExposedFreetrainingRepo } bind FreetrainingRepo::class
         }
 
         AppConfig.DatabaseMode.InMemory -> {
             singleOf(::InMemoryVenueRepo) bind VenueRepo::class
             singleOf(::InMemoryVenueLinksRepo) bind VenueLinksRepo::class
             singleOf(::InMemoryActivityRepo) bind ActivityRepo::class
+            singleOf(::InMemoryFreetrainingRepo) bind FreetrainingRepo::class
         }
     }
 }

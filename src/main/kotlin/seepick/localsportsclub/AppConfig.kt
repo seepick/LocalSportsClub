@@ -9,10 +9,10 @@ data class UscConfig(
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
     val storeResponses: Boolean = true,
-    val syncActivitiesDaysAhead: Int = 3,
+    val syncDaysAhead: Int = 3,
 ) {
     init {
-        require(syncActivitiesDaysAhead >= 1)
+        require(syncDaysAhead >= 1)
     }
 }
 

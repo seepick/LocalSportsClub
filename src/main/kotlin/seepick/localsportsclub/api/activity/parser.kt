@@ -38,10 +38,17 @@ data class ActivityDataLayerClassJson(
     val spots_left: String,
 )
 
+data class FreetrainingInfo(
+    val id: Int,
+    val name: String,
+    val category: String,
+    val venueSlug: String,
+)
+
 object ActivitiesParser {
     private val log = logger {}
 
-    fun parse(htmlString: String, date: LocalDate): List<ActivityInfo> {
+    fun parseContent(htmlString: String, date: LocalDate): List<ActivityInfo> {
         val document = Jsoup.parse(htmlString)
         val html = document.childNodes()[0] as Element
         val body = html.children()[1]
@@ -49,6 +56,22 @@ object ActivitiesParser {
         log.debug { "Parsing ${divs.size} activities." }
         return divs.map { div ->
             parseSingle(div, date)
+        }
+    }
+
+    fun parseFreetrainingContent(htmlString: String): List<FreetrainingInfo> {
+        val document = Jsoup.parse(htmlString)
+        val html = document.childNodes()[0] as Element
+        val body = html.children()[1]
+        val divs = body.children()
+        log.debug { "Parsing ${divs.size} freetrainings." }
+        return divs.map { div ->
+            FreetrainingInfo(
+                id = div.attr("data-appointment-id").toInt(),
+                name = div.select("div.title a.title").text().trim(),
+                category = div.select("div.title p").text().trim(),
+                venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/"),
+            )
         }
     }
 

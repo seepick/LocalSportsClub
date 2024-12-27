@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +40,12 @@ fun RatingPanel(
             onValueChange = { /* no-op */ },
             readOnly = true,
             modifier = Modifier
-                .width(150.dp)
+                .width(250.dp)
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size.toSize()
                 },
             label = { Text("Rating") },
+            leadingIcon = { Icon(Icons.Default.Star, contentDescription = null) },
             trailingIcon = {
                 Icon(icon, null, Modifier.clickable { isMenuExpanded = !isMenuExpanded })
             },

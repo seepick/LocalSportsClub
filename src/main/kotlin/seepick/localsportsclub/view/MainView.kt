@@ -14,10 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.view.venue.VenuePanel
+import seepick.localsportsclub.view.venue.VenueScreen
 
 @Composable
-fun MainWindow(
+fun MainView(
 //    syncer: Syncer = koinInject(),
     viewModel: MainViewModel = koinViewModel(),
 ) {
@@ -41,7 +41,7 @@ fun MainWindow(
                 CircularProgressIndicator()
             }
         }
-        VenuePanel()
+        VenueScreen()
     }
 }
 

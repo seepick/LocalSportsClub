@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.prettyPrint
+import seepick.localsportsclub.service.prettyPrintWith
+import seepick.localsportsclub.view.LscIcons
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.Tooltip
 
@@ -105,8 +108,19 @@ fun VenueDetail(
             }
         }
 
+//        TextField(
+//            "Haha",
+//            label = { Text("URL") },
+//            onValueChange = {},
+//            leadingIcon = { Button({ println("clicked") }) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+//                        contentDescription = null,
+//                    )
+//                }
+//            },
+//        )
 
-//        TextField(value = "foo", {}, label = { Text("Label") })
         val (notes, notesSetter) = viewModel.venueEdit.notes
         NotesTextField(notes, notesSetter)
 
@@ -115,12 +129,32 @@ fun VenueDetail(
             items(viewModel.selectedVenue?.activities ?: emptyList()) { activity ->
                 Row {
                     if (activity.isBooked) {
-                        Text(text = "⭐️")
+                        Text(text = LscIcons.booked)
                     }
                     if (activity.wasCheckedin) {
-                        Text(text = "✅")
+                        Text(text = LscIcons.checkedin)
                     }
                     Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")
+                }
+            }
+        }
+        if (viewModel.selectedVenue?.freetrainings?.isNotEmpty() == true) {
+            Text("Freetrainings:")
+            LazyColumn {
+                items(viewModel.selectedVenue?.freetrainings ?: emptyList()) { freetraining ->
+                    Row {
+                        if (freetraining.checkedinTime != null) {
+                            Text(text = LscIcons.checkedin)
+                        }
+                        Text("${freetraining.name} / ${freetraining.category}: ")
+                        Text(
+                            text = if (freetraining.checkedinTime == null) {
+                                freetraining.date.prettyPrint(currentYear)
+                            } else {
+                                freetraining.date.prettyPrintWith(freetraining.checkedinTime!!, currentYear)
+                            }
+                        )
+                    }
                 }
             }
         }

@@ -11,6 +11,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* go to a freetraining, and sync checkedin things (got time info now! create synthetic activity ;)
 * FEATURE: also sync free/"dropin" activities
 * UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
 * UI: finish rendering (editable) venue fields; official website as editable textfield
@@ -35,6 +36,6 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Later Later
 
-* sync with google calendar
-* workout metadata teacher (von partner site scrapen)
+* sync with google calendar; on booking/cancellation
+* sync workout metadata teacher (von partner site scrapen)
 * (switch to ZonedDate?)

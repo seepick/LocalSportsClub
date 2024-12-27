@@ -51,6 +51,7 @@ class Venue(
     var rating: Rating by mutableStateOf(rating)
     var isFavorited: Boolean by mutableStateOf(isFavorited)
     val activities = mutableStateListOf<Activity>()
+    val freetrainings = mutableStateListOf<Freetraining>()
 
     companion object {
         fun dummy() = Venue(

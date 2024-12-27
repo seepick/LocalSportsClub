@@ -40,27 +40,23 @@ object ManualSystemTests {
     private suspend fun testVenues(phpSessionId: PhpSessionId) {
         val pages = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig).fetchPages(
             VenuesFilter(
-                city = City.Amsterdam,
-                plan = PlanType.Large
+                city = City.Amsterdam, plan = PlanType.Large
             )
         )
-        pages
-            .flatMap { VenueParser.parseHtmlContent(it.content) }.sortedBy { it.slug }
-            .also { println("Received ${it.size} venues (without those missing from linkings)") }
-            .forEach(::println)
+        pages.flatMap { VenueParser.parseHtmlContent(it.content) }.sortedBy { it.slug }
+            .also { println("Received ${it.size} venues (without those missing from linkings)") }.forEach(::println)
     }
 
     private suspend fun testActivities(phpSessionId: PhpSessionId) {
         val today = LocalDate.now()
         val pages = ActivityHttpApi(httpClient, phpSessionId, responseStorage, uscConfig, SystemClock).fetchPages(
-            ActivitiesFilter(
-                city = City.Amsterdam, plan = PlanType.Large, date = today, service = ServiceTye.Courses
-            )
+            filter = ActivitiesFilter(city = City.Amsterdam, plan = PlanType.Large, date = today),
+            serviceType = ServiceTye.Courses,
         )
         println("Received ${pages.size} pages of activities.")
         val activities = pages.flatMapIndexed { index, page ->
             println("Parsing page ${index + 1}")
-            ActivitiesParser.parse(page.content, today)
+            ActivitiesParser.parseContent(page.content, today)
         }
         println("In total ${activities.size} activities:")
         activities.forEach { println("- $it") }
@@ -84,10 +80,8 @@ object ManualSystemTests {
         } else {
             Credentials.load()
         }
-        return LoginApi(httpClient, uscConfig.baseUrl)
-            .login(credentials)
-            .shouldBeInstanceOf<LoginResult.Success>()
-            .phpSessionId.let {
+        return LoginApi(httpClient, uscConfig.baseUrl).login(credentials)
+            .shouldBeInstanceOf<LoginResult.Success>().phpSessionId.let {
                 println("New session ID is: $it")
                 PhpSessionId(it)
             }

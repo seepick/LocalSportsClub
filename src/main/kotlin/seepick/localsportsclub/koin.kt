@@ -20,4 +20,5 @@ fun allModules(config: AppConfig) = listOf(
 
 fun rootModule(config: AppConfig): Module = module {
     single { config.usc } bind UscConfig::class
+    // or use includeModules() ;)
 }

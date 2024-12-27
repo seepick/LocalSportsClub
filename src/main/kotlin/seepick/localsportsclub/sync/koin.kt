@@ -10,7 +10,7 @@ private val log = logger {}
 
 fun syncModule(config: AppConfig) = module {
     log.debug { "Configuring sync mode: ${config.sync}" }
-    singleOf(::SyncerListenerDispatcher) bind SyncerListenerDispatcher::class
+    singleOf(::SyncerListenerDispatcher)
     singleOf(::HttpDownloader) bind Downloader::class
     when (config.sync) {
         AppConfig.SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
@@ -18,12 +18,13 @@ fun syncModule(config: AppConfig) = module {
         AppConfig.SyncMode.Dummy -> singleOf(::DummySyncer) bind Syncer::class
         AppConfig.SyncMode.Real -> {
             singleOf(::DataSyncRescuerImpl) bind DataSyncRescuer::class
-            singleOf(::VenueSyncInserter) bind VenueSyncInserter::class
-            singleOf(::VenueSyncer) bind VenueSyncer::class
-            singleOf(::ActivitiesSyncer) bind ActivitiesSyncer::class
-            singleOf(::ScheduleSyncer) bind ScheduleSyncer::class
-            singleOf(::CheckinSyncer) bind CheckinSyncer::class
-            singleOf(::CleanupSyncer) bind CleanupSyncer::class
+            singleOf(::VenueSyncInserterImpl) bind VenueSyncInserter::class
+            singleOf(::VenueSyncer)
+            singleOf(::ActivitiesSyncer)
+            singleOf(::FreetrainingSyncer)
+            singleOf(::ScheduleSyncer)
+            singleOf(::CheckinSyncer)
+            singleOf(::CleanupSyncer)
             singleOf(::SyncerFacade) bind Syncer::class
         }
     }

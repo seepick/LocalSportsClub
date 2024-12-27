@@ -101,7 +101,7 @@ class VenueSyncerTest : StringSpec() {
         syncer = VenueSyncer(
             api = api,
             venueRepo = venueRepo,
-            venueSyncInserter = VenueSyncInserter(
+            venueSyncInserter = VenueSyncInserterImpl(
                 api,
                 venueRepo,
                 venueLinksRepo,

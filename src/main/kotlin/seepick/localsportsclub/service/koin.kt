@@ -9,7 +9,7 @@ import seepick.localsportsclub.service.model.DataStorage
 fun serviceModule() = module {
     single { SystemClock } bind Clock::class
     single { httpClient } bind HttpClient::class
-    singleOf(::DataStorage) bind DataStorage::class
+    singleOf(::DataStorage)
     single {
         FileSystemImageStorage(
             venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),

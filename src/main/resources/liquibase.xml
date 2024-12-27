@@ -118,5 +118,26 @@
                 <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_ACTIVITIES_VENUE_ID"/>
             </column>
         </createTable>
+
+        <createTable tableName="FREETRAININGS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHECKEDIN_TIME" type="time">
+                <constraints nullable="true"/>
+            </column>
+            <column name="VENUE_ID" type="integer">
+                <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_FREETRAININGS_VENUE_ID"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

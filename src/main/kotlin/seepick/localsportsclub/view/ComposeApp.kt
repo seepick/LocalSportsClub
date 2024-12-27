@@ -1,6 +1,5 @@
 package seepick.localsportsclub.view
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.awt.ComposeWindow
 import org.koin.compose.KoinApplication
@@ -15,7 +14,6 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
 @Composable
-@Preview
 fun ComposeApp(window: ComposeWindow, config: AppConfig) {
     KoinApplication(application = {
         modules(allModules(config))
@@ -34,6 +32,6 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
             }
         })
 
-        MainWindow()
+        MainView()
     }
 }

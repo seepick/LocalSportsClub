@@ -6,6 +6,8 @@ import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.ActivitiesParser
 import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.api.activity.ActivityInfo
+import seepick.localsportsclub.api.activity.FreetrainingInfo
+import seepick.localsportsclub.api.activity.ServiceTye
 import seepick.localsportsclub.api.checkin.CheckinApi
 import seepick.localsportsclub.api.checkin.CheckinsPage
 import seepick.localsportsclub.api.schedule.ScheduleApi
@@ -20,6 +22,7 @@ interface UscApi {
     suspend fun fetchVenues(filter: VenuesFilter): List<VenueInfo>
     suspend fun fetchVenueDetail(slug: String): VenueDetails
     suspend fun fetchActivities(filter: ActivitiesFilter): List<ActivityInfo>
+    suspend fun fetchFreetrainings(filter: ActivitiesFilter): List<FreetrainingInfo>
     suspend fun fetchScheduleRows(): List<ScheduleRow>
     suspend fun fetchCheckinsPage(pageNr: Int): CheckinsPage
 }
@@ -55,6 +58,11 @@ class MockUscApi : UscApi {
         return emptyList()
     }
 
+    override suspend fun fetchFreetrainings(filter: ActivitiesFilter): List<FreetrainingInfo> {
+        log.debug { "Mock returning empty freetrainings list." }
+        return emptyList()
+    }
+
     override suspend fun fetchScheduleRows(): List<ScheduleRow> {
         log.debug { "Mock returning empty schedule list." }
         return emptyList()
@@ -82,8 +90,13 @@ class UscApiAdapter(
         venueApi.fetchDetails(slug)
 
     override suspend fun fetchActivities(filter: ActivitiesFilter) =
-        activityApi.fetchPages(filter).flatMap {
-            ActivitiesParser.parse(it.content, filter.date)
+        activityApi.fetchPages(filter, ServiceTye.Courses).flatMap {
+            ActivitiesParser.parseContent(it.content, filter.date)
+        }
+
+    override suspend fun fetchFreetrainings(filter: ActivitiesFilter): List<FreetrainingInfo> =
+        activityApi.fetchPages(filter, ServiceTye.FreeTraining).flatMap {
+            ActivitiesParser.parseFreetrainingContent(it.content)
         }
 
     override suspend fun fetchScheduleRows() =

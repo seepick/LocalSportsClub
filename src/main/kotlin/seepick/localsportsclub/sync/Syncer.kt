@@ -2,6 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
+import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
 
 interface Syncer {
@@ -13,6 +14,7 @@ interface SyncerListener {
     fun onVenueDboAdded(venueDbo: VenueDbo)
     fun onActivityDboAdded(activityDbo: ActivityDbo)
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
+    fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo)
 }
 
 enum class ActivityFieldUpdate {
@@ -53,6 +55,12 @@ class SyncerListenerDispatcher {
     fun dispatchOnActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         listeners.forEach {
             it.onActivityDboUpdated(activityDbo, field)
+        }
+    }
+
+    fun dispatchOnFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
+        listeners.forEach {
+            it.onFreetrainingDboAdded(freetrainingDbo)
         }
     }
 }

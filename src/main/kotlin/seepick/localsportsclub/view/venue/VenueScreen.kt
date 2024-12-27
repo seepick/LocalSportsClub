@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VenuePanel() {
+fun VenueScreen() {
     Column {
         Row {
             SearchInput()

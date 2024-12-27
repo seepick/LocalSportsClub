@@ -54,7 +54,14 @@ class VenueLink(
     }
 }
 
-class VenueSyncInserter(
+interface VenueSyncInserter {
+    suspend fun fetchAllInsertDispatch(
+        venueSlugs: List<String>,
+        prefilledNotes: String = "",
+    )
+}
+
+class VenueSyncInserterImpl(
     private val api: UscApi,
     private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
@@ -62,13 +69,13 @@ class VenueSyncInserter(
     private val imageStorage: ImageStorage,
     private val dispatcher: SyncerListenerDispatcher,
     uscConfig: UscConfig,
-) {
+) : VenueSyncInserter {
     private val log = logger {}
     private val city = uscConfig.city
 
-    suspend fun fetchAllInsertDispatch(
+    override suspend fun fetchAllInsertDispatch(
         venueSlugs: List<String>,
-        prefilledNotes: String = "",
+        prefilledNotes: String,
     ) {
         log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
         fetchAllInsertDispatch(venueSlugs, mutableSetOf(), prefilledNotes)

@@ -4,4 +4,5 @@ val allTables = arrayOf(
     VenuesTable,
     VenueLinksTable,
     ActivitiesTable,
+    FreetrainingsTable,
 )

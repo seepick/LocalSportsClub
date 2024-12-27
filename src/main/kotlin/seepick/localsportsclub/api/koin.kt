@@ -35,7 +35,7 @@ fun apiModule(config: AppConfig) = module {
             result.phpSessionId
         }
         single { if (config.usc.storeResponses) ResponseStorageImpl() else NoopResponseStorage } bind ResponseStorage::class
-        single { PhpSessionId(phpSessionId) } bind PhpSessionId::class
+        single { PhpSessionId(phpSessionId) }
         singleOf(::VenueHttpApi) bind VenueApi::class
         singleOf(::ActivityHttpApi) bind ActivityApi::class
         singleOf(::ScheduleHttpApi) bind ScheduleApi::class

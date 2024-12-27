@@ -18,7 +18,7 @@ import java.net.ConnectException
 
 private val log = KotlinLogging.logger {}
 
-val httpClient = HttpClient(Java) {
+val httpClient: HttpClient = HttpClient(Java) {
     install(ContentNegotiation) {
         json(kotlinxSerializer)
     }

@@ -8,7 +8,9 @@ import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
+import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
@@ -47,11 +49,26 @@ fun Arb.Companion.activityDbo() = arbitrary {
         id = int(min = 1).next(),
         venueId = int(min = 1).next(),
         name = string(minSize = 5, maxSize = 20).next(),
-        category = string(minSize = 1, maxSize = 5, codepoints = Codepoint.az()).next(),
+        category = category().next(),
         spotsLeft = int(min = 0, max = 10).next(),
         from = from,
         to = from.plusMinutes(long(min = 30, max = 120).next()),
         isBooked = boolean().next(),
         wasCheckedin = boolean().next(),
+    )
+}
+
+fun Arb.Companion.category() = arbitrary {
+    string(minSize = 1, maxSize = 5, codepoints = Codepoint.az()).next()
+}
+
+fun Arb.Companion.freetrainingDbo() = arbitrary {
+    FreetrainingDbo(
+        id = int(min = 1).next(),
+        name = string(minSize = 5, maxSize = 20).next(),
+        category = category().next(),
+        date = localDate().next(),
+        venueId = int(min = 1).next(),
+        checkedinTime = localTime().orNull().next(),
     )
 }

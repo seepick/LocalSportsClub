@@ -141,7 +141,7 @@ object ExposedActivityRepo : ActivityRepo {
         val deleted = ActivitiesTable.deleteWhere {
             wasCheckedin.eq(false).and(isBooked.eq(false)).and(from.less(thresholdDateTime))
         }
-        log.info { "Deleted $deleted old activities." }
+        log.info { "Deleted $deleted old activities before $threshold." }
     }
 
     override fun insert(activity: ActivityDbo): Unit = transaction {

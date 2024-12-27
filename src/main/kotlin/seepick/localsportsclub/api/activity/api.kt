@@ -21,7 +21,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 interface ActivityApi {
-    suspend fun fetchPages(filter: ActivitiesFilter): List<ActivitiesDataJson>
+    suspend fun fetchPages(filter: ActivitiesFilter, serviceTye: ServiceTye): List<ActivitiesDataJson>
     suspend fun fetchDetails(id: Int): ActivityDetail
 }
 
@@ -29,7 +29,6 @@ data class ActivitiesFilter(
     val city: City,
     val plan: PlanType,
     val date: LocalDate,
-    val service: ServiceTye,
 )
 
 enum class ActivityType(val apiValue: String) {
@@ -59,19 +58,11 @@ class ActivityHttpApi(
 
     private val baseUrl = uscConfig.baseUrl
 
-    override suspend fun fetchPages(filter: ActivitiesFilter): List<ActivitiesDataJson> =
-        fetchPageable { fetchPage(filter, it) }
-
-    override suspend fun fetchDetails(id: Int): ActivityDetail {
-        val response = http.safeGet(Url("$baseUrl/class-details/$id")) {
-            cookie("PHPSESSID", phpSessionId.value)
-        }
-        responseStorage.store(response, "ActivtiesDetails-$id")
-        return ActivityParser.parse(response.bodyAsText(), clock.today().year)
-    }
+    override suspend fun fetchPages(filter: ActivitiesFilter, serviceType: ServiceTye): List<ActivitiesDataJson> =
+        fetchPageable { fetchPage(filter, serviceType, it) }
 
     // /activities?service_type=0&city=1144&date=2024-12-16&business_type[]=b2c&plan_type=3&type[]=onsite&page=2
-    private suspend fun fetchPage(filter: ActivitiesFilter, page: Int): ActivitiesDataJson {
+    private suspend fun fetchPage(filter: ActivitiesFilter, serviceTye: ServiceTye, page: Int): ActivitiesDataJson {
         val response = http.safeGet(Url("$baseUrl/activities")) {
             cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
@@ -80,7 +71,7 @@ class ActivityHttpApi(
             parameter("plan_type", filter.plan.id)
 //            parameter("business_type[]", "b2c")
             parameter("type[]", ActivityType.OnSite.apiValue) // onsite or online
-            parameter("service_type", filter.service.apiValue) // (scheduled) courses or free training (dropin)
+            parameter("service_type", serviceTye.apiValue) // (scheduled) courses or free training (dropin)
             parameter("page", page)
         }
         responseStorage.store(response, "ActivtiesPage-$page")
@@ -89,5 +80,13 @@ class ActivityHttpApi(
             throw ApiException("Activities endpoint returned failure!")
         }
         return json.data
+    }
+
+    override suspend fun fetchDetails(id: Int): ActivityDetail {
+        val response = http.safeGet(Url("$baseUrl/class-details/$id")) {
+            cookie("PHPSESSID", phpSessionId.value)
+        }
+        responseStorage.store(response, "ActivtiesDetails-$id")
+        return ActivityParser.parse(response.bodyAsText(), clock.today().year)
     }
 }

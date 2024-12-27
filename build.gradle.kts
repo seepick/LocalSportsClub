@@ -23,13 +23,15 @@ dependencies {
     val ktorVersion = "3.0.1"
 
     implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
+    // implementation("androidx.compose.material:material-icons-extended:1.x.x")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0") // enforce version for Exposed NoSuchMethodError
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("net.coobird:thumbnailator:0.4.20") // resize images
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
-    listOf("compose", "compose-viewmodel", "compose-viewmodel-navigation").forEach {
+    listOf("compose", "compose-viewmodel").forEach {
         implementation("io.insert-koin:koin-$it:4.0.0")
     }
 

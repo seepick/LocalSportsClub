@@ -2,9 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -28,12 +26,14 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private lateinit var activityRepo: InMemoryActivityRepo
     private lateinit var venueRepo: InMemoryVenueRepo
     private lateinit var syncerListenerDispatcher: SyncerListenerDispatcher
+    private lateinit var venueSyncInserter: VenueSyncInserter
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = TestableClock(todayNow)
     private val syncDaysAhead = 4
 
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
+        venueSyncInserter = mockk()
         activityRepo = InMemoryActivityRepo()
         venueRepo = InMemoryVenueRepo()
         syncerListenerDispatcher = SyncerListenerDispatcher()
@@ -51,7 +51,8 @@ class ActivitiesSyncerTest : DescribeSpec() {
         venueRepo = venueRepo,
         clock = clock,
         dispatcher = syncerListenerDispatcher,
-        uscConfig = Arb.uscConfig().next().copy(syncActivitiesDaysAhead = daysAhead),
+        venueSyncInserter = venueSyncInserter,
+        uscConfig = Arb.uscConfig().next().copy(syncDaysAhead = daysAhead),
     )
 
     init {
@@ -77,47 +78,6 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 syncActivityAdded.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id
                 }
-            }
-        }
-        describe("When get days to sync") {
-            /*
-            today: 5.12.
-            daysToSync = 4 -> max = 8.12.
-
-            futurest: null  -> [ 5.12., 6.12., 7.12., 8.12. ]
-            futurest: 1.12. -> [ 5.12., 6.12., 7.12., 8.12. ]
-            futurest: 4.12. -> [ 5.12., 6.12., 7.12., 8.12. ]
-            futurest: 5.12. -> [ 6.12., 7.12., 8.12. ]
-            futurest: 6.12. -> [ 7.12., 8.12. ]
-            futurest: 7.12. -> [ 8.12. ]
-            futurest: 8.12. -> [ ]
-            futurest: 9.12. -> [ ]
-             */
-            it("Given nothing Then return max") {
-                clock.setNowAndToday(todayNow)
-                syncer(syncDaysAhead).daysToSync()
-                    .shouldBe((1..syncDaysAhead).map { todayNow.plusDays(it - 1L).toLocalDate() })
-            }
-            it("Given way in past Then return max") {
-                insertActivity(todayNow.minusDays(42))
-                clock.setNowAndToday(todayNow)
-                syncer(syncDaysAhead).daysToSync().shouldHaveSize(syncDaysAhead)
-            }
-            it("Given one day ahead Then return max minus one") {
-                insertActivity(todayNow.plusDays(1))
-                clock.setNowAndToday(todayNow)
-                syncer(syncDaysAhead).daysToSync().shouldHaveSize(syncDaysAhead - 1)
-            }
-            it("Given almost but two ahead Then return one") {
-                insertActivity(todayNow.plusDays(syncDaysAhead - 1L))
-                clock.setNowAndToday(todayNow)
-                syncer(syncDaysAhead).daysToSync().shouldBeSingleton()
-                    .first() shouldBe todayNow.plusDays(syncDaysAhead - 1L).toLocalDate()
-            }
-            it("Given overly ahead Then return empty") {
-                insertActivity(todayNow.plusDays(syncDaysAhead.toLong()))
-                clock.setNowAndToday(todayNow)
-                syncer(syncDaysAhead).daysToSync().shouldBeEmpty()
             }
         }
     }
