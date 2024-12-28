@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +28,8 @@ import seepick.localsportsclub.service.model.Rating
 
 @Composable
 fun RatingPanel(
-    enabled: Boolean, rating: Rating, setRating: (Rating) -> Unit
+    enabled: Boolean,
+    rating: MutableState<Rating>,
 ) {
     Column {
         var isMenuExpanded by remember { mutableStateOf(false) }
@@ -35,13 +37,13 @@ fun RatingPanel(
         val icon = if (isMenuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
         OutlinedTextField(
-            value = rating.string,
+            value = rating.value.string,
             onValueChange = { /* no-op */ },
             readOnly = true,
             enabled = enabled,
             modifier = Modifier.width(250.dp).onGloballyPositioned { coordinates ->
-                    textFieldSize = coordinates.size.toSize()
-                },
+                textFieldSize = coordinates.size.toSize()
+            },
             label = { Text("Rating") },
             leadingIcon = { Icon(Icons.Default.Star, contentDescription = null) },
             trailingIcon = {
@@ -61,7 +63,7 @@ fun RatingPanel(
         ) {
             Rating.entries.forEach { clickedRating ->
                 DropdownMenuItem(onClick = {
-                    setRating(clickedRating)
+                    rating.value = clickedRating
                     isMenuExpanded = false
                 }) {
                     Text(text = clickedRating.string)

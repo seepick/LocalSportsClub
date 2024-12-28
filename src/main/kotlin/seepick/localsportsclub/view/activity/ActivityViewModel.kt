@@ -19,7 +19,7 @@ import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.ActivitySearch
-import seepick.localsportsclub.view.venue.VenueEditModel
+import seepick.localsportsclub.view.venue.detail.VenueEditModel
 
 class ActivityViewModel(
     private val dataStorage: DataStorage,
@@ -35,10 +35,11 @@ class ActivityViewModel(
     private val _selectedActivity = MutableStateFlow<Activity?>(null)
     val selectedActivity = _selectedActivity.asStateFlow()
 
-    val selectedVenue: StateFlow<Venue?> = selectedActivity.map {
-        println("activity changed")
-        it?.venue?.let {
-            dataStorage.selectVenueById(it.id)
+    val selectedVenue: StateFlow<Venue?> = selectedActivity.map { activity ->
+        activity?.venue?.let { simpleVenue ->
+            dataStorage.selectVenueById(simpleVenue.id).also { venue ->
+                venueEdit.init(venue)
+            }
         }
     }.stateIn(
         scope = viewModelScope,

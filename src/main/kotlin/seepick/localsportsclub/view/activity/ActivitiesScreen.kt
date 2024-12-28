@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.view.venue.VenueDetail
+import seepick.localsportsclub.view.venue.detail.VenueDetail
 
 @Composable
 fun ActivitiesScreen(

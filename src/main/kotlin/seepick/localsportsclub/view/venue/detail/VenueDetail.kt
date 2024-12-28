@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.venue
+package seepick.localsportsclub.view.venue.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -24,13 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.Clock
-import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.service.prettyPrint
-import seepick.localsportsclub.service.prettyPrintWith
-import seepick.localsportsclub.view.LscIcons
+import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.UrlTextField
+import seepick.localsportsclub.view.venue.VenueImage
 
 private val imageWidth = 300.dp
 private val imageHeight = 200.dp
@@ -44,12 +39,6 @@ fun VenueDetail(
 ) {
     val currentYear by remember { mutableStateOf(clock.today().year) }
     Column(Modifier.width(300.dp)) {
-        /*
-            val isFavorited: Boolean,
-            val isWishlisted: Boolean,
-            val isHidden: Boolean,
-            ...
-         */
         Text(
             text = selectedVenue?.name ?: "N/A",
             fontSize = 25.sp,
@@ -83,17 +72,11 @@ fun VenueDetail(
             }
         }
 
-        Row {
-            Checkbox(
-                checked = editModel.isFavorited,
-                onCheckedChange = { editModel.isFavorited = it },
-                enabled = selectedVenue != null,
-            )
-            Text("Favorited")
-        }
+        CheckboxText("Favorited", selectedVenue != null, editModel.isFavorited)
+        CheckboxText("Wishlisted", selectedVenue != null, editModel.isWishlisted)
+        CheckboxText("Hidden", selectedVenue != null, editModel.isHidden)
 
-        val (ratingGet, ratingSet) = editModel.rating
-        RatingPanel(enabled = selectedVenue != null, ratingGet, ratingSet)
+        RatingPanel(enabled = selectedVenue != null, editModel.rating)
 
         UrlTextField(
             label = "Venue Site", url = selectedVenue?.officialWebsite, enabled = selectedVenue != null
@@ -104,53 +87,12 @@ fun VenueDetail(
         NotesTextField(selectedVenue != null, notes, notesSetter)
 
         SimpleActivitiesTable(selectedVenue?.activities ?: emptyList(), currentYear)
-        if (selectedVenue?.freetrainings?.isNotEmpty() == true) {
-            Text("Freetrainings:")
-            LazyColumn {
-                items(selectedVenue?.freetrainings ?: emptyList()) { freetraining ->
-                    Row {
-                        if (freetraining.checkedinTime != null) {
-                            Text(text = LscIcons.checkedin)
-                        }
-                        Text("${freetraining.name} / ${freetraining.category}: ")
-                        Text(
-                            text = if (freetraining.checkedinTime == null) {
-                                freetraining.date.prettyPrint(currentYear)
-                            } else {
-                                freetraining.date.prettyPrintWith(freetraining.checkedinTime!!, currentYear)
-                            }
-                        )
-                    }
-                }
-            }
-        }
+        SimpleFreetrainingsTable(selectedVenue?.freetrainings, currentYear)
 
         Button(
             onClick = onUpdateVenue,
-            enabled = selectedVenue != null,
+            enabled = selectedVenue != null && !editModel.isClean(),
         ) { Text("Update") }
-    }
-}
-
-@Composable
-fun SimpleActivitiesTable(activities: List<Activity>, currentYear: Int) {
-    if (activities.isEmpty()) {
-        Text("No activities.")
-    } else {
-        Text("Activities:")
-        LazyColumn {
-            items(activities) { activity ->
-                Row {
-                    if (activity.isBooked) {
-                        Text(text = LscIcons.booked)
-                    }
-                    if (activity.wasCheckedin) {
-                        Text(text = LscIcons.checkedin)
-                    }
-                    Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")
-                }
-            }
-        }
     }
 }
 

@@ -37,18 +37,20 @@ class Venue(
 
     // those down below also mutable...
     officialWebsite: String?,
-    val isWishlisted: Boolean,
-    val isHidden: Boolean,
     val isDeleted: Boolean,
     notes: String,
     rating: Rating,
     isFavorited: Boolean,
+    isWishlisted: Boolean,
+    isHidden: Boolean,
 //    val linkedVenues: List<SimpleVenue>,
 ) : SimpleVenue {
 
     var notes: String by mutableStateOf(notes)
     var rating: Rating by mutableStateOf(rating)
     var isFavorited: Boolean by mutableStateOf(isFavorited)
+    var isWishlisted: Boolean by mutableStateOf(isWishlisted)
+    var isHidden: Boolean by mutableStateOf(isHidden)
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
     var officialWebsite: String? by mutableStateOf(officialWebsite)

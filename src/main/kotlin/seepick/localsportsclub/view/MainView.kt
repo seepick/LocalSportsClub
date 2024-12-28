@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
 import seepick.localsportsclub.view.notes.NotesScreen
@@ -25,6 +26,7 @@ import seepick.localsportsclub.view.venue.VenueScreen
 
 @Composable
 fun MainView(
+    keyboard: GlobalKeyboard,
     viewModel: MainViewModel = koinViewModel(),
 ) {
     val scope = rememberCoroutineScope()

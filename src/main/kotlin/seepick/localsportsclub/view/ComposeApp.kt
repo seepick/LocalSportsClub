@@ -6,6 +6,7 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.allModules
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Syncer
@@ -15,7 +16,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
 @Composable
-fun ComposeApp(window: ComposeWindow, config: AppConfig) {
+fun ComposeApp(window: ComposeWindow, config: AppConfig, keyboard: GlobalKeyboard) {
     KoinApplication(application = {
         modules(allModules(config))
     }) {
@@ -35,6 +36,6 @@ fun ComposeApp(window: ComposeWindow, config: AppConfig) {
             }
         })
 
-        MainView()
+        MainView(keyboard)
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.view.venue.detail.VenueDetail
 
 @Composable
 fun VenueScreen(

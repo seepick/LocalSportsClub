@@ -11,30 +11,9 @@ import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.NoopDataStorageListener
-import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.VenueSearch
-
-class VenueEditModel {
-
-    var notes = mutableStateOf("")
-    var rating = mutableStateOf(Rating.R0)
-    var isFavorited by mutableStateOf(false)
-
-    fun init(venue: Venue) {
-        notes.value = venue.notes
-        rating.value = venue.rating
-        isFavorited = venue.isFavorited
-    }
-
-    fun updatePropertiesOf(selectedVenue: Venue) {
-        selectedVenue.notes = notes.value
-        selectedVenue.rating = rating.value
-        selectedVenue.isFavorited = isFavorited
-        selectedVenue.officialWebsite = selectedVenue.officialWebsite?.let { it.ifEmpty { null } }
-    }
-}
-
+import seepick.localsportsclub.view.venue.detail.VenueEditModel
 
 class VenueViewModel(
     private val dataStorage: DataStorage,
