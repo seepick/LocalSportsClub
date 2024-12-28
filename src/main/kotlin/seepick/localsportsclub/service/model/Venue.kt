@@ -10,13 +10,32 @@ interface SimpleVenue {
     val id: Int
     val slug: String
     val name: String
+    val imageFileName: String?
+    var rating: Rating
+    var isWishlisted: Boolean
+    var isFavorited: Boolean
+
+    fun updateSelfBy(venue: Venue) {
+        rating = venue.rating
+        isWishlisted = venue.isWishlisted
+        isFavorited = venue.isFavorited
+    }
 }
 
-data class SimpleVenueImpl(
+class SimpleVenueImpl(
     override val id: Int,
-    override val name: String,
     override val slug: String,
-) : SimpleVenue
+    override val name: String,
+    override val imageFileName: String?,
+    rating: Rating,
+    isWishlisted: Boolean,
+    isFavorited: Boolean,
+) : SimpleVenue {
+    override var rating: Rating by mutableStateOf(rating)
+    override var isWishlisted: Boolean by mutableStateOf(isWishlisted)
+    override var isFavorited: Boolean by mutableStateOf(isFavorited)
+    override fun toString() = "SimpleVenueImpl[id=$id, name=$name, rating=$rating]"
+}
 
 class Venue(
     override val id: Int,
@@ -30,7 +49,7 @@ class Venue(
     val addressLocality: String,
     val latitude: String,
     val longitude: String,
-    val imageFileName: String?,
+    override val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
     val uscWebsite: String, // inferred by static URL + slug
@@ -47,9 +66,9 @@ class Venue(
 ) : SimpleVenue {
 
     var notes: String by mutableStateOf(notes)
-    var rating: Rating by mutableStateOf(rating)
-    var isFavorited: Boolean by mutableStateOf(isFavorited)
-    var isWishlisted: Boolean by mutableStateOf(isWishlisted)
+    override var rating: Rating by mutableStateOf(rating)
+    override var isFavorited: Boolean by mutableStateOf(isFavorited)
+    override var isWishlisted: Boolean by mutableStateOf(isWishlisted)
     var isHidden: Boolean by mutableStateOf(isHidden)
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
@@ -131,7 +150,7 @@ class Venue(
         isFavorited = isFavorited,
     )
 
-    override fun toString() = "Venue[id=$id, slug=$slug, name=$name]"
+    override fun toString() = "Venue[id=$id, slug=$slug, name=$name, rating=$rating]"
     override fun hashCode() = slug.hashCode()
     override fun equals(other: Any?): Boolean {
         if (other !is Venue) return false

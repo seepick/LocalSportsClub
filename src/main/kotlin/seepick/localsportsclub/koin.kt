@@ -1,6 +1,7 @@
 package seepick.localsportsclub
 
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.api.apiModule
@@ -20,5 +21,6 @@ fun allModules(config: AppConfig) = listOf(
 
 fun rootModule(config: AppConfig): Module = module {
     single { config.usc } bind UscConfig::class
+    singleOf(::GlobalKeyboard)
     // or use includeModules() ;)
 }

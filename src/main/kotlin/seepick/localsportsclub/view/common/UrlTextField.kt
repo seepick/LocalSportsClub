@@ -29,10 +29,17 @@ fun _UrlTextField() {
 }
 
 @Composable
-fun UrlTextField(label: String, url: String?, enabled: Boolean, onChange: ((String) -> Unit)? = null) {
+fun UrlTextField(
+    label: String,
+    url: String?,
+    enabled: Boolean,
+    onChange: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
     val uriHandler = LocalUriHandler.current
     TextField(
-        url ?: "",
+        value = url ?: "",
+        modifier = modifier,
         label = { Text(label) },
         onValueChange = {
             onChange?.invoke(it)

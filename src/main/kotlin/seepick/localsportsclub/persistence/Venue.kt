@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.nextIntVal
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.SimpleVenue
 import seepick.localsportsclub.service.model.SimpleVenueImpl
 
@@ -39,7 +40,13 @@ data class VenueDbo(
     companion object // for extensions
 
     fun toSimpleVenue(): SimpleVenue = SimpleVenueImpl(
-        id = id, name = name, slug = slug,
+        id = id,
+        slug = slug,
+        name = name,
+        imageFileName = imageFileName,
+        rating = Rating.byValue(rating),
+        isFavorited = isFavorited,
+        isWishlisted = isWishlisted,
     )
 }
 
@@ -121,21 +128,20 @@ object ExposedVenueRepo : VenueRepo {
         venue.copy(id = nextId)
     }
 
-    override fun update(venue: VenueDbo): VenueDbo =
-        transaction {
-            val updated = VenuesTable.update(where = { VenuesTable.id.eq(venue.id) }) {
-                it[notes] = venue.notes
-                it[rating] = venue.rating
-                it[imageFileName] = venue.imageFileName
-                it[isHidden] = venue.isHidden
-                it[isWishlisted] = venue.isWishlisted
-                it[isFavorited] = venue.isFavorited
-                it[isDeleted] = venue.isDeleted
-                it[officialWebsite] = venue.officialWebsite
-            }
-            if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
-            venue
+    override fun update(venue: VenueDbo): VenueDbo = transaction {
+        val updated = VenuesTable.update(where = { VenuesTable.id.eq(venue.id) }) {
+            it[notes] = venue.notes
+            it[rating] = venue.rating
+            it[imageFileName] = venue.imageFileName
+            it[isHidden] = venue.isHidden
+            it[isWishlisted] = venue.isWishlisted
+            it[isFavorited] = venue.isFavorited
+            it[isDeleted] = venue.isDeleted
+            it[officialWebsite] = venue.officialWebsite
         }
+        if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
+        venue
+    }
 
     private fun VenueDbo.Companion.fromRow(row: ResultRow) = VenueDbo(
         id = row[VenuesTable.id].value,
@@ -166,8 +172,7 @@ class InMemoryVenueRepo : VenueRepo {
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 
-    override fun selectAll(): List<VenueDbo> =
-        stored.values.toList().sortedBy { it.id }
+    override fun selectAll(): List<VenueDbo> = stored.values.toList().sortedBy { it.id }
 
     override fun insert(venue: VenueDbo): VenueDbo {
         val newVenue = venue.copy(id = currentId++)
@@ -182,6 +187,5 @@ class InMemoryVenueRepo : VenueRepo {
         return venue
     }
 
-    override fun selectBySlug(slug: String): VenueDbo? =
-        stored.values.firstOrNull { it.slug == slug }
+    override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
 }

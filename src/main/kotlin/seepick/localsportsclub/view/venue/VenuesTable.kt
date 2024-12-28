@@ -1,40 +1,9 @@
 package seepick.localsportsclub.view.venue
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.view.common.table.CellRenderer
-import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
-import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.Table
-import seepick.localsportsclub.view.common.table.TableColumn
-
-val venuesTableColumns = listOf<TableColumn<Venue>>(
-    TableColumn("ID", ColSize.Width(70.dp), TextRenderer { it.id }),
-    TableColumn("Image", ColSize.Width(100.dp), CellRenderer.CustomRenderer { venue, colSize ->
-        Row(Modifier.height(30.dp).width(100.dp)) {
-            VenueImage(venue.imageFileName)
-        }
-    }, sortingEnabled = false),
-    TableColumn("Name", ColSize.Weight(0.7f), TextRenderer({ it.name }, { it.name.lowercase() })),
-    TableColumn("Slug", ColSize.Weight(0.3f), TextRenderer { it.slug }),
-    TableColumn("Activities", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
-    TableColumn("Checkins", ColSize.Width(100.dp), TextRenderer { it.activities.filter { it.wasCheckedin }.size }),
-    TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
-//    TableColumn("Rating2", ColSize.Width(150.dp), CellRenderer.CustomRenderer { venue, colSize ->
-//        Row(Modifier.let { applyColSize(it, colSize) }) {
-//            repeat(venue.rating.value) {
-//                Icon(Icons.Filled.Add, null)
-//            }
-//        }
-//    }, valueExtractor = { it.rating as Comparable<Any> }),
-)
 
 @Composable
 fun RowScope.VenuesTable(
@@ -46,7 +15,7 @@ fun RowScope.VenuesTable(
         items = viewModel.venues,
         onItemClicked = { viewModel.onVenueClicked(it) },
         onHeaderClicked = { viewModel.sorting.onHeaderClicked(it) },
-        columns = venuesTableColumns,
+        columns = viewModel.venuesTableColumns,
         sortColumn = viewModel.sorting.sortColumn,
         selectedItem = viewModel.selectedVenue,
     )

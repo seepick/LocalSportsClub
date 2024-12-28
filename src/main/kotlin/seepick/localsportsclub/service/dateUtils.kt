@@ -16,6 +16,9 @@ fun LocalDate.prettyPrintWith(time: LocalTime, currentYear: Int): String {
     else datetimeFormatter.format(datetime)
 }
 
+/**
+ * @return "Sat 3.11. 04:05-04:06"
+ */
 fun DateTimeRange.prettyPrint(currentYear: Int): String =
     start.format(if (start.year != currentYear) datetimeFormatterWithYear else datetimeFormatter) + "-" + end.format(
         timeFormatter

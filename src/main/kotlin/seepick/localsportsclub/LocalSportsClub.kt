@@ -4,24 +4,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.isMetaPressed
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import ch.qos.logback.classic.Level
-import seepick.localsportsclub.view.ComposeApp
-
-class GlobalKeyboard {
-    fun changeToScreen(screenNr: Int) {
-
-    }
-}
+import org.koin.compose.KoinApplication
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.sync.Syncer
+import seepick.localsportsclub.view.MainView
+import seepick.localsportsclub.view.MainViewModel
+import seepick.localsportsclub.view.activity.ActivityViewModel
+import seepick.localsportsclub.view.venue.VenueViewModel
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 object LocalSportsClub {
     @JvmStatic
@@ -40,35 +39,45 @@ object LocalSportsClub {
             )
         )
         application {
-            val globalKeyboard = GlobalKeyboard()
-            Window(
-                onCloseRequest = {
-                    println("close requested...")
-                    // TODO save notes
-                    exitApplication()
-                },
-                title = "LocalSportsClub",
-                state = rememberWindowState(
-                    width = 1_500.dp, height = 1200.dp,
-                    position = WindowPosition(100.dp, 100.dp),
-                ),
-                onKeyEvent = { event ->
-                    if (event.type == KeyEventType.KeyDown && event.isMetaPressed) {
-                        when (event.key) {
-                            Key.One -> globalKeyboard.changeToScreen(1)
-                            Key.Two -> globalKeyboard.changeToScreen(2)
-                            Key.Three -> globalKeyboard.changeToScreen(3)
+            KoinApplication(application = {
+                modules(allModules(config))
+            }) {
+                val keyboard: GlobalKeyboard = koinInject()
+                Window(
+                    onCloseRequest = { exitApplication() }, // TODO save notes
+                    title = "LocalSportsClub",
+                    state = rememberWindowState(
+                        width = 1_500.dp, height = 1200.dp,
+                        position = WindowPosition(100.dp, 100.dp),
+                    ),
+                    onKeyEvent = { keyboard.process(it); false },
+                ) {
+                    val syncer = koinInject<Syncer>()
+                    val dataStorage = koinInject<DataStorage>()
+                    syncer.registerListener(dataStorage)
+                    dataStorage.registerListener(koinViewModel<VenueViewModel>())
+                    dataStorage.registerListener(koinViewModel<ActivityViewModel>())
+
+                    val venueViewModel = koinViewModel<VenueViewModel>()
+                    val activityViewModel = koinViewModel<ActivityViewModel>()
+                    window.addWindowListener(object : WindowAdapter() {
+                        // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
+                        override fun windowOpened(e: WindowEvent?) {
+                            venueViewModel.onStartUp()
+                            activityViewModel.onStartUp()
                         }
-                    }
-                    false
-                },
-            ) {
-                LscTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background,
-                    ) {
-                        ComposeApp(window, config, globalKeyboard)
+                    })
+
+                    val mainViewModel = koinViewModel<MainViewModel>()
+                    keyboard.registerListener(mainViewModel)
+
+                    LscTheme {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colors.background,
+                        ) {
+                            MainView()
+                        }
                     }
                 }
             }

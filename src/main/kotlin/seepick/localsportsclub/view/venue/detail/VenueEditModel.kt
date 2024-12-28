@@ -1,11 +1,13 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.Venue
 
 class VenueEditModel {
 
+    var officialWebsite: MutableState<String?> = mutableStateOf(null)
     var notes = mutableStateOf("")
     var rating = mutableStateOf(Rating.R0)
     var isFavorited = mutableStateOf(false)
@@ -15,6 +17,7 @@ class VenueEditModel {
 
     fun init(venue: Venue) {
         currentVenue = venue
+        officialWebsite.value = venue.officialWebsite
         notes.value = venue.notes
         rating.value = venue.rating
         isFavorited.value = venue.isFavorited
@@ -22,18 +25,19 @@ class VenueEditModel {
         isHidden.value = venue.isHidden
     }
 
-    fun updatePropertiesOf(selectedVenue: Venue) {
-        selectedVenue.notes = notes.value
-        selectedVenue.rating = rating.value
-        selectedVenue.isFavorited = isFavorited.value
-        selectedVenue.isWishlisted = isWishlisted.value
-        selectedVenue.isHidden = isHidden.value
-        selectedVenue.officialWebsite = selectedVenue.officialWebsite?.let { it.ifEmpty { null } }
+    fun updatePropertiesOf(venue: Venue) {
+        venue.notes = notes.value
+        venue.rating = rating.value
+        venue.isFavorited = isFavorited.value
+        venue.isWishlisted = isWishlisted.value
+        venue.isHidden = isHidden.value
+        venue.officialWebsite = officialWebsite.value?.let { it.ifEmpty { null } }
     }
 
     fun isClean(): Boolean =
         currentVenue?.let { venue ->
             notes.value == venue.notes &&
+                    officialWebsite.value == venue.officialWebsite &&
                     rating.value == venue.rating &&
                     isFavorited.value == venue.isFavorited &&
                     isWishlisted.value == venue.isWishlisted &&

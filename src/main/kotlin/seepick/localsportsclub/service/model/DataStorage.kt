@@ -17,12 +17,16 @@ import seepick.localsportsclub.sync.SyncerListener
 
 interface DataStorageListener {
     fun onVenueAdded(venue: Venue)
+    fun onVenueUpdated(venue: Venue)
     fun onActivityAdded(activity: Activity)
     fun onFreetrainingAdded(freetraining: Freetraining)
 }
 
 object NoopDataStorageListener : DataStorageListener {
     override fun onVenueAdded(venue: Venue) {
+    }
+
+    override fun onVenueUpdated(venue: Venue) {
     }
 
     override fun onActivityAdded(activity: Activity) {
@@ -45,9 +49,9 @@ class DataStorage(
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
-        val venuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
+        val simpleVenuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
         activityRepo.selectAll().map { activityDbo ->
-            val venueForActivity = venuesById[activityDbo.venueId]
+            val venueForActivity = simpleVenuesById[activityDbo.venueId]
             require(venueForActivity != null) { "Venue not found for: $activityDbo" }
             activityDbo.toActivity(venueForActivity)
         }.groupByTo(mutableMapOf()) { it.venue.id }
@@ -136,11 +140,21 @@ class DataStorage(
     fun update(venue: Venue) {
         log.debug { "updating $venue" }
         venueRepo.update(venue.toDbo())
+        allActivitiesByVenueId[venue.id]?.forEach { activity ->
+            activity.venue.updateSelfBy(venue)
+        }
+        dispatchOnVenueUpdated(venue)
     }
 
     private fun dispatchOnVenueAdded(venue: Venue) {
         listeners.forEach {
             it.onVenueAdded(venue)
+        }
+    }
+
+    private fun dispatchOnVenueUpdated(venue: Venue) {
+        listeners.forEach {
+            it.onVenueUpdated(venue)
         }
     }
 

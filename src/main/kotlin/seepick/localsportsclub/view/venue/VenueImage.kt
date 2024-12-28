@@ -22,6 +22,5 @@ fun VenueImage(imageFileName: String?) {
     }
     Image(
         BitmapPainter(image), null, contentScale = ContentScale.Fit,
-//        modifier = Modifier.clip(RoundedCornerShape(16.dp))
     )
 }

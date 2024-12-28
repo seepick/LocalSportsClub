@@ -10,6 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.Clock
 import seepick.localsportsclub.service.model.Venue
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.UrlTextField
@@ -72,16 +74,25 @@ fun VenueDetail(
             }
         }
 
-        CheckboxText("Favorited", selectedVenue != null, editModel.isFavorited)
-        CheckboxText("Wishlisted", selectedVenue != null, editModel.isWishlisted)
+        CheckboxText("Favorited", selectedVenue != null, editModel.isFavorited, Icons.Lsc.Favorites)
+        CheckboxText("Wishlisted", selectedVenue != null, editModel.isWishlisted, Icons.Lsc.Wishlists)
         CheckboxText("Hidden", selectedVenue != null, editModel.isHidden)
 
         RatingPanel(enabled = selectedVenue != null, editModel.rating)
 
         UrlTextField(
-            label = "Venue Site", url = selectedVenue?.officialWebsite, enabled = selectedVenue != null
-        ) { selectedVenue?.officialWebsite = it }
-        UrlTextField(label = "USC Site", url = selectedVenue?.uscWebsite, enabled = selectedVenue != null)
+            label = "Venue Site",
+            url = editModel.officialWebsite.value,
+            enabled = selectedVenue != null,
+            onChange = { editModel.officialWebsite.value = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        UrlTextField(
+            label = "USC Site",
+            url = selectedVenue?.uscWebsite,
+            enabled = selectedVenue != null,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         val (notes, notesSetter) = editModel.notes
         NotesTextField(selectedVenue != null, notes, notesSetter)

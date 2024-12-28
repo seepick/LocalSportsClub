@@ -11,25 +11,26 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* change tabs by CMD 1/2/3
-* go to a freetraining, and sync checkedin things (got time info now! create synthetic activity ;)
-* FEATURE: also sync free/"dropin" activities
-* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
-* UI: finish rendering (editable) venue fields; official website as editable textfield
-* UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
+* usage UI (progress bar like again)
+* finish activities table
+* implement freetrainings table
+* filter activities for hidden venues
+* activity row highlight for favorited/wishlisted
+* simple tables for activities/freetrainings in venues
+* ... go to a freetraining, and sync checkedin things (got time info now! create synthetic activity ;)
 
 ## Backlog
 
-* MIN: description/info has "\n"... replace them
-* FEATURE: introduce tabbed content: activities
-* FEATURE: notes textarea (tabbed content)
-* UI: display usage UI (progress bar like again)
-* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
-* UI: support sorting asc/desc
 * FEATURE: migrate old content from AllFit
 
 ## Later
 
+* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
+* UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
+* MIN: description/info has "\n"... replace them
+* FEATURE: notes textarea (tabbed content)
+* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
+* UI: support sorting asc/desc
 * FEATURE: reserve/cancel button
 * UI: if textfield elipse ("foo...") => show tooltip full text
 * enable up/down arrow for table (would require a global listener, and knowing which table got focus...)

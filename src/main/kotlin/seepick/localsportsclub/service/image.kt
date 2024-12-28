@@ -3,13 +3,13 @@ package seepick.localsportsclub.service
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.loadImageBitmap
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.openFromClasspath
 import java.io.File
 
 interface ImageStorage {
 
     companion object {
-        val defaultVenueImage: ByteArray =
-            ImageStorage::class.java.getResourceAsStream("/defaultVenueImage.png")!!.readAllBytes()
+        val defaultVenueImage: ByteArray = openFromClasspath("/defaultVenueImage.png").readAllBytes()
         val defaultVenueImageBitmap: ImageBitmap = loadImageBitmap(defaultVenueImage.inputStream())
     }
 

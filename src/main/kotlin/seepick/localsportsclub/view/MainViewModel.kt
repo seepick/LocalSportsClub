@@ -5,12 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.sync.Syncer
 
 class MainViewModel(
     private val syncer: Syncer,
     firstScreen: Screen?,
-) : ViewModel() {
+) : ViewModel(), GlobalKeyboardListener {
 
     private val log = logger {}
 
@@ -30,5 +31,9 @@ class MainViewModel(
     fun select(screen: Screen) {
         log.debug { "selected $screen" }
         selectedScreen.value = screen
+    }
+
+    override fun onKeyboardChangeScreen(screenNr: Int) {
+        select(Screen.entries.single { it.ordinal == (screenNr - 1) })
     }
 }

@@ -28,14 +28,13 @@ data class TableColumn<T>(
     val size: ColSize,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,
-    var sortValueExtractor: ((T) -> Comparable<Any>)? = null,
+    var sortValueExtractor: ((T) -> Any)? = null,
 ) {
     init {
         if (sortValueExtractor == null) {
-            @Suppress("UNCHECKED_CAST")
             when (renderer) {
                 is CellRenderer.CustomRenderer -> if (sortingEnabled) error("No sort value extractor defined and not a TextRenderer!")
-                is CellRenderer.TextRenderer -> sortValueExtractor = renderer.sortExtractor as (T) -> Comparable<Any>
+                is CellRenderer.TextRenderer -> sortValueExtractor = renderer.sortExtractor
             }
         }
     }
@@ -55,6 +54,13 @@ sealed interface CellRenderer<T> {
 sealed interface ColSize {
     data class Weight(val value: Float) : ColSize
     data class Width(val value: Dp) : ColSize
+}
+
+fun RowScope.ModifierWith(colSize: ColSize) = Modifier.let {
+    when (colSize) {
+        is ColSize.Weight -> it.weight(colSize.value)
+        is ColSize.Width -> it.width(colSize.value)
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
