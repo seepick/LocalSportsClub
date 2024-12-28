@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import io.ktor.http.Url
 import seepick.localsportsclub.api.City
 
 interface SimpleVenue {
@@ -34,10 +33,10 @@ class Venue(
     val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
-    val uscWebsite: Url, // inferred by static URL + slug
+    val uscWebsite: String, // inferred by static URL + slug
 
     // those down below also mutable...
-    val officialWebsite: Url?,
+    officialWebsite: String?,
     val isWishlisted: Boolean,
     val isHidden: Boolean,
     val isDeleted: Boolean,
@@ -52,6 +51,7 @@ class Venue(
     var isFavorited: Boolean by mutableStateOf(isFavorited)
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
+    var officialWebsite: String? by mutableStateOf(officialWebsite)
 
     companion object {
         fun dummy() = Venue(
@@ -67,7 +67,7 @@ class Venue(
             openingTimes = null,
             importantInfo = null,
             imageFileName = null,
-            uscWebsite = Url("https://usc.com/en/dummy-venue"),
+            uscWebsite = "https://usc.com/en/dummy-venue",
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
@@ -93,11 +93,11 @@ class Venue(
         addressLocality: String = this.addressLocality,
         latitude: String = this.latitude,
         longitude: String = this.longitude,
-        officialWebsite: Url? = this.officialWebsite,
+        officialWebsite: String? = this.officialWebsite,
         imageFileName: String? = this.imageFileName,
         importantInfo: String? = this.importantInfo,
         openingTimes: String? = this.openingTimes,
-        uscWebsite: Url = this.uscWebsite,
+        uscWebsite: String = this.uscWebsite,
         isWishlisted: Boolean = this.isWishlisted,
         isHidden: Boolean = this.isHidden,
         isDeleted: Boolean = this.isDeleted,

@@ -6,13 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.service.SortingDelegate
+import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.service.searchIndexFor
-import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.service.search.VenueSearch
 
 class VenueEditModel {
 
@@ -30,8 +31,10 @@ class VenueEditModel {
         selectedVenue.notes = notes.value
         selectedVenue.rating = rating.value
         selectedVenue.isFavorited = isFavorited
+        selectedVenue.officialWebsite = selectedVenue.officialWebsite?.let { it.ifEmpty { null } }
     }
 }
+
 
 class VenueViewModel(
     private val dataStorage: DataStorage,
@@ -44,48 +47,26 @@ class VenueViewModel(
     val venues: List<Venue> = _venues
     var selectedVenue by mutableStateOf<Venue?>(null)
         private set
+    val searching = VenueSearch(::resetVenues)
+    val sorting = SortingDelegate(venuesTableColumns, resetSort = ::resetVenues)
     val venueEdit = VenueEditModel()
-    private val searching = VenueSearch()
-    var sortColumn: TableColumn<Venue> by mutableStateOf(venuesTableColumns.first { it.sortingEnabled })
-        private set
 
     fun onStartUp() {
         log.info { "On startup: Filling initial data." }
-        log.warn { "Just a test" }
-//        _allVenues.addAll(DummyDataGenerator.generateVenues(40))
         _allVenues.addAll(dataStorage.selectAllVenues())
         resetVenues()
     }
 
     fun onVenueClicked(venue: Venue) {
-        log.trace { "Selected venue: $venue" }
+        log.trace { "Selected: $venue" }
         selectedVenue = venue
         venueEdit.init(venue)
-    }
-
-    fun setSearchTerm(term: String) {
-        term.trim().also {
-            if (it.isEmpty()) {
-                searching.clearTerm()
-            } else {
-                searching.setTerm(it)
-            }
-        }
-        resetVenues()
-    }
-
-    fun onHeaderClicked(column: TableColumn<Venue>) {
-        if (sortColumn == column) return
-        require(sortColumn.sortingEnabled)
-        log.debug { "update sorting for: ${column.headerLabel}" }
-        sortColumn = column
-        resetVenues()
     }
 
     override fun onVenueAdded(venue: Venue) {
         _allVenues.add(venue)
         if (searching.matches(venue)) {
-            val index = searchIndexFor(_venues, venue, sortColumn.sortValueExtractor!!)
+            val index = findIndexFor(_venues, venue, sorting.selectedColumnValueExtractor)
             _venues.add(index, venue)
         }
     }
@@ -93,16 +74,13 @@ class VenueViewModel(
     private fun resetVenues() {
         _venues.clear()
         _venues.addAll(_allVenues.filter { searching.matches(it) }.let {
-            it.sortedBy { venue ->
-                sortColumn.sortValueExtractor!!.invoke(venue)
-            }
+            sorting.sortIt(it)
         })
     }
 
     fun updateVenue() {
         selectedVenue!!.also { venue ->
             venueEdit.updatePropertiesOf(venue)
-            log.debug { "Updating venue: $venue" }
             dataStorage.update(venue)
         }
     }

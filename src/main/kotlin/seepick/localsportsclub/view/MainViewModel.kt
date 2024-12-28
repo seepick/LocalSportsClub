@@ -9,9 +9,13 @@ import seepick.localsportsclub.sync.Syncer
 
 class MainViewModel(
     private val syncer: Syncer,
+    firstScreen: Screen?,
 ) : ViewModel() {
 
     private val log = logger {}
+
+    var selectedScreen = mutableStateOf(firstScreen ?: Screen.Activities)
+        private set
     var isSyncing: Boolean by mutableStateOf(false)
         private set
 
@@ -21,5 +25,10 @@ class MainViewModel(
         syncer.sync()
         log.info { "startSync() DONE" }
         isSyncing = false
+    }
+
+    fun select(screen: Screen) {
+        log.debug { "selected $screen" }
+        selectedScreen.value = screen
     }
 }

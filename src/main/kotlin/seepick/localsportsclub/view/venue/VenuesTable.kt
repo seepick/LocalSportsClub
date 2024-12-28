@@ -25,6 +25,7 @@ val venuesTableColumns = listOf<TableColumn<Venue>>(
     TableColumn("Name", ColSize.Weight(0.7f), TextRenderer({ it.name }, { it.name.lowercase() })),
     TableColumn("Slug", ColSize.Weight(0.3f), TextRenderer { it.slug }),
     TableColumn("Activities", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
+    TableColumn("Checkins", ColSize.Width(100.dp), TextRenderer { it.activities.filter { it.wasCheckedin }.size }),
     TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
 //    TableColumn("Rating2", ColSize.Width(150.dp), CellRenderer.CustomRenderer { venue, colSize ->
 //        Row(Modifier.let { applyColSize(it, colSize) }) {
@@ -44,9 +45,9 @@ fun RowScope.VenuesTable(
         allItemsCount = viewModel.allVenues.size,
         items = viewModel.venues,
         onItemClicked = { viewModel.onVenueClicked(it) },
-        onHeaderClicked = { viewModel.onHeaderClicked(it) },
+        onHeaderClicked = { viewModel.sorting.onHeaderClicked(it) },
         columns = venuesTableColumns,
-        sortColumn = viewModel.sortColumn,
+        sortColumn = viewModel.sorting.sortColumn,
         selectedItem = viewModel.selectedVenue,
     )
 }

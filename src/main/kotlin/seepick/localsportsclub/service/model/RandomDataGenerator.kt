@@ -1,6 +1,5 @@
 package seepick.localsportsclub.service.model
 
-import io.ktor.http.Url
 import seepick.localsportsclub.persistence.VenueDbo
 
 object RandomDataGenerator {
@@ -33,7 +32,7 @@ object RandomDataGenerator {
             slug = word + if (suffix == null) "" else "-$suffix" +
                     if (number == null) "" else "-$number",
             rating = Rating.entries.random(),
-            officialWebsite = if (Math.random() < 0.70) Url(officialWebsites.random()) else null,
+            officialWebsite = if (Math.random() < 0.70) officialWebsites.random() else null,
             notes = "Some notes for $fullName",
         )
     }

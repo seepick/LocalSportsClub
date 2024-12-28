@@ -18,34 +18,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.prettyPrint
 import seepick.localsportsclub.service.prettyPrintWith
 import seepick.localsportsclub.view.LscIcons
 import seepick.localsportsclub.view.common.RatingPanel
-import seepick.localsportsclub.view.common.Tooltip
+import seepick.localsportsclub.view.common.UrlTextField
 
 private val imageWidth = 300.dp
 private val imageHeight = 200.dp
 
 @Composable
 fun VenueDetail(
-    viewModel: VenueViewModel = koinViewModel(),
-    clock: Clock = koinInject()
+    selectedVenue: Venue?,
+    editModel: VenueEditModel,
+    onUpdateVenue: () -> Unit,
+    clock: Clock = koinInject(),
 ) {
     val currentYear by remember { mutableStateOf(clock.today().year) }
-
-    val venue = viewModel.selectedVenue
-    // https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
     Column(Modifier.width(300.dp)) {
-        val uriHandler = LocalUriHandler.current
         /*
             val isFavorited: Boolean,
             val isWishlisted: Boolean,
@@ -53,32 +51,32 @@ fun VenueDetail(
             ...
          */
         Text(
-            text = venue?.name ?: "N/A",
+            text = selectedVenue?.name ?: "N/A",
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colors.primary,
         )
-        if (venue == null) {
+        if (selectedVenue == null) {
             Spacer(Modifier.height(imageHeight))
         } else {
             Row(modifier = Modifier.width(imageWidth).height(imageHeight)) {
-                VenueImage(venue.imageFileName)
+                VenueImage(selectedVenue.imageFileName)
             }
         }
-        Text("Facilities: ${venue?.facilities?.joinToString(", ") ?: ""}")
+        Text("Facilities: ${selectedVenue?.facilities?.joinToString(", ") ?: ""}")
         Row {
             Text("Description:", fontWeight = FontWeight.Bold)
-            Text(venue?.description ?: "", fontSize = 10.sp, maxLines = 2)
+            Text(selectedVenue?.description ?: "", fontSize = 10.sp, maxLines = 2)
         }
-        venue?.importantInfo?.also { info ->
+        selectedVenue?.importantInfo?.also { info ->
             Row {
                 Text("Info:", fontWeight = FontWeight.Bold)
                 Text(info, fontSize = 10.sp, maxLines = 2)
             }
         }
-        venue?.openingTimes?.also { times ->
+        selectedVenue?.openingTimes?.also { times ->
             Row {
                 Text("Times:", fontWeight = FontWeight.Bold)
                 Text(times, fontSize = 10.sp, maxLines = 2)
@@ -86,62 +84,30 @@ fun VenueDetail(
         }
 
         Row {
-            Checkbox(viewModel.venueEdit.isFavorited, { viewModel.venueEdit.isFavorited = it })
+            Checkbox(
+                checked = editModel.isFavorited,
+                onCheckedChange = { editModel.isFavorited = it },
+                enabled = selectedVenue != null,
+            )
             Text("Favorited")
         }
 
-        val (ratingGet, ratingSet) = viewModel.venueEdit.rating
-        RatingPanel(ratingGet, ratingSet)
+        val (ratingGet, ratingSet) = editModel.rating
+        RatingPanel(enabled = selectedVenue != null, ratingGet, ratingSet)
 
-        Tooltip(venue?.uscWebsite?.toString()) {
-            Button({
-                uriHandler.openUri(venue?.uscWebsite?.toString()!!)
-            }, enabled = venue?.uscWebsite != null) {
-                Text("Open USC Website")
-            }
-        }
-        Tooltip(venue?.officialWebsite?.toString()) {
-            Button({
-                uriHandler.openUri(venue?.officialWebsite?.toString()!!)
-            }, enabled = venue?.officialWebsite != null) {
-                Text("Open Official Website")
-            }
-        }
+        UrlTextField(
+            label = "Venue Site", url = selectedVenue?.officialWebsite, enabled = selectedVenue != null
+        ) { selectedVenue?.officialWebsite = it }
+        UrlTextField(label = "USC Site", url = selectedVenue?.uscWebsite, enabled = selectedVenue != null)
 
-//        TextField(
-//            "Haha",
-//            label = { Text("URL") },
-//            onValueChange = {},
-//            leadingIcon = { Button({ println("clicked") }) {
-//                    Icon(
-//                        imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-//                        contentDescription = null,
-//                    )
-//                }
-//            },
-//        )
+        val (notes, notesSetter) = editModel.notes
+        NotesTextField(selectedVenue != null, notes, notesSetter)
 
-        val (notes, notesSetter) = viewModel.venueEdit.notes
-        NotesTextField(notes, notesSetter)
-
-        Text("Activities:")
-        LazyColumn {
-            items(viewModel.selectedVenue?.activities ?: emptyList()) { activity ->
-                Row {
-                    if (activity.isBooked) {
-                        Text(text = LscIcons.booked)
-                    }
-                    if (activity.wasCheckedin) {
-                        Text(text = LscIcons.checkedin)
-                    }
-                    Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")
-                }
-            }
-        }
-        if (viewModel.selectedVenue?.freetrainings?.isNotEmpty() == true) {
+        SimpleActivitiesTable(selectedVenue?.activities ?: emptyList(), currentYear)
+        if (selectedVenue?.freetrainings?.isNotEmpty() == true) {
             Text("Freetrainings:")
             LazyColumn {
-                items(viewModel.selectedVenue?.freetrainings ?: emptyList()) { freetraining ->
+                items(selectedVenue?.freetrainings ?: emptyList()) { freetraining ->
                     Row {
                         if (freetraining.checkedinTime != null) {
                             Text(text = LscIcons.checkedin)
@@ -160,18 +126,41 @@ fun VenueDetail(
         }
 
         Button(
-            { viewModel.updateVenue() },
-            enabled = viewModel.selectedVenue != null
+            onClick = onUpdateVenue,
+            enabled = selectedVenue != null,
         ) { Text("Update") }
     }
 }
 
 @Composable
-fun NotesTextField(notes: String, setter: (String) -> Unit) {
+fun SimpleActivitiesTable(activities: List<Activity>, currentYear: Int) {
+    if (activities.isEmpty()) {
+        Text("No activities.")
+    } else {
+        Text("Activities:")
+        LazyColumn {
+            items(activities) { activity ->
+                Row {
+                    if (activity.isBooked) {
+                        Text(text = LscIcons.booked)
+                    }
+                    if (activity.wasCheckedin) {
+                        Text(text = LscIcons.checkedin)
+                    }
+                    Text(text = "${activity.name} - ${activity.dateTimeRange.prettyPrint(currentYear)}")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NotesTextField(enabled: Boolean, notes: String, setter: (String) -> Unit) {
     OutlinedTextField(
         label = { Text("Notes") },
         maxLines = 4,
         value = notes,
+        enabled = enabled,
         onValueChange = setter,
         modifier = Modifier.fillMaxWidth()
     )

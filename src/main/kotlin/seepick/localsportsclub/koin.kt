@@ -15,7 +15,7 @@ fun allModules(config: AppConfig) = listOf(
     apiModule(config),
     serviceModule(),
     syncModule(config),
-    viewModule(),
+    viewModule(config),
 )
 
 fun rootModule(config: AppConfig): Module = module {

@@ -27,8 +27,7 @@ import seepick.localsportsclub.service.model.Rating
 
 @Composable
 fun RatingPanel(
-    rating: Rating,
-    setRating: (Rating) -> Unit
+    enabled: Boolean, rating: Rating, setRating: (Rating) -> Unit
 ) {
     Column {
         var isMenuExpanded by remember { mutableStateOf(false) }
@@ -39,22 +38,26 @@ fun RatingPanel(
             value = rating.string,
             onValueChange = { /* no-op */ },
             readOnly = true,
-            modifier = Modifier
-                .width(250.dp)
-                .onGloballyPositioned { coordinates ->
+            enabled = enabled,
+            modifier = Modifier.width(250.dp).onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size.toSize()
                 },
             label = { Text("Rating") },
             leadingIcon = { Icon(Icons.Default.Star, contentDescription = null) },
             trailingIcon = {
-                Icon(icon, null, Modifier.clickable { isMenuExpanded = !isMenuExpanded })
+                Icon(icon, null, Modifier.let {
+                    if (enabled) {
+                        it.clickable {
+                            isMenuExpanded = !isMenuExpanded
+                        }
+                    } else it
+                })
             },
         )
         DropdownMenu(
             expanded = isMenuExpanded,
             onDismissRequest = { isMenuExpanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+            modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() })
         ) {
             Rating.entries.forEach { clickedRating ->
                 DropdownMenuItem(onClick = {

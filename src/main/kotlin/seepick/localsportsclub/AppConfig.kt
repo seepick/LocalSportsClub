@@ -3,6 +3,7 @@ package seepick.localsportsclub
 import io.ktor.http.Url
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
+import seepick.localsportsclub.view.Screen
 
 data class UscConfig(
     val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
@@ -28,6 +29,7 @@ data class AppConfig(
     val database: DatabaseMode,
     val api: ApiMode,
     val sync: SyncMode,
+    val firstScreen: Screen? = null,
     val usc: UscConfig = UscConfig(),
     val logFileEnabled: Boolean = false,
 ) {
@@ -46,9 +48,10 @@ data class AppConfig(
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.RealHttp,
-            sync = SyncMode.Real,
+            api = ApiMode.Mock,
+            sync = SyncMode.Dummy,
             logFileEnabled = true,
+            firstScreen = Screen.Activities,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,

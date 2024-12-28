@@ -1,6 +1,12 @@
 package seepick.localsportsclub.service
 
-fun <T, R : Comparable<R>> searchIndexFor(items: List<T>, pivot: T, extractor: (T) -> R): Int {
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.view.common.table.TableColumn
+
+fun <T, R : Comparable<R>> findIndexFor(items: List<T>, pivot: T, extractor: (T) -> R): Int {
     var index = -1
     val pivotValue = extractor(pivot)
     for (i in items.indices) {
@@ -19,4 +25,28 @@ fun <T, R : Comparable<R>> searchIndexFor(items: List<T>, pivot: T, extractor: (
         index = items.size
     }
     return index
+}
+
+class SortingDelegate<T>(
+    columns: List<TableColumn<T>>,
+    private val resetSort: () -> Unit,
+) {
+
+    private val log = logger {}
+    val selectedColumnValueExtractor get() = sortColumn.sortValueExtractor!!
+    var sortColumn: TableColumn<T> by mutableStateOf(columns.first { it.sortingEnabled })
+        private set
+
+    fun onHeaderClicked(column: TableColumn<T>) {
+        if (sortColumn == column) return
+        require(sortColumn.sortingEnabled)
+        log.debug { "update sorting for: ${column.headerLabel}" }
+        sortColumn = column
+        resetSort()
+    }
+
+    fun sortIt(items: List<T>): List<T> =
+        items.sortedBy { item ->
+            sortColumn.sortValueExtractor!!.invoke(item)
+        }
 }

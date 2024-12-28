@@ -90,6 +90,9 @@ class DataStorage(
     fun selectAllActivities(): List<Activity> =
         allActivitiesByVenueId.values.toList().flatten()
 
+    fun selectVenueById(id: Int) =
+        allVenues.single { it.id == id }
+
     fun selectAllFreetrainings(): List<Freetraining> =
         allFretrainingsByVenueId.values.toList().flatten()
 
@@ -214,8 +217,8 @@ fun VenueDbo.toVenue(baseUrl: Url) = Venue(
     postalCode = postalCode,
     importantInfo = importantInfo,
     openingTimes = openingTimes,
-    officialWebsite = officialWebsite?.let { Url(it) },
-    uscWebsite = Url("${baseUrl}/venues/$slug"),
+    officialWebsite = officialWebsite,
+    uscWebsite = "${baseUrl}/venues/$slug",
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
     isHidden = isHidden,

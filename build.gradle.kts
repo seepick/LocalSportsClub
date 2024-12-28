@@ -24,9 +24,11 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     // implementation("androidx.compose.material:material-icons-extended:1.x.x")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0") // enforce version for Exposed NoSuchMethodError
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")
+//    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.0") // when "Module with the Main dispatcher is missing"
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("net.coobird:thumbnailator:0.4.20") // resize images
 

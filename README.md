@@ -11,6 +11,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* change tabs by CMD 1/2/3
 * go to a freetraining, and sync checkedin things (got time info now! create synthetic activity ;)
 * FEATURE: also sync free/"dropin" activities
 * UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
@@ -39,3 +40,9 @@ Communistic Custom Client for Urban Sports Club.
 * sync with google calendar; on booking/cancellation
 * sync workout metadata teacher (von partner site scrapen)
 * (switch to ZonedDate?)
+
+# Compose help:
+
+* User Input: https://developer.android.com/develop/ui/compose/text/user-input
+* Buttons: https://developer.android.com/develop/ui/compose/components/button
+* Forms: https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
