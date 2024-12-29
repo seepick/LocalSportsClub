@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.findIndexFor
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.NoopDataStorageListener
@@ -45,6 +46,8 @@ class VenueViewModel(
     val venues: List<Venue> = _venues
     var selectedVenue by mutableStateOf<Venue?>(null)
         private set
+    var selectedActivity by mutableStateOf<Activity?>(null)
+        private set
     val searching = VenueSearch(::resetVenues)
     val sorting = SortingDelegate(venuesTableColumns, resetSort = ::resetVenues)
     val venueEdit = VenueEditModel()
@@ -55,25 +58,12 @@ class VenueViewModel(
         resetVenues()
     }
 
-    fun onVenueClicked(venue: Venue) {
-        log.trace { "Selected: $venue" }
-        selectedVenue = venue
-        venueEdit.init(venue)
-    }
-
     override fun onVenueAdded(venue: Venue) {
         _allVenues.add(venue)
         if (searching.matches(venue)) {
             val index = findIndexFor(_venues, venue, sorting.selectedColumnValueExtractor)
             _venues.add(index, venue)
         }
-    }
-
-    private fun resetVenues() {
-        _venues.clear()
-        _venues.addAll(_allVenues.filter { searching.matches(it) }.let {
-            sorting.sortIt(it)
-        })
     }
 
     override fun onVenueUpdated(venue: Venue) {
@@ -83,5 +73,23 @@ class VenueViewModel(
     fun updateVenue() {
         venueEdit.updatePropertiesOf(selectedVenue!!)
         dataStorage.update(selectedVenue!!)
+    }
+
+    fun onVenueClicked(venue: Venue) {
+        log.trace { "Selected: $venue" }
+        selectedVenue = venue
+        venueEdit.init(venue)
+        selectedActivity = null
+    }
+
+    fun onActivitySelected(activity: Activity) {
+        selectedActivity = activity
+    }
+
+    private fun resetVenues() {
+        _venues.clear()
+        _venues.addAll(_allVenues.filter { searching.matches(it) }.let {
+            sorting.sortIt(it)
+        })
     }
 }

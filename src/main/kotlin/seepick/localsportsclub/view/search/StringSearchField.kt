@@ -38,6 +38,5 @@ fun <T> StringSearchField(searchOption: StringSearchOption<T>) {
         onValueChange = {
             searchOption.setSearchInput(it)
         },
-//                TextFieldDefaults.TextFieldDecorationBox(contentPadding = PaddingValues(0.dp))
     )
 }

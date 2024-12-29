@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class TableColumn<T>(
-    val headerLabel: String,
+    val headerLabel: String? = null,
     val size: ColSize,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,

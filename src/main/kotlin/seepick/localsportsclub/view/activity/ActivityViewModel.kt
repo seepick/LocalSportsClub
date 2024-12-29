@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.activity
 
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,7 @@ import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.prettyPrint
 import seepick.localsportsclub.service.search.ActivitySearch
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.TableColumn
@@ -45,9 +47,9 @@ class ActivityViewModel(
         TableColumn("Rating", ColSize.Width(120.dp), TextRenderer { it.venue.rating.string }),
         tableColumnFavorited { it.venue.isFavorited },
         tableColumnWishlisted { it.venue.isWishlisted },
+        TableColumn("Bkd", ColSize.Width(30.dp), TextRenderer { if (it.isBooked) Icons.Lsc.booked else "" }),
         // teacher
         // Checkins count
-        // is reserved, is favorited, is wishlisted
     )
 
 

@@ -14,8 +14,8 @@ object LscIcons {
     val WishlistOutline = loadImageBitmap("wishlist_outline.png")
     val Wishlists = WishlistFull to WishlistOutline
 
-    const val checkedin = "✅"
-    const val booked = "📝"
+    const val checkedin = "📝"
+    const val booked = "✅"
 }
 
 val Icons.Lsc get() = LscIcons

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -17,15 +16,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.RatingPanel
+import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.venue.VenueImage
 
@@ -35,20 +35,16 @@ private val imageHeight = 200.dp
 @Composable
 fun VenueDetail(
     selectedVenue: Venue?,
+    selectedActivity: Activity?,
     editModel: VenueEditModel,
     onUpdateVenue: () -> Unit,
+    onSubActivityClicked: (Activity) -> Unit,
     clock: Clock = koinInject(),
+    modifier: Modifier = Modifier,
 ) {
     val currentYear by remember { mutableStateOf(clock.today().year) }
-    Column(Modifier.width(300.dp)) {
-        Text(
-            text = selectedVenue?.name ?: "N/A",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colors.primary,
-        )
+    Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
+        TitleText(selectedVenue?.name ?: "N/A")
         if (selectedVenue == null) {
             Spacer(Modifier.height(imageHeight))
         } else {
@@ -97,8 +93,13 @@ fun VenueDetail(
         val (notes, notesSetter) = editModel.notes
         NotesTextField(selectedVenue != null, notes, notesSetter)
 
-        SimpleActivitiesTable(selectedVenue?.activities ?: emptyList(), currentYear)
-        SimpleFreetrainingsTable(selectedVenue?.freetrainings, currentYear)
+        selectedVenue?.activities?.also {
+            SimpleActivitiesTable(it, selectedActivity = selectedActivity, onActivityClicked = onSubActivityClicked)
+        }
+        selectedVenue?.freetrainings?.also {
+            // FIXME also react to when this one is clicked; make it a proper table internally
+            SimpleFreetrainingsTable(it, currentYear)
+        }
 
         Button(
             onClick = onUpdateVenue,

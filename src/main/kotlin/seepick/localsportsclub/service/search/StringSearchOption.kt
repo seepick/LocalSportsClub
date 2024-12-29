@@ -8,9 +8,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 class StringSearchOption<T>(
     label: String,
     private val stringExtractors: List<(T) -> String>,
-    private val resetPredicates: () -> Unit,
-    private val resetItems: () -> Unit,
-) : SearchOption<T>(label) {
+    initiallyEnabled: Boolean = false,
+    reset: () -> Unit,
+) : SearchOption<T>(label, reset, initiallyEnabled) {
 
     private val log = logger {}
     var searchTerm by mutableStateOf("")
@@ -19,18 +19,14 @@ class StringSearchOption<T>(
 
     fun setSearchInput(givenInput: String) {
         searchTerm = givenInput
-        givenInput.trim().also {
-            if (it.isEmpty()) {
-                terms.clear()
-                resetPredicates()
-            } else {
-                terms.clear()
-                terms.addAll(it.split(" ").filter { it.isNotEmpty() }.distinct().map { it.lowercase() })
-                log.debug { "Set search terms to: $terms" }
-                resetPredicates()
+        givenInput.trim().also { trimmedInput ->
+            terms.clear()
+            if (trimmedInput.isNotEmpty()) {
+                terms.addAll(trimmedInput.split(" ").filter { it.isNotEmpty() }.distinct().map { it.lowercase() })
             }
+            log.debug { "Set search terms to: $terms" }
         }
-        resetItems()
+        reset()
     }
 
     override fun buildPredicate(): (T) -> Boolean =

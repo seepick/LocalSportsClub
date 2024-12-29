@@ -34,7 +34,6 @@ class DummySyncer(
     }
 
     private fun generateVenues(): List<VenueDbo> =
-//        RandomDataGenerator.randomVenueDbos(5, customSuffix = "sync")
         listOf(
             dummyVenue().copy(
                 name = "Double Shift",
@@ -44,11 +43,11 @@ class DummySyncer(
                 description = "Some\nline"
             ),
             dummyVenue().copy(name = "EMS", slug = "ems"),
-            dummyVenue().copy(name = "Aaa", slug = "aaa"),
+            dummyVenue().copy(name = "Yoga Studio", slug = "yoga-studio"),
             dummyVenue().copy(
-                name = "Has everything", slug = "has-everything",
-                rating = 5, facilities = "A,B,C",
-                officialWebsite = "https://www.official.com",
+                name = "All Of It", slug = "aoi",
+                rating = 5, facilities = "",
+                officialWebsite = "https://www.allofit.com",
                 description = "Some description", importantInfo = "important info", openingTimes = "opening times",
                 isFavorited = true, isWishlisted = true,
                 postalCode = "1000AB", street = "Main Street", addressLocality = "Amsterdam, Netherlands",
@@ -60,12 +59,21 @@ class DummySyncer(
 
     private fun generateActivities(): List<ActivityDbo> {
         val now = clock.now().withMinute(0).withSecond(0)
+        var activityId = 1
         return listOf(
-            dummyActivity(1, 1).copy(name = "Gym workout", category = "OokGym"),
-            dummyActivity(2, 2).copy(
+            dummyActivity(activityId++, 1).copy(name = "Gym workout", category = "OokGym"),
+            dummyActivity(activityId++, 2).copy(
                 name = "EMS workout", category = "EMS",
                 from = now.plusDays(3), to = now.plusDays(3).plusMinutes(20)
             ),
+            dummyActivity(activityId++, 4).copy(
+                name = "You will be there", isBooked = true,
+                from = now.plusHours(1), to = now.plusHours(2)
+            ),
+            dummyActivity(activityId++, 4).copy(
+                name = "You were there", wasCheckedin = true,
+                from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
+            )
         )
     }
 
@@ -96,8 +104,15 @@ class DummySyncer(
     private fun dummyActivity(activityId: Int, venueId: Int): ActivityDbo {
         val now = clock.now().withMinute(0).withSecond(0)
         return ActivityDbo(
-            id = activityId, venueId = venueId, name = "No Name", category = "", spotsLeft = 4, from = now.plusDays(1),
-            to = now.plusDays(1).plusMinutes(75), isBooked = false, wasCheckedin = false,
+            id = activityId,
+            venueId = venueId,
+            name = "No Name",
+            category = "",
+            spotsLeft = 4,
+            from = now.plusDays(1),
+            to = now.plusDays(1).plusMinutes(75),
+            isBooked = false,
+            wasCheckedin = false,
         )
     }
 

@@ -13,7 +13,7 @@ data class UscConfig(
     val syncDaysAhead: Int = 3,
 ) {
     init {
-        require(syncDaysAhead >= 1)
+        require(syncDaysAhead >= 1) { "sync days ahead must be >= 1 but was: $syncDaysAhead" }
     }
 }
 

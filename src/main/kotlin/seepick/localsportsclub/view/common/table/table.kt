@@ -5,9 +5,7 @@ import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,17 +29,19 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun <T> RowScope.Table(
-    itemsLabel: String,
+fun <T> Table(
     items: List<T>,
-    allItemsCount: Int,
     columns: List<TableColumn<T>>,
-    selectedItem: T?,
+    selectedItem: T? = null,
     onItemClicked: (T) -> Unit,
-    onHeaderClicked: (TableColumn<T>) -> Unit,
-    sortColumn: TableColumn<T>,
+    onHeaderClicked: (TableColumn<T>) -> Unit = {},
+    sortColumn: TableColumn<T>?,
+    headerEnabled: Boolean = true,
+    itemsLabel: String? = null,
+    allItemsCount: Int? = null,
+    modifier: Modifier = Modifier,
 ) {
-    Box(Modifier.weight(1.0f)) {
+    Box(modifier = Modifier.then(modifier)) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
@@ -50,16 +50,18 @@ fun <T> RowScope.Table(
                 bottom = 20.dp, // for the status bar
             ),
         ) {
-            stickyHeader {
-                Row(Modifier.background(Color.Gray)) {
-                    columns.forEach { col ->
-                        TableHeader(
-                            text = col.headerLabel,
-                            size = col.size,
-                            isSortEnabled = col.sortingEnabled,
-                            isSortActive = col == sortColumn,
-                            onClick = { onHeaderClicked(col) },
-                        )
+            if (headerEnabled) {
+                stickyHeader {
+                    Row(Modifier.background(Color.Gray)) {
+                        columns.forEach { col ->
+                            TableHeader(
+                                text = col.headerLabel ?: error("Missing header label for: $col"),
+                                size = col.size,
+                                isSortEnabled = col.sortingEnabled,
+                                isSortActive = col == sortColumn,
+                                onClick = { onHeaderClicked(col) },
+                            )
+                        }
                     }
                 }
             }
@@ -67,7 +69,7 @@ fun <T> RowScope.Table(
                 var isHovered by remember { mutableStateOf(false) }
                 val bgColor =
                     if (isHovered) Color.Green else if (selectedItem == item) Color.Red else MaterialTheme.colors.background
-                Row(Modifier.fillMaxWidth().background(color = bgColor)
+                Row(Modifier/*.fillMaxWidth()*/.background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                     // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
@@ -94,9 +96,11 @@ fun <T> RowScope.Table(
                 scrollState = tableScrollState
             )
         )
-        Text(
-            text = "Showing ${items.size} of $allItemsCount $itemsLabel",
-            modifier = Modifier.align(Alignment.BottomStart)
-        )
+        if (itemsLabel != null) {
+            Text(
+                text = "Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
+                modifier = Modifier.align(Alignment.BottomStart)
+            )
+        }
     }
 }

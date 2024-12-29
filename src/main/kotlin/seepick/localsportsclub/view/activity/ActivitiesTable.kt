@@ -1,6 +1,5 @@
 package seepick.localsportsclub.view.activity
 
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,7 +7,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.common.table.Table
 
 @Composable
-fun RowScope.ActivitiesTable(
+fun ActivitiesTable(
     viewModel: ActivityViewModel = koinViewModel(),
 ) {
     val selectedActivity by viewModel.selectedActivity.collectAsState()

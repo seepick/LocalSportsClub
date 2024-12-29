@@ -1,8 +1,10 @@
 package seepick.localsportsclub.view.activity
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,18 +19,29 @@ fun ActivitiesScreen(
     viewModel: ActivityViewModel = koinViewModel()
 ) {
     val selectedVenue by viewModel.selectedVenue.collectAsState()
+    val selectedActivity by viewModel.selectedActivity.collectAsState()
+
     Column {
-        Row {
-            ActivitySearchPanel()
-        }
-        Row(Modifier.weight(1.0f, true)) {
-            ActivitiesTable()
+        ActivitySearchPanel()
+
+        Row(Modifier.weight(1.0f, fill = true)) {
+            Box(Modifier.weight(1.0f)) {
+                ActivitiesTable()
+            }
             Spacer(Modifier.width(10.dp))
-            VenueDetail(
-                selectedVenue = selectedVenue,
-                editModel = viewModel.venueEdit,
-                onUpdateVenue = viewModel::updateVenue,
-            )
+            Column(modifier = Modifier.width(400.dp)) {
+                VenueDetail(
+                    selectedVenue = selectedVenue,
+                    selectedActivity = selectedActivity,
+                    editModel = viewModel.venueEdit,
+                    onUpdateVenue = viewModel::updateVenue,
+                    onSubActivityClicked = viewModel::onActivityClicked,
+                )
+                ActivityDetail(
+                    activity = selectedActivity,
+                    modifier = Modifier.height(300.dp),
+                )
+            }
         }
     }
 }

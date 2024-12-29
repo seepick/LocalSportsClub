@@ -41,7 +41,7 @@ data class FreetrainingDbo(
             name = row[FreetrainingsTable.name],
             category = row[FreetrainingsTable.category],
             date = row[FreetrainingsTable.date],
-            checkedinTime = row[FreetrainingsTable.checkedinTime],
+            checkedinTime = row[FreetrainingsTable.checkedinTime]?.withNano(0),
         )
     }
 }

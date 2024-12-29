@@ -1,12 +1,11 @@
 package seepick.localsportsclub.view.venue
 
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.common.table.Table
 
 @Composable
-fun RowScope.VenuesTable(
+fun VenuesTable(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
     Table(

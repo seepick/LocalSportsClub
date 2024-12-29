@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.venue
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.search.StringSearchField
@@ -8,5 +9,7 @@ import seepick.localsportsclub.view.search.StringSearchField
 fun VenueSearchPanel(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
-    StringSearchField(viewModel.searching.name)
+    Row {
+        StringSearchField(viewModel.searching.name)
+    }
 }
