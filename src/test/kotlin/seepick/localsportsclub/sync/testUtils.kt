@@ -9,7 +9,7 @@ abstract class TestSyncerListener : SyncerListener {
         error("Unexpected call to onVenueDboAdded!")
     }
 
-    override fun onActivityDboAdded(activityDbo: ActivityDbo) {
+    override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
         error("Unexpected call to onActivityDboAdded!")
     }
 
@@ -17,7 +17,7 @@ abstract class TestSyncerListener : SyncerListener {
         error("Unexpected call to onActivityDboUpdated!")
     }
 
-    override fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
+    override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
         error("Unexpected call to onFreetrainingDboAdded")
     }
 

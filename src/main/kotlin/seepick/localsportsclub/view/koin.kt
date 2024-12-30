@@ -18,4 +18,5 @@ fun viewModule(config: AppConfig) = module {
     viewModelOf(::VenueViewModel)
     viewModelOf(::ActivityViewModel)
     viewModelOf(::FreetrainingViewModel)
+    viewModelOf(::SyncerViewModel)
 }

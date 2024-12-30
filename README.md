@@ -11,12 +11,14 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* BUGFIX: venue search doesnt work
 * usage UI (progress bar like again)
 * don't dipslay activities in big table for A) hidden venues and B) in the past wasCheckedin
 * UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
 
 ## Backlog
 
+* transaction scope around whole sync process
 * FEATURE: migrate old content from AllFit; implement venue-lookup logic
 
 ## Later

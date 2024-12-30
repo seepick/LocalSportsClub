@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.venue
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.VenueSearch
 import seepick.localsportsclub.view.common.ScreenViewModel
@@ -18,13 +19,18 @@ import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 class VenueViewModel(
     dataStorage: DataStorage,
 ) : ScreenViewModel<Venue, VenueSearch>(dataStorage) {
+    override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
+
+    }
 
     override val tableColumns = listOf<TableColumn<Venue>>(
         tableColumnVenueImage { it.imageFileName },
         TableColumn("Name", ColSize.Weight(0.7f), TextRenderer({ it.name }, { it.name.lowercase() })),
-        TableColumn("Slug", ColSize.Weight(0.3f), TextRenderer { it.slug }),
-        TableColumn("Activities", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
-        TableColumn("Checkins", ColSize.Width(100.dp), TextRenderer { it.activities.filter { it.wasCheckedin }.size }),
+        TableColumn("Acts", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
+        TableColumn(
+            "Chks",
+            ColSize.Width(100.dp),
+            TextRenderer { it.activities.filter { it.wasCheckedin }.size + it.freetrainings.filter { it.wasCheckedin }.size }),
         TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
         tableColumnFavorited { it.isFavorited },
         tableColumnWishlisted { it.isWishlisted },

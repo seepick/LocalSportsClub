@@ -12,9 +12,9 @@ interface Syncer {
 
 interface SyncerListener {
     fun onVenueDboAdded(venueDbo: VenueDbo)
-    fun onActivityDboAdded(activityDbo: ActivityDbo)
+    fun onActivityDbosAdded(activityDbos: List<ActivityDbo>)
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
-    fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo)
+    fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>)
     fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate)
 }
 
@@ -51,9 +51,9 @@ class SyncerListenerDispatcher {
         }
     }
 
-    fun dispatchOnActivityDboAdded(activityDbo: ActivityDbo) {
+    fun dispatchOnActivityDbosAdded(activityDbos: List<ActivityDbo>) {
         listeners.forEach {
-            it.onActivityDboAdded(activityDbo)
+            it.onActivityDbosAdded(activityDbos)
         }
     }
 
@@ -63,9 +63,9 @@ class SyncerListenerDispatcher {
         }
     }
 
-    fun dispatchOnFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
+    fun dispatchOnFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
         listeners.forEach {
-            it.onFreetrainingDboAdded(freetrainingDbo)
+            it.onFreetrainingDbosAdded(freetrainingDbos)
         }
     }
 

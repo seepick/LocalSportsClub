@@ -40,7 +40,9 @@ fun VenueDetail(
     modifier: Modifier = Modifier,
 ) {
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
+
         TitleText(selectedVenue?.name ?: "N/A")
+
         if (selectedVenue == null) {
             Spacer(Modifier.height(imageHeight))
         } else {
@@ -48,23 +50,38 @@ fun VenueDetail(
                 VenueImage(selectedVenue.imageFileName)
             }
         }
+
         Text("Facilities: ${selectedVenue?.facilities?.joinToString(", ") ?: ""}")
+
         Row {
             Text("Description:", fontWeight = FontWeight.Bold)
             Text(selectedVenue?.description ?: "", fontSize = 10.sp, maxLines = 2)
         }
+
         selectedVenue?.importantInfo?.also { info ->
             Row {
                 Text("Info:", fontWeight = FontWeight.Bold)
                 Text(info, fontSize = 10.sp, maxLines = 2)
             }
         }
+
         selectedVenue?.openingTimes?.also { times ->
             Row {
                 Text("Times:", fontWeight = FontWeight.Bold)
                 Text(times, fontSize = 10.sp, maxLines = 2)
             }
         }
+        /*
+        // TODO display all venue details in UI
+        val slug: String,
+        val cityId: Int,
+        val postalCode: String,
+        val street: String,
+        val addressLocality: String,
+        val latitude: String,
+        val longitude: String,
+        val isDeleted: Boolean,
+         */
 
         CheckboxText("Favorited", selectedVenue != null, editModel.isFavorited, Icons.Lsc.Favorites)
         CheckboxText("Wishlisted", selectedVenue != null, editModel.isWishlisted, Icons.Lsc.Wishlists)

@@ -36,13 +36,13 @@ class DummySyncer(
         generateActivities().forEach { activityDbo ->
             delay(300)
             activityRepo.insert(activityDbo)
-            dispatcher.dispatchOnActivityDboAdded(activityDbo)
+            dispatcher.dispatchOnActivityDbosAdded(listOf(activityDbo))
         }
 
         generateFreetrainings().forEach { freetrainingDbo ->
             delay(300)
             freetrainingRepo.insert(freetrainingDbo)
-            dispatcher.dispatchOnFreetrainingDboAdded(freetrainingDbo)
+            dispatcher.dispatchOnFreetrainingDbosAdded(listOf(freetrainingDbo))
         }
     }
 

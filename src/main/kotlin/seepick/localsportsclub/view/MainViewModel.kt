@@ -34,6 +34,6 @@ class MainViewModel(
     }
 
     override fun onKeyboardChangeScreen(screenNr: Int) {
-        select(Screen.entries.single { it.ordinal == (screenNr - 1) })
+        select(Screen.entries.first { it.ordinal == (screenNr - 1) })
     }
 }

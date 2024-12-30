@@ -19,8 +19,8 @@ import seepick.localsportsclub.sync.SyncerListener
 interface DataStorageListener {
     fun onVenueAdded(venue: Venue)
     fun onVenueUpdated(venue: Venue)
-    fun onActivityAdded(activity: Activity)
-    fun onFreetrainingAdded(freetraining: Freetraining)
+    fun onActivitiesAdded(activities: List<Activity>)
+    fun onFreetrainingsAdded(freetrainings: List<Freetraining>)
 }
 
 object NoopDataStorageListener : DataStorageListener {
@@ -30,10 +30,10 @@ object NoopDataStorageListener : DataStorageListener {
     override fun onVenueUpdated(venue: Venue) {
     }
 
-    override fun onActivityAdded(activity: Activity) {
+    override fun onActivitiesAdded(activities: List<Activity>) {
     }
 
-    override fun onFreetrainingAdded(freetraining: Freetraining) {
+    override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
     }
 }
 
@@ -99,7 +99,7 @@ class DataStorage(
         allActivitiesByVenueId.values.toList().flatten()
 
     fun selectVenueById(id: Int) =
-        allVenues.single { it.id == id }
+        allVenues.first { it.id == id }
 
     fun selectAllFreetrainings(): List<Freetraining> =
         allFreetrainingsByVenueId.values.toList().flatten()
@@ -111,26 +111,33 @@ class DataStorage(
         dispatchOnVenueAdded(venue)
     }
 
-    override fun onActivityDboAdded(activityDbo: ActivityDbo) {
-        val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
-            ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
-        val activity = activityDbo.toActivity(venue)
-        venue.activities += activity
-        allActivitiesByVenueId.getOrPut(activity.venue.id) { mutableListOf() }.add(activity)
-        dispatchOnActivityAdded(activity)
+    override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
+        val activities = activityDbos.map { activityDbo ->
+            val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
+                ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
+            val activity = activityDbo.toActivity(venue)
+            // venue.activities += activity ... NO: done in SyncerViewModel (concurrency issues, IO vs Compose)
+            allActivitiesByVenueId.getOrPut(activity.venue.id) { mutableListOf() }.add(activity)
+            activity
+        }
+        dispatchOnActivitiesAdded(activities)
     }
 
-    override fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
-        val venue = allVenues.firstOrNull { it.id == freetrainingDbo.venueId }
-            ?: error("Failed to add freetraining! Could not find venue by ID for: $freetrainingDbo")
-        val freetraining = freetrainingDbo.toFreetraining(venue)
-        venue.freetrainings += freetraining
-        allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
-        dispatchOnFreetrainingAdded(freetraining)
+    override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
+        val freetrainings = freetrainingDbos.map { freetrainingDbo ->
+            val venue = allVenues.firstOrNull { it.id == freetrainingDbo.venueId }
+                ?: error("Failed to add freetraining! Could not find venue by ID for: $freetrainingDbos")
+            val freetraining = freetrainingDbo.toFreetraining(venue)
+            // venue.freetrainings += freetraining // NO! do it in SyncerViewModel
+            allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
+            freetraining
+        }
+
+        dispatchOnFreetrainingsAdded(freetrainings)
     }
 
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
-        allFreetrainingsByVenueId.values.flatten().single { it.id == freetrainingDbo.id }.also { freetraining ->
+        allFreetrainingsByVenueId.values.flatten().first { it.id == freetrainingDbo.id }.also { freetraining ->
             when (field) {
                 FreetrainingFieldUpdate.WasCheckedin -> freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
             }
@@ -138,7 +145,7 @@ class DataStorage(
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        val stored = allActivitiesByVenueId[activityDbo.venueId]!!.single { it.id == activityDbo.id }
+        val stored = allActivitiesByVenueId[activityDbo.venueId]!!.first { it.id == activityDbo.id }
         when (field) {
             ActivityFieldUpdate.IsBooked -> stored.isBooked = activityDbo.isBooked
             ActivityFieldUpdate.WasCheckedin -> stored.wasCheckedin = activityDbo.wasCheckedin
@@ -166,15 +173,15 @@ class DataStorage(
         }
     }
 
-    private fun dispatchOnActivityAdded(activity: Activity) {
+    private fun dispatchOnActivitiesAdded(activities: List<Activity>) {
         listeners.forEach {
-            it.onActivityAdded(activity)
+            it.onActivitiesAdded(activities)
         }
     }
 
-    private fun dispatchOnFreetrainingAdded(freetraining: Freetraining) {
+    private fun dispatchOnFreetrainingsAdded(freetrainings: List<Freetraining>) {
         listeners.forEach {
-            it.onFreetrainingAdded(freetraining)
+            it.onFreetrainingsAdded(freetrainings)
         }
     }
 }

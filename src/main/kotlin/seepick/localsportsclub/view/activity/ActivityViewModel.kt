@@ -41,7 +41,10 @@ class ActivityViewModel(
     override fun DataStorage.selectAllItems() =
         selectAllActivities()
 
-    override fun onActivityAdded(activity: Activity) {
-        onItemAdded(activity)
+    override fun onActivitiesAdded(activities: List<Activity>) {
+        activities.forEach { activity ->
+            onItemAdded(activity)
+        }
     }
 }
+

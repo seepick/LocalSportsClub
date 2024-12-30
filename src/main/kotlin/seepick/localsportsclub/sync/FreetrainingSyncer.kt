@@ -51,7 +51,7 @@ class FreetrainingSyncer(
 
         val missingFreetrainings = remoteFreetrainings.minus(storedFreetrainings.keys)
         log.debug { "For $day going to insert ${missingFreetrainings.size} missing freetrainings." }
-        missingFreetrainings.values.forEach { freetraining ->
+        val dbos = missingFreetrainings.values.map { freetraining ->
             val venueId = venuesBySlug[freetraining.venueSlug]?.id ?: suspend {
                 log.debug { "Trying to rescue venue for missing: $freetraining" }
                 venueSyncInserter.fetchAllInsertDispatch(
@@ -64,8 +64,9 @@ class FreetrainingSyncer(
             }()
             val dbo = freetraining.toDbo(venueId, day)
             freetrainingRepo.insert(dbo)
-            dispatcher.dispatchOnFreetrainingDboAdded(dbo)
+            dbo
         }
+        dispatcher.dispatchOnFreetrainingDbosAdded(dbos)
     }
 }
 

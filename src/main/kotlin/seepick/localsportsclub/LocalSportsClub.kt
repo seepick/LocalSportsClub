@@ -17,6 +17,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
+import seepick.localsportsclub.view.SyncerViewModel
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
@@ -59,6 +60,7 @@ object LocalSportsClub {
                     dataStorage.registerListener(koinViewModel<VenueViewModel>())
                     dataStorage.registerListener(koinViewModel<ActivityViewModel>())
                     dataStorage.registerListener(koinViewModel<FreetrainingViewModel>())
+                    dataStorage.registerListener(koinViewModel<SyncerViewModel>())
 
                     val venueViewModel = koinViewModel<VenueViewModel>()
                     val activityViewModel = koinViewModel<ActivityViewModel>()

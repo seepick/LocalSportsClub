@@ -51,7 +51,7 @@ class ActivitiesSyncer(
 
         val missingActivities = remoteActivities.minus(storedActivities.keys)
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
-        missingActivities.values.forEach { activity ->
+        val dbos = missingActivities.values.map { activity ->
             val venueId = venuesBySlug[activity.venueSlug]?.id ?: suspend {
                 log.debug { "Trying to rescue venue for missing: $activity" }
                 venueSyncInserter.fetchAllInsertDispatch(
@@ -64,8 +64,9 @@ class ActivitiesSyncer(
             }()
             val dbo = activity.toDbo(venueId)
             activityRepo.insert(dbo)
-            dispatcher.dispatchOnActivityDboAdded(dbo)
+            dbo
         }
+        dispatcher.dispatchOnActivityDbosAdded(dbos)
     }
 
     private fun ActivityInfo.toDbo(venueId: Int) = ActivityDbo(

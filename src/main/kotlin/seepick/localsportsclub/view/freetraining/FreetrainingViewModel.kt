@@ -23,8 +23,7 @@ class FreetrainingViewModel(
         TableColumn("Name", ColSize.Weight(0.5f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
         TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
         TableColumn("Category", ColSize.Width(200.dp), CellRenderer.TextRenderer { it.category }),
-        TableColumn(
-            "Date",
+        TableColumn("Date",
             ColSize.Width(200.dp),
             CellRenderer.TextRenderer { it.date.prettyShortPrint(clock.today().year) }),
 
@@ -39,10 +38,11 @@ class FreetrainingViewModel(
 
     override fun buildSearch(resetItems: () -> Unit) = FreetrainingsSearch(resetItems)
 
-    override fun DataStorage.selectAllItems() =
-        selectAllFreetrainings()
+    override fun DataStorage.selectAllItems() = selectAllFreetrainings()
 
-    override fun onFreetrainingAdded(freetraining: Freetraining) {
-        onItemAdded(freetraining)
+    override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
+        freetrainings.forEach { freetraining ->
+            onItemAdded(freetraining)
+        }
     }
 }

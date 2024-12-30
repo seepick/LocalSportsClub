@@ -33,7 +33,7 @@ class DataSyncRescuerImpl(
         val venue = ensureVenue(venueSlug, prefilledNotes)
         val dbo = activityDetails.toActivityDbo(activityId, venue.id)
         activityRepo.insert(dbo)
-        dispatcher.dispatchOnActivityDboAdded(dbo)
+        dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))
         return dbo
     }
 
@@ -68,7 +68,7 @@ class DataSyncRescuerImpl(
         val venue = ensureVenue(venueSlug, prefilledNotes)
         val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId, venue.id)
         freetrainingRepo.insert(dbo)
-        dispatcher.dispatchOnFreetrainingDboAdded(dbo)
+        dispatcher.dispatchOnFreetrainingDbosAdded(listOf(dbo))
         return dbo
     }
 
