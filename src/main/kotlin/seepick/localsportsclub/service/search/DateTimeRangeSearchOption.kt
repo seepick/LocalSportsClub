@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.service.DateTimeRange
+import seepick.localsportsclub.service.date.DateTimeRange
 import java.time.LocalDate
 import java.time.LocalTime
 

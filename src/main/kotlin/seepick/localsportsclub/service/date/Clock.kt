@@ -1,4 +1,4 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.service.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime

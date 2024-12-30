@@ -20,7 +20,6 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
     private val freetrainingRepo = ExposedFreetrainingRepo
     private val venueRepo = ExposedVenueRepo
     private val todayTime = LocalDateTime.now()
-    private val todayTimeOnly = todayTime.toLocalTime()
     private val todayDate = todayTime.toLocalDate()
     private val yesterdayDate = todayDate.minusDays(1)
     private fun venue() = Arb.venueDbo().next()
@@ -75,25 +74,25 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
                 freetrainingRepo.selectAll().shouldBeSingleton().first() shouldBe training
             }
         }
-        describe("deleteNonBookedNonCheckedinBefore") {
+        describe("deleteNonCheckedinBefore") {
             it("Given old checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, checkedinTime = todayTimeOnly) }
+                insertTrainingAndVenue { copy(date = yesterdayDate, wasCheckedin = true) }
 
-                freetrainingRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
                 freetrainingRepo.selectAll().shouldBeSingleton()
             }
             it("Given old non-checkedin Then delete") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, checkedinTime = null) }
+                insertTrainingAndVenue { copy(date = yesterdayDate, wasCheckedin = false) }
 
-                freetrainingRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
                 freetrainingRepo.selectAll().shouldBeEmpty()
             }
             it("Given newer non-checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = todayDate, checkedinTime = null) }
+                insertTrainingAndVenue { copy(date = todayDate, wasCheckedin = false) }
 
-                freetrainingRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
                 freetrainingRepo.selectAll().shouldBeSingleton()
             }

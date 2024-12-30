@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.activity
+package seepick.localsportsclub.view.freetraining
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
@@ -8,28 +8,23 @@ import androidx.compose.ui.Modifier
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
-import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
 @Composable
-fun ActivityDetail(
-    activity: Activity?,
+fun FreetrainingDetail(
+    freetraining: Freetraining?,
     modifier: Modifier = Modifier,
     clock: Clock = koinInject(),
 ) {
     val year = clock.today().year
     Column(modifier = modifier) {
-        TitleText(activity?.name ?: "N/A")
-        Text("Category: ${activity?.category ?: ""}")
-        Text("Time: ${activity?.dateTimeRange?.prettyPrint(year) ?: ""}")
-        Text("Spots Left: ${activity?.spotsLeft ?: "-"}")
-        if (activity?.isBooked == true) {
-            Text("${Icons.Lsc.booked} Is booked")
-        }
-        if (activity?.wasCheckedin == true) {
+        TitleText(freetraining?.name ?: "N/A")
+        Text("Category: ${freetraining?.category ?: ""}")
+        Text("Time: ${freetraining?.date?.prettyPrint(year) ?: ""}")
+        if (freetraining?.wasCheckedin == true) {
             Text("${Icons.Lsc.checkedin} Was checked-in")
         }
     }
-
 }

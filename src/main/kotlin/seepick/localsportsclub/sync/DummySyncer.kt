@@ -4,14 +4,19 @@ import kotlinx.coroutines.delay
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
+import seepick.localsportsclub.persistence.FreetrainingDbo
+import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
+import java.time.LocalDate
 
 class DummySyncer(
     private val venueRepo: VenueRepo,
+    private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
-//    private val imageStorage: ImageStorage,
+    private val freetrainingRepo: FreetrainingRepo,
     private val dispatcher: SyncerListenerDispatcher,
     private val clock: Clock,
 ) : Syncer {
@@ -26,25 +31,35 @@ class DummySyncer(
 //            imageStorage.saveVenueImage("${inserted.slug}.png", bytes)
             dispatcher.dispatchOnVenueDboAdded(inserted)
         }
+        venueLinksRepo.insert(5, 6)
+
         generateActivities().forEach { activityDbo ->
             delay(300)
             activityRepo.insert(activityDbo)
             dispatcher.dispatchOnActivityDboAdded(activityDbo)
+        }
+
+        generateFreetrainings().forEach { freetrainingDbo ->
+            delay(300)
+            freetrainingRepo.insert(freetrainingDbo)
+            dispatcher.dispatchOnFreetrainingDboAdded(freetrainingDbo)
         }
     }
 
     private fun generateVenues(): List<VenueDbo> =
         listOf(
             dummyVenue().copy(
+                id = 1,
                 name = "Double Shift",
                 slug = "double-shift",
                 facilities = "Gym,Sauna",
                 rating = 3,
                 description = "Some\nline"
             ),
-            dummyVenue().copy(name = "EMS", slug = "ems"),
-            dummyVenue().copy(name = "Yoga Studio", slug = "yoga-studio"),
+            dummyVenue().copy(id = 2, name = "EMS", slug = "ems"),
+            dummyVenue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio"),
             dummyVenue().copy(
+                id = 4,
                 name = "All Of It", slug = "aoi",
                 rating = 5, facilities = "",
                 officialWebsite = "https://www.allofit.com",
@@ -52,9 +67,10 @@ class DummySyncer(
                 isFavorited = true, isWishlisted = true,
                 postalCode = "1000AB", street = "Main Street", addressLocality = "Amsterdam, Netherlands",
             ),
-            dummyVenue().copy(name = "Zzz", slug = "zzz"),
-            dummyVenue().copy(name = "lowercased", slug = "lower-cased"),
-            dummyVenue().copy(name = "Very long name it is very long indeed", slug = "very-long"),
+            dummyVenue().copy(id = 5, name = "Zzz", slug = "zzz"),
+            dummyVenue().copy(id = 6, name = "Zzz2", slug = "zzz2"),
+            dummyVenue().copy(id = 7, name = "lowercased", slug = "lower-cased"),
+            dummyVenue().copy(id = 8, name = "Very long name it is very long indeed", slug = "very-long"),
         )
 
     private fun generateActivities(): List<ActivityDbo> {
@@ -73,9 +89,30 @@ class DummySyncer(
             dummyActivity(activityId++, 4).copy(
                 name = "You were there", wasCheckedin = true,
                 from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
-            )
+            ),
         )
     }
+
+
+    private fun generateFreetrainings(): List<FreetrainingDbo> =
+        listOf(
+            FreetrainingDbo(
+                id = 1,
+                venueId = 4,
+                name = "Free Sport",
+                category = "Wellness",
+                date = LocalDate.now(),
+                wasCheckedin = false,
+            ),
+            FreetrainingDbo(
+                id = 2,
+                venueId = 4,
+                name = "Free Sport",
+                category = "Wellness",
+                date = LocalDate.now().minusDays(1),
+                wasCheckedin = true,
+            )
+        )
 
     private fun dummyVenue() = VenueDbo(
         id = 0,

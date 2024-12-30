@@ -132,8 +132,8 @@
             <column name="DATE" type="date">
                 <constraints nullable="false"/>
             </column>
-            <column name="CHECKEDIN_TIME" type="time">
-                <constraints nullable="true"/>
+            <column name="WAS_CHECKEDIN" type="boolean">
+                <constraints nullable="false"/>
             </column>
             <column name="VENUE_ID" type="integer">
                 <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_FREETRAININGS_VENUE_ID"/>

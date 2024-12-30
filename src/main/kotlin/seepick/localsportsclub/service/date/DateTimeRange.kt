@@ -1,4 +1,4 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.service.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -9,7 +9,7 @@ data class DateTimeRange(
     val end: LocalDateTime,
 ) {
     init {
-        require(start < end)
+        require(start <= end) { "Start ($start) must be <= end ($end)" }
     }
 
     private val startDate = start.toLocalDate()

@@ -4,6 +4,8 @@ import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.DataStorage
 
 fun serviceModule() = module {

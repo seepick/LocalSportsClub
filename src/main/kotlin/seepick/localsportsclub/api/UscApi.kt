@@ -7,7 +7,7 @@ import seepick.localsportsclub.api.activity.ActivitiesParser
 import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.api.activity.ActivityInfo
 import seepick.localsportsclub.api.activity.FreetrainingInfo
-import seepick.localsportsclub.api.activity.ServiceTye
+import seepick.localsportsclub.api.activity.ServiceType
 import seepick.localsportsclub.api.checkin.CheckinApi
 import seepick.localsportsclub.api.checkin.CheckinsPage
 import seepick.localsportsclub.api.schedule.ScheduleApi
@@ -90,12 +90,12 @@ class UscApiAdapter(
         venueApi.fetchDetails(slug)
 
     override suspend fun fetchActivities(filter: ActivitiesFilter) =
-        activityApi.fetchPages(filter, ServiceTye.Courses).flatMap {
+        activityApi.fetchPages(filter, ServiceType.Courses).flatMap {
             ActivitiesParser.parseContent(it.content, filter.date)
         }
 
     override suspend fun fetchFreetrainings(filter: ActivitiesFilter): List<FreetrainingInfo> =
-        activityApi.fetchPages(filter, ServiceTye.FreeTraining).flatMap {
+        activityApi.fetchPages(filter, ServiceType.FreeTraining).flatMap {
             ActivitiesParser.parseFreetrainingContent(it.content)
         }
 

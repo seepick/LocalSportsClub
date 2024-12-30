@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
-import seepick.localsportsclub.service.prettyPrint
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.ColSize
@@ -21,7 +21,7 @@ import seepick.localsportsclub.view.common.table.TableColumn
 fun SimpleActivitiesTable(
     activities: List<Activity>,
     selectedActivity: Activity? = null,
-    onActivityClicked: (Activity) -> Unit,
+    onActivityClicked: ((Activity) -> Unit)?,
     clock: Clock = koinInject(),
 ) {
     if (activities.isEmpty()) {
@@ -54,9 +54,7 @@ fun SimpleActivitiesTable(
                         renderer = CellRenderer.TextRenderer { it.name },
                     )
                 ),
-                onItemClicked = {
-                    onActivityClicked(it)
-                },
+                onItemClicked = onActivityClicked,
                 sortColumn = null,
             )
         }

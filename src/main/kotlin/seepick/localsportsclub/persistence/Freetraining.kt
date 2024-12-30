@@ -10,12 +10,11 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.javatime.time
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import java.time.LocalDate
-import java.time.LocalTime
 
 data class FreetrainingDbo(
     val id: Int,
@@ -23,7 +22,7 @@ data class FreetrainingDbo(
     val name: String,
     val category: String,
     val date: LocalDate,
-    val checkedinTime: LocalTime?,
+    val wasCheckedin: Boolean,
 ) {
     fun prepareInsert(statement: InsertStatement<Number>) {
         statement[FreetrainingsTable.id] = this.id
@@ -31,7 +30,7 @@ data class FreetrainingDbo(
         statement[FreetrainingsTable.name] = this.name
         statement[FreetrainingsTable.category] = this.category
         statement[FreetrainingsTable.date] = this.date
-        statement[FreetrainingsTable.checkedinTime] = this.checkedinTime
+        statement[FreetrainingsTable.wasCheckedin] = this.wasCheckedin
     }
 
     companion object {
@@ -41,7 +40,7 @@ data class FreetrainingDbo(
             name = row[FreetrainingsTable.name],
             category = row[FreetrainingsTable.category],
             date = row[FreetrainingsTable.date],
-            checkedinTime = row[FreetrainingsTable.checkedinTime]?.withNano(0),
+            wasCheckedin = row[FreetrainingsTable.wasCheckedin],
         )
     }
 }
@@ -51,35 +50,46 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
     val name = varchar("NAME", 256)
     val category = varchar("CATEGORY", 64)
     val date = date("DATE")
-    val checkedinTime = time("CHECKEDIN_TIME").nullable()
+    val wasCheckedin = bool("WAS_CHECKEDIN")
 }
 
 interface FreetrainingRepo {
     fun selectAll(): List<FreetrainingDbo>
     fun selectFutureMostDate(): LocalDate?
     fun insert(dbo: FreetrainingDbo)
-    fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate)
+    fun deleteNonCheckedinBefore(threshold: LocalDate)
+    fun selectById(freetrainingId: Int): FreetrainingDbo?
+    fun update(dbo: FreetrainingDbo)
 }
 
 class InMemoryFreetrainingRepo : FreetrainingRepo {
-    val stored = mutableListOf<FreetrainingDbo>()
-    override fun selectAll() = stored
+    val stored = mutableMapOf<Int, FreetrainingDbo>()
+
+    override fun selectAll() = stored.values.toList()
+
+    override fun selectById(freetrainingId: Int): FreetrainingDbo? =
+        stored[freetrainingId]
 
     override fun selectFutureMostDate(): LocalDate? =
-        stored.maxByOrNull { it.date }?.date
+        stored.values.maxByOrNull { it.date }?.date
 
     override fun insert(dbo: FreetrainingDbo) {
-        stored.add(dbo)
+        require(!stored.containsKey(dbo.id))
+        stored[dbo.id] = dbo
     }
 
-    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate) {
-        stored.filter {
-            it.checkedinTime == null && it.date < threshold
+    override fun deleteNonCheckedinBefore(threshold: LocalDate) {
+        stored.values.filter {
+            !it.wasCheckedin && it.date < threshold
         }.forEach {
-            stored.remove(it)
+            stored.remove(it.id)
         }
     }
 
+    override fun update(dbo: FreetrainingDbo) {
+        require(stored.containsKey(dbo.id))
+        stored[dbo.id] = dbo
+    }
 }
 
 object ExposedFreetrainingRepo : FreetrainingRepo {
@@ -90,6 +100,12 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
         FreetrainingsTable.selectAll().map {
             FreetrainingDbo.fromRow(it)
         }
+    }
+
+    override fun selectById(freetrainingId: Int): FreetrainingDbo? = transaction {
+        FreetrainingsTable.selectAll().where { FreetrainingsTable.id.eq(freetrainingId) }.map {
+            FreetrainingDbo.fromRow(it)
+        }.singleOrNull()
     }
 
     override fun selectFutureMostDate(): LocalDate? = transaction {
@@ -108,13 +124,20 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
         }
     }
 
-    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate) = transaction {
+    override fun update(dbo: FreetrainingDbo): Unit = transaction {
+        val updated = FreetrainingsTable.update(where = { FreetrainingsTable.id.eq(dbo.id) }) {
+            it[name] = dbo.name
+            it[category] = dbo.category
+            it[date] = dbo.date
+            it[wasCheckedin] = dbo.wasCheckedin
+        }
+        if (updated != 1) error("Expected 1 to be updated by ID ${dbo.id}, but was: $updated")
+    }
+
+    override fun deleteNonCheckedinBefore(threshold: LocalDate) = transaction {
         val deleted = FreetrainingsTable.deleteWhere {
-            checkedinTime.eq(null).and(date.less(threshold))
+            wasCheckedin.eq(false).and(date.less(threshold))
         }
         log.info { "Deleted $deleted old freetrainings before $threshold." }
     }
-
-    // selectById
-    // update
 }

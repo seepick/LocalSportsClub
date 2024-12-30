@@ -8,16 +8,17 @@ import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.localDate
-import io.kotest.property.arbitrary.localDateTime
-import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.api.activity.ActivityInfo
-import seepick.localsportsclub.api.checkin.CheckinEntry
+import seepick.localsportsclub.api.checkin.ActivityCheckinEntry
+import seepick.localsportsclub.api.checkin.FreetrainingCheckinEntry
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.imageUrl
+import seepick.localsportsclub.service.date.dateTimeRange
+import seepick.localsportsclub.service.date.timeRange
 import seepick.localsportsclub.slug
 import seepick.localsportsclub.url
 
@@ -53,22 +54,29 @@ fun Arb.Companion.venueDetails() = arbitrary {
 }
 
 fun Arb.Companion.activityInfo() = arbitrary {
-    val from = localDateTime().next()
     ActivityInfo(
         id = int(min = 1).next(),
         venueSlug = slug().next(),
         name = string(minSize = 5, maxSize = 20).next(),
         category = string(minSize = 1, maxSize = 5, codepoints = Codepoint.az()).next(),
         spotsLeft = int(min = 0, max = 10).next(),
-        from = from,
-        to = from.plusMinutes(long(min = 30, max = 120).next()),
+        dateTimeRange = dateTimeRange().next(),
     )
 }
 
-fun Arb.Companion.checkinEntry() = arbitrary {
-    CheckinEntry(
-        date = localDate().next(),
+fun Arb.Companion.activityCheckinEntry() = arbitrary {
+    ActivityCheckinEntry(
         activityId = int(min = 1).next(),
         venueSlug = slug().next(),
+        date = localDate().next(),
+        timeRange = timeRange().next(),
+    )
+}
+
+fun Arb.Companion.freetrainingCheckinEntry() = arbitrary {
+    FreetrainingCheckinEntry(
+        freetrainingId = int(min = 1).next(),
+        venueSlug = slug().next(),
+        date = localDate().next(),
     )
 }

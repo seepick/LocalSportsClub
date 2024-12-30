@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.service.DateTimeRange
+import seepick.localsportsclub.service.date.DateTimeRange
 
 abstract class AbstractSearch<T>(
     private val resetItems: () -> Unit,

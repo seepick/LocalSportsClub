@@ -1,4 +1,4 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.service.date
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe

@@ -1,10 +1,9 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.service.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.Locale
 
 /**
@@ -25,7 +24,7 @@ fun LocalDate.prettyPrintWith(time: LocalTime, currentYear: Int): String {
     else dayDatetimeFormatter.format(datetime)
 }
 
-fun LocalTime.prettyPrint() = timeFormatter.format(this)
+fun LocalTime.prettyPrint(): String = timeFormatter.format(this)
 
 /**
  * @return "Sat 3.11. 04:05-04:06"
@@ -35,14 +34,6 @@ fun DateTimeRange.prettyPrint(currentYear: Int): String =
         timeFormatter
     )
 
-fun parseTimeOrNull(string: String): LocalTime? =
-    try {
-        LocalTime.from(timeParser.parse(string))
-    } catch (e: DateTimeParseException) {
-        null
-    }
-
-private val timeParser = DateTimeFormatter.ofPattern("H:mm", Locale.ENGLISH)
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
 private val dateFormatter = DateTimeFormatter.ofPattern("d.M", Locale.ENGLISH)
@@ -54,6 +45,7 @@ private val dayDateFormatterWithYear = DateTimeFormatter.ofPattern("E d.M.yy", L
 private val dayDatetimeFormatterWithYear = DateTimeFormatter.ofPattern("E d.M.yy HH:mm", Locale.ENGLISH)
 private val dayDatetimeFormatter = DateTimeFormatter.ofPattern("E d.M. HH:mm", Locale.ENGLISH)
 
+// TODO delete those and simply use "<=" and ">="
 fun LocalTime.isAfterOrEqual(other: LocalTime): Boolean =
     this == other || isAfter(other)
 

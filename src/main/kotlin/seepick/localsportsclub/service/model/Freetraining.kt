@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.time.LocalDate
-import java.time.LocalTime
 
 class Freetraining(
     val id: Int,
@@ -12,8 +11,9 @@ class Freetraining(
     val name: String,
     val category: String,
     val date: LocalDate,
-    checkedinTime: LocalTime?,
+    wasCheckedin: Boolean,
 ) {
-    var checkedinTime: LocalTime? by mutableStateOf(checkedinTime)
-    override fun toString(): String = "Freetraining[id=$id, name=$name, date=$date]"
+    var wasCheckedin: Boolean by mutableStateOf(wasCheckedin)
+    override fun toString(): String =
+        "Freetraining[id=$id, name=$name, venue.slug=${venue.slug}, date=$date, wasCheckedin=$wasCheckedin]"
 }

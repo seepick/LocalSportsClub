@@ -9,11 +9,12 @@ import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.api.UscApi
+import seepick.localsportsclub.api.activityCheckinEntry
 import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.checkin.CheckinsPage
-import seepick.localsportsclub.api.checkinEntry
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
+import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.TestRepoFacade
 import seepick.localsportsclub.persistence.activityDbo
 import java.time.LocalDate
@@ -22,6 +23,7 @@ import java.time.LocalDateTime
 class CheckinSyncerTest : StringSpec() {
 
     private lateinit var activityRepo: InMemoryActivityRepo
+    private lateinit var freetrainingRepo: InMemoryFreetrainingRepo
     private lateinit var syncerListenerDispatcher: SyncerListenerDispatcher
     private lateinit var uscApi: UscApi
     private lateinit var dataSyncRescuer: DataSyncRescuer
@@ -44,18 +46,20 @@ class CheckinSyncerTest : StringSpec() {
         })
 
         activityRepo = InMemoryActivityRepo()
+        freetrainingRepo = InMemoryFreetrainingRepo()
         testRepo = TestRepoFacade(activityRepo)
         syncer = CheckinSyncer(
             uscApi = uscApi,
             activityRepo = activityRepo,
+            freetrainingRepo = freetrainingRepo,
             dispatcher = syncerListenerDispatcher,
-            dataSyncRescuer = dataSyncRescuer
+            dataSyncRescuer = dataSyncRescuer,
         )
     }
 
 
     private fun mockCheckinsPage(pageNr: Int, date: LocalDate, activityId: Int): CheckinEntry {
-        val entry = Arb.checkinEntry().next().copy(date = date, activityId = activityId)
+        val entry = Arb.activityCheckinEntry().next().copy(activityId = activityId, date = date)
         coEvery { uscApi.fetchCheckinsPage(pageNr) } returns CheckinsPage(listOf(entry))
         return entry
     }
@@ -67,7 +71,7 @@ class CheckinSyncerTest : StringSpec() {
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
             val activity = testRepo.insertActivity(wasCheckedin = false)
-            val entry = Arb.checkinEntry().next().copy(activityId = activity.id)
+            val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id)
             coEvery { uscApi.fetchCheckinsPage(1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 

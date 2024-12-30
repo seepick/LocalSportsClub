@@ -11,7 +11,7 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate
 
 class ActivitiesSyncer(
@@ -74,8 +74,8 @@ class ActivitiesSyncer(
         name = name,
         category = category,
         spotsLeft = spotsLeft,
-        from = from,
-        to = to,
+        from = dateTimeRange.start,
+        to = dateTimeRange.end,
         isBooked = false,
         wasCheckedin = false,
     )

@@ -8,7 +8,7 @@ import io.ktor.http.Url
 import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.ResponseStorage
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.safeGet
 
 interface CheckinApi {

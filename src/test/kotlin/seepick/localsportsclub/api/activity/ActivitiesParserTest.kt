@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
+import seepick.localsportsclub.service.date.DateTimeRange
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -85,8 +86,10 @@ class ActivitiesParserTest : StringSpec() {
                 venueSlug = "basecampwest",
                 category = "Mixed Martial Arts",
                 spotsLeft = 7,
-                from = LocalDateTime.of(date, LocalTime.of(7, 0)),
-                to = LocalDateTime.of(date, LocalTime.of(7, 45)),
+                dateTimeRange = DateTimeRange(
+                    start = LocalDateTime.of(date, LocalTime.of(7, 0)),
+                    end = LocalDateTime.of(date, LocalTime.of(7, 45)),
+                ),
             )
         }
         "parse single freetraining" {

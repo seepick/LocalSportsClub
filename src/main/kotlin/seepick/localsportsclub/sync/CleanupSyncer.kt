@@ -2,7 +2,7 @@ package seepick.localsportsclub.sync
 
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 
 class CleanupSyncer(
     private val activityRepo: ActivityRepo,
@@ -12,6 +12,6 @@ class CleanupSyncer(
     fun sync() {
         val today = clock.today()
         activityRepo.deleteNonBookedNonCheckedinBefore(today)
-        freetrainingRepo.deleteNonBookedNonCheckedinBefore(today)
+        freetrainingRepo.deleteNonCheckedinBefore(today)
     }
 }

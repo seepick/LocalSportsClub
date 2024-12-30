@@ -15,11 +15,16 @@ interface SyncerListener {
     fun onActivityDboAdded(activityDbo: ActivityDbo)
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
     fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo)
+    fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate)
 }
 
 enum class ActivityFieldUpdate {
     IsBooked,
     WasCheckedin,
+}
+
+enum class FreetrainingFieldUpdate {
+    WasCheckedin
 }
 
 object NoopSyncer : Syncer {
@@ -61,6 +66,12 @@ class SyncerListenerDispatcher {
     fun dispatchOnFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
         listeners.forEach {
             it.onFreetrainingDboAdded(freetrainingDbo)
+        }
+    }
+
+    fun dispatchOnFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        listeners.forEach {
+            it.onFreetrainingDboUpdated(freetrainingDbo, field)
         }
     }
 }

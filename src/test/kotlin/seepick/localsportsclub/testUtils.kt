@@ -4,7 +4,7 @@ import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

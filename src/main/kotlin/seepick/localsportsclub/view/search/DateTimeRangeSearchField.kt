@@ -40,11 +40,11 @@ import org.koin.compose.koinInject
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.UscConfig
-import seepick.localsportsclub.service.Clock
-import seepick.localsportsclub.service.DateTimeRange
-import seepick.localsportsclub.service.SystemClock
-import seepick.localsportsclub.service.parseTimeOrNull
-import seepick.localsportsclub.service.prettyPrint
+import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.date.DateParser
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -162,11 +162,11 @@ fun TimeRangeSelector(
         TextField(
             value = timeAsString,
             enabled = enabled,
-            isError = if (timeAsString.isEmpty()) false else parseTimeOrNull(timeAsString) == null,
+            isError = if (timeAsString.isEmpty()) false else DateParser.parseTimeOrNull(timeAsString) == null,
             onValueChange = { enteredString ->
                 timeAsString = enteredString
                 if (enteredString.isEmpty()) onTimeSelected(null)
-                else parseTimeOrNull(enteredString)?.also { enteredTime ->
+                else DateParser.parseTimeOrNull(enteredString)?.also { enteredTime ->
                     time = enteredTime
                     onTimeSelected(enteredTime)
                 }

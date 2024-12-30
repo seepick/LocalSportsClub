@@ -18,6 +18,7 @@ import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.activity.ActivityViewModel
+import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -57,14 +58,17 @@ object LocalSportsClub {
                     syncer.registerListener(dataStorage)
                     dataStorage.registerListener(koinViewModel<VenueViewModel>())
                     dataStorage.registerListener(koinViewModel<ActivityViewModel>())
+                    dataStorage.registerListener(koinViewModel<FreetrainingViewModel>())
 
                     val venueViewModel = koinViewModel<VenueViewModel>()
                     val activityViewModel = koinViewModel<ActivityViewModel>()
+                    val freetrainingViewModel = koinViewModel<FreetrainingViewModel>()
                     window.addWindowListener(object : WindowAdapter() {
                         // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
                         override fun windowOpened(e: WindowEvent?) {
                             venueViewModel.onStartUp()
                             activityViewModel.onStartUp()
+                            freetrainingViewModel.onStartUp()
                         }
                     })
 

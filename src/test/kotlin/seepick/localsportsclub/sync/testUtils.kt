@@ -20,4 +20,8 @@ abstract class TestSyncerListener : SyncerListener {
     override fun onFreetrainingDboAdded(freetrainingDbo: FreetrainingDbo) {
         error("Unexpected call to onFreetrainingDboAdded")
     }
+
+    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        error("Unexpected call to onFreetrainingDboUpdated")
+    }
 }

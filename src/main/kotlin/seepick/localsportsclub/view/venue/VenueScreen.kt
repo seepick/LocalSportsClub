@@ -28,9 +28,11 @@ fun VenueScreen(
                 VenueDetail(
                     selectedVenue = viewModel.selectedVenue,
                     selectedActivity = viewModel.selectedActivity,
+                    selectedFreetraining = null,
                     editModel = viewModel.venueEdit,
                     onUpdateVenue = viewModel::updateVenue,
                     onSubActivityClicked = viewModel::onActivitySelected,
+                    onSubFreetrainingClicked = null,
                 )
                 ActivityDetail(
                     activity = viewModel.selectedActivity,

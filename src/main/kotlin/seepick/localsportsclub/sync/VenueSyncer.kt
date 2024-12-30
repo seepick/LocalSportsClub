@@ -31,6 +31,7 @@ class VenueSyncer(
         val localVenuesBySlug = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
 
         val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
+        // this also means that the "hidden linked ones" will be deleted
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         markDeleted.values.forEach {
             venueRepo.update(it.copy(isDeleted = true))
@@ -78,13 +79,13 @@ class VenueSyncInserterImpl(
         prefilledNotes: String,
     ) {
         log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
-        fetchAllInsertDispatch(venueSlugs, mutableSetOf(), prefilledNotes)
+        fetchAllInsertDispatch(venueSlugs, prefilledNotes, newLinks = mutableSetOf())
     }
 
     private suspend fun fetchAllInsertDispatch(
         venueSlugs: List<String>,
-        newLinks: MutableSet<VenueLink>,
         prefilledNotes: String = "",
+        newLinks: MutableSet<VenueLink>,
     ) {
         val dbos = workParallel(5, venueSlugs) { slug ->
             fetchDetailsDownloadImage(slug, newLinks).copy(notes = prefilledNotes)
@@ -114,7 +115,11 @@ class VenueSyncInserterImpl(
             }
         } else {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
-            fetchAllInsertDispatch(missingVenuesBySlug, newLinks, "[SYNC] refetch due to missing venue link")
+            fetchAllInsertDispatch(
+                missingVenuesBySlug,
+                prefilledNotes = "[SYNC] refetch due to missing venue link",
+                newLinks
+            )
         }
     }
 

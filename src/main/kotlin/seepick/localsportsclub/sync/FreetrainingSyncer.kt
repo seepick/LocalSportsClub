@@ -11,7 +11,7 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate
 
 class FreetrainingSyncer(
@@ -75,5 +75,5 @@ private fun FreetrainingInfo.toDbo(venueId: Int, date: LocalDate) = Freetraining
     name = name,
     category = category,
     date = date,
-    checkedinTime = null,
+    wasCheckedin = false,
 )

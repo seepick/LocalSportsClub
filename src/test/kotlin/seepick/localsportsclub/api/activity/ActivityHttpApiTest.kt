@@ -42,7 +42,7 @@ class ActivityHttpApiTest : StringSpec() {
         "Given data returned When fetch page Then return data" {
             val rootJson = buildActivitiesJson(success = true, showMore = false)
             val expectedUrl =
-                "${uscConfig.baseUrl}/activities?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${ServiceTye.Courses.apiValue}&page=1"
+                "${uscConfig.baseUrl}/activities?city_id=${filter.city.id}&date=${filter.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}&plan_type=${filter.plan.id}&type%5B%5D=${ActivityType.OnSite.apiValue}&service_type=${ServiceType.Courses.apiValue}&page=1"
             val http =
                 buildMockClient(expectedUrl = expectedUrl, phpSessionId = phpSessionId, responsePayload = rootJson)
             val api = ActivityHttpApi(
@@ -53,7 +53,7 @@ class ActivityHttpApiTest : StringSpec() {
                 responseStorage = NoopResponseStorage
             )
 
-            val response = api.fetchPages(filter, ServiceTye.Courses)
+            val response = api.fetchPages(filter, ServiceType.Courses)
 
             response.shouldBeSingleton().first() shouldBe rootJson.data
         }

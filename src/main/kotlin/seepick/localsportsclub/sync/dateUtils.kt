@@ -1,6 +1,6 @@
 package seepick.localsportsclub.sync
 
-import seepick.localsportsclub.service.Clock
+import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate
 
 fun Clock.daysUntil(syncDaysAhead: Int, futureMostDate: LocalDate?): List<LocalDate> {

@@ -4,19 +4,18 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import seepick.localsportsclub.api.HtmlDateParser
-import seepick.localsportsclub.api.TimePairs
 import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.service.date.DateParser
+import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.date.TimeRange
 import java.time.LocalDate
 import java.time.LocalDateTime
-
 
 data class ActivityInfo(
     val id: Int,
     val name: String,
     val venueSlug: String,
-    val from: LocalDateTime,
-    val to: LocalDateTime,
+    val dateTimeRange: DateTimeRange,
     val category: String, // aka disciplines/facilities
     val spotsLeft: Int,
     // membership plan support ...
@@ -78,8 +77,8 @@ object ActivitiesParser {
     private fun parseSingle(div: Element, date: LocalDate): ActivityInfo {
         val dataLayerJsonString = div.select("a[href=\"#modal-class\"]").first()!!.attr("data-datalayer")
         val dataLayer = kotlinxSerializer.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
-        val (from, to) = convertFromToDateTime(
-            date, HtmlDateParser.parseTime(div.select("p.smm-class-snippet__class-time").text())
+        val dateTimeRange = convertFromToDateTime(
+            date, DateParser.parseTime(div.select("p.smm-class-snippet__class-time").text())
         )
         require(
             div.attr("data-appointment-id").toInt() == dataLayer.id.toInt()
@@ -88,16 +87,18 @@ object ActivitiesParser {
             id = dataLayer.id.toInt(),
             name = dataLayer.name,
             venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/"),
-            from = from,
-            to = to,
+            dateTimeRange = dateTimeRange,
             category = dataLayer.category,
             spotsLeft = dataLayer.spots_left.toInt(),
         )
     }
 }
 
-private fun convertFromToDateTime(date: LocalDate, times: TimePairs): Pair<LocalDateTime, LocalDateTime> =
-    LocalDateTime.of(date, times.from) to LocalDateTime.of(date, times.to)
+private fun convertFromToDateTime(date: LocalDate, times: TimeRange): DateTimeRange =
+    DateTimeRange(
+        start = LocalDateTime.of(date, times.start),
+        end = LocalDateTime.of(date, times.end)
+    )
 
 @Serializable
 data class ActivityBookDataJson(
@@ -125,19 +126,19 @@ data class ActivityDataLayerVenueJson(
 )
 
 object ActivityParser {
-    fun parse(html: String, currentYear: Int): ActivityDetail {
+    fun parse(html: String, currentYear: Int): ActivityDetails {
         val document = Jsoup.parse(html)
         val root = document.childNodes()[0] as Element
         val body = root.children()[1]
         val div = body.children().first()!!
 
         val dateString = div.select("p.smm-class-details__datetime").text()
-        val dateRange = HtmlDateParser.parseDateTimeRange(dateString, currentYear)
+        val dateRange = DateParser.parseDateTimeRange(dateString, currentYear)
         val buttonBook = div.select("button.book")
         return if (buttonBook.hasAttr("data-book-success")) {
             val json = buttonBook.attr("data-book-success")
             val data = kotlinxSerializer.decodeFromString<ActivityBookDataJson>(json)
-            ActivityDetail(
+            ActivityDetails(
                 name = data.`class`.name.trim(),
                 dateTimeRange = dateRange,
                 venueName = data.venue.name.trim(),
@@ -148,7 +149,7 @@ object ActivityParser {
             val buttonCancel = div.select("button.cancel")
             val json = buttonCancel.attr("data-book-cancel")
             val data = kotlinxSerializer.decodeFromString<ActivityCancelDataJson>(json)
-            ActivityDetail(
+            ActivityDetails(
                 name = data.`class`.name.trim(),
                 dateTimeRange = dateRange,
                 venueName = data.venue.name.trim(),
@@ -157,4 +158,38 @@ object ActivityParser {
             )
         }
     }
+
+    fun parseFreetraining(html: String, year: Int): FreetrainingDetails {
+        val document = Jsoup.parse(html)
+        val root = document.childNodes()[0] as Element
+        val body = root.children()[1]
+        val div = body.children().first()!!
+
+        return FreetrainingDetails(
+            id = div.attr("data-appointment-id").toInt(),
+            name = div.select("div.general h3").first()!!.text().trim(),
+            date = div.select("p.smm-class-details__datetime").text().let { DateParser.parseDate(it, year) },
+            category = div.select("span.disciplines").parents().first()!!.text().trim(),
+            venueSlug = parseSlugFromGoogleMapUrls(div.select("div.usc-google-map").attr("data-static-map-urls")),
+        )
+    }
+
+    private fun parseSlugFromGoogleMapUrls(jsonString: String): String {
+        val url = kotlinxSerializer.decodeFromString<List<GoogleMapUrl>>(jsonString).first().url
+        val fileName = url.replace("%2F", "/").substringAfterLast("/").substringBeforeLast("?")
+        // staticMapMedium_1280x1280_amsterdam_13834_vitality-spa-fitness-amsterdam_172647253741728.png
+        val parts = fileName.split("_")
+        // [staticMapMedium, 1280x1280, amsterdam, 13834, vitality-spa-fitness-amsterdam, 172647253741728.png]
+        return parts[4]
+    }
 }
+
+/**
+ * {"width":1280,"url":"https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FstaticMapMedium_1280x1280_amsterdam_13834_vitality-spa-fitness-amsterdam_172647253741728.png?generation=1726472537636021&alt=media"},
+ * {"width":640,"url":"https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FstaticMapSmall_640x640_amsterdam_13834_vitality-spa-fitness-amsterdam_172647253741728.png?generation=1726472537337492&alt=media"}
+ */
+@Serializable
+data class GoogleMapUrl(
+    val width: Int,
+    val url: String,
+)

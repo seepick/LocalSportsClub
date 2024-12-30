@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.service.DateTimeRange
+import seepick.localsportsclub.service.date.DateTimeRange
 
 class Activity(
     val id: Int,

@@ -5,7 +5,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
-import seepick.localsportsclub.service.SystemClock
+import seepick.localsportsclub.service.date.SystemClock
 import java.io.File
 import java.io.FilenameFilter
 import java.time.LocalDateTime

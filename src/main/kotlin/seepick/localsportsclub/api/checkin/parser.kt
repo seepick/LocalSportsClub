@@ -2,7 +2,8 @@ package seepick.localsportsclub.api.checkin
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import seepick.localsportsclub.api.HtmlDateParser
+import seepick.localsportsclub.service.date.DateParser
+import seepick.localsportsclub.service.date.TimeRange
 import java.time.LocalDate
 
 data class CheckinsPage(
@@ -15,11 +16,23 @@ data class CheckinsPage(
     val isEmpty = entries.isEmpty()
 }
 
-data class CheckinEntry(
-    val date: LocalDate,
+sealed interface CheckinEntry {
+    val venueSlug: String
+    val date: LocalDate
+}
+
+data class ActivityCheckinEntry(
     val activityId: Int,
-    val venueSlug: String,
-)
+    override val venueSlug: String,
+    override val date: LocalDate,
+    val timeRange: TimeRange,
+) : CheckinEntry
+
+data class FreetrainingCheckinEntry(
+    val freetrainingId: Int,
+    override val venueSlug: String,
+    override val date: LocalDate,
+) : CheckinEntry
 
 object CheckinsParser {
     fun parse(rawHtml: String, currentYear: Int): CheckinsPage {
@@ -32,15 +45,27 @@ object CheckinsParser {
         timetable.children().forEach { sub ->
             when (sub.attr("class")) {
                 "table-date" -> {
-                    currentDate = HtmlDateParser.parseDate(sub.text().trim(), currentYear)
+                    currentDate = DateParser.parseDate(sub.text().trim(), currentYear)
                 }
 
                 "smm-class-snippet row" -> {
-                    entries += CheckinEntry(
-                        date = currentDate!!,
-                        activityId = sub.attr("data-appointment-id").toInt(),
-                        venueSlug = sub.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/"),
-                    )
+                    val id = sub.attr("data-appointment-id").toInt()
+                    val time = sub.select("p.smm-class-snippet__class-time")
+                    val venueSlug = sub.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/")
+                    entries += if (time.isEmpty()) { // it's a freetraining checkin as we got no time info for it
+                        FreetrainingCheckinEntry(
+                            date = currentDate!!,
+                            freetrainingId = id,
+                            venueSlug = venueSlug,
+                        )
+                    } else {
+                        ActivityCheckinEntry(
+                            date = currentDate!!,
+                            activityId = id,
+                            venueSlug = venueSlug,
+                            timeRange = DateParser.parseTime(sub.select("p.smm-class-snippet__class-time").text()),
+                        )
+                    }
                 }
             }
         }

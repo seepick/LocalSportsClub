@@ -10,7 +10,6 @@ import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
-import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
@@ -69,6 +68,6 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
         category = category().next(),
         date = localDate().next(),
         venueId = int(min = 1).next(),
-        checkedinTime = localTime().orNull().next(),
+        wasCheckedin = boolean().next(),
     )
 }

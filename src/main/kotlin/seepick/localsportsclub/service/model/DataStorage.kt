@@ -11,8 +11,9 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.DateTimeRange
+import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.sync.ActivityFieldUpdate
+import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 
 interface DataStorageListener {
@@ -57,7 +58,7 @@ class DataStorage(
         }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
-    private val allFretrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
+    private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
         val venuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
         freetrainingRepo.selectAll().map { freetrainingDbo ->
             val venueForFreetraining = venuesById[freetrainingDbo.venueId]
@@ -68,15 +69,18 @@ class DataStorage(
 
     private val allVenues: MutableList<Venue> by lazy {
         val allVenueDbos = venueRepo.selectAll()
-        // FIXME implement venue linking (test first!)
+        // TODO implement venue linking (test first!)
 //        val allVenuesById = allVenues.associateBy { it.id }
 //        val allLinksById = venueLinksRepo.selectAll()
         allVenueDbos
-            .filter { !it.isDeleted }
+            //.filter { !it.isDeleted } // TODO indicate deleted venues visually (strike through)
             .map { venueDbo ->
                 venueDbo.toVenue(baseUrl).also { venue ->
                     allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
                         venue.activities += activitiesForVenue
+                    }
+                    allFreetrainingsByVenueId[venue.id]?.also { freetrainingForVenue ->
+                        venue.freetrainings += freetrainingForVenue
                     }
                 }
             }.toMutableList()
@@ -98,15 +102,11 @@ class DataStorage(
         allVenues.single { it.id == id }
 
     fun selectAllFreetrainings(): List<Freetraining> =
-        allFretrainingsByVenueId.values.toList().flatten()
+        allFreetrainingsByVenueId.values.toList().flatten()
 
     override fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
         val venue = venueDbo.toVenue(baseUrl)
-        // no, not possible
-//        allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
-//            venue.activities += activitiesForVenue
-//        }
         allVenues += venue
         dispatchOnVenueAdded(venue)
     }
@@ -125,8 +125,16 @@ class DataStorage(
             ?: error("Failed to add freetraining! Could not find venue by ID for: $freetrainingDbo")
         val freetraining = freetrainingDbo.toFreetraining(venue)
         venue.freetrainings += freetraining
-        allFretrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
+        allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
         dispatchOnFreetrainingAdded(freetraining)
+    }
+
+    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        allFreetrainingsByVenueId.values.flatten().single { it.id == freetrainingDbo.id }.also { freetraining ->
+            when (field) {
+                FreetrainingFieldUpdate.WasCheckedin -> freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
+            }
+        }
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
@@ -188,7 +196,7 @@ fun FreetrainingDbo.toFreetraining(venue: SimpleVenue) = Freetraining(
     name = name,
     category = category,
     date = date,
-    checkedinTime = checkedinTime,
+    wasCheckedin = wasCheckedin,
 )
 
 fun Venue.toDbo() = VenueDbo(

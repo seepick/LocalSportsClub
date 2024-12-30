@@ -11,16 +11,12 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.compose.koinInject
-import seepick.localsportsclub.service.Clock
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.CheckboxText
@@ -36,13 +32,13 @@ private val imageHeight = 200.dp
 fun VenueDetail(
     selectedVenue: Venue?,
     selectedActivity: Activity?,
+    selectedFreetraining: Freetraining?,
     editModel: VenueEditModel,
     onUpdateVenue: () -> Unit,
-    onSubActivityClicked: (Activity) -> Unit,
-    clock: Clock = koinInject(),
+    onSubActivityClicked: ((Activity) -> Unit)?,
+    onSubFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    val currentYear by remember { mutableStateOf(clock.today().year) }
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
         TitleText(selectedVenue?.name ?: "N/A")
         if (selectedVenue == null) {
@@ -97,8 +93,11 @@ fun VenueDetail(
             SimpleActivitiesTable(it, selectedActivity = selectedActivity, onActivityClicked = onSubActivityClicked)
         }
         selectedVenue?.freetrainings?.also {
-            // FIXME also react to when this one is clicked; make it a proper table internally
-            SimpleFreetrainingsTable(it, currentYear)
+            SimpleFreetrainingsTable(
+                it,
+                selectedFreetraining = selectedFreetraining,
+                onFreetrainingClicked = onSubFreetrainingClicked
+            )
         }
 
         Button(

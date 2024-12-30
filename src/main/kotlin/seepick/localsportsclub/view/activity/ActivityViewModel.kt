@@ -13,15 +13,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import seepick.localsportsclub.service.Clock
 import seepick.localsportsclub.service.SortingDelegate
+import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.service.prettyPrint
 import seepick.localsportsclub.service.search.ActivitySearch
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
@@ -48,10 +48,8 @@ class ActivityViewModel(
         tableColumnFavorited { it.venue.isFavorited },
         tableColumnWishlisted { it.venue.isWishlisted },
         TableColumn("Bkd", ColSize.Width(30.dp), TextRenderer { if (it.isBooked) Icons.Lsc.booked else "" }),
-        // teacher
-        // Checkins count
+        // TODO teacher, Checkins count
     )
-
 
     private val _allActivities = mutableStateListOf<Activity>()
     val allActivities: List<Activity> = _allActivities
@@ -61,6 +59,7 @@ class ActivityViewModel(
     private val _selectedActivity = MutableStateFlow<Activity?>(null)
     val selectedActivity = _selectedActivity.asStateFlow()
 
+    val venueEdit = VenueEditModel()
     val selectedVenue: StateFlow<Venue?> = selectedActivity.map { activity ->
         activity?.venue?.let { simpleVenue ->
             dataStorage.selectVenueById(simpleVenue.id).also { venue ->
@@ -75,7 +74,6 @@ class ActivityViewModel(
 
     val searching = ActivitySearch(::resetActivities)
     val sorting = SortingDelegate(activtiesTableColumns, resetSort = ::resetActivities)
-    val venueEdit = VenueEditModel()
 
     fun onStartUp() {
         log.info { "On startup: Filling initial data." }
@@ -95,7 +93,6 @@ class ActivityViewModel(
         log.trace { "Selected: $activity" }
         viewModelScope.launch {
             _selectedActivity.value = activity
-//        _selectedActivity.update { activity }
         }
     }
 
