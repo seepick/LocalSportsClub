@@ -25,6 +25,7 @@ data class ActivityDbo(
     val spotsLeft: Int,
     val from: LocalDateTime,
     val to: LocalDateTime,
+    val teacher: String?,
     val isBooked: Boolean,
     val wasCheckedin: Boolean,
 ) {
@@ -36,6 +37,7 @@ data class ActivityDbo(
             category = row[ActivitiesTable.category],
             from = row[ActivitiesTable.from].withNano(0),
             to = row[ActivitiesTable.to].withNano(0),
+            teacher = row[ActivitiesTable.teacher],
             spotsLeft = row[ActivitiesTable.spotsLeft],
             isBooked = row[ActivitiesTable.isBooked],
             wasCheckedin = row[ActivitiesTable.wasCheckedin],
@@ -50,6 +52,7 @@ object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
     val from = datetime("FROM")
     val to = datetime("TO")
     val spotsLeft = integer("SPOTS_LEFT")
+    val teacher = varchar("TEACHER", 64).nullable()
     val isBooked = bool("IS_BOOKED")
     val wasCheckedin = bool("WAS_CHECKEDIN")
 }
@@ -152,6 +155,7 @@ object ExposedActivityRepo : ActivityRepo {
             it[name] = activity.name
             it[category] = activity.category
             it[spotsLeft] = activity.spotsLeft
+            it[teacher] = activity.teacher
             it[from] = activity.from
             it[to] = activity.to
             it[isBooked] = activity.isBooked
@@ -161,6 +165,7 @@ object ExposedActivityRepo : ActivityRepo {
 
     override fun update(activity: ActivityDbo): Unit = transaction {
         val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
+            it[teacher] = teacher
             it[spotsLeft] = activity.spotsLeft
             it[isBooked] = activity.isBooked
             it[wasCheckedin] = wasCheckedin

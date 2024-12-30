@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
+import org.apache.commons.lang3.ObjectUtils.min
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
@@ -34,7 +36,7 @@ fun SimpleActivitiesTable(
                 items = activities,
                 headerEnabled = false,
                 selectedItem = selectedActivity,
-                modifier = Modifier.height(150.dp),
+                modifier = Modifier.height(min(activities.size, 2) * 52.dp),
                 columns = listOf(
                     TableColumn(
                         size = ColSize.Width(20.dp),

@@ -90,13 +90,17 @@ fun VenueDetail(
         NotesTextField(selectedVenue != null, notes, notesSetter)
 
         selectedVenue?.activities?.also {
-            SimpleActivitiesTable(it, selectedActivity = selectedActivity, onActivityClicked = onSubActivityClicked)
+            SimpleActivitiesTable(
+                activities = it,
+                selectedActivity = selectedActivity,
+                onActivityClicked = onSubActivityClicked,
+            )
         }
         selectedVenue?.freetrainings?.also {
             SimpleFreetrainingsTable(
-                it,
+                freetrainings = it,
                 selectedFreetraining = selectedFreetraining,
-                onFreetrainingClicked = onSubFreetrainingClicked
+                onFreetrainingClicked = onSubFreetrainingClicked,
             )
         }
 

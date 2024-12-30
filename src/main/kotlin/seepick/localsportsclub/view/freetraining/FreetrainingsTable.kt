@@ -13,12 +13,12 @@ fun FreetrainingsTable(
     val selectedFreetraining by viewModel.selectedFreetraining.collectAsState()
     Table(
         itemsLabel = "freetrainings",
-        items = viewModel.freetrainings,
+        items = viewModel.items,
         selectedItem = selectedFreetraining,
-        allItemsCount = viewModel.allFreetrainings.size,
-        columns = viewModel.freetrainingsTableColumns,
+        allItemsCount = viewModel.allItems.size,
+        columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
-        onItemClicked = viewModel::onFreetrainingClicked,
+        onItemClicked = viewModel::onFreetrainingSelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
     )
 }

@@ -45,6 +45,7 @@ class DataSyncRescuerImpl(
         spotsLeft = spotsLeft,
         from = dateTimeRange.start,
         to = dateTimeRange.end,
+        teacher = null,
         isBooked = false,
         wasCheckedin = false,
     )

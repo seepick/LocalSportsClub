@@ -11,25 +11,19 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* notes as richt format textfield
-* prepare ACTIVITIES.TEACHER string?
-* when click on rating textfield, already dropdown
 * usage UI (progress bar like again)
-* finish activities table
-* implement freetrainings table
 * don't dipslay activities in big table for A) hidden venues and B) in the past wasCheckedin
-* table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
-* simple tables for activities/freetrainings in venues
-* ... go to a freetraining, and sync checkedin things (got time info now! create synthetic activity ;)
+* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
 
 ## Backlog
 
-* FEATURE: migrate old content from AllFit
+* FEATURE: migrate old content from AllFit; implement venue-lookup logic
 
 ## Later
 
+* table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
 * SYNC: currentYear is passed, but watch out for new year transition!
-* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
+* when click rating textfield, also expand dropdown
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 * MIN: description/info has "\n"... replace them
 * FEATURE: notes textarea (tabbed content)
@@ -40,6 +34,7 @@ Communistic Custom Client for Urban Sports Club.
 * enable up/down arrow for table (would require a global listener, and knowing which table got focus...)
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 * make rating UI a slider with custom renderer
+* notes as richt format textfield
 
 ## Later Later
 

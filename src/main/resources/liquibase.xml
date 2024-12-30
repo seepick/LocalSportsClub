@@ -108,6 +108,9 @@
             <column name="SPOTS_LEFT" type="integer">
                 <constraints nullable="false"/>
             </column>
+            <column name="TEACHER" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
             <column name="IS_BOOKED" type="boolean">
                 <constraints nullable="false"/>
             </column>

@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
+import org.apache.commons.lang3.ObjectUtils.min
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
@@ -35,7 +37,7 @@ fun SimpleFreetrainingsTable(
                 items = freetrainings,
                 headerEnabled = false,
                 selectedItem = selectedFreetraining,
-                modifier = Modifier.height(150.dp),
+                modifier = Modifier.height(min(freetrainings.size, 2) * 52.dp),
                 columns = listOf(
                     TableColumn(
                         size = ColSize.Width(20.dp),

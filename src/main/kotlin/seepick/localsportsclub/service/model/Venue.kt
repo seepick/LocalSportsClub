@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.view.common.ScreenItem
 
 interface SimpleVenue {
     val id: Int
@@ -63,8 +64,8 @@ class Venue(
     isWishlisted: Boolean,
     isHidden: Boolean,
 //    val linkedVenues: List<SimpleVenue>,
-) : SimpleVenue {
-
+) : SimpleVenue, ScreenItem {
+    override val venue = this
     var notes: String by mutableStateOf(notes)
     override var rating: Rating by mutableStateOf(rating)
     override var isFavorited: Boolean by mutableStateOf(isFavorited)

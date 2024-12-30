@@ -1,6 +1,8 @@
 package seepick.localsportsclub.view.venue
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.common.table.Table
 
@@ -8,14 +10,15 @@ import seepick.localsportsclub.view.common.table.Table
 fun VenuesTable(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
+    val selectedVenue by viewModel.selectedVenue.collectAsState()
     Table(
         itemsLabel = "venues",
-        allItemsCount = viewModel.allVenues.size,
-        items = viewModel.venues,
-        onItemClicked = { viewModel.onVenueClicked(it) },
-        onHeaderClicked = { viewModel.sorting.onHeaderClicked(it) },
-        columns = viewModel.venuesTableColumns,
+        allItemsCount = viewModel.allItems.size,
+        items = viewModel.items,
+        onItemClicked = viewModel::onVenueSelected,
+        onHeaderClicked = viewModel.sorting::onHeaderClicked,
+        columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
-        selectedItem = viewModel.selectedVenue,
+        selectedItem = selectedVenue,
     )
 }

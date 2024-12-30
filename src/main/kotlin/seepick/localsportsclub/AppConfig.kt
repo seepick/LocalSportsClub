@@ -48,8 +48,8 @@ data class AppConfig(
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.Mock,
-            sync = SyncMode.Dummy,
+            api = ApiMode.RealHttp,
+            sync = SyncMode.Real,
             logFileEnabled = true,
             firstScreen = Screen.Activities,
         )

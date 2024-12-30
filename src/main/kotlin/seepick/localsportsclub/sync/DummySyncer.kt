@@ -148,6 +148,7 @@ class DummySyncer(
             spotsLeft = 4,
             from = now.plusDays(1),
             to = now.plusDays(1).plusMinutes(75),
+            teacher = null,
             isBooked = false,
             wasCheckedin = false,
         )

@@ -13,11 +13,11 @@ fun ActivitiesTable(
     val selectedActivity by viewModel.selectedActivity.collectAsState()
     Table(
         itemsLabel = "activities",
-        allItemsCount = viewModel.allActivities.size,
-        items = viewModel.activities,
-        onItemClicked = viewModel::onActivityClicked,
+        allItemsCount = viewModel.allItems.size,
+        items = viewModel.items,
+        onItemClicked = viewModel::onActivitySelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
-        columns = viewModel.activtiesTableColumns,
+        columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
         selectedItem = selectedActivity,
     )
