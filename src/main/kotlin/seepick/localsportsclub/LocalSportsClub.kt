@@ -21,6 +21,7 @@ import seepick.localsportsclub.view.SyncerViewModel
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
+import seepick.localsportsclub.view.usage.UsageViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -89,13 +90,17 @@ fun application(
                         exitApplication()
                     },
                 ) {
+                    val syncer = koinInject<Syncer>()
                     val dataStorage = koinInject<DataStorage>()
-                    koinInject<Syncer>().registerListener(dataStorage)
+                    val usage = koinViewModel<UsageViewModel>()
+                    syncer.registerListener(dataStorage)
+                    syncer.registerListener(usage)
                     dataStorage.registerListener(koinViewModel<SyncerViewModel>())
                     dataStorage.registerListener(koinViewModel<ActivityViewModel>())
                     dataStorage.registerListener(koinViewModel<FreetrainingViewModel>())
                     dataStorage.registerListener(koinViewModel<VenueViewModel>())
 
+                    applicationLifecycle.registerListener(usage)
                     applicationLifecycle.registerListener(koinViewModel<ActivityViewModel>())
                     applicationLifecycle.registerListener(koinViewModel<FreetrainingViewModel>())
                     applicationLifecycle.registerListener(koinViewModel<VenueViewModel>())

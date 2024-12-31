@@ -11,11 +11,18 @@ data class UscConfig(
     val plan: PlanType = PlanType.Large,
     val storeResponses: Boolean = true,
     val syncDaysAhead: Int = 3,
+    val usageConfig: UsageConfig = UsageConfig(),
 ) {
     init {
         require(syncDaysAhead >= 1) { "sync days ahead must be >= 1 but was: $syncDaysAhead" }
     }
 }
+
+data class UsageConfig(
+    val periodAlwaysFirstDay: Int = 2,
+    val maxBookingsPerPeriod: Int = 18, // ... is it 15, or 16? also: move it to UscConfig
+    val maxBookingsPerVenue: Int = 6, // TODO or is it per partner (a partner having multiple, linked venues?!)
+)
 
 enum class UscLang(val urlCode: String) {
     English("en"),
@@ -48,8 +55,10 @@ data class AppConfig(
     companion object {
         val development = AppConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.RealHttp,
-            sync = SyncMode.Real,
+//            api = ApiMode.RealHttp,
+//            sync = SyncMode.Real,
+            api = ApiMode.Mock,
+            sync = SyncMode.Dummy,
             logFileEnabled = true,
             firstScreen = Screen.Activities,
         )

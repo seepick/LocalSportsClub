@@ -42,6 +42,7 @@ Communistic Custom Client for Urban Sports Club.
 * use compose's snackbar to indicate notifications about sync
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * (switch to ZonedDate?)
+* room (flow-enabled sqlite MPP abstraction) instead exposed?
 
 # Compose help:
 

@@ -15,7 +15,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
-import seepick.localsportsclub.TestableClock
+import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.NoopResponseStorage
 import seepick.localsportsclub.api.PhpSessionId
@@ -31,7 +31,7 @@ import java.time.format.DateTimeFormatter
 class ActivityHttpApiTest : StringSpec() {
     private val uscConfig = Arb.uscConfig().next()
     private val phpSessionId = PhpSessionId("testPhpSessionId")
-    private val clock = TestableClock()
+    private val clock = StaticClock()
     private val filter = ActivitiesFilter(
         city = City.Amsterdam,
         plan = PlanType.Medium,

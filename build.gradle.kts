@@ -68,6 +68,7 @@ dependencies {
     }
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("app.cash.turbine:turbine:1.2.0")
 }
 
 compose.desktop {

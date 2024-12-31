@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
 import io.ktor.http.Url
@@ -19,6 +20,15 @@ fun Arb.Companion.uscConfig() = arbitrary {
         city = enum<City>().next(),
         plan = enum<PlanType>().next(),
         storeResponses = boolean().next(),
+    )
+}
+
+fun Arb.Companion.usageConfig() = arbitrary {
+    val maxBookingsPerPeriod = int(min = 4, max = 20).next()
+    UsageConfig(
+        periodAlwaysFirstDay = int(min = 1, max = 30).next(),
+        maxBookingsPerPeriod = maxBookingsPerPeriod,
+        maxBookingsPerVenue = int(min = 1, max = maxBookingsPerPeriod).next(),
     )
 }
 

@@ -64,11 +64,8 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
                     venueEdit.init(venue)
                 }
             }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = null
-        )
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        // or with timeout: started = SharingStarted.WhileSubscribed(5_000L)
     }
 
     abstract fun DataStorage.selectAllItems(): List<ITEM>

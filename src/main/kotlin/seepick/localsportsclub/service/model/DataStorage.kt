@@ -45,8 +45,8 @@ class DataStorage(
     uscConfig: UscConfig,
 ) : SyncerListener {
 
-    private val baseUrl = uscConfig.baseUrl
     private val log = logger {}
+    private val baseUrl = uscConfig.baseUrl
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
@@ -139,16 +139,18 @@ class DataStorage(
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         allFreetrainingsByVenueId.values.flatten().first { it.id == freetrainingDbo.id }.also { freetraining ->
             when (field) {
-                FreetrainingFieldUpdate.WasCheckedin -> freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
+                FreetrainingFieldUpdate.WasCheckedin -> {
+                    freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
+                }
             }
         }
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        val stored = allActivitiesByVenueId[activityDbo.venueId]!!.first { it.id == activityDbo.id }
+        val activity = allActivitiesByVenueId[activityDbo.venueId]!!.first { it.id == activityDbo.id }
         when (field) {
-            ActivityFieldUpdate.IsBooked -> stored.isBooked = activityDbo.isBooked
-            ActivityFieldUpdate.WasCheckedin -> stored.wasCheckedin = activityDbo.wasCheckedin
+            ActivityFieldUpdate.IsBooked -> activity.isBooked = activityDbo.isBooked
+            ActivityFieldUpdate.WasCheckedin -> activity.wasCheckedin = activityDbo.wasCheckedin
         }
     }
 

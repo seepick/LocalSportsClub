@@ -6,7 +6,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import seepick.localsportsclub.TestableClock
+import seepick.localsportsclub.StaticClock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -16,9 +16,9 @@ class DateUtilKtTest : DescribeSpec() {
     private val today = LocalDate.of(2024, 12, 5)
     private val todayNow = LocalDateTime.of(today, LocalTime.of(12, 0, 0))
     private val syncDaysAhead = 4
-    private lateinit var clock: TestableClock
+    private lateinit var clock: StaticClock
     override suspend fun beforeEach(testCase: TestCase) {
-        clock = TestableClock(todayNow)
+        clock = StaticClock(todayNow)
     }
 
     init {

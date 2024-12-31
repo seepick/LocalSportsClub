@@ -21,6 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
 import seepick.localsportsclub.view.notes.NotesScreen
+import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
 @Composable
@@ -49,6 +50,8 @@ fun MainView(
             ) {
                 CircularProgressIndicator()
             }
+            Spacer(Modifier.width(10.dp))
+            UsageView()
         }
         when (viewModel.selectedScreen.value) {
             Screen.Activities -> ActivitiesScreen()

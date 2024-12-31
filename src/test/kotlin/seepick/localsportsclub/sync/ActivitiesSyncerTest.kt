@@ -9,7 +9,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
-import seepick.localsportsclub.TestableClock
+import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityInfo
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -28,7 +28,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private lateinit var syncerListenerDispatcher: SyncerListenerDispatcher
     private lateinit var venueSyncInserter: VenueSyncInserter
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
-    private val clock = TestableClock(todayNow)
+    private val clock = StaticClock(todayNow)
     private val syncDaysAhead = 4
 
     override suspend fun beforeEach(testCase: TestCase) {
