@@ -142,5 +142,11 @@
                 <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_FREETRAININGS_VENUE_ID"/>
             </column>
         </createTable>
+
+        <createTable tableName="SINGLES">
+            <column name="NOTES" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
@@ -30,7 +31,7 @@ interface ScreenItem {
 
 abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>(
     private val dataStorage: DataStorage,
-) : ViewModel(), DataStorageListener by NoopDataStorageListener {
+) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
 
@@ -72,8 +73,8 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     abstract fun DataStorage.selectAllItems(): List<ITEM>
 
-    fun onStartUp() {
-        log.info { "On startup: Filling initial data." }
+    override fun onStartUp() {
+        log.info { "Filling initial data for: ${this::class.simpleName}" }
         _allItems.addAll(dataStorage.selectAllItems())
         resetItems()
     }

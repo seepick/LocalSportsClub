@@ -22,5 +22,6 @@ fun allModules(config: AppConfig) = listOf(
 fun rootModule(config: AppConfig): Module = module {
     single { config.usc } bind UscConfig::class
     singleOf(::GlobalKeyboard)
+    singleOf(::ApplicationLifecycle)
     // or use includeModules() ;)
 }

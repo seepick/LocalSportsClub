@@ -12,6 +12,7 @@ fun serviceModule() = module {
     single { SystemClock } bind Clock::class
     single { httpClient } bind HttpClient::class
     singleOf(::DataStorage)
+    singleOf(::SinglesService)
     single {
         FileSystemImageStorage(
             venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),

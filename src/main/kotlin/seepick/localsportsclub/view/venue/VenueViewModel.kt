@@ -3,7 +3,6 @@ package seepick.localsportsclub.view.venue
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import seepick.localsportsclub.service.model.DataStorage
-import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.VenueSearch
 import seepick.localsportsclub.view.common.ScreenViewModel
@@ -19,9 +18,6 @@ import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 class VenueViewModel(
     dataStorage: DataStorage,
 ) : ScreenViewModel<Venue, VenueSearch>(dataStorage) {
-    override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
-
-    }
 
     override val tableColumns = listOf<TableColumn<Venue>>(
         tableColumnVenueImage { it.imageFileName },

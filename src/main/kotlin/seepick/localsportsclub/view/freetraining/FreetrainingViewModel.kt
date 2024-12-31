@@ -2,7 +2,7 @@ package seepick.localsportsclub.view.freetraining
 
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.date.prettyShortPrint
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.view.common.ScreenViewModel
@@ -22,10 +22,10 @@ class FreetrainingViewModel(
         tableColumnVenueImage { it.venue.imageFileName },
         TableColumn("Name", ColSize.Weight(0.5f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
         TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
-        TableColumn("Category", ColSize.Width(200.dp), CellRenderer.TextRenderer { it.category }),
+        TableColumn("Category", ColSize.Width(170.dp), CellRenderer.TextRenderer { it.category }),
         TableColumn("Date",
-            ColSize.Width(200.dp),
-            CellRenderer.TextRenderer { it.date.prettyShortPrint(clock.today().year) }),
+            ColSize.Width(120.dp),
+            CellRenderer.TextRenderer { it.date.prettyPrint(clock.today().year) }),
 
         TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
         tableColumnFavorited { it.venue.isFavorited },
