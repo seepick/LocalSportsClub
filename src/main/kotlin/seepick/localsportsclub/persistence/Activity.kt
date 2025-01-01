@@ -24,7 +24,7 @@ data class ActivityDbo(
     val category: String, // aka disciplines/facilities
     val spotsLeft: Int,
     val from: LocalDateTime,
-    val to: LocalDateTime,
+    val to: LocalDateTime, // TODO change to duratinInMins => easier to instantiate ;) in domain object, provide dateTimeRange still (with convenient ctor with duration)
     val teacher: String?,
     val isBooked: Boolean,
     val wasCheckedin: Boolean,
@@ -59,7 +59,8 @@ object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
 
 interface ActivityRepo {
     fun selectAll(): List<ActivityDbo>
-    fun selectAllScheduled(): List<ActivityDbo>
+    fun selectAllUpcoming(today: LocalDate): List<ActivityDbo>
+    fun selectAllBooked(): List<ActivityDbo>
     fun insert(activity: ActivityDbo)
     fun update(activity: ActivityDbo)
     fun selectById(id: Int): ActivityDbo?
@@ -73,8 +74,10 @@ class InMemoryActivityRepo : ActivityRepo {
     val stored = mutableMapOf<Int, ActivityDbo>()
 
     override fun selectAll(): List<ActivityDbo> = stored.values.toList()
+    override fun selectAllUpcoming(today: LocalDate): List<ActivityDbo> =
+        stored.values.filter { it.from.toLocalDate() >= today }
 
-    override fun selectAllScheduled() = stored.filter { it.value.isBooked }.values.toList()
+    override fun selectAllBooked() = stored.filter { it.value.isBooked }.values.toList()
 
     override fun selectById(id: Int): ActivityDbo? = stored[id]
 
@@ -111,13 +114,20 @@ object ExposedActivityRepo : ActivityRepo {
         }
     }
 
+    override fun selectAllUpcoming(today: LocalDate): List<ActivityDbo> = transaction {
+        val todayTime = LocalDateTime.of(today, LocalTime.of(0, 0))
+        ActivitiesTable.selectAll().where { ActivitiesTable.from.greaterEq(todayTime) }.map {
+            ActivityDbo.fromRow(it)
+        }
+    }
+
     override fun selectById(id: Int) = transaction {
         ActivitiesTable.selectAll().where { ActivitiesTable.id.eq(id) }.map {
             ActivityDbo.fromRow(it)
         }.singleOrNull()
     }
 
-    override fun selectAllScheduled(): List<ActivityDbo> = transaction {
+    override fun selectAllBooked(): List<ActivityDbo> = transaction {
         ActivitiesTable.selectAll().where { ActivitiesTable.isBooked.eq(true) }.map {
             ActivityDbo.fromRow(it)
         }

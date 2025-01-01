@@ -32,7 +32,7 @@ fun _UrlTextField() {
 fun UrlTextField(
     label: String,
     url: String?,
-    enabled: Boolean,
+    enabled: Boolean = true,
     onChange: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {

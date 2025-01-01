@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.view.common.ScreenItem
+import seepick.localsportsclub.view.shared.ScreenItem
 import java.time.LocalDate
 
 class Freetraining(

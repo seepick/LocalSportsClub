@@ -6,9 +6,9 @@ enum class Environment {
 
     companion object {
         val current by lazy {
-            println("lsc.env = [${System.getProperty("lsc.env")}]")
+            prelog("lsc.env = [${System.getProperty("lsc.env")}]")
             val heapSize = Runtime.getRuntime().totalMemory().toDouble()
-            println("heapSize = ${(heapSize / 1024.0 / 1024.0).toInt()}MB")
+            prelog("heapSize = ${(heapSize / 1024.0 / 1024.0).toInt()}MB")
             if (System.getProperty("lsc.env") == "PROD") Production else Development
         }
     }

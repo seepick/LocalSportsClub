@@ -15,6 +15,10 @@ import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
 import java.io.File
 
+fun prelog(message: String) {
+    println("[LSC] $message")
+}
+
 fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext
     val rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME)
@@ -40,7 +44,7 @@ private fun buildFileAppender(
 ): RollingFileAppender<ILoggingEvent> {
     val logsDir = FileResolver.resolve(DirectoryEntry.ApplicationLogs)
     val targetLogFile = File(logsDir, "app_logs$suffix.log")
-    println("Writing logs to: ${targetLogFile.absolutePath}")
+    prelog("Writing logs to: ${targetLogFile.absolutePath}")
     return RollingFileAppender<ILoggingEvent>().also { appender ->
         appender.context = context
         appender.name = "CustomFileAppender$suffix"

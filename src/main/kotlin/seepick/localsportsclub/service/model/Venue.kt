@@ -5,38 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.api.City
-import seepick.localsportsclub.view.common.ScreenItem
-
-interface SimpleVenue {
-    val id: Int
-    val slug: String
-    val name: String
-    val imageFileName: String?
-    var rating: Rating
-    var isWishlisted: Boolean
-    var isFavorited: Boolean
-
-    fun updateSelfBy(venue: Venue) {
-        rating = venue.rating
-        isWishlisted = venue.isWishlisted
-        isFavorited = venue.isFavorited
-    }
-}
-
-class SimpleVenueImpl(
-    override val id: Int,
-    override val slug: String,
-    override val name: String,
-    override val imageFileName: String?,
-    rating: Rating,
-    isWishlisted: Boolean,
-    isFavorited: Boolean,
-) : SimpleVenue {
-    override var rating: Rating by mutableStateOf(rating)
-    override var isWishlisted: Boolean by mutableStateOf(isWishlisted)
-    override var isFavorited: Boolean by mutableStateOf(isFavorited)
-    override fun toString() = "SimpleVenueImpl[id=$id, name=$name, rating=$rating]"
-}
+import seepick.localsportsclub.view.shared.ScreenItem
 
 class Venue(
     override val id: Int,
@@ -70,7 +39,7 @@ class Venue(
     override var rating: Rating by mutableStateOf(rating)
     override var isFavorited: Boolean by mutableStateOf(isFavorited)
     override var isWishlisted: Boolean by mutableStateOf(isWishlisted)
-    var isHidden: Boolean by mutableStateOf(isHidden)
+    override var isHidden: Boolean by mutableStateOf(isHidden)
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
     var officialWebsite: String? by mutableStateOf(officialWebsite)

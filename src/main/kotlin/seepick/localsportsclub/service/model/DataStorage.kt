@@ -11,6 +11,7 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
@@ -42,6 +43,7 @@ class DataStorage(
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
+    private val clock: Clock,
     uscConfig: UscConfig,
 ) : SyncerListener {
 
@@ -49,20 +51,21 @@ class DataStorage(
     private val baseUrl = uscConfig.baseUrl
     private val listeners = mutableListOf<DataStorageListener>()
 
+    private val simpleVenuesById by lazy {
+        venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
+    }
+
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
-        val simpleVenuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
-        activityRepo.selectAll().map { activityDbo ->
-            val venueForActivity = simpleVenuesById[activityDbo.venueId]
-            require(venueForActivity != null) { "Venue not found for: $activityDbo" }
+        activityRepo.selectAllUpcoming(clock.today()).map { activityDbo ->
+            val venueForActivity = simpleVenuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
             activityDbo.toActivity(venueForActivity)
         }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
-        val venuesById = venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
-        freetrainingRepo.selectAll().map { freetrainingDbo ->
-            val venueForFreetraining = venuesById[freetrainingDbo.venueId]
-            require(venueForFreetraining != null) { "Venue not found for: $freetrainingDbo" }
+        freetrainingRepo.selectAllUpcoming(clock.today()).map { freetrainingDbo ->
+            val venueForFreetraining =
+                simpleVenuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
             freetrainingDbo.toFreetraining(venueForFreetraining)
         }.groupByTo(mutableMapOf()) { it.venue.id }
     }
@@ -73,7 +76,6 @@ class DataStorage(
 //        val allVenuesById = allVenues.associateBy { it.id }
 //        val allLinksById = venueLinksRepo.selectAll()
         allVenueDbos
-            //.filter { !it.isDeleted } // TODO indicate deleted venues visually (strike through)
             .map { venueDbo ->
                 venueDbo.toVenue(baseUrl).also { venue ->
                     allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
@@ -90,18 +92,16 @@ class DataStorage(
         listeners += listener
     }
 
-    // invoked on startup
-    fun selectAllVenues(): List<Venue> {
-        return allVenues
-    }
-
-    fun selectAllActivities(): List<Activity> =
-        allActivitiesByVenueId.values.toList().flatten()
+    fun selectVisibleVenues(): List<Venue> =
+        allVenues
 
     fun selectVenueById(id: Int) =
         allVenues.first { it.id == id }
 
-    fun selectAllFreetrainings(): List<Freetraining> =
+    fun selectVisibleActivities(): List<Activity> =
+        allActivitiesByVenueId.values.toList().flatten()
+
+    fun selectVisibleFreetrainings(): List<Freetraining> =
         allFreetrainingsByVenueId.values.toList().flatten()
 
     override fun onVenueDboAdded(venueDbo: VenueDbo) {
@@ -132,7 +132,6 @@ class DataStorage(
             allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
             freetraining
         }
-
         dispatchOnFreetrainingsAdded(freetrainings)
     }
 
@@ -159,6 +158,9 @@ class DataStorage(
         venueRepo.update(venue.toDbo())
         allActivitiesByVenueId[venue.id]?.forEach { activity ->
             activity.venue.updateSelfBy(venue)
+        }
+        allFreetrainingsByVenueId[venue.id]?.forEach { freetraining ->
+            freetraining.venue.updateSelfBy(venue)
         }
         dispatchOnVenueUpdated(venue)
     }
@@ -194,6 +196,7 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     name = name,
     category = category,
     spotsLeft = spotsLeft,
+    teacher = teacher,
     dateTimeRange = DateTimeRange(from, to),
     isBooked = isBooked,
     wasCheckedin = wasCheckedin,

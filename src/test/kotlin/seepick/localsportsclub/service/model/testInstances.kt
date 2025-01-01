@@ -32,6 +32,7 @@ fun Arb.Companion.activity() = arbitrary {
         category = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).next(),
         dateTimeRange = dateTimeRange().next(),
         spotsLeft = int(min = 0, max = 20).next(),
+        teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().next(),
         isBooked = boolean().next(),
         wasCheckedin = boolean().next(),
     )

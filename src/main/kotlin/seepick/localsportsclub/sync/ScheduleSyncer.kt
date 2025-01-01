@@ -16,7 +16,7 @@ class ScheduleSyncer(
     suspend fun sync() {
         log.debug { "Syncing scheduled activities." }
         val scheduleRows = uscApi.fetchScheduleRows().associateBy { it.activityId }
-        val localScheduled = activityRepo.selectAllScheduled().associateBy { it.id }
+        val localScheduled = activityRepo.selectAllBooked().associateBy { it.id }
 
         val toMarkScheduledYes = scheduleRows.minus(localScheduled.keys)
         val toMarkScheduledNo = localScheduled.minus(scheduleRows.keys)

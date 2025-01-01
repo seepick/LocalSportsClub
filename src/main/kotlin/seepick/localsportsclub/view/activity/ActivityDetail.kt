@@ -14,20 +14,21 @@ import seepick.localsportsclub.view.common.TitleText
 
 @Composable
 fun ActivityDetail(
-    activity: Activity?,
+    activity: Activity,
     modifier: Modifier = Modifier,
     clock: Clock = koinInject(),
 ) {
     val year = clock.today().year
     Column(modifier = modifier) {
-        TitleText(activity?.name ?: "N/A")
-        Text("Category: ${activity?.category ?: ""}")
-        Text("Time: ${activity?.dateTimeRange?.prettyPrint(year) ?: ""}")
-        Text("Spots Left: ${activity?.spotsLeft ?: "-"}")
-        if (activity?.isBooked == true) {
+        TitleText(activity.name)
+        Text("Date: ${activity.dateTimeRange.prettyPrint(year)}")
+        Text("Category: ${activity.category}")
+        Text("Teacher: ${activity.teacher ?: "-"}")
+        Text("Spots Left: ${activity.spotsLeft}") // TODO could sync only spots for subsequent syncs...
+        if (activity.isBooked) {
             Text("${Icons.Lsc.booked} Is booked")
         }
-        if (activity?.wasCheckedin == true) {
+        if (activity.wasCheckedin) {
             Text("${Icons.Lsc.checkedin} Was checked-in")
         }
     }

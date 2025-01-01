@@ -47,6 +47,7 @@ data class VenueDbo(
         rating = Rating.byValue(rating),
         isFavorited = isFavorited,
         isWishlisted = isWishlisted,
+        isHidden = isHidden,
     )
 }
 
@@ -169,10 +170,15 @@ object ExposedVenueRepo : VenueRepo {
 }
 
 class InMemoryVenueRepo : VenueRepo {
+
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 
-    override fun selectAll(): List<VenueDbo> = stored.values.toList().sortedBy { it.id }
+    override fun selectAll(): List<VenueDbo> =
+        stored.values.toList().sortedBy { it.id }
+
+    override fun selectBySlug(slug: String): VenueDbo? =
+        stored.values.firstOrNull { it.slug == slug }
 
     override fun insert(venue: VenueDbo): VenueDbo {
         val newVenue = venue.copy(id = currentId++)
@@ -186,6 +192,4 @@ class InMemoryVenueRepo : VenueRepo {
         stored[venue.id] = venue
         return venue
     }
-
-    override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
 }

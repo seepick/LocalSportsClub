@@ -72,3 +72,7 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
         wasCheckedin = boolean().next(),
     )
 }
+
+fun Arb.Companion.singlesDbo() = arbitrary {
+    SinglesDbo(notes = "")
+}

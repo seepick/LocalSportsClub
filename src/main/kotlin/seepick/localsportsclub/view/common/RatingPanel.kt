@@ -28,8 +28,8 @@ import seepick.localsportsclub.service.model.Rating
 
 @Composable
 fun RatingPanel(
-    enabled: Boolean,
     rating: MutableState<Rating>,
+    enabled: Boolean = true,
 ) {
     Column {
         var isMenuExpanded by remember { mutableStateOf(false) }

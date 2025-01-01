@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CheckboxText(
     label: String,
-    enabled: Boolean,
     isTrue: MutableState<Boolean>,
-    images: Pair<ImageBitmap, ImageBitmap>? = null
+    images: Pair<ImageBitmap, ImageBitmap>? = null,
+    enabled: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

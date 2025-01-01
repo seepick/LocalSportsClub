@@ -19,7 +19,7 @@ class SyncerViewModel(
     override fun onActivitiesAdded(activities: List<Activity>) {
         viewModelScope.launch {
             log.debug { "Linking ${activities.size} activities into their corresponding venues." }
-            val venuesById = dataStorage.selectAllVenues().associateBy { it.id }
+            val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
                 venuesById[venueId]!!.activities += venueActivities
             }
@@ -29,7 +29,7 @@ class SyncerViewModel(
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
         viewModelScope.launch {
             log.debug { "Linking ${freetrainings.size} freetrainings into their corresponding venues." }
-            val venuesById = dataStorage.selectAllVenues().associateBy { it.id }
+            val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->
                 venuesById[venueId]!!.freetrainings += venueFreetraining
             }

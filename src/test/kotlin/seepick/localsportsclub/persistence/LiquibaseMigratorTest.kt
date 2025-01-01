@@ -27,6 +27,10 @@ class LiquibaseMigratorTest : StringSpec() {
 
             val freetraining = Arb.freetrainingDbo().next().copy(venueId = venue1.id)
             ExposedFreetrainingRepo.insert(freetraining)
+
+            ExposedSinglesRepo.select()
+            ExposedSinglesRepo.insert(Arb.singlesDbo().next())
+            ExposedSinglesRepo.update(Arb.singlesDbo().next())
         }
     }
 }

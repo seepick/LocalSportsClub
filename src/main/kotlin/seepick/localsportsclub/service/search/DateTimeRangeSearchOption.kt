@@ -11,7 +11,8 @@ class DateTimeRangeSearchOption<T>(
     label: String,
     reset: () -> Unit,
     private val extractor: (T) -> DateTimeRange,
-) : SearchOption<T>(label, reset) {
+    initiallyEnabled: Boolean = false,
+) : SearchOption<T>(label, reset, initiallyEnabled) {
 
     var searchDate: LocalDate? by mutableStateOf(null)
         private set
@@ -37,7 +38,7 @@ class DateTimeRangeSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean =
-        if (searchDate == null) alwaysTrue
+        if (searchDate == null) alwaysTruePredicate
         else { item ->
             val itemDateItemRange = extractor(item)
             itemDateItemRange.isStartMatching(searchDate!!, timeFrom = searchTimeStart, timeTo = searchTimeEnd)

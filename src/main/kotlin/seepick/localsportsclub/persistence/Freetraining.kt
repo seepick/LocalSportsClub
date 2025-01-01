@@ -55,17 +55,20 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
 
 interface FreetrainingRepo {
     fun selectAll(): List<FreetrainingDbo>
+    fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo>
+    fun selectById(freetrainingId: Int): FreetrainingDbo?
     fun selectFutureMostDate(): LocalDate?
     fun insert(dbo: FreetrainingDbo)
-    fun deleteNonCheckedinBefore(threshold: LocalDate)
-    fun selectById(freetrainingId: Int): FreetrainingDbo?
     fun update(dbo: FreetrainingDbo)
+    fun deleteNonCheckedinBefore(threshold: LocalDate)
 }
 
 class InMemoryFreetrainingRepo : FreetrainingRepo {
     val stored = mutableMapOf<Int, FreetrainingDbo>()
 
     override fun selectAll() = stored.values.toList()
+    override fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo> =
+        stored.values.filter { it.date >= today }
 
     override fun selectById(freetrainingId: Int): FreetrainingDbo? =
         stored[freetrainingId]
@@ -98,6 +101,12 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
 
     override fun selectAll(): List<FreetrainingDbo> = transaction {
         FreetrainingsTable.selectAll().map {
+            FreetrainingDbo.fromRow(it)
+        }
+    }
+
+    override fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo> = transaction {
+        FreetrainingsTable.selectAll().where { FreetrainingsTable.date.greaterEq(today) }.map {
             FreetrainingDbo.fromRow(it)
         }
     }

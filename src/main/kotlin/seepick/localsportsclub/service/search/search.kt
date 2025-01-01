@@ -16,7 +16,7 @@ abstract class AbstractSearch<T>(
     protected fun newStringSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
-        extractors: List<(T) -> String>
+        extractors: List<(T) -> String?>,
     ) =
         StringSearchOption(
             label = label,
@@ -27,50 +27,63 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
-    protected fun newDateTimeRangeSearchOption(label: String, extractor: (T) -> DateTimeRange) =
+    protected fun newDateTimeRangeSearchOption(
+        label: String,
+        initiallyEnabled: Boolean = false,
+        extractor: (T) -> DateTimeRange,
+    ) =
         DateTimeRangeSearchOption(
             label = label,
             reset = ::reset,
             extractor = extractor,
+            initiallyEnabled = initiallyEnabled,
         ).also {
             options += it
         }
 
-    protected fun newBooleanSearchOption(label: String, extractor: (T) -> Boolean) =
+    protected fun newBooleanSearchOption(
+        label: String,
+        initialValue: Boolean = false,
+        initiallyEnabled: Boolean = false,
+        extractor: (T) -> Boolean,
+    ) =
         BooleanSearchOption(
             label = label,
             reset = ::reset,
             extractor = extractor,
+            initialValue = initialValue,
+            initiallyEnabled = initiallyEnabled,
         ).also {
             options += it
         }
 
-    private fun reset() {
+    fun reset() {
+        log.debug { "resetting search with options: ${options.joinToString { "[${it.label}]" }}" }
         predicates.clear()
-        predicates.addAll(options.map { it.buildPredicateIfEnabled() })
+        predicates.addAll(options.mapNotNull { it.buildPredicateIfEnabled() })
         resetItems()
     }
 
     fun matches(item: T): Boolean =
+        // Vacuous truth says: even if empty, it's true :)
         predicates.all { it(item) }
 }
 
 abstract class SearchOption<T>(
     val label: String,
     protected val reset: () -> Unit,
-    initiallyEnabled: Boolean = false,
+    initiallyEnabled: Boolean,
 ) {
 
-    protected val alwaysTrue: (T) -> Boolean = { true }
+    protected val alwaysTruePredicate: (T) -> Boolean = { true }
 
     var enabled by mutableStateOf(initiallyEnabled)
         private set
 
     protected abstract fun buildPredicate(): (T) -> Boolean
 
-    fun buildPredicateIfEnabled() =
-        if (enabled) buildPredicate()
-        else alwaysTrue
+    fun buildPredicateIfEnabled(): ((T) -> Boolean)? =
+        if (enabled) buildPredicate() else null
 
     fun updateEnabled(isEnabled: Boolean) {
         enabled = isEnabled

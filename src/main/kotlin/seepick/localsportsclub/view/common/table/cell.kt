@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ sealed interface CellRenderer<T> {
         }
     }
 
-    data class CustomRenderer<T>(val invoke: @Composable RowScope.(T, ColSize) -> Unit) : CellRenderer<T>
+    data class CustomRenderer<T>(val invoke: @Composable RowScope.(T, TableColumn<T>) -> Unit) : CellRenderer<T>
 }
 
 sealed interface ColSize {
@@ -86,11 +87,6 @@ fun RowScope.TableHeader(
     )
 }
 
-@Composable
-fun RowScope.TableData(text: String, size: ColSize) {
-    TableCell(text, size)
-}
-
 fun RowScope.applyColSize(mod: Modifier, size: ColSize) = mod.let {
     when (size) {
         is ColSize.Weight -> mod.weight(size.value, true)
@@ -99,9 +95,15 @@ fun RowScope.applyColSize(mod: Modifier, size: ColSize) = mod.let {
 }
 
 @Composable
-fun RowScope.TableCell(text: String, size: ColSize, modifier: Modifier = Modifier) {
+fun RowScope.TableCell(
+    text: String,
+    size: ColSize,
+    textDecoration: TextDecoration? = null,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = text,
+        textDecoration = textDecoration,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         modifier = Modifier

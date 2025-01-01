@@ -28,6 +28,11 @@ class ApplicationLifecycle {
     }
 
     fun attachQuitHandler() {
+        if (System.getProperty("os.name") != "Mac OS X") {
+            log.debug { "Not attaching quit handler (only supported under MacOS but running '${System.getProperty("os.name")}')" }
+            return
+        }
+        log.debug { "Attaching MacOS quit handler reflectively." }
         val awtApplication = Class.forName("com.apple.eawt.Application")
         val setQuitHandler = awtApplication.methods.first { it.name == "setQuitHandler" }
         val application = try {
@@ -35,7 +40,7 @@ class ApplicationLifecycle {
         } catch (e: IllegalAccessException) {
             throw Exception("Ensure passed the following to the JVM: --add-exports java.desktop/com.apple.eawt=ALL-UNNAMED")
         }
-        setQuitHandler.invoke(application, QuitHandler { e, response ->
+        setQuitHandler.invoke(application, QuitHandler { _, response ->
             onExit()
             response.performQuit()
         })

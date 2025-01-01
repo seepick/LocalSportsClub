@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.common
+package seepick.localsportsclub.view.shared
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
@@ -44,17 +44,23 @@ fun <ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                 val tableScrollState = rememberLazyListState()
                 LazyColumn(state = tableScrollState, modifier = Modifier.width(400.dp)) {
                     item {
-                        VenueDetail(
-                            selectedVenue = selectedVenue,
-                            selectedActivity = selectedActivity,
-                            selectedFreetraining = selectedFreetraining,
-                            editModel = viewModel.venueEdit,
-                            onUpdateVenue = viewModel::updateVenue,
-                            onSubActivityClicked = viewModel::onActivitySelected,
-                            onSubFreetrainingClicked = viewModel::onFreetrainingSelected,
-                        )
-                        ActivityDetail(activity = selectedActivity)
-                        FreetrainingDetail(freetraining = selectedFreetraining)
+                        if (selectedVenue != null) {
+                            VenueDetail(
+                                venue = selectedVenue!!,
+                                activity = selectedActivity,
+                                freetraining = selectedFreetraining,
+                                venueEdit = viewModel.venueEdit,
+                                onUpdateVenue = viewModel::updateVenue,
+                                onActivityClicked = viewModel::onActivitySelected,
+                                onFreetrainingClicked = viewModel::onFreetrainingSelected,
+                            )
+                        }
+                        selectedActivity?.also {
+                            ActivityDetail(activity = it)
+                        }
+                        selectedFreetraining?.also {
+                            FreetrainingDetail(freetraining = it)
+                        }
                     }
                 }
                 VerticalScrollbar(

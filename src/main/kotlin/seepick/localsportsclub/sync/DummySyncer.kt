@@ -21,12 +21,15 @@ class DummySyncer(
     private val clock: Clock,
 ) : Syncer {
 
+    private var activityId = 1
+    private var freetrainingId = 1
+
     override suspend fun sync() {
 //        val bytes = withContext(Dispatchers.IO) {
 //            DelayedSyncer::class.java.getResourceAsStream("/defaultVenueImage.png")!!.readAllBytes()
 //        }
         generateVenues().forEach { venueDbo ->
-            delay(300)
+            delay(200)
             val inserted = venueRepo.insert(venueDbo)
 //            imageStorage.saveVenueImage("${inserted.slug}.png", bytes)
             dispatcher.dispatchOnVenueDboAdded(inserted)
@@ -34,85 +37,110 @@ class DummySyncer(
         venueLinksRepo.insert(5, 6)
 
         generateActivities().forEach { activityDbo ->
-            delay(300)
+            delay(50)
             activityRepo.insert(activityDbo)
             dispatcher.dispatchOnActivityDbosAdded(listOf(activityDbo))
         }
 
         generateFreetrainings().forEach { freetrainingDbo ->
-            delay(300)
+            delay(100)
             freetrainingRepo.insert(freetrainingDbo)
             dispatcher.dispatchOnFreetrainingDbosAdded(listOf(freetrainingDbo))
         }
     }
 
-    private fun generateVenues(): List<VenueDbo> =
-        listOf(
-            dummyVenue().copy(
-                id = 1,
-                name = "Double Shift",
-                slug = "double-shift",
-                facilities = "Gym,Sauna",
-                rating = 3,
-                description = "Some\nline"
-            ),
-            dummyVenue().copy(id = 2, name = "EMS", slug = "ems"),
-            dummyVenue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio"),
-            dummyVenue().copy(
-                id = 4,
-                name = "All Of It", slug = "aoi",
-                rating = 5, facilities = "",
-                officialWebsite = "https://www.allofit.com",
-                description = "Some description", importantInfo = "important info", openingTimes = "opening times",
-                isFavorited = true, isWishlisted = true,
-                postalCode = "1000AB", street = "Main Street", addressLocality = "Amsterdam, Netherlands",
-            ),
-            dummyVenue().copy(id = 5, name = "Zzz", slug = "zzz"),
-            dummyVenue().copy(id = 6, name = "Zzz2", slug = "zzz2"),
-            dummyVenue().copy(id = 7, name = "lowercased", slug = "lower-cased"),
-            dummyVenue().copy(id = 8, name = "Very long name it is very long indeed", slug = "very-long"),
-        )
-
-    private fun generateActivities(): List<ActivityDbo> {
-        val now = clock.now().withMinute(0).withSecond(0)
-        var activityId = 1
-        return listOf(
-            dummyActivity(activityId++, 1).copy(name = "Gym workout", category = "OokGym"),
-            dummyActivity(activityId++, 2).copy(
-                name = "EMS workout", category = "EMS",
-                from = now.plusDays(3), to = now.plusDays(3).plusMinutes(20)
-            ),
-            dummyActivity(activityId++, 4).copy(
-                name = "You will be there", isBooked = true,
-                from = now.plusHours(1), to = now.plusHours(2)
-            ),
-            dummyActivity(activityId++, 4).copy(
-                name = "You were there", wasCheckedin = true,
-                from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
-            ),
-        )
+    override fun registerListener(listener: SyncerListener) {
+        dispatcher.registerListener(listener)
     }
 
-
-    private fun generateFreetrainings(): List<FreetrainingDbo> =
-        listOf(
-            FreetrainingDbo(
-                id = 1,
-                venueId = 4,
-                name = "Free Sport",
-                category = "Wellness",
-                date = LocalDate.now(),
-                wasCheckedin = false,
-            ),
-            FreetrainingDbo(
-                id = 2,
-                venueId = 4,
-                name = "Free Sport",
-                category = "Wellness",
-                date = LocalDate.now().minusDays(1),
-                wasCheckedin = true,
-            )
+    private fun generateVenues(): List<VenueDbo> = buildList {
+        this += dummyVenue().copy(
+            id = 1,
+            name = "Double Shift",
+            slug = "double-shift",
+            facilities = "Gym,Sauna",
+            rating = 3,
+            description = "Some\nline"
         )
+        this += dummyVenue().copy(id = 2, name = "EMS", slug = "ems")
+        this += dummyVenue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio")
+        this += dummyVenue().copy(
+            id = 4,
+            name = "All Of It", slug = "aoi",
+            rating = 5, facilities = "",
+            officialWebsite = "https://www.allofit.com",
+            description = "Some description", importantInfo = "important info", openingTimes = "opening times",
+            isFavorited = true, isWishlisted = true,
+            postalCode = "1000AB", street = "Main Street", addressLocality = "Amsterdam, Netherlands",
+        )
+        this += dummyVenue().copy(id = 5, name = "Zzz", slug = "zzz")
+        this += dummyVenue().copy(id = 6, name = "Zzz2", slug = "zzz2")
+        this += dummyVenue().copy(id = 7, name = "lowercased", slug = "lower-cased")
+        this += dummyVenue().copy(id = 8, name = "Very long name it is very long indeed", slug = "very-long")
+        this += dummyVenue().copy(id = 9, name = "Deleted", slug = "deleted", isDeleted = true)
+        this += dummyVenue().copy(id = 10, name = "Hidden", slug = "hidden", isHidden = true)
+    }
+
+    private fun generateActivities(): List<ActivityDbo> = buildList {
+        val now = clock.now().withMinute(0).withSecond(0)
+        this += dummyActivity(activityId++, 1).copy(name = "Gym workout", category = "OokGym")
+        this += dummyActivity(activityId++, 2).copy(
+            name = "EMS workout", category = "EMS",
+            from = now.plusDays(3), to = now.plusDays(3).plusMinutes(20)
+        )
+        this += dummyActivity(activityId++, 4).copy(
+            name = "You will be there", isBooked = true, teacher = "Brittany Mock",
+            from = now.plusHours(3), to = now.plusHours(4),
+        )
+        this += dummyActivity(activityId++, 4).copy(
+            name = "You were there", wasCheckedin = true,
+            from = now.plusDays(1), to = now.plusDays(1).plusHours(1)
+        )
+        this += dummyActivity(activityId++, 4).copy(
+            name = "Irrevelant Past (synced away)",
+            from = now.minusDays(5), to = now.minusDays(5).plusHours(1)
+        )
+        this += dummyActivity(activityId++, 10).copy(
+            name = "Hidden Activity",
+            from = now.plusDays(2), to = now.plusDays(2).plusHours(1)
+        )
+//        repeat(30) {
+//            this += dummyActivity(activityId++, 4).copy(name = "Many ${it + 1}")
+//        }
+    }
+
+    private fun generateFreetrainings(): List<FreetrainingDbo> = buildList {
+        this += dummyFreetraining().copy(
+            id = freetrainingId++,
+            venueId = 4,
+            name = "Free Sport",
+            category = "Wellness",
+            date = LocalDate.now(),
+            wasCheckedin = false,
+        )
+        this += dummyFreetraining().copy(
+            id = freetrainingId++,
+            venueId = 4,
+            name = "Free Sport",
+            category = "Wellness",
+            date = LocalDate.now().plusDays(1),
+            wasCheckedin = true,
+        )
+        this += dummyFreetraining().copy(
+            id = freetrainingId++,
+            venueId = 4,
+            name = "Irrevelant passed",
+            category = "Wellness",
+            date = LocalDate.now().minusDays(1),
+        )
+        this += dummyFreetraining().copy(
+            id = freetrainingId++,
+            venueId = 4,
+            name = "Was Yesterday",
+            date = LocalDate.now().minusDays(1),
+        )
+        this += dummyFreetraining().copy(venueId = 10, name = "Hidden Freetraining")
+    }
 
     private fun dummyVenue() = VenueDbo(
         id = 0,
@@ -154,7 +182,12 @@ class DummySyncer(
         )
     }
 
-    override fun registerListener(listener: SyncerListener) {
-        dispatcher.registerListener(listener)
-    }
+    private fun dummyFreetraining() = FreetrainingDbo(
+        id = freetrainingId++,
+        venueId = 1,
+        name = "Name",
+        category = "",
+        date = LocalDate.now().plusDays(3),
+        wasCheckedin = false,
+    )
 }

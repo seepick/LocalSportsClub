@@ -19,9 +19,12 @@ data class UscConfig(
 }
 
 data class UsageConfig(
-    val periodAlwaysFirstDay: Int = 2,
-    val maxBookingsPerPeriod: Int = 18, // ... is it 15, or 16? also: move it to UscConfig
-    val maxBookingsPerVenue: Int = 6, // TODO or is it per partner (a partner having multiple, linked venues?!)
+    val periodConfiguredFirstDay: Int = 2,
+
+    val maxBookingsForPeriod: Int = 18,
+    val maxBookingsForDay: Int = 2,
+    val maxBookingsPerVenueForMonth: Int = 6, // TODO or is it per partner (a partner having multiple, linked venues?!)
+    val maxBookingsPerVenueForDay: Int = 1,
 )
 
 enum class UscLang(val urlCode: String) {
@@ -59,6 +62,7 @@ data class AppConfig(
 //            sync = SyncMode.Real,
             api = ApiMode.Mock,
             sync = SyncMode.Dummy,
+
             logFileEnabled = true,
             firstScreen = Screen.Activities,
         )

@@ -12,9 +12,9 @@ import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.venue.VenueImage
 
 fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> {
-    return TableColumn("Image", ColSize.Width(100.dp), CellRenderer.CustomRenderer { item, colSize ->
+    return TableColumn("Image", ColSize.Width(100.dp), CellRenderer.CustomRenderer { item, col ->
         Row(
-            ModifierWith(colSize)
+            ModifierWith(col.size)
 //            Modifier.width(110.dp)
                 .height(30.dp).background(Color.Blue)
         ) {
@@ -34,8 +34,8 @@ private fun <T> iconImageColumn(
     flagExtractor: (T) -> Boolean,
     icons: Pair<ImageBitmap, ImageBitmap>
 ): TableColumn<T> =
-    TableColumn(header, ColSize.Width(60.dp), CellRenderer.CustomRenderer { item, colSize ->
-        Row(ModifierWith(colSize).height(30.dp)) {
+    TableColumn(header, ColSize.Width(60.dp), CellRenderer.CustomRenderer { item, col ->
+        Row(ModifierWith(col.size).height(30.dp)) {
             Image(if (flagExtractor(item)) icons.first else icons.second, null)
         }
     }, sortValueExtractor = { flagExtractor(it) })

@@ -7,7 +7,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 class StringSearchOption<T>(
     label: String,
-    private val stringExtractors: List<(T) -> String>,
+    private val stringExtractors: List<(T) -> String?>,
     initiallyEnabled: Boolean = false,
     reset: () -> Unit,
 ) : SearchOption<T>(label, reset, initiallyEnabled) {
@@ -30,11 +30,11 @@ class StringSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean =
-        if (terms.isEmpty()) alwaysTrue
+        if (terms.isEmpty()) alwaysTruePredicate
         else { item ->
             terms.all { term ->
                 stringExtractors.any { stringExtractor ->
-                    stringExtractor(item).lowercase().contains(term)
+                    stringExtractor(item)?.lowercase()?.contains(term) ?: false
                 }
             }
         }

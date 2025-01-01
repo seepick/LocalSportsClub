@@ -14,16 +14,16 @@ import seepick.localsportsclub.view.common.TitleText
 
 @Composable
 fun FreetrainingDetail(
-    freetraining: Freetraining?,
+    freetraining: Freetraining,
     modifier: Modifier = Modifier,
     clock: Clock = koinInject(),
 ) {
     val year = clock.today().year
     Column(modifier = modifier) {
-        TitleText(freetraining?.name ?: "N/A")
-        Text("Category: ${freetraining?.category ?: ""}")
-        Text("Time: ${freetraining?.date?.prettyPrint(year) ?: ""}")
-        if (freetraining?.wasCheckedin == true) {
+        TitleText(freetraining.name)
+        Text("Category: ${freetraining.category}")
+        Text("Date: ${freetraining.date.prettyPrint(year)}")
+        if (freetraining.wasCheckedin) {
             Text("${Icons.Lsc.checkedin} Was checked-in")
         }
     }

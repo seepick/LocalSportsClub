@@ -8,9 +8,11 @@ class BooleanSearchOption<T>(
     label: String,
     private val extractor: (T) -> Boolean,
     reset: () -> Unit,
-) : SearchOption<T>(label, reset) {
+    initialValue: Boolean = false,
+    initiallyEnabled: Boolean = false,
+) : SearchOption<T>(label = label, reset = reset, initiallyEnabled = initiallyEnabled) {
 
-    var searchBoolean by mutableStateOf(false)
+    var searchBoolean by mutableStateOf(initialValue)
         private set
 
     fun updateSearchBoolean(boolean: Boolean) {

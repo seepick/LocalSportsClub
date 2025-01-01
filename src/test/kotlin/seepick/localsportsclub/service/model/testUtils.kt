@@ -14,6 +14,7 @@ fun Activity.copy(
         category = category,
         dateTimeRange = copyDateTimeRange,
         spotsLeft = spotsLeft,
+        teacher = teacher,
         isBooked = copyIsBooked,
         wasCheckedin = copyWasCheckedin,
     )

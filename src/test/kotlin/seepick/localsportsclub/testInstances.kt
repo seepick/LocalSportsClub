@@ -24,11 +24,14 @@ fun Arb.Companion.uscConfig() = arbitrary {
 }
 
 fun Arb.Companion.usageConfig() = arbitrary {
-    val maxBookingsPerPeriod = int(min = 4, max = 20).next()
+    val maxBookingsPerPeriod = int(min = 6, max = 20).next()
+    val maxBookingsForDay = int(min = 2, max = 5).next()
     UsageConfig(
-        periodAlwaysFirstDay = int(min = 1, max = 30).next(),
-        maxBookingsPerPeriod = maxBookingsPerPeriod,
-        maxBookingsPerVenue = int(min = 1, max = maxBookingsPerPeriod).next(),
+        periodConfiguredFirstDay = int(min = 1, max = 30).next(),
+        maxBookingsForPeriod = maxBookingsPerPeriod,
+        maxBookingsPerVenueForMonth = int(min = 1, max = maxBookingsPerPeriod).next(),
+        maxBookingsForDay = maxBookingsForDay,
+        maxBookingsPerVenueForDay = int(min = 1, max = maxBookingsForDay).next(),
     )
 }
 

@@ -21,7 +21,7 @@ import seepick.localsportsclub.view.SyncerViewModel
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
-import seepick.localsportsclub.view.usage.UsageViewModel
+import seepick.localsportsclub.view.usage.UsageStorage
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -43,34 +43,6 @@ object LocalSportsClub {
                 "Exposed" to Level.INFO,
             )
         )
-        /*
-        @ExperimentalComposeUiApi
-fun application(
-    context: CoroutineContext = EmptyCoroutineContext,
-    onQuit: (() -> Boolean)? = null,
-    content: @Composable () -> Unit
-) {
-    check(!SwingUtilities.isEventDispatchThread()) {
-        "application can't run inside UI thread (Event Dispatch Thread)"
-    }
-
-    if(onQuit != null) {
-        if(Desktop.isDesktopSupported()) {
-          val desktop = Desktop.getDesktop()
-          desktop.setQuitHandler { _, response ->
-            if(onQuit())
-                response.performQuit()
-              else
-                response.cancelQuit()
-          }
-        }
-    }
-
-    runBlocking(context) {
-        awaitApplication(content = content)
-    }
-}
-         */
         application {
             KoinApplication(application = {
                 modules(allModules(config))
@@ -92,7 +64,7 @@ fun application(
                 ) {
                     val syncer = koinInject<Syncer>()
                     val dataStorage = koinInject<DataStorage>()
-                    val usage = koinViewModel<UsageViewModel>()
+                    val usage = koinInject<UsageStorage>()
                     syncer.registerListener(dataStorage)
                     syncer.registerListener(usage)
                     dataStorage.registerListener(koinViewModel<SyncerViewModel>())

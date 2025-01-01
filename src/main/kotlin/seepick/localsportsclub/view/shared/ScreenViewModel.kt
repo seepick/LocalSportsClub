@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.common
+package seepick.localsportsclub.view.shared
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -43,19 +43,23 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     val items: List<ITEM> = _items
     abstract val selectedItem: StateFlow<ITEM?>
 
+    abstract val selectedVenue: StateFlow<Venue?>
+    val venueEdit = VenueEditModel()
+
     private val _selectedFreetraining = MutableStateFlow<Freetraining?>(null)
     val selectedFreetraining = _selectedFreetraining.asStateFlow()
     private val _selectedActivity = MutableStateFlow<Activity?>(null)
     val selectedActivity: StateFlow<Activity?> = _selectedActivity.asStateFlow()
 
     abstract fun buildSearch(resetItems: () -> Unit): SEARCH
-
     val searching by lazy { buildSearch(::resetItems) }
     val sorting by lazy { SortingDelegate(tableColumns, resetSort = ::resetItems) }
 
-    val venueEdit = VenueEditModel()
-
-    abstract val selectedVenue: StateFlow<Venue?>
+    override fun onStartUp() {
+        log.info { "Filling initial data for: ${this::class.simpleName}" }
+        _allItems.addAll(dataStorage.selectAllItems())
+        searching.reset()
+    }
 
     protected val selectedVenueBySelectedItem by lazy {
         selectedItem.map { item ->
@@ -70,12 +74,6 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     abstract fun DataStorage.selectAllItems(): List<ITEM>
 
-    override fun onStartUp() {
-        log.info { "Filling initial data for: ${this::class.simpleName}" }
-        _allItems.addAll(dataStorage.selectAllItems())
-        resetItems()
-    }
-
     protected fun onItemAdded(item: ITEM) {
         _allItems.add(item)
         if (searching.matches(item)) {
@@ -85,6 +83,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     }
 
     open fun onItemSelected(item: SelectedItemType) {
+        // fiddle around with venue being the item (special-case)
     }
 
     fun onVenueSelected(venue: Venue) {
@@ -118,6 +117,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     override fun onVenueUpdated(venue: Venue) {
         venueEdit.init(venue)
+        resetItems() // TODO not sure about performance impact of this...
     }
 
     fun updateVenue() {
@@ -127,7 +127,9 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     private fun resetItems() {
         _items.clear()
-        _items.addAll(_allItems.filter { searching.matches(it) }.let {
+        _items.addAll(_allItems.filter { item ->
+            searching.matches(item)
+        }.let {
             sorting.sortIt(it)
         })
     }

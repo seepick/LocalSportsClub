@@ -52,21 +52,30 @@ class ActivitiesSyncer(
         val missingActivities = remoteActivities.minus(storedActivities.keys)
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
         val dbos = missingActivities.values.map { activity ->
-            val venueId = venuesBySlug[activity.venueSlug]?.id ?: suspend {
-                log.debug { "Trying to rescue venue for missing: $activity" }
-                venueSyncInserter.fetchAllInsertDispatch(
-                    listOf(activity.venueSlug),
-                    "[SYNC] fetched through activity ${activity.name}"
-                )
-                venueRepo.selectBySlug(activity.venueSlug)?.also {
-                    venuesBySlug[it.slug] = it
-                }?.id ?: error("Unable to find venue by slug for: $activity")
-            }()
-            val dbo = activity.toDbo(venueId)
-            activityRepo.insert(dbo)
-            dbo
+            syncMissingActivity(activity, venuesBySlug)
         }
         dispatcher.dispatchOnActivityDbosAdded(dbos)
+    }
+
+    private suspend fun syncMissingActivity(
+        activity: ActivityInfo,
+        venuesBySlug: MutableMap<String, VenueDbo>
+    ): ActivityDbo {
+        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(activity, venuesBySlug)
+        val dbo = activity.toDbo(venueId)
+        activityRepo.insert(dbo)
+        return dbo
+    }
+
+    private suspend fun rescueVenue(activity: ActivityInfo, venuesBySlug: MutableMap<String, VenueDbo>): Int {
+        log.debug { "Trying to rescue venue for missing: $activity" }
+        venueSyncInserter.fetchAllInsertDispatch(
+            listOf(activity.venueSlug),
+            "[SYNC] fetched through activity ${activity.name}"
+        )
+        return venueRepo.selectBySlug(activity.venueSlug)?.also {
+            venuesBySlug[it.slug] = it
+        }?.id ?: error("Unable to find venue by slug for: $activity")
     }
 
     private fun ActivityInfo.toDbo(venueId: Int) = ActivityDbo(

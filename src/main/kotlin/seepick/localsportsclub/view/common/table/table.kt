@@ -81,11 +81,11 @@ fun <T> Table(
                     columns.forEach { col ->
                         when (col.renderer) {
                             is CellRenderer.CustomRenderer -> {
-                                col.renderer.invoke(this, item, col.size)
+                                col.renderer.invoke(this, item, col)
                             }
 
                             is CellRenderer.TextRenderer -> {
-                                TableData(
+                                TableCell(
                                     text = col.renderer.extractor(item).toString(),
                                     size = col.size,
                                 )
