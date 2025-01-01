@@ -39,8 +39,8 @@ suspend fun <T, R> workParallel(coroutineCount: Int, data: List<T>, processor: s
 fun resizeImage(original: ByteArray, size: Pair<Int, Int>, format: String = "png"): ByteArray {
     val output = ByteArrayOutputStream()
     Thumbnails.of(original.inputStream())
-        .size(size.first, size.second)
         .keepAspectRatio(true)
+        .size(size.first, size.second)
         .outputFormat(format)
         .outputQuality(1.0)
         .toOutputStream(output)

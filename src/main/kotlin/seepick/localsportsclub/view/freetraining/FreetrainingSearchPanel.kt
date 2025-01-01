@@ -11,6 +11,5 @@ fun FreetrainingSearchPanel(
 ) {
     Row {
         StringSearchField(viewModel.searching.name)
-        // TODO date, category, rating, fav, wish
     }
 }

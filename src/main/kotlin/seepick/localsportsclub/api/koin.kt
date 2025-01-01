@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import seepick.localsportsclub.ApiMode
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.api.activity.ActivityHttpApi
@@ -24,11 +25,11 @@ value class PhpSessionId(val value: String) {
 }
 
 fun apiModule(config: AppConfig) = module {
-    if (config.api == AppConfig.ApiMode.Mock) {
+    if (config.api == ApiMode.Mock) {
         log.debug { "Wiring mocked USC API." }
         singleOf(::MockUscApi) bind UscApi::class
 
-    } else if (config.api == AppConfig.ApiMode.RealHttp) {
+    } else if (config.api == ApiMode.RealHttp) {
         val phpSessionId = runBlocking {
             val result = LoginApi(httpClient, config.usc.baseUrl).login(Credentials.load())
             require(result is LoginResult.Success) { "Login failed: $result" }

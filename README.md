@@ -21,6 +21,8 @@ Communistic Custom Client for Urban Sports Club.
 
 * transaction scope around separate syncers
 * FEATURE: migrate old content from AllFit; implement venue-lookup logic
+  --
+* display venue links
 * table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
 * FEATURE: reserve-book/cancel button
 * when click rating textfield, also expand dropdown
@@ -29,6 +31,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Later
 
+* ad usage: val maxBookingsPerVenueForMonth: Int = 6, // or is it per partner; a partner having multiple, linked
+  venues?!
+* display venue address + link to google maps
 * sync workout metadata teacher (von partner site scrapen)
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 * enable up/down arrow for table (would require a global listener, and knowing which table got focus...)
@@ -36,6 +41,10 @@ Communistic Custom Client for Urban Sports Club.
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 * FEATURE: sync with google calendar; on booking/cancellation
 * use compose's snackbar to indicate notifications about sync
+* "light sync" to only sync spots
+* activity search: fav, wish, booked, rating, category
+* freetraining search: date, category, rating, fav, wish
+* venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
 
 ## Later Later
 

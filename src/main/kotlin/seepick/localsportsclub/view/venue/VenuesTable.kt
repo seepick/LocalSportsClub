@@ -19,17 +19,20 @@ import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 
 fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it.imageFileName },
-    TableColumn("Name", ColSize.Weight(0.7f),
-        CellRenderer.CustomRenderer { venue, col ->
-            TableCell(
-                text = venue.name,
-                size = col.size,
-                textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
-            )
-        }, sortValueExtractor = { it.name.lowercase() }
-    ),
-    TableColumn("Acts", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
-    TableColumn("Chks", ColSize.Width(100.dp), TextRenderer { it.checkinsCount }),
+    TableColumn("Name", ColSize.Weight(0.7f), CellRenderer.CustomRenderer { venue, col ->
+        TableCell(
+            text = venue.name,
+            size = col.size,
+            textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
+        )
+    }, sortValueExtractor = { it.name.lowercase() }),
+    TableColumn("Act", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
+    TableColumn("Chk", ColSize.Width(100.dp), TextRenderer {
+        it.activities.filter { it.wasCheckedin }.size + it.freetrainings.filter { it.wasCheckedin }.size
+    }),
+    TableColumn("Bkd", ColSize.Width(100.dp), TextRenderer {
+        it.activities.filter { it.isBooked }.size
+    }),
     TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },

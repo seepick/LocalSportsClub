@@ -68,8 +68,11 @@ fun <T> Table(
             items(items) { item ->
                 var isHovered by remember { mutableStateOf(false) }
                 val bgColor =
-                    // TODO if onItemClicked == null, then don't colorize bg differently if selected
-                    if (isHovered) Color.Green else if (selectedItem == item) Color.Red else MaterialTheme.colors.background
+                    if (onItemClicked != null) {
+                        if (isHovered) Color.Green else if (selectedItem == item) Color.Red else MaterialTheme.colors.background
+                    } else {
+                        if (selectedItem == item) Color.Red else MaterialTheme.colors.background
+                    }
                 Row(Modifier/*.fillMaxWidth()*/.background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }

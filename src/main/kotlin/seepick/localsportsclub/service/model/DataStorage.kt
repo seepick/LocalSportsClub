@@ -52,9 +52,6 @@ class DataStorage(
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
-        // TODO implement venue linking (test first!)
-//        val allVenuesById = allVenues.associateBy { it.id }
-//        val allLinksById = venueLinksRepo.selectAll()
         venueRepo.selectAll().map { it.toVenue(baseUrl) }.associateBy { it.id }.toMutableMap()
     }
 

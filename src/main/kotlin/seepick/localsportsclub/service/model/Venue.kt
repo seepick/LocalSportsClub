@@ -47,13 +47,6 @@ class Venue(
 
     var officialWebsite: String? by mutableStateOf(officialWebsite)
 
-    val checkinsCount: Int
-        get() {
-            println("foo")
-            return 0
-        }
-    //activities.filter { it.wasCheckedin }.size + freetrainings.filter { it.wasCheckedin }.size
-
     companion object {
         fun dummy() = Venue(
             id = 42,

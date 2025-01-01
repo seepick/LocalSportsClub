@@ -31,7 +31,6 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         ColSize.Width(200.dp),
         CellRenderer.TextRenderer { it.dateTimeRange.prettyPrint(clock.today().year) }),
     TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
-    TableColumn("Chks", ColSize.Width(100.dp), CellRenderer.TextRenderer { "" }),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
     TableColumn("Bkd", ColSize.Width(30.dp), CellRenderer.TextRenderer { if (it.isBooked) Icons.Lsc.booked else "" }),

@@ -5,6 +5,48 @@ import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.view.Screen
 
+data class AppConfig(
+    val database: DatabaseMode,
+    val api: ApiMode,
+    val sync: SyncMode,
+    val firstScreen: Screen? = null,
+    val usc: UscConfig = UscConfig(),
+    val logFileEnabled: Boolean = false,
+) {
+    companion object {
+        val development = AppConfig(
+//            api = ApiMode.RealHttp,
+//            sync = SyncMode.Real,
+            api = ApiMode.Mock,
+            sync = SyncMode.Dummy,
+
+            database = DatabaseMode.Exposed,
+            logFileEnabled = true,
+            firstScreen = Screen.Activities,
+        )
+        val production = AppConfig(
+            database = DatabaseMode.Exposed,
+            api = ApiMode.RealHttp,
+            sync = SyncMode.Real,
+            logFileEnabled = true,
+        )
+
+        val downloadImageSize = 400 to 400
+    }
+}
+
+enum class DatabaseMode {
+    Exposed, InMemory
+}
+
+enum class ApiMode {
+    Mock, RealHttp
+}
+
+enum class SyncMode {
+    Noop, Delayed, Dummy, Real
+}
+
 data class UscConfig(
     val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
     val city: City = City.Amsterdam,
@@ -23,7 +65,7 @@ data class UsageConfig(
 
     val maxBookingsForPeriod: Int = 18,
     val maxBookingsForDay: Int = 2,
-    val maxBookingsPerVenueForMonth: Int = 6, // TODO or is it per partner (a partner having multiple, linked venues?!)
+    val maxBookingsPerVenueForMonth: Int = 6,
     val maxBookingsPerVenueForDay: Int = 1,
 )
 
@@ -33,44 +75,4 @@ enum class UscLang(val urlCode: String) {
     German("de"),
     French("fr"),
     // PT, ES
-}
-
-data class AppConfig(
-    val database: DatabaseMode,
-    val api: ApiMode,
-    val sync: SyncMode,
-    val firstScreen: Screen? = null,
-    val usc: UscConfig = UscConfig(),
-    val logFileEnabled: Boolean = false,
-) {
-    enum class DatabaseMode {
-        Exposed, InMemory
-    }
-
-    enum class ApiMode {
-        Mock, RealHttp
-    }
-
-    enum class SyncMode {
-        Noop, Delayed, Dummy, Real
-    }
-
-    companion object {
-        val development = AppConfig(
-            database = DatabaseMode.Exposed,
-//            api = ApiMode.RealHttp,
-//            sync = SyncMode.Real,
-            api = ApiMode.Mock,
-            sync = SyncMode.Dummy,
-
-            logFileEnabled = true,
-            firstScreen = Screen.Activities,
-        )
-        val production = AppConfig(
-            database = DatabaseMode.Exposed,
-            api = ApiMode.RealHttp,
-            sync = SyncMode.Real,
-            logFileEnabled = true,
-        )
-    }
 }

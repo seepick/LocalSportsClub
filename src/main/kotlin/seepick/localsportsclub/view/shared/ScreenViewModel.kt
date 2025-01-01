@@ -114,7 +114,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     override fun onVenueUpdated(venue: Venue) {
         venueEdit.init(venue)
-        resetItems() // TODO not sure about performance impact of this...
+        resetItems() // not sure about the performance impact of this...
     }
 
     fun updateVenue() {
@@ -123,6 +123,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     }
 
     private fun resetItems() {
+        log.trace { "resetItems()" }
         _items.clear()
         _items.addAll(_allItems.filter { item ->
             searching.matches(item)

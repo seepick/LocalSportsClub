@@ -94,7 +94,7 @@ class DummySyncer(
         )
         this += dummyActivity(activityId++, 4).copy(
             name = "You were there", wasCheckedin = true,
-            from = now.plusDays(1), to = now.plusDays(1).plusHours(1)
+            from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
         )
         this += dummyActivity(activityId++, 4).copy(
             name = "Irrevelant Past (synced away)",

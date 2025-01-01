@@ -11,6 +11,5 @@ fun VenueSearchPanel(
 ) {
     Row {
         StringSearchField(viewModel.searching.name)
-        // TODO search for: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
     }
 }

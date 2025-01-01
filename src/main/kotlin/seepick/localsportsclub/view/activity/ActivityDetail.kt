@@ -24,7 +24,7 @@ fun ActivityDetail(
         Text("Date: ${activity.dateTimeRange.prettyPrint(year)}")
         Text("Category: ${activity.category}")
         Text("Teacher: ${activity.teacher ?: "-"}")
-        Text("Spots Left: ${activity.spotsLeft}") // TODO could sync only spots for subsequent syncs...
+        Text("Spots Left: ${activity.spotsLeft}")
         if (activity.isBooked) {
             Text("${Icons.Lsc.booked} Is booked")
         }

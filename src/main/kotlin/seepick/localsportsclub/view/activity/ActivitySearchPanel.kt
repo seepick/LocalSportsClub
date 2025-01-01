@@ -15,6 +15,5 @@ fun ActivitySearchPanel(
         StringSearchField(viewModel.searching.name)
         DateTimeRangeSearchField(viewModel.searching.date)
         BooleanSearchField(viewModel.searching.booked)
-        // TODO search for: fav, wish, booked, rating, category
     }
 }

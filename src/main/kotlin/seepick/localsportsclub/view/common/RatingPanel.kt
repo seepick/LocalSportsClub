@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.common
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.service.model.Rating
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RatingPanel(
     rating: MutableState<Rating>,
@@ -42,8 +45,10 @@ fun RatingPanel(
             readOnly = true,
             enabled = enabled,
             modifier = Modifier.width(250.dp).onGloballyPositioned { coordinates ->
-                textFieldSize = coordinates.size.toSize()
-            },
+                    textFieldSize = coordinates.size.toSize()
+                }.onFocusChanged { state ->
+                    isMenuExpanded = state.isFocused
+                },
             label = { Text("Rating") },
             leadingIcon = { Icon(Icons.Default.Star, contentDescription = null) },
             trailingIcon = {
@@ -56,8 +61,7 @@ fun RatingPanel(
                 })
             },
         )
-        DropdownMenu(
-            expanded = isMenuExpanded,
+        DropdownMenu(expanded = isMenuExpanded,
             onDismissRequest = { isMenuExpanded = false },
             modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() })
         ) {

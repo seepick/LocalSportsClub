@@ -7,17 +7,18 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.DatabaseMode
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
 
 private val log = logger {}
 
 fun persistenceModule(config: AppConfig) = module {
-    if (config.database == AppConfig.DatabaseMode.Exposed) {
+    if (config.database == DatabaseMode.Exposed) {
         connectToDatabase()
     }
     when (config.database) {
-        AppConfig.DatabaseMode.Exposed -> {
+        DatabaseMode.Exposed -> {
             single { ExposedVenueRepo } bind VenueRepo::class
             single { ExposedVenueLinksRepo } bind VenueLinksRepo::class
             single { ExposedActivityRepo } bind ActivityRepo::class
@@ -25,7 +26,7 @@ fun persistenceModule(config: AppConfig) = module {
             single { ExposedSinglesRepo } bind SinglesRepo::class
         }
 
-        AppConfig.DatabaseMode.InMemory -> {
+        DatabaseMode.InMemory -> {
             singleOf(::InMemoryVenueRepo) bind VenueRepo::class
             singleOf(::InMemoryVenueLinksRepo) bind VenueLinksRepo::class
             singleOf(::InMemoryActivityRepo) bind ActivityRepo::class
