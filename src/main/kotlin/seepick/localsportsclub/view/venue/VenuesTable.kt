@@ -29,10 +29,7 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
         }, sortValueExtractor = { it.name.lowercase() }
     ),
     TableColumn("Acts", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
-    TableColumn(
-        "Chks",
-        ColSize.Width(100.dp),
-        TextRenderer { it.activities.filter { it.wasCheckedin }.size + it.freetrainings.filter { it.wasCheckedin }.size }),
+    TableColumn("Chks", ColSize.Width(100.dp), TextRenderer { it.checkinsCount }),
     TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },

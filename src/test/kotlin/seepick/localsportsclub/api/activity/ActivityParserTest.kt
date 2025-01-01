@@ -14,8 +14,8 @@ class ActivityParserTest : StringSpec() {
             ActivityParser.parse(readTestResponse("activity_detail.html"), 2024) shouldBe ActivityDetails(
                 name = "RESTORATIVE YOGA",
                 dateTimeRange = DateTimeRange(
-                    start = LocalDateTime.of(2024, 12, 27, 10, 0),
-                    end = LocalDateTime.of(2024, 12, 27, 11, 15)
+                    from = LocalDateTime.of(2024, 12, 27, 10, 0),
+                    to = LocalDateTime.of(2024, 12, 27, 11, 15)
                 ),
                 venueName = "Movements City",
                 category = "Yoga",
@@ -26,8 +26,8 @@ class ActivityParserTest : StringSpec() {
             ActivityParser.parse(readTestResponse("activity_detail.past.html"), 2024) shouldBe ActivityDetails(
                 name = "Sound Healing with Katty",
                 dateTimeRange = DateTimeRange(
-                    start = LocalDateTime.of(2024, 12, 24, 15, 0),
-                    end = LocalDateTime.of(2024, 12, 24, 16, 0)
+                    from = LocalDateTime.of(2024, 12, 24, 15, 0),
+                    to = LocalDateTime.of(2024, 12, 24, 16, 0)
                 ),
                 venueName = "Yogaspot Olympisch Stadion",
                 category = "Meditation",

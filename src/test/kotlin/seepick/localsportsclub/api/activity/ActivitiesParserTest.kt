@@ -87,8 +87,8 @@ class ActivitiesParserTest : StringSpec() {
                 category = "Mixed Martial Arts",
                 spotsLeft = 7,
                 dateTimeRange = DateTimeRange(
-                    start = LocalDateTime.of(date, LocalTime.of(7, 0)),
-                    end = LocalDateTime.of(date, LocalTime.of(7, 45)),
+                    from = LocalDateTime.of(date, LocalTime.of(7, 0)),
+                    to = LocalDateTime.of(date, LocalTime.of(7, 45)),
                 ),
             )
         }

@@ -47,8 +47,8 @@ object DateParser {
         val date = parseDate(datePart, year)
         val times = parseTime(timePart)
         return DateTimeRange(
-            start = LocalDateTime.of(date, times.start),
-            end = LocalDateTime.of(date, times.end),
+            from = LocalDateTime.of(date, times.start),
+            to = LocalDateTime.of(date, times.end),
         )
     }
 

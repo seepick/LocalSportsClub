@@ -37,14 +37,14 @@ class DateUtilsKtTest : DescribeSpec() {
         describe("DateTimeRange.prettyPrint") {
             it("simple") {
                 DateTimeRange(
-                    start = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
-                    end = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
+                    from = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
+                    to = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
                 ).prettyPrint(2001) shouldBe "Tue 2.1. 04:05-04:06"
             }
             it("past") {
                 DateTimeRange(
-                    start = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
-                    end = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
+                    from = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
+                    to = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
                 ).prettyPrint(2002) shouldBe "Tue 2.1.01 04:05-04:06"
             }
         }

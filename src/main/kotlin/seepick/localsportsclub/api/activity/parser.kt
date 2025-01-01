@@ -96,8 +96,8 @@ object ActivitiesParser {
 
 private fun convertFromToDateTime(date: LocalDate, times: TimeRange): DateTimeRange =
     DateTimeRange(
-        start = LocalDateTime.of(date, times.start),
-        end = LocalDateTime.of(date, times.end)
+        from = LocalDateTime.of(date, times.start),
+        to = LocalDateTime.of(date, times.end)
     )
 
 @Serializable

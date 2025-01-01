@@ -34,6 +34,7 @@ class Venue(
     isHidden: Boolean,
 //    val linkedVenues: List<SimpleVenue>,
 ) : SimpleVenue, ScreenItem {
+
     override val venue = this
     var notes: String by mutableStateOf(notes)
     override var rating: Rating by mutableStateOf(rating)
@@ -43,6 +44,7 @@ class Venue(
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
     var officialWebsite: String? by mutableStateOf(officialWebsite)
+    val checkinsCount = activities.filter { it.wasCheckedin }.size + freetrainings.filter { it.wasCheckedin }.size
 
     companion object {
         fun dummy() = Venue(

@@ -33,14 +33,14 @@ class DateParserTest : DescribeSpec() {
                 DateParser.parseDateTimeRange(
                     "Monday, 9 December | 03:04 —05:06", 2024
                 ) shouldBe DateTimeRange(
-                    start = LocalDateTime.of(2024, 12, 9, 3, 4),
-                    end = LocalDateTime.of(2024, 12, 9, 5, 6),
+                    from = LocalDateTime.of(2024, 12, 9, 3, 4),
+                    to = LocalDateTime.of(2024, 12, 9, 5, 6),
                 )
                 DateParser.parseDateTimeRange(
                     "Friday, 27 December | 10:00 —11:15", 2024
                 ) shouldBe DateTimeRange(
-                    start = LocalDateTime.of(2024, 12, 27, 10, 0),
-                    end = LocalDateTime.of(2024, 12, 27, 11, 15),
+                    from = LocalDateTime.of(2024, 12, 27, 10, 0),
+                    to = LocalDateTime.of(2024, 12, 27, 11, 15),
                 )
             }
         }

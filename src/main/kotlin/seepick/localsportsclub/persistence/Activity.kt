@@ -24,7 +24,7 @@ data class ActivityDbo(
     val category: String, // aka disciplines/facilities
     val spotsLeft: Int,
     val from: LocalDateTime,
-    val to: LocalDateTime, // TODO change to duratinInMins => easier to instantiate ;) in domain object, provide dateTimeRange still (with convenient ctor with duration)
+    val to: LocalDateTime,
     val teacher: String?,
     val isBooked: Boolean,
     val wasCheckedin: Boolean,

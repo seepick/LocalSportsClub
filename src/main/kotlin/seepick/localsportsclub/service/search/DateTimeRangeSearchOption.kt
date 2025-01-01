@@ -41,6 +41,6 @@ class DateTimeRangeSearchOption<T>(
         if (searchDate == null) alwaysTruePredicate
         else { item ->
             val itemDateItemRange = extractor(item)
-            itemDateItemRange.isStartMatching(searchDate!!, timeFrom = searchTimeStart, timeTo = searchTimeEnd)
+            itemDateItemRange.isStartMatching(searchDate!!, matchFrom = searchTimeStart, matchTo = searchTimeEnd)
         }
 }

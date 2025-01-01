@@ -21,6 +21,7 @@ fun Arb.Companion.simpleVenue() = arbitrary {
         rating = Rating.entries.random(),
         isWishlisted = boolean().next(),
         isFavorited = boolean().next(),
+        isHidden = boolean().next(),
     )
 }
 

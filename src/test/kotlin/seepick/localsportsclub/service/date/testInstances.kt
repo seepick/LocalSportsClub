@@ -11,8 +11,8 @@ import java.time.LocalTime
 fun Arb.Companion.dateTimeRange() = arbitrary {
     val from = localDateTime().next()
     DateTimeRange(
-        start = from,
-        end = from.plusMinutes(long(min = 30, max = 120).next()),
+        from = from,
+        to = from.plusMinutes(long(min = 30, max = 120).next()),
     )
 }
 

@@ -5,23 +5,21 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class DateTimeRange(
-    val start: LocalDateTime,
-    val end: LocalDateTime,
+    val from: LocalDateTime,
+    val to: LocalDateTime,
 ) {
     init {
-        require(start <= end) { "Start ($start) must be <= end ($end)" }
+        require(from <= to) { "From ($from) must be <= to ($to)" }
     }
 
-    private val startDate = start.toLocalDate()
-    private val startTime = start.toLocalTime()
+    private val fromDate = from.toLocalDate()
+    private val fromTime = from.toLocalTime()
 
-    fun isStartMatching(date: LocalDate, timeFrom: LocalTime? = null, timeTo: LocalTime? = null): Boolean {
-        val dateMatches = startDate.isEqual(date)
-        if (timeFrom != null && timeTo != null) return dateMatches &&
-                startTime.isAfterOrEqual(timeFrom) &&
-                startTime.isBeforeOrEqual(timeTo)
-        if (timeFrom != null) return dateMatches && startTime.isAfterOrEqual(timeFrom)
-        if (timeTo != null) return dateMatches && startTime.isBeforeOrEqual(timeTo)
+    fun isStartMatching(date: LocalDate, matchFrom: LocalTime? = null, matchTo: LocalTime? = null): Boolean {
+        val dateMatches = fromDate.isEqual(date)
+        if (matchFrom != null && matchTo != null) return dateMatches && fromTime >= matchFrom && fromTime <= matchTo
+        if (matchFrom != null) return dateMatches && fromTime >= matchFrom
+        if (matchTo != null) return dateMatches && fromTime <= matchTo
         return dateMatches
     }
 }
