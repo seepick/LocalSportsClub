@@ -8,9 +8,9 @@ import seepick.localsportsclub.api.City
 import seepick.localsportsclub.view.shared.ScreenItem
 
 class Venue(
-    override val id: Int,
-    override val name: String,
-    override val slug: String,
+    val id: Int,
+    val name: String,
+    val slug: String,
     val description: String,
     val facilities: List<String>,
     val city: City,
@@ -19,7 +19,7 @@ class Venue(
     val addressLocality: String,
     val latitude: String,
     val longitude: String,
-    override val imageFileName: String?,
+    val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
     val uscWebsite: String, // inferred by static URL + slug
@@ -32,19 +32,27 @@ class Venue(
     isFavorited: Boolean,
     isWishlisted: Boolean,
     isHidden: Boolean,
-//    val linkedVenues: List<SimpleVenue>,
-) : SimpleVenue, ScreenItem {
+) : ScreenItem {
 
-    override val venue = this
+    //  val linkedVenues: MutableList<Venue>,
+    override val venue = this // for ScreenItem
     var notes: String by mutableStateOf(notes)
-    override var rating: Rating by mutableStateOf(rating)
-    override var isFavorited: Boolean by mutableStateOf(isFavorited)
-    override var isWishlisted: Boolean by mutableStateOf(isWishlisted)
-    override var isHidden: Boolean by mutableStateOf(isHidden)
+    var rating: Rating by mutableStateOf(rating)
+    var isFavorited: Boolean by mutableStateOf(isFavorited)
+    var isWishlisted: Boolean by mutableStateOf(isWishlisted)
+    var isHidden: Boolean by mutableStateOf(isHidden)
+
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
+
     var officialWebsite: String? by mutableStateOf(officialWebsite)
-    val checkinsCount = activities.filter { it.wasCheckedin }.size + freetrainings.filter { it.wasCheckedin }.size
+
+    val checkinsCount: Int
+        get() {
+            println("foo")
+            return 0
+        }
+    //activities.filter { it.wasCheckedin }.size + freetrainings.filter { it.wasCheckedin }.size
 
     companion object {
         fun dummy() = Venue(

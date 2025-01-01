@@ -19,14 +19,13 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
-import seepick.localsportsclub.service.model.SimpleVenue
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 
 interface ScreenItem {
-    val venue: SimpleVenue
+    val venue: Venue
 }
 
 abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>(
@@ -61,12 +60,10 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
         searching.reset()
     }
 
-    protected val selectedVenueBySelectedItem by lazy {
+    protected val selectedVenueBySelectedItem: StateFlow<Venue?> by lazy {
         selectedItem.map { item ->
-            item?.venue?.let { simpleVenue ->
-                dataStorage.selectVenueById(simpleVenue.id).also { venue ->
-                    venueEdit.init(venue)
-                }
+            item?.venue?.also { venue ->
+                venueEdit.init(venue)
             }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
         // or with timeout: started = SharingStarted.WhileSubscribed(5_000L)

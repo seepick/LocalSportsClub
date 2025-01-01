@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 class Freetraining(
     val id: Int,
-    override val venue: SimpleVenue,
+    override val venue: Venue,
     val name: String,
     val category: String,
     val date: LocalDate,

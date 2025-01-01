@@ -9,26 +9,41 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
+import seepick.localsportsclub.api.City
 import seepick.localsportsclub.service.date.dateTimeRange
 import seepick.localsportsclub.slug
 
-fun Arb.Companion.simpleVenue() = arbitrary {
-    SimpleVenueImpl(
+fun Arb.Companion.venue() = arbitrary {
+    Venue(
         id = int(min = 1).next(),
-        slug = slug().next(),
         name = string(minSize = 5, maxSize = 20, codepoints = Codepoint.az()).next(),
+        slug = slug().next(),
+        description = string(minSize = 5, maxSize = 20).next(),
+        notes = string(minSize = 5, maxSize = 20).next(),
+        facilities = emptyList(),
+        city = City.entries.random(),
+        postalCode = "",
+        addressLocality = "",
+        street = "",
+        latitude = "0.0",
+        longitude = "0.0",
         imageFileName = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().next(),
-        rating = Rating.entries.random(),
-        isWishlisted = boolean().next(),
+        importantInfo = null,
+        openingTimes = null,
+        uscWebsite = "",
+        officialWebsite = null,
+        isDeleted = boolean().next(),
         isFavorited = boolean().next(),
+        isWishlisted = boolean().next(),
         isHidden = boolean().next(),
+        rating = Rating.entries.random(),
     )
 }
 
 fun Arb.Companion.activity() = arbitrary {
     Activity(
         id = int(min = 1).next(),
-        venue = simpleVenue().next(),
+        venue = venue().next(),
         name = string(minSize = 5, maxSize = 20, codepoints = Codepoint.az()).next(),
         category = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).next(),
         dateTimeRange = dateTimeRange().next(),

@@ -51,41 +51,30 @@ class DataStorage(
     private val baseUrl = uscConfig.baseUrl
     private val listeners = mutableListOf<DataStorageListener>()
 
-    private val simpleVenuesById by lazy {
-        venueRepo.selectAll().map { it.toSimpleVenue() }.associateBy { it.id }
+    private val venuesById: MutableMap<Int, Venue> by lazy {
+        // TODO implement venue linking (test first!)
+//        val allVenuesById = allVenues.associateBy { it.id }
+//        val allLinksById = venueLinksRepo.selectAll()
+        venueRepo.selectAll().map { it.toVenue(baseUrl) }.associateBy { it.id }.toMutableMap()
     }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         activityRepo.selectAllUpcoming(clock.today()).map { activityDbo ->
-            val venueForActivity = simpleVenuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
-            activityDbo.toActivity(venueForActivity)
+            val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
+            activityDbo.toActivity(venueForActivity).also {
+                venueForActivity.activities += it
+            }
         }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
         freetrainingRepo.selectAllUpcoming(clock.today()).map { freetrainingDbo ->
             val venueForFreetraining =
-                simpleVenuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
-            freetrainingDbo.toFreetraining(venueForFreetraining)
+                venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
+            freetrainingDbo.toFreetraining(venueForFreetraining).also {
+                venueForFreetraining.freetrainings += it
+            }
         }.groupByTo(mutableMapOf()) { it.venue.id }
-    }
-
-    private val allVenues: MutableList<Venue> by lazy {
-        val allVenueDbos = venueRepo.selectAll()
-        // TODO implement venue linking (test first!)
-//        val allVenuesById = allVenues.associateBy { it.id }
-//        val allLinksById = venueLinksRepo.selectAll()
-        allVenueDbos
-            .map { venueDbo ->
-                venueDbo.toVenue(baseUrl).also { venue ->
-                    allActivitiesByVenueId[venue.id]?.also { activitiesForVenue ->
-                        venue.activities += activitiesForVenue
-                    }
-                    allFreetrainingsByVenueId[venue.id]?.also { freetrainingForVenue ->
-                        venue.freetrainings += freetrainingForVenue
-                    }
-                }
-            }.toMutableList()
     }
 
     fun registerListener(listener: DataStorageListener) {
@@ -93,10 +82,7 @@ class DataStorage(
     }
 
     fun selectVisibleVenues(): List<Venue> =
-        allVenues
-
-    fun selectVenueById(id: Int) =
-        allVenues.first { it.id == id }
+        venuesById.values.toList()
 
     fun selectVisibleActivities(): List<Activity> =
         allActivitiesByVenueId.values.toList().flatten()
@@ -107,13 +93,13 @@ class DataStorage(
     override fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
         val venue = venueDbo.toVenue(baseUrl)
-        allVenues += venue
+        venuesById[venue.id] = venue
         dispatchOnVenueAdded(venue)
     }
 
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
         val activities = activityDbos.map { activityDbo ->
-            val venue = allVenues.firstOrNull { it.id == activityDbo.venueId }
+            val venue = venuesById[activityDbo.venueId]
                 ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
             val activity = activityDbo.toActivity(venue)
             // venue.activities += activity ... NO: done in SyncerViewModel (concurrency issues, IO vs Compose)
@@ -125,7 +111,7 @@ class DataStorage(
 
     override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
         val freetrainings = freetrainingDbos.map { freetrainingDbo ->
-            val venue = allVenues.firstOrNull { it.id == freetrainingDbo.venueId }
+            val venue = venuesById[freetrainingDbo.venueId]
                 ?: error("Failed to add freetraining! Could not find venue by ID for: $freetrainingDbos")
             val freetraining = freetrainingDbo.toFreetraining(venue)
             // venue.freetrainings += freetraining // NO! do it in SyncerViewModel
@@ -156,12 +142,6 @@ class DataStorage(
     fun update(venue: Venue) {
         log.debug { "updating $venue" }
         venueRepo.update(venue.toDbo())
-        allActivitiesByVenueId[venue.id]?.forEach { activity ->
-            activity.venue.updateSelfBy(venue)
-        }
-        allFreetrainingsByVenueId[venue.id]?.forEach { freetraining ->
-            freetraining.venue.updateSelfBy(venue)
-        }
         dispatchOnVenueUpdated(venue)
     }
 
@@ -190,7 +170,7 @@ class DataStorage(
     }
 }
 
-fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
+fun ActivityDbo.toActivity(venue: Venue) = Activity(
     id = id,
     venue = venue,
     name = name,
@@ -202,7 +182,7 @@ fun ActivityDbo.toActivity(venue: SimpleVenue) = Activity(
     wasCheckedin = wasCheckedin,
 )
 
-fun FreetrainingDbo.toFreetraining(venue: SimpleVenue) = Freetraining(
+fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
     id = id,
     venue = venue,
     name = name,

@@ -9,9 +9,6 @@ import org.jetbrains.exposed.sql.nextIntVal
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import seepick.localsportsclub.service.model.Rating
-import seepick.localsportsclub.service.model.SimpleVenue
-import seepick.localsportsclub.service.model.SimpleVenueImpl
 
 data class VenueDbo(
     val id: Int,
@@ -38,17 +35,6 @@ data class VenueDbo(
     val isDeleted: Boolean,
 ) {
     companion object // for extensions
-
-    fun toSimpleVenue(): SimpleVenue = SimpleVenueImpl(
-        id = id,
-        slug = slug,
-        name = name,
-        imageFileName = imageFileName,
-        rating = Rating.byValue(rating),
-        isFavorited = isFavorited,
-        isWishlisted = isWishlisted,
-        isHidden = isHidden,
-    )
 }
 
 interface VenueRepo {

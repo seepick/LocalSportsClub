@@ -8,7 +8,7 @@ import seepick.localsportsclub.view.shared.ScreenItem
 
 class Activity(
     val id: Int,
-    override val venue: SimpleVenue,
+    override val venue: Venue,
     val name: String,
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
