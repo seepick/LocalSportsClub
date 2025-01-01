@@ -23,6 +23,7 @@ data class AppConfig(
             database = DatabaseMode.Exposed,
             logFileEnabled = true,
             firstScreen = Screen.Activities,
+            usc = UscConfig(syncDaysAhead = 2)
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
@@ -52,7 +53,7 @@ data class UscConfig(
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
     val storeResponses: Boolean = true,
-    val syncDaysAhead: Int = 3,
+    val syncDaysAhead: Int = 14,
     val usageConfig: UsageConfig = UsageConfig(),
 ) {
     init {

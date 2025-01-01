@@ -10,6 +10,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import ch.qos.logback.classic.Level
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,15 +44,17 @@ object LocalSportsClub {
                 "Exposed" to Level.INFO,
             )
         )
+        val log = logger {}
+        log.info { "Starting up application for environment: ${Environment.current.name}" }
         application {
             KoinApplication(application = {
                 modules(allModules(config))
             }) {
                 val keyboard: GlobalKeyboard = koinInject()
                 val applicationLifecycle: ApplicationLifecycle = koinInject()
-                applicationLifecycle.attachQuitHandler() // when CMD+Q is executed (or from menubar)
+                applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
                 Window(
-                    title = "LocalSportsClub",
+                    title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
                     state = rememberWindowState(
                         width = 1_500.dp, height = 1200.dp,
                         position = WindowPosition(100.dp, 100.dp),

@@ -71,14 +71,23 @@ dependencies {
     testImplementation("app.cash.turbine:turbine:1.2.0")
 }
 
+//tasks.withType<KotlinCompile> {
+//    kotlinOptions.jvmTarget = "16"
+//}
+
 compose.desktop {
+    // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html
     application {
         mainClass = "seepick.localsportsclub.LocalSportsClub"
-
+        jvmArgs += listOf("-Dlsc.env=PROD", "-Xmx1G", "--add-exports", "java.desktop/com.apple.eawt=ALL-UNNAMED")
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg) //, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LocalSportsClub"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0"
+            modules("java.net.http", "java.sql")
+            macOS {
+                iconFile.set(project.file("src/main/distribution/icon.icns"))
+            }
         }
     }
 }
