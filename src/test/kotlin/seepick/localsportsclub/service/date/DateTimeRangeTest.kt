@@ -8,7 +8,7 @@ import java.time.LocalTime
 
 class DateTimeRangeTest : StringSpec() {
     private val anyTime = LocalTime.now()
-    private val anyDateTime = LocalDateTime.now()
+    private val anyDateTime = SystemClock.now()
 
     init {
         "isStartMatching for date only" {

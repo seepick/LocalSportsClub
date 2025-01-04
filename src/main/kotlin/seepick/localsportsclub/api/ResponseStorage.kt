@@ -40,7 +40,7 @@ class ResponseStorageImpl : ResponseStorage {
             cleanUp()
             cleanedUpYet = true
         }
-        val target = File(apiLogsFolder, "${dateTimeFormatter.format(LocalDateTime.now())}-$suffix.apilog.txt")
+        val target = File(apiLogsFolder, "${dateTimeFormatter.format(SystemClock.now())}-$suffix.apilog.txt")
         target.writeText(response.bodyAsText())
     }
 

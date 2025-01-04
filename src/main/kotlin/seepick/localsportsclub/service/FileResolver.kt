@@ -11,10 +11,11 @@ object FileResolver {
     private val homeDirectory = File(System.getProperty("user.home"))
     private val appDirectoryProd = File(homeDirectory, ".lsc")
     private val appDirectoryDev = File(homeDirectory, ".lsc-dev")
-    private val appDirectory = when (Environment.current) {
-        Environment.Production -> appDirectoryProd
-        Environment.Development -> appDirectoryDev
-    }
+    private val appDirectory =
+        when (Environment.current) {
+            Environment.Production -> appDirectoryProd
+            Environment.Development -> appDirectoryDev
+        }
 
     init {
         appDirectory.createIfNeededOrFail()

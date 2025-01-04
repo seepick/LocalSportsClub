@@ -1,7 +1,10 @@
 package seepick.localsportsclub.api
 
-enum class City(val id: Int) {
-    Amsterdam(1144);
+enum class City(val id: Int, val label: String) {
+    Amsterdam(1144, "Amsterdam"),
+    Breda(1158, "Breda"),
+    Haarlem(1146, "Haarlem"),
+    ;
 
     companion object {
         private val cityById by lazy {

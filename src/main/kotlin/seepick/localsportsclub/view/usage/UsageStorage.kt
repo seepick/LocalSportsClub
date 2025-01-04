@@ -27,15 +27,15 @@ class UsageStorage(
 
     private val config = uscConfig.usageConfig
 
-    private val checkedinActivityIdsFlow = MutableStateFlow(emptySet<Int>())
-    private val checkedinFreetrainingIdsFlow = MutableStateFlow(emptySet<Int>())
-    private val bookedActivityIdsFlow = MutableStateFlow(emptySet<Int>())
+    private val checkedinActivityIds = MutableStateFlow(emptySet<Int>())
+    private val checkedinFreetrainingIds = MutableStateFlow(emptySet<Int>())
+    private val bookedActivityIds = MutableStateFlow(emptySet<Int>())
 
     val checkedinCount: Flow<Int> =
-        combine(checkedinActivityIdsFlow, checkedinFreetrainingIdsFlow) { activityIds, freetrainingIds ->
+        combine(checkedinActivityIds, checkedinFreetrainingIds) { activityIds, freetrainingIds ->
             activityIds.size + freetrainingIds.size
         }
-    val bookedCount: Flow<Int> = bookedActivityIdsFlow.map { it.size }
+    val bookedCount: Flow<Int> = bookedActivityIds.map { it.size }
 
     val percentageCheckedin = checkedinCount.map {
         it / config.maxBookingsForPeriod.toDouble()
@@ -80,74 +80,56 @@ class UsageStorage(
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+        if (activityDbo.from.toLocalDate() !in periodRange) {
+            return
+        }
         when (field) {
             ActivityFieldUpdate.IsBooked -> {
-                if (activityDbo.isBooked) addBookedActivityId(activityDbo.id)
-                else removeBookedActivityId(activityDbo.id)
+                if (activityDbo.isBooked) bookedActivityIds.update { it + activityDbo.id }
+                else bookedActivityIds.update { it - activityDbo.id }
             }
 
             ActivityFieldUpdate.WasCheckedin -> {
-                if (activityDbo.wasCheckedin) addCheckedinActivityId(activityDbo.id)
-                else removeCheckedinActivityId(activityDbo.id)
+                if (activityDbo.wasCheckedin) checkedinActivityIds.update { it + activityDbo.id }
+                else checkedinActivityIds.update { it - activityDbo.id }
             }
         }
     }
 
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        if (freetrainingDbo.date !in periodRange) {
+            return
+        }
         when (field) {
             FreetrainingFieldUpdate.WasCheckedin -> {
-                if (freetrainingDbo.wasCheckedin) addCheckedinFreetrainingId(freetrainingDbo.id)
-                else removeCheckedinFreetrainingId(freetrainingDbo.id)
+                if (freetrainingDbo.wasCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
+                else checkedinFreetrainingIds.update { it - freetrainingDbo.id }
             }
+        }
+    }
+
+    override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
+        val inRange = activityDbos.filter { it.from.toLocalDate() in periodRange }
+        checkedinActivityIds.update { ids -> ids - inRange.filter { it.wasCheckedin }.map { it.id }.toSet() }
+        bookedActivityIds.update { ids -> ids - inRange.filter { it.isBooked }.map { it.id }.toSet() }
+    }
+
+    override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
+        checkedinFreetrainingIds.update { ids ->
+            ids - freetrainingDbos.filter { it.date in periodRange && it.wasCheckedin }.map { it.id }.toSet()
         }
     }
 
     private fun processActivity(activityDbo: ActivityDbo) {
         if (activityDbo.from.toLocalDate() in periodRange) {
-            if (activityDbo.wasCheckedin) addCheckedinActivityId(activityDbo.id)
-            if (activityDbo.isBooked) addBookedActivityId(activityDbo.id)
+            if (activityDbo.wasCheckedin) checkedinActivityIds.update { it + activityDbo.id }
+            if (activityDbo.isBooked) bookedActivityIds.update { it + activityDbo.id }
         }
     }
 
     private fun processFreetraining(freetrainingDbo: FreetrainingDbo) {
         if (freetrainingDbo.wasCheckedin && freetrainingDbo.date in periodRange) {
-            addCheckedinFreetrainingId(freetrainingDbo.id)
-        }
-    }
-
-    private fun addCheckedinActivityId(id: Int) {
-        checkedinActivityIdsFlow.update {
-            it.toMutableSet() + id
-        }
-    }
-
-    private fun addCheckedinFreetrainingId(id: Int) {
-        checkedinFreetrainingIdsFlow.update {
-            it.toMutableSet() + id
-        }
-    }
-
-    private fun addBookedActivityId(id: Int) {
-        bookedActivityIdsFlow.update {
-            it.toMutableSet() + id
-        }
-    }
-
-    private fun removeCheckedinActivityId(id: Int) {
-        checkedinActivityIdsFlow.update {
-            it.toMutableSet() - id
-        }
-    }
-
-    private fun removeCheckedinFreetrainingId(id: Int) {
-        checkedinFreetrainingIdsFlow.update {
-            it.toMutableSet() - id
-        }
-    }
-
-    private fun removeBookedActivityId(id: Int) {
-        bookedActivityIdsFlow.update {
-            it.toMutableSet() - id
+            checkedinFreetrainingIds.update { it + freetrainingDbo.id }
         }
     }
 }

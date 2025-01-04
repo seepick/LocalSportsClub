@@ -5,6 +5,7 @@ import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.SystemClock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -24,7 +25,7 @@ val jsonx = Json {
 }
 
 class StaticClock(
-    private var now: LocalDateTime = LocalDateTime.now(),
+    private var now: LocalDateTime = SystemClock.now(),
     private var today: LocalDate = now.toLocalDate(),
 ) : Clock {
 

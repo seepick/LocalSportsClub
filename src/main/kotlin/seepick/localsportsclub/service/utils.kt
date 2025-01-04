@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import net.coobird.thumbnailator.Thumbnails
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.min
 
 private val log = logger {}
 
@@ -21,7 +22,8 @@ suspend fun <T, R> workParallel(coroutineCount: Int, data: List<T>, processor: s
         withContext(Dispatchers.IO) {
 //        withContext(Dispatchers.IO) {
             val items = ConcurrentLinkedQueue(data.toMutableList())
-            (1..coroutineCount).map { coroutine ->
+
+            (1..min(coroutineCount, data.size)).map { coroutine ->
                 log.debug { "Starting coroutine $coroutine/$coroutineCount ..." }
                 launch {
                     var item = items.poll()

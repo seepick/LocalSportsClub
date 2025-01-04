@@ -15,14 +15,15 @@ class VenueViewModel(
     override val selectedVenue = MutableStateFlow<Venue?>(null)
     override val selectedItem = selectedVenue
 
+    override fun buildSearch(resetItems: () -> Unit) = VenueSearch(resetItems)
+    override fun DataStorage.selectAllItems() = selectVisibleVenues()
+
     override fun onItemSelected(item: SelectedItemType) {
         if (item is VenueSelected) {
             selectedVenue.value = item.venue
         }
     }
 
-    override fun buildSearch(resetItems: () -> Unit) = VenueSearch(resetItems)
-    override fun DataStorage.selectAllItems() = selectVisibleVenues()
     override fun onVenueAdded(venue: Venue) {
         onItemAdded(venue)
     }

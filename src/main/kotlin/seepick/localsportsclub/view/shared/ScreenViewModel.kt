@@ -83,6 +83,11 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
         // fiddle around with venue being the item (special-case)
     }
 
+    open fun onItemsDeleted(items: List<ITEM>) {
+        _allItems.removeAll(items)
+        _items.removeAll(items)
+    }
+
     fun onVenueSelected(venue: Venue) {
         log.trace { "Selected: $venue" }
         viewModelScope.launch {

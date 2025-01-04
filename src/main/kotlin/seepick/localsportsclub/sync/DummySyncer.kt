@@ -42,11 +42,15 @@ class DummySyncer(
             dispatcher.dispatchOnActivityDbosAdded(listOf(activityDbo))
         }
 
+        var firstFreetraining: FreetrainingDbo? = null
         generateFreetrainings().forEach { freetrainingDbo ->
+            if (firstFreetraining == null) firstFreetraining = freetrainingDbo
             delay(100)
             freetrainingRepo.insert(freetrainingDbo)
             dispatcher.dispatchOnFreetrainingDbosAdded(listOf(freetrainingDbo))
         }
+        delay(300)
+        dispatcher.dispatchOnFreetrainingDbosDeleted(listOf(firstFreetraining!!))
     }
 
     override fun registerListener(listener: SyncerListener) {
@@ -113,8 +117,8 @@ class DummySyncer(
         this += dummyFreetraining().copy(
             id = freetrainingId++,
             venueId = 4,
-            name = "Free Sport",
-            category = "Wellness",
+            name = "Delete Me",
+            category = "Nope",
             date = LocalDate.now(),
             wasCheckedin = false,
         )

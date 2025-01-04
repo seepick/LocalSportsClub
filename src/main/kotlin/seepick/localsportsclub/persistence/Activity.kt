@@ -4,8 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -59,14 +58,13 @@ object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
 
 interface ActivityRepo {
     fun selectAll(): List<ActivityDbo>
-    fun selectAllUpcoming(today: LocalDate): List<ActivityDbo>
     fun selectAllBooked(): List<ActivityDbo>
     fun insert(activity: ActivityDbo)
     fun update(activity: ActivityDbo)
     fun selectById(id: Int): ActivityDbo?
     fun selectFutureMostDate(): LocalDate?
     fun selectNewestCheckedinDate(): LocalDate?
-    fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate)
+    fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate): List<ActivityDbo>
 }
 
 class InMemoryActivityRepo : ActivityRepo {
@@ -74,8 +72,6 @@ class InMemoryActivityRepo : ActivityRepo {
     val stored = mutableMapOf<Int, ActivityDbo>()
 
     override fun selectAll(): List<ActivityDbo> = stored.values.toList()
-    override fun selectAllUpcoming(today: LocalDate): List<ActivityDbo> =
-        stored.values.filter { it.from.toLocalDate() >= today }
 
     override fun selectAllBooked() = stored.filter { it.value.isBooked }.values.toList()
 
@@ -86,12 +82,14 @@ class InMemoryActivityRepo : ActivityRepo {
     override fun selectNewestCheckedinDate(): LocalDate? =
         stored.values.filter { it.wasCheckedin }.maxByOrNull { it.from }?.from?.toLocalDate()
 
-    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate) {
-        stored.values.filter {
+    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate): List<ActivityDbo> {
+        val deletingActivities = stored.values.filter {
             !it.isBooked && !it.wasCheckedin && it.from.toLocalDate() < threshold
-        }.forEach {
+        }
+        deletingActivities.forEach {
             stored.remove(it.id)
         }
+        return deletingActivities
     }
 
     override fun insert(activity: ActivityDbo) {
@@ -109,14 +107,7 @@ object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
 
     override fun selectAll(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().map {
-            ActivityDbo.fromRow(it)
-        }
-    }
-
-    override fun selectAllUpcoming(today: LocalDate): List<ActivityDbo> = transaction {
-        val todayTime = LocalDateTime.of(today, LocalTime.of(0, 0))
-        ActivitiesTable.selectAll().where { ActivitiesTable.from.greaterEq(todayTime) }.map {
+        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).map {
             ActivityDbo.fromRow(it)
         }
     }
@@ -128,7 +119,7 @@ object ExposedActivityRepo : ActivityRepo {
     }
 
     override fun selectAllBooked(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().where { ActivitiesTable.isBooked.eq(true) }.map {
+        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).where { ActivitiesTable.isBooked.eq(true) }.map {
             ActivityDbo.fromRow(it)
         }
     }
@@ -149,12 +140,19 @@ object ExposedActivityRepo : ActivityRepo {
             }
     }
 
-    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate): Unit = transaction {
+    override fun deleteNonBookedNonCheckedinBefore(threshold: LocalDate): List<ActivityDbo> = transaction {
         val thresholdDateTime = LocalDateTime.of(threshold, LocalTime.of(0, 0))
-        val deleted = ActivitiesTable.deleteWhere {
-            wasCheckedin.eq(false).and(isBooked.eq(false)).and(from.less(thresholdDateTime))
-        }
-        log.info { "Deleted $deleted old activities before $threshold." }
+
+        val deletedActivities = ActivitiesTable.selectAll().where {
+            (ActivitiesTable.wasCheckedin eq false) and (ActivitiesTable.isBooked eq false) and (ActivitiesTable.from less thresholdDateTime)
+        }.map { ActivityDbo.fromRow(it) }
+
+        val deletedActivitiesCount =
+            ActivitiesTable.deleteWhere { ActivitiesTable.id.inList(deletedActivities.map { it.id }) }
+        require(deletedActivitiesCount == deletedActivities.size)
+
+        log.info { "Deleted ${deletedActivities.size} old activities before $threshold." }
+        deletedActivities
     }
 
     override fun insert(activity: ActivityDbo): Unit = transaction {
@@ -175,10 +173,10 @@ object ExposedActivityRepo : ActivityRepo {
 
     override fun update(activity: ActivityDbo): Unit = transaction {
         val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
-            it[teacher] = teacher
+            it[teacher] = activity.teacher
             it[spotsLeft] = activity.spotsLeft
             it[isBooked] = activity.isBooked
-            it[wasCheckedin] = wasCheckedin
+            it[wasCheckedin] = activity.wasCheckedin
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${activity.id}, but was: $updated")
     }

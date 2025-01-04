@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -16,13 +17,14 @@ import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import seepick.localsportsclub.service.date.SystemClock
 import java.time.LocalDateTime
 
 class ExposedActivityRepoTest : DescribeSpec() {
 
     private val activityRepo = ExposedActivityRepo
     private val venueRepo = ExposedVenueRepo
-    private val todayTime = LocalDateTime.now()
+    private val todayTime = SystemClock.now()
     private val todayDate = todayTime.toLocalDate()
     private val yesterdayTime = todayTime.minusDays(1)
     private lateinit var testRepo: TestRepoFacade
@@ -139,14 +141,33 @@ class ExposedActivityRepoTest : DescribeSpec() {
             }
         }
         describe("When update") {
-            it("Given venue and activity Then update successful") {
+            it("Given venue and activity Then update relevant fields") {
+                val ignoredDate = SystemClock.now()
+                val ignoredVenueId = 42
                 val venue = venueRepo.insert(venue())
                 val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
 
-                activityRepo.update(activity.copy(spotsLeft = activity.spotsLeft + 1))
+                val updateActivity = ActivityDbo(
+                    id = activity.id,
+                    spotsLeft = activity.spotsLeft + 1,
+                    teacher = "${activity.teacher} 2",
+                    isBooked = !activity.isBooked,
+                    wasCheckedin = !activity.wasCheckedin,
+                    venueId = ignoredVenueId,
+                    name = "ignored",
+                    category = "ignored",
+                    from = ignoredDate,
+                    to = ignoredDate,
+                )
+                activityRepo.update(updateActivity)
 
-                activityRepo.selectAll().shouldBeSingleton().first().spotsLeft shouldBe activity.spotsLeft + 1
+                activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity.copy(
+                    spotsLeft = updateActivity.spotsLeft,
+                    teacher = updateActivity.teacher,
+                    isBooked = updateActivity.isBooked,
+                    wasCheckedin = updateActivity.wasCheckedin,
+                )
             }
             it("Given no activity Then fail") {
                 shouldThrow<IllegalStateException> {
@@ -158,40 +179,43 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given older but was checkedin Then keep") {
                 testRepo.insertActivity(wasCheckedin = true, from = yesterdayTime, createVenue = true)
 
-                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeSingleton()
+                deleted.shouldBeEmpty()
             }
             it("Given older but is booked Then keep") {
                 testRepo.insertActivity(isBooked = true, from = yesterdayTime, createVenue = true)
 
-                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeSingleton()
+                deleted.shouldBeEmpty()
             }
             it("Given same date Then keep") {
                 createActivityForDeletion(todayTime)
 
-                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                deleted.shouldBeEmpty()
 
                 activityRepo.selectAll().shouldBeSingleton()
             }
             it("Given older date Then delete") {
-                createActivityForDeletion(yesterdayTime)
+                val activity = createActivityForDeletion(yesterdayTime)
 
-                activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeEmpty()
+                deleted shouldBeEqual listOf(activity)
             }
         }
     }
 
-    private fun createActivityForDeletion(date: LocalDateTime) {
+    private fun createActivityForDeletion(date: LocalDateTime) =
         testRepo.insertActivity(
             wasCheckedin = false,
             isBooked = false,
             from = date,
             createVenue = true
         )
-    }
 }

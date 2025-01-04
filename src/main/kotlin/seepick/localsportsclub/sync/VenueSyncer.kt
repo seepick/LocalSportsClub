@@ -12,8 +12,10 @@ import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.resizeImage
+import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 
 class VenueSyncer(
@@ -29,7 +31,9 @@ class VenueSyncer(
     suspend fun sync() {
         log.info { "Syncing venues ..." }
         val remoteVenuesBySlug = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
-        val localVenuesBySlug = venueRepo.selectAll().filter { !it.isDeleted }.associateBy { it.slug }
+        log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
+        val localVenuesBySlug =
+            venueRepo.selectAll().filter { it.cityId == city.id && !it.isDeleted }.associateBy { it.slug }
 
         val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
         // this also means that the "hidden linked ones" will be deleted
@@ -39,7 +43,7 @@ class VenueSyncer(
         }
 
         val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
-        venueSyncInserter.fetchAllInsertDispatch(missingVenues.keys.toList())
+        venueSyncInserter.fetchInsertAndDispatch(missingVenues.keys.toList())
     }
 
 }
@@ -57,7 +61,7 @@ class VenueLink(
 }
 
 interface VenueSyncInserter {
-    suspend fun fetchAllInsertDispatch(
+    suspend fun fetchInsertAndDispatch(
         venueSlugs: List<String>,
         prefilledNotes: String = "",
     )
@@ -75,7 +79,7 @@ class VenueSyncInserterImpl(
     private val log = logger {}
     private val city = uscConfig.city
 
-    override suspend fun fetchAllInsertDispatch(
+    override suspend fun fetchInsertAndDispatch(
         venueSlugs: List<String>,
         prefilledNotes: String,
     ) {
@@ -132,11 +136,18 @@ class VenueSyncInserterImpl(
         details.linkedVenueSlugs.forEach {
             venueLinks += VenueLink(details.slug, it)
         }
-        val dbo = details.toDbo(city.id)
-        return if (details.originalImageUrl == null) dbo else {
+        return details.toDbo(city.id).ensureHasImageIfPresent(details)
+    }
+
+    private suspend fun VenueDbo.ensureHasImageIfPresent(details: VenueDetails): VenueDbo {
+        return if (details.originalImageUrl == null) this else {
             val fileName = "${details.slug}.png"
-            downloadAndSaveImage(fileName, details.originalImageUrl)
-            dbo.copy(imageFileName = fileName)
+            if (FileResolver.resolveVenueImage(fileName).exists()) {
+                log.trace { "Venue image [$fileName] already exists, skip downloading it." }
+            } else {
+                downloadAndSaveImage(fileName, details.originalImageUrl)
+            }
+            this.copy(imageFileName = fileName)
         }
     }
 

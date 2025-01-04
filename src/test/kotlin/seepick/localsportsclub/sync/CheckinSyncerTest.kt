@@ -17,8 +17,8 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.TestRepoFacade
 import seepick.localsportsclub.persistence.activityDbo
+import seepick.localsportsclub.service.date.SystemClock
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class CheckinSyncerTest : StringSpec() {
 
@@ -30,7 +30,7 @@ class CheckinSyncerTest : StringSpec() {
     private lateinit var syncer: CheckinSyncer
     private lateinit var syncActivityDbosUpdated: MutableList<Pair<ActivityDbo, ActivityFieldUpdate>>
     private lateinit var testRepo: TestRepoFacade
-    private val now = LocalDateTime.now()
+    private val now = SystemClock.now()
     private val today = now.toLocalDate()
 
     override suspend fun beforeEach(testCase: TestCase) {
@@ -99,7 +99,7 @@ class CheckinSyncerTest : StringSpec() {
             val entry = mockCheckinsPage(1, today, nonExistingActivityId)
             val rescuedActivity = Arb.activityDbo().next().copy(wasCheckedin = false)
             mockCheckinsEmptyPage(2)
-            coEvery { dataSyncRescuer.rescueActivity(nonExistingActivityId, entry.venueSlug, any()) } answers {
+            coEvery { dataSyncRescuer.fetchInsertAndDispatch(nonExistingActivityId, entry.venueSlug, any()) } answers {
                 activityRepo.insert(rescuedActivity)
                 rescuedActivity
             }

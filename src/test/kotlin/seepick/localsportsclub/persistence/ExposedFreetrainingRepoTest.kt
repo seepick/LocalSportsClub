@@ -13,13 +13,13 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import java.time.LocalDateTime
+import seepick.localsportsclub.service.date.SystemClock
 
 class ExposedFreetrainingRepoTest : DescribeSpec() {
 
     private val freetrainingRepo = ExposedFreetrainingRepo
     private val venueRepo = ExposedVenueRepo
-    private val todayTime = LocalDateTime.now()
+    private val todayTime = SystemClock.now()
     private val todayDate = todayTime.toLocalDate()
     private val yesterdayDate = todayDate.minusDays(1)
     private fun venue() = Arb.venueDbo().next()

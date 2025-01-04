@@ -69,7 +69,7 @@ class ActivitiesSyncer(
 
     private suspend fun rescueVenue(activity: ActivityInfo, venuesBySlug: MutableMap<String, VenueDbo>): Int {
         log.debug { "Trying to rescue venue for missing: $activity" }
-        venueSyncInserter.fetchAllInsertDispatch(
+        venueSyncInserter.fetchInsertAndDispatch(
             listOf(activity.venueSlug),
             "[SYNC] fetched through activity ${activity.name}"
         )

@@ -11,30 +11,27 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* view only either Activity OR Freetraining (not both at the same time)
-* download images in size which fit max displayed in software
-* don't dipslay activities/freetrainings in big table for in the past wasCheckedin
-* UI: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored 1-way)
-* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
+* BUG: usage doesn't work, as wasCheckedin activities not in DB?!?
+* BUG: why didn't get initially (during sync) official website
+  from https://urbansportsclub.com/en/venues/wilhelmina-gasthuisterrein ?!?
+* hide partners: femme*, Ladies Only, padel, SUP
+* FEATURE: reserve-book/cancel button
 
 ## Backlog
 
-* transaction scope around separate syncers
-* FEATURE: migrate old content from AllFit; implement venue-lookup logic
-  --
-* display venue links
-* table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
-* FEATURE: reserve-book/cancel button
-* when click rating textfield, also expand dropdown
+* UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
+* UI: table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
+* view only either Activity OR Freetraining (not both at the same time)
+* FEATURE: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored
+  1-way)
 * MIN: description/info has "\n"... replace them
-* UI: support sorting asc/desc
+* FEATURE: support sorting asc/desc
+* notes: show scrollbar if necessary
 
 ## Later
 
-* ad usage: val maxBookingsPerVenueForMonth: Int = 6, // or is it per partner; a partner having multiple, linked
-  venues?!
 * display venue address + link to google maps
-* sync workout metadata teacher (von partner site scrapen)
+* FEATURE: sync workout metadata teacher (von partner site scrapen)
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 * enable up/down arrow for table (would require a global listener, and knowing which table got focus...)
 * UI: if textfield elipse ("foo...") => show tooltip full text

@@ -66,7 +66,7 @@ data class UsageConfig(
 
     val maxBookingsForPeriod: Int = 18,
     val maxBookingsForDay: Int = 2,
-    val maxBookingsPerVenueForMonth: Int = 6,
+    val maxBookingsPerVenueForMonth: Int = 6, // it's per venue, altough a parther can have multiple venues (=locations)
     val maxBookingsPerVenueForDay: Int = 1,
 )
 

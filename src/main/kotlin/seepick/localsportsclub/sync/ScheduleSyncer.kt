@@ -23,7 +23,7 @@ class ScheduleSyncer(
 
         updateAndDispatch(toMarkScheduledYes.values.toList(), true) { schedule ->
             activityRepo.selectById(schedule.activityId) ?: suspend {
-                dataSyncRescuer.rescueActivity(
+                dataSyncRescuer.fetchInsertAndDispatch(
                     schedule.activityId,
                     schedule.venueSlug,
                     "[SYNC] refetch due to missing from booked activity"

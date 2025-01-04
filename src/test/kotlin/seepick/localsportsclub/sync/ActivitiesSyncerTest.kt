@@ -17,6 +17,7 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
+import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDateTime
 
@@ -42,7 +43,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 syncActivityAdded += activityDbos
             }
         })
-        clock.setNowAndToday(LocalDateTime.now())
+        clock.setNowAndToday(SystemClock.now())
     }
 
     private fun syncer(daysAhead: Int) = ActivitiesSyncer(

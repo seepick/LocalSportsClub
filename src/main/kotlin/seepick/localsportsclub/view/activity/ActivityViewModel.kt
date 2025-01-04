@@ -16,9 +16,14 @@ class ActivityViewModel(
 
     override fun buildSearch(resetItems: () -> Unit) = ActivitySearch(resetItems)
     override fun DataStorage.selectAllItems() = selectVisibleActivities()
+
     override fun onActivitiesAdded(activities: List<Activity>) {
         activities.forEach { activity ->
             onItemAdded(activity)
         }
+    }
+
+    override fun onActivitiesDeleted(activities: List<Activity>) {
+        onItemsDeleted(activities)
     }
 }

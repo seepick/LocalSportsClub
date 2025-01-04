@@ -16,6 +16,8 @@ interface SyncerListener {
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
     fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>)
     fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate)
+    fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>)
+    fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>)
 }
 
 enum class ActivityFieldUpdate {
@@ -72,6 +74,18 @@ class SyncerListenerDispatcher {
     fun dispatchOnFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         listeners.forEach {
             it.onFreetrainingDboUpdated(freetrainingDbo, field)
+        }
+    }
+
+    fun dispatchOnActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
+        listeners.forEach {
+            it.onActivityDbosDeleted(activityDbos)
+        }
+    }
+
+    fun dispatchOnFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
+        listeners.forEach {
+            it.onFreetrainingDbosDeleted(freetrainingDbos)
         }
     }
 }

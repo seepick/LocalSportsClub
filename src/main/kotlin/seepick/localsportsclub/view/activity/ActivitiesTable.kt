@@ -26,6 +26,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         CellRenderer.TextRenderer({ it.nameWithTeacherIfPresent }, { it.nameWithTeacherIfPresent.lowercase() })
     ),
     TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn("Category", ColSize.Width(150.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date",
         ColSize.Width(200.dp),

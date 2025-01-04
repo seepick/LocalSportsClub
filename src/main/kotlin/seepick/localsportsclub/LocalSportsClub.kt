@@ -67,15 +67,15 @@ object LocalSportsClub {
                 ) {
                     val syncer = koinInject<Syncer>()
                     val dataStorage = koinInject<DataStorage>()
-                    val usage = koinInject<UsageStorage>()
+                    val usageStorage = koinInject<UsageStorage>()
                     syncer.registerListener(dataStorage)
-                    syncer.registerListener(usage)
+                    syncer.registerListener(usageStorage)
                     dataStorage.registerListener(koinViewModel<SyncerViewModel>())
                     dataStorage.registerListener(koinViewModel<ActivityViewModel>())
                     dataStorage.registerListener(koinViewModel<FreetrainingViewModel>())
                     dataStorage.registerListener(koinViewModel<VenueViewModel>())
 
-                    applicationLifecycle.registerListener(usage)
+                    applicationLifecycle.registerListener(usageStorage)
                     applicationLifecycle.registerListener(koinViewModel<ActivityViewModel>())
                     applicationLifecycle.registerListener(koinViewModel<FreetrainingViewModel>())
                     applicationLifecycle.registerListener(koinViewModel<VenueViewModel>())

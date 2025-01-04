@@ -47,12 +47,12 @@ class HttpDownloader(
     }
 
     override suspend fun downloadVenueImage(url: Url): ByteArray {
-        val realUrl = ensure(url)
+        val realUrl = ensureGoogleStorageLink(url)
         val response = httpClient.safeGet(realUrl)
         return response.body<ByteArray>()
     }
 
-    private suspend fun ensure(url: Url): Url =
+    private suspend fun ensureGoogleStorageLink(url: Url): Url =
         if (url.toString().contains("/download/")) {
             log.debug { "Getting alternative Google storage download URL for: $url" }
             val cleanedUrl = url.toString().replace("/download/", "/")

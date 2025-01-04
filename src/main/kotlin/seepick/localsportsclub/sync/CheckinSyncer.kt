@@ -20,9 +20,7 @@ class CheckinSyncer(
 
     suspend fun sync() {
         log.debug { "Syncing checkins..." }
-
         val entries = fetchEntries()
-
         entries.map { entry ->
             when (entry) {
                 is ActivityCheckinEntry -> markActivityAsCheckedin(entry)
@@ -51,7 +49,7 @@ class CheckinSyncer(
     }
 
     private suspend fun markActivityAsCheckedin(entry: ActivityCheckinEntry) {
-        val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.rescueActivity(
+        val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.fetchInsertAndDispatch(
             activityId = entry.activityId,
             venueSlug = entry.venueSlug,
             prefilledNotes = "[SYNC] rescued activity for past check-in"

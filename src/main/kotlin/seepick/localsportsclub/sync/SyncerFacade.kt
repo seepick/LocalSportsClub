@@ -1,6 +1,8 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class SyncerFacade(
     private val venueSyncer: VenueSyncer,
@@ -19,11 +21,15 @@ class SyncerFacade(
 
     override suspend fun sync() {
         log.debug { "Syncing ..." }
-        venueSyncer.sync()
-        activitiesSyncer.sync()
-        freetrainingSyncer.sync()
-        scheduleSyncer.sync()
-        checkinSyncer.sync()
-        cleanupSyncer.sync()
+        transaction {
+            runBlocking {
+//                venueSyncer.sync()
+//                activitiesSyncer.sync()
+//                freetrainingSyncer.sync()
+//                scheduleSyncer.sync()
+                checkinSyncer.sync()
+                cleanupSyncer.sync()
+            }
+        }
     }
 }

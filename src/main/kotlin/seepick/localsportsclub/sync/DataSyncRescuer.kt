@@ -12,7 +12,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 
 interface DataSyncRescuer {
-    suspend fun rescueActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
+    suspend fun fetchInsertAndDispatch(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
     suspend fun rescueFreetraining(freetrainingId: Int, venueSlug: String, prefilledNotes: String): FreetrainingDbo
 }
 
@@ -26,7 +26,11 @@ class DataSyncRescuerImpl(
 ) : DataSyncRescuer {
     private val log = logger {}
 
-    override suspend fun rescueActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo {
+    override suspend fun fetchInsertAndDispatch(
+        activityId: Int,
+        venueSlug: String,
+        prefilledNotes: String
+    ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
         val activityDetails = activityApi.fetchDetails(activityId)
@@ -52,7 +56,7 @@ class DataSyncRescuerImpl(
 
     private suspend fun ensureVenue(venueSlug: String, prefilledNotes: String): VenueDbo =
         venueRepo.selectBySlug(venueSlug) ?: suspend {
-            venueSyncInserter.fetchAllInsertDispatch(listOf(venueSlug), prefilledNotes)
+            venueSyncInserter.fetchInsertAndDispatch(listOf(venueSlug), prefilledNotes)
             venueRepo.selectBySlug(venueSlug)
                 ?: error("Terribly failed rescuing venue: [$venueSlug]")
         }()

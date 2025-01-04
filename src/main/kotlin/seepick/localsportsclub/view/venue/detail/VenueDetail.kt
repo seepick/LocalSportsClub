@@ -12,6 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import org.koin.compose.koinInject
+import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
@@ -46,12 +48,14 @@ fun VenueDetail(
     onActivityClicked: ((Activity) -> Unit)?,
     onFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
+    uscConfig: UscConfig = koinInject(),
 ) {
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         VenueImage(venue.imageFileName)
         LabeledText("Facilities", venue.facilities.joinToString(", "))
         LabeledText("Description", venue.description)
+        if (venue.city != uscConfig.city) LabeledText("City", venue.city.label)
         venue.importantInfo?.also { LabeledText("Info", it) }
         venue.openingTimes?.also { LabeledText("Times", it) }
         CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)

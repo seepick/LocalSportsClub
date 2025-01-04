@@ -17,21 +17,43 @@ class SyncerViewModel(
     private val log = logger {}
 
     override fun onActivitiesAdded(activities: List<Activity>) {
+        addOrRemoveActivities(activities) { venues, add -> venues += add }
+    }
+
+    override fun onActivitiesDeleted(activities: List<Activity>) {
+        addOrRemoveActivities(activities) { venues, add -> venues -= add }
+    }
+
+    private fun addOrRemoveActivities(
+        activities: List<Activity>,
+        addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
+    ) {
         viewModelScope.launch {
             log.debug { "Linking ${activities.size} activities into their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
-                venuesById[venueId]!!.activities += venueActivities
+                addOrRemove(venuesById[venueId]!!.activities, venueActivities.toSet())
             }
         }
     }
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
+        removeOrAddFretraining(freetrainings) { venues, add -> venues += add }
+    }
+
+    override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
+        removeOrAddFretraining(freetrainings) { venues, delete -> venues -= delete }
+    }
+
+    private fun removeOrAddFretraining(
+        freetrainings: List<Freetraining>,
+        addOrRemove: (MutableList<Freetraining>, Set<Freetraining>) -> Unit
+    ) {
         viewModelScope.launch {
-            log.debug { "Linking ${freetrainings.size} freetrainings into their corresponding venues." }
+            log.debug { "${freetrainings.size} freetrainings changed from their venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->
-                venuesById[venueId]!!.freetrainings += venueFreetraining
+                addOrRemove(venuesById[venueId]!!.freetrainings, venueFreetraining.toSet())
             }
         }
     }

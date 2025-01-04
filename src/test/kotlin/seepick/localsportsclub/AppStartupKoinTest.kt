@@ -2,9 +2,6 @@ package seepick.localsportsclub
 
 import io.kotest.core.spec.style.StringSpec
 import org.koin.core.context.startKoin
-import seepick.localsportsclub.AppConfig.ApiMode
-import seepick.localsportsclub.AppConfig.DatabaseMode
-import seepick.localsportsclub.AppConfig.SyncMode
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Downloader

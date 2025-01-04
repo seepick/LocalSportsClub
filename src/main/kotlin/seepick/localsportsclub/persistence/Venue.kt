@@ -34,7 +34,10 @@ data class VenueDbo(
     val isHidden: Boolean,
     val isDeleted: Boolean,
 ) {
-    companion object // for extensions
+    companion object; // for extensions
+
+    override fun toString() =
+        "VenueDbo[id=$id, slug=$slug, name=$name, imageFileName=$imageFileName, " + "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted]"
 }
 
 interface VenueRepo {
@@ -160,11 +163,9 @@ class InMemoryVenueRepo : VenueRepo {
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 
-    override fun selectAll(): List<VenueDbo> =
-        stored.values.toList().sortedBy { it.id }
+    override fun selectAll(): List<VenueDbo> = stored.values.toList().sortedBy { it.id }
 
-    override fun selectBySlug(slug: String): VenueDbo? =
-        stored.values.firstOrNull { it.slug == slug }
+    override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
 
     override fun insert(venue: VenueDbo): VenueDbo {
         val newVenue = venue.copy(id = currentId++)

@@ -4,8 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -55,38 +54,35 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
 
 interface FreetrainingRepo {
     fun selectAll(): List<FreetrainingDbo>
-    fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo>
     fun selectById(freetrainingId: Int): FreetrainingDbo?
     fun selectFutureMostDate(): LocalDate?
     fun insert(dbo: FreetrainingDbo)
     fun update(dbo: FreetrainingDbo)
-    fun deleteNonCheckedinBefore(threshold: LocalDate)
+    fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo>
 }
 
 class InMemoryFreetrainingRepo : FreetrainingRepo {
     val stored = mutableMapOf<Int, FreetrainingDbo>()
 
     override fun selectAll() = stored.values.toList()
-    override fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo> =
-        stored.values.filter { it.date >= today }
 
-    override fun selectById(freetrainingId: Int): FreetrainingDbo? =
-        stored[freetrainingId]
+    override fun selectById(freetrainingId: Int): FreetrainingDbo? = stored[freetrainingId]
 
-    override fun selectFutureMostDate(): LocalDate? =
-        stored.values.maxByOrNull { it.date }?.date
+    override fun selectFutureMostDate(): LocalDate? = stored.values.maxByOrNull { it.date }?.date
 
     override fun insert(dbo: FreetrainingDbo) {
         require(!stored.containsKey(dbo.id))
         stored[dbo.id] = dbo
     }
 
-    override fun deleteNonCheckedinBefore(threshold: LocalDate) {
-        stored.values.filter {
+    override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> {
+        val delete = stored.values.filter {
             !it.wasCheckedin && it.date < threshold
-        }.forEach {
+        }
+        delete.forEach {
             stored.remove(it.id)
         }
+        return delete
     }
 
     override fun update(dbo: FreetrainingDbo) {
@@ -100,13 +96,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
     private val log = logger {}
 
     override fun selectAll(): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().map {
-            FreetrainingDbo.fromRow(it)
-        }
-    }
-
-    override fun selectAllUpcoming(today: LocalDate): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().where { FreetrainingsTable.date.greaterEq(today) }.map {
+        FreetrainingsTable.selectAll().orderBy(FreetrainingsTable.date).map {
             FreetrainingDbo.fromRow(it)
         }
     }
@@ -119,8 +109,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
 
     override fun selectFutureMostDate(): LocalDate? = transaction {
         FreetrainingsTable.select(FreetrainingsTable.date).orderBy(FreetrainingsTable.date, SortOrder.DESC).limit(1)
-            .toList()
-            .let {
+            .toList().let {
                 if (it.isEmpty()) null
                 else it.first()[FreetrainingsTable.date]
             }
@@ -143,10 +132,15 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
         if (updated != 1) error("Expected 1 to be updated by ID ${dbo.id}, but was: $updated")
     }
 
-    override fun deleteNonCheckedinBefore(threshold: LocalDate) = transaction {
-        val deleted = FreetrainingsTable.deleteWhere {
-            wasCheckedin.eq(false).and(date.less(threshold))
-        }
-        log.info { "Deleted $deleted old freetrainings before $threshold." }
+    override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> = transaction {
+        val deleted = FreetrainingsTable.selectAll().where {
+            FreetrainingsTable.wasCheckedin.eq(false).and(FreetrainingsTable.date.less(threshold))
+        }.map { FreetrainingDbo.fromRow(it) }
+
+        val deletedCount = FreetrainingsTable.deleteWhere { FreetrainingsTable.id.inList(deleted.map { it.id }) }
+        require(deletedCount == deleted.size)
+
+        log.info { "Deleted ${deleted.size} old freetrainings before $threshold." }
+        deleted
     }
 }

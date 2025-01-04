@@ -41,13 +41,12 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.date.SystemClock
-import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Composable
@@ -79,7 +78,7 @@ fun DateTimeRangeSearchField_Preview() {
             searchOption = DateTimeRangeSearchOption<Any>(
                 label = "Label",
                 reset = {},
-                extractor = { DateTimeRange(LocalDateTime.now(), LocalDateTime.now().plusHours(1)) },
+                extractor = { DateTimeRange(SystemClock.now(), SystemClock.now().plusHours(1)) },
             ),
         )
     }

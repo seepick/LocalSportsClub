@@ -63,7 +63,7 @@ class VenueSyncerTest : StringSpec() {
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
             coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns emptyList()
-            venueRepo.insert(Arb.venueDbo().next().copy(isDeleted = false))
+            venueRepo.insert(Arb.venueDbo().next().copy(cityId = uscConfig.city.id, isDeleted = false))
 
             syncer.sync()
 

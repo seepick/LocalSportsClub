@@ -54,7 +54,7 @@ class FreetrainingSyncer(
         val dbos = missingFreetrainings.values.map { freetraining ->
             val venueId = venuesBySlug[freetraining.venueSlug]?.id ?: suspend {
                 log.debug { "Trying to rescue venue for missing: $freetraining" }
-                venueSyncInserter.fetchAllInsertDispatch(
+                venueSyncInserter.fetchInsertAndDispatch(
                     listOf(freetraining.venueSlug),
                     "[SYNC] fetched through freetraining ${freetraining.name}"
                 )

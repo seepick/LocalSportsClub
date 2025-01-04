@@ -9,6 +9,6 @@ interface Clock {
 }
 
 object SystemClock : Clock {
-    override fun now(): LocalDateTime = LocalDateTime.now()
+    override fun now(): LocalDateTime = LocalDateTime.now().withNano(0)
     override fun today(): LocalDate = LocalDate.now()
 }

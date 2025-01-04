@@ -22,6 +22,8 @@ interface DataStorageListener {
     fun onVenueUpdated(venue: Venue)
     fun onActivitiesAdded(activities: List<Activity>)
     fun onFreetrainingsAdded(freetrainings: List<Freetraining>)
+    fun onActivitiesDeleted(activities: List<Activity>)
+    fun onFreetrainingsDeleted(freetrainings: List<Freetraining>)
 }
 
 object NoopDataStorageListener : DataStorageListener {
@@ -35,6 +37,12 @@ object NoopDataStorageListener : DataStorageListener {
     }
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
+    }
+
+    override fun onActivitiesDeleted(activities: List<Activity>) {
+    }
+
+    override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
     }
 }
 
@@ -56,22 +64,30 @@ class DataStorage(
     }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
-        activityRepo.selectAllUpcoming(clock.today()).map { activityDbo ->
-            val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
-            activityDbo.toActivity(venueForActivity).also {
-                venueForActivity.activities += it
-            }
-        }.groupByTo(mutableMapOf()) { it.venue.id }
+        val today = clock.today()
+        activityRepo.selectAll()
+            .filter { it.wasCheckedin || it.from.toLocalDate() >= today }
+            .sortedByDescending { it.from }
+            .map { activityDbo ->
+                val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
+                activityDbo.toActivity(venueForActivity).also {
+                    venueForActivity.activities += it
+                }
+            }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
-        freetrainingRepo.selectAllUpcoming(clock.today()).map { freetrainingDbo ->
-            val venueForFreetraining =
-                venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
-            freetrainingDbo.toFreetraining(venueForFreetraining).also {
-                venueForFreetraining.freetrainings += it
-            }
-        }.groupByTo(mutableMapOf()) { it.venue.id }
+        val today = clock.today()
+        freetrainingRepo.selectAll()
+            .filter { it.wasCheckedin || it.date >= today }
+            .sortedByDescending { it.date }
+            .map { freetrainingDbo ->
+                val venueForFreetraining =
+                    venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
+                freetrainingDbo.toFreetraining(venueForFreetraining).also {
+                    venueForFreetraining.freetrainings += it
+                }
+            }.groupByTo(mutableMapOf()) { it.venue.id }
     }
 
     fun registerListener(listener: DataStorageListener) {
@@ -81,11 +97,15 @@ class DataStorage(
     fun selectVisibleVenues(): List<Venue> =
         venuesById.values.toList()
 
-    fun selectVisibleActivities(): List<Activity> =
-        allActivitiesByVenueId.values.toList().flatten()
+    fun selectVisibleActivities(): List<Activity> {
+        val today = clock.today()
+        return allActivitiesByVenueId.values.toList().flatten().filter { it.dateTimeRange.from.toLocalDate() >= today }
+    }
 
-    fun selectVisibleFreetrainings(): List<Freetraining> =
-        allFreetrainingsByVenueId.values.toList().flatten()
+    fun selectVisibleFreetrainings(): List<Freetraining> {
+        val today = clock.today()
+        return allFreetrainingsByVenueId.values.toList().flatten().filter { it.date >= today }
+    }
 
     override fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
@@ -128,6 +148,28 @@ class DataStorage(
         }
     }
 
+    override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
+        val deletedActivities = activityDbos.map { activityDbo ->
+            val allActivitiesByVenue = allActivitiesByVenueId[activityDbo.venueId]!!
+            val activity = allActivitiesByVenue.single { it.id == activityDbo.id }
+            allActivitiesByVenue.remove(activity)
+            // venuesById[activity.venue.id]!!.activities.remove(activity) // NO! do it in SyncerViewModel
+            activity
+        }
+        dispatchOnActivitiesDeleted(deletedActivities)
+    }
+
+    override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
+        val deletedFreetrainings = freetrainingDbos.map { freetrainingDbo ->
+            val allFreetrainingsByVenue = allFreetrainingsByVenueId[freetrainingDbo.venueId]!!
+            val freetraining = allFreetrainingsByVenue.single { it.id == freetrainingDbo.id }
+            allFreetrainingsByVenue.remove(freetraining)
+            // venuesById[freetraining.venue.id]!!.freetrainings.remove(freetraining) // NO! do it in SyncerViewModel
+            freetraining
+        }
+        dispatchOnFreetrainingsDeleted(deletedFreetrainings)
+    }
+
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         val activity = allActivitiesByVenueId[activityDbo.venueId]!!.first { it.id == activityDbo.id }
         when (field) {
@@ -163,6 +205,18 @@ class DataStorage(
     private fun dispatchOnFreetrainingsAdded(freetrainings: List<Freetraining>) {
         listeners.forEach {
             it.onFreetrainingsAdded(freetrainings)
+        }
+    }
+
+    private fun dispatchOnActivitiesDeleted(activities: List<Activity>) {
+        listeners.forEach {
+            it.onActivitiesDeleted(activities)
+        }
+    }
+
+    private fun dispatchOnFreetrainingsDeleted(freetrainings: List<Freetraining>) {
+        listeners.forEach {
+            it.onFreetrainingsDeleted(freetrainings)
         }
     }
 }
