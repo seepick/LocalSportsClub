@@ -17,19 +17,18 @@ class SyncerViewModel(
     private val log = logger {}
 
     override fun onActivitiesAdded(activities: List<Activity>) {
-        addOrRemoveActivities(activities) { venues, add -> venues += add }
+        addOrRemoveActivities("Adding", activities) { venues, add -> venues += add }
     }
 
     override fun onActivitiesDeleted(activities: List<Activity>) {
-        addOrRemoveActivities(activities) { venues, add -> venues -= add }
+        addOrRemoveActivities("Deleting", activities) { venues, add -> venues -= add }
     }
 
     private fun addOrRemoveActivities(
-        activities: List<Activity>,
-        addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
+        logPrompt: String, activities: List<Activity>, addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
     ) {
         viewModelScope.launch {
-            log.debug { "Linking ${activities.size} activities into their corresponding venues." }
+            log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
                 addOrRemove(venuesById[venueId]!!.activities, venueActivities.toSet())
@@ -38,19 +37,20 @@ class SyncerViewModel(
     }
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining(freetrainings) { venues, add -> venues += add }
+        removeOrAddFretraining("Adding", freetrainings) { venues, add -> venues += add }
     }
 
     override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining(freetrainings) { venues, delete -> venues -= delete }
+        removeOrAddFretraining("Deleting", freetrainings) { venues, delete -> venues -= delete }
     }
 
     private fun removeOrAddFretraining(
+        logPrompt: String,
         freetrainings: List<Freetraining>,
         addOrRemove: (MutableList<Freetraining>, Set<Freetraining>) -> Unit
     ) {
         viewModelScope.launch {
-            log.debug { "${freetrainings.size} freetrainings changed from their venue." }
+            log.debug { "$logPrompt ${freetrainings.size} freetrainings from/to their corresponding venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->
                 addOrRemove(venuesById[venueId]!!.freetrainings, venueFreetraining.toSet())

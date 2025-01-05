@@ -23,6 +23,9 @@ class DateUtilKtTest : DescribeSpec() {
 
     init {
         describe("When get days to sync") {
+            it("fo") {
+                clock.daysUntil(14, todayNow.minusDays(3).toLocalDate())
+            }
             /*
             today: 5.12.
             daysToSync = 4 -> max = 8.12.

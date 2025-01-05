@@ -15,15 +15,14 @@ data class AppConfig(
 ) {
     companion object {
         val development = AppConfig(
-//            api = ApiMode.RealHttp,
-//            sync = SyncMode.Real,
-            api = ApiMode.Mock,
-            sync = SyncMode.Dummy,
+            api = ApiMode.RealHttp,
+            sync = SyncMode.Real,
+//            api = ApiMode.Mock,
+//            sync = SyncMode.Dummy,
 
             database = DatabaseMode.Exposed,
             logFileEnabled = true,
-            firstScreen = Screen.Activities,
-            usc = UscConfig(syncDaysAhead = 2)
+//            firstScreen = Screen.Activities,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
@@ -53,7 +52,7 @@ data class UscConfig(
     val city: City = City.Amsterdam,
     val plan: PlanType = PlanType.Large,
     val storeResponses: Boolean = true,
-    val syncDaysAhead: Int = 14,
+    val syncDaysAhead: Int = 14, // including today
     val usageConfig: UsageConfig = UsageConfig(),
 ) {
     init {

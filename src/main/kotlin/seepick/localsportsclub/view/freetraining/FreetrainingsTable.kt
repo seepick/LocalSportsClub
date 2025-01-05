@@ -21,10 +21,11 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     TableColumn("Name", ColSize.Weight(0.5f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
     TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
     TableColumn("Category", ColSize.Width(170.dp), CellRenderer.TextRenderer { it.category }),
-    TableColumn("Date",
+    TableColumn(
+        "Date",
         ColSize.Width(120.dp),
-        CellRenderer.TextRenderer { it.date.prettyPrint(clock.today().year) }),
-
+        CellRenderer.TextRenderer(extractor = { it.date.prettyPrint(clock.today().year) }, sortExtractor = { it.date })
+    ),
     TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },

@@ -26,24 +26,25 @@ object ManualSystemTests {
         storeResponses = false,
     )
     private val responseStorage = ResponseStorageImpl()
-    private var phpSessionId: PhpSessionId = PhpSessionId("not set")
+    private val phpSessionId: PhpSessionId by lazy { runBlocking { loadSessionId() } }
 
+    // https://urbansportsclub.com/en/venues/wilhelmina-gasthuisterrein
     @JvmStatic
     fun main(args: Array<String>) {
         runBlocking {
             log.info { "Manual test running..." }
-            loadSessionId()
-
-            testFreetrainingDetails()
+//            testFreetrainingDetails()
 //            testCheckins()
 //            testVenues()
+            testVenue()
 //            testActivities()
 //            testSchedule()
         }
     }
 
     private fun activityApi() = ActivityHttpApi(httpClient, phpSessionId, responseStorage, uscConfig, SystemClock)
-    private fun checkinHttpApi() = CheckinHttpApi(httpClient, phpSessionId, responseStorage, SystemClock, uscConfig)
+    private fun checkinApi() = CheckinHttpApi(httpClient, phpSessionId, responseStorage, SystemClock, uscConfig)
+    private fun venueApi() = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig)
 
     private suspend fun testFreetrainingDetails() {
         val freetrainingId = 83664090
@@ -52,15 +53,21 @@ object ManualSystemTests {
     }
 
     private suspend fun testCheckins() {
-        val response = checkinHttpApi().fetchPage(1)
+        val response = checkinApi().fetchPage(1)
         println("received ${response.entries.size} checkins")
         response.entries.forEach { entry ->
             println(entry)
         }
     }
 
+    private suspend fun testVenue() {
+        val details = venueApi().fetchDetails("wilhelmina-gasthuisterrein")
+        println("details.title=${details.title}")
+        println("details.websiteUrl=${details.websiteUrl}")
+    }
+
     private suspend fun testVenues() {
-        val pages = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig).fetchPages(
+        val pages = venueApi().fetchPages(
             VenuesFilter(
                 city = City.Amsterdam, plan = PlanType.Large
             )
@@ -71,7 +78,7 @@ object ManualSystemTests {
 
     private suspend fun testActivities() {
         val today = LocalDate.now()
-        val pages = ManualSystemTests.activityApi().fetchPages(
+        val pages = activityApi().fetchPages(
             filter = ActivitiesFilter(city = City.Amsterdam, plan = PlanType.Large, date = today),
             serviceType = ServiceType.Courses,
         )
@@ -89,12 +96,11 @@ object ManualSystemTests {
         println("Got ${ids.size} activity IDs back: $ids")
     }
 
-    private suspend fun loadSessionId() {
+    private suspend fun loadSessionId(): PhpSessionId {
         val syspropSessionId = System.getProperty("phpSessionId")
         if (syspropSessionId != null) {
             println("Using system property's session ID: $syspropSessionId")
-            phpSessionId = PhpSessionId(syspropSessionId)
-            return
+            return PhpSessionId(syspropSessionId)
         }
         val syspropUsername = System.getProperty("username")
         val syspropPassword = System.getProperty("password")
@@ -103,7 +109,7 @@ object ManualSystemTests {
         } else {
             Credentials.load()
         }
-        phpSessionId = LoginApi(httpClient, uscConfig.baseUrl).login(credentials)
+        return LoginApi(httpClient, uscConfig.baseUrl).login(credentials)
             .shouldBeInstanceOf<LoginResult.Success>().phpSessionId.let {
                 println("New PHP session ID is: $it")
                 PhpSessionId(it)

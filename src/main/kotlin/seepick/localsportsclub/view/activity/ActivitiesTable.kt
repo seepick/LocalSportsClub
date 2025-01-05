@@ -30,7 +30,10 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         "Date",
         ColSize.Width(200.dp),
-        CellRenderer.TextRenderer { it.dateTimeRange.prettyPrint(clock.today().year) }),
+        CellRenderer.TextRenderer(
+            extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },
+            sortExtractor = { it.dateTimeRange })
+    ),
     TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },

@@ -147,6 +147,10 @@
             <column name="NOTES" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
+            <column name="LAST_SYNC" type="datetime">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
+
     </changeSet>
 </databaseChangeLog>

@@ -23,6 +23,7 @@ import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
+import java.util.concurrent.atomic.AtomicBoolean
 
 interface ScreenItem {
     val venue: Venue
@@ -51,12 +52,16 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     val selectedActivity: StateFlow<Activity?> = _selectedActivity.asStateFlow()
 
     abstract fun buildSearch(resetItems: () -> Unit): SEARCH
-    val searching by lazy { buildSearch(::resetItems) }
-    val sorting by lazy { SortingDelegate(tableColumns, resetSort = ::resetItems) }
+    val searching: SEARCH by lazy { buildSearch(::resetItems) }
+    val sorting: SortingDelegate<ITEM> by lazy { SortingDelegate(tableColumns, resetSort = ::resetItems) }
+
+    private var isAddingItems = AtomicBoolean(false)
+    private var triedToResetItems = AtomicBoolean(false)
 
     override fun onStartUp() {
         log.info { "Filling initial data for: ${this::class.simpleName}" }
         _allItems.addAll(dataStorage.selectAllItems())
+        sorting // trigger lazy
         searching.reset()
     }
 
@@ -71,21 +76,29 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
 
     abstract fun DataStorage.selectAllItems(): List<ITEM>
 
-    protected fun onItemAdded(item: ITEM) {
-        _allItems.add(item)
-        if (searching.matches(item)) {
+    protected fun onItemsAdded(items: List<ITEM>) {
+        isAddingItems.set(true)
+        log.debug { "onItemsAdded(items.size=${items.size})" }
+        _allItems.addAll(items)
+        items.filter { searching.matches(it) }.forEach { item ->
             val index = findIndexFor(_items, item, sorting.selectedColumnValueExtractor)
             _items.add(index, item)
         }
-    }
-
-    open fun onItemSelected(item: SelectedItemType) {
-        // fiddle around with venue being the item (special-case)
+        isAddingItems.set(false)
+        if (triedToResetItems.get()) {
+            triedToResetItems.set(false)
+            log.debug { "Tried to reset items while adding some. Redoing now." }
+            resetItems()
+        }
     }
 
     open fun onItemsDeleted(items: List<ITEM>) {
         _allItems.removeAll(items)
         _items.removeAll(items)
+    }
+
+    open fun onItemSelected(item: SelectedItemType) {
+        // fiddle around with venue being the item (special-case)
     }
 
     fun onVenueSelected(venue: Venue) {
@@ -118,6 +131,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     }
 
     override fun onVenueUpdated(venue: Venue) {
+        log.debug { "onVenueUpdated($venue)" }
         venueEdit.init(venue)
         resetItems() // not sure about the performance impact of this...
     }
@@ -128,7 +142,12 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     }
 
     private fun resetItems() {
-        log.trace { "resetItems()" }
+        if (isAddingItems.get()) {
+            log.debug { "reset items was blocked by adding items. trying later again..." }
+            triedToResetItems.set(true)
+            return
+        }
+        log.trace { "resetItems for ${this::class.simpleName}" }
         _items.clear()
         _items.addAll(_allItems.filter { item ->
             searching.matches(item)

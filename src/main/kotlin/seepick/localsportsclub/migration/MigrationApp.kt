@@ -7,12 +7,16 @@ import java.io.File
 
 object MigrationApp {
 
+    private val onefitExportFile = File(System.getProperty("user.home"), "Desktop/allfit_partners.json")
+
     @JvmStatic
     fun main(args: Array<String>) {
         connectToDatabase()
         val venues = ExposedVenueRepo.selectAll().sortedBy { it.name }
         transaction {
-            MigrationInserter().insert(MigrationMatchFinder.find(MigrationSourceDecoder.decode(), venues), venues)
+            val onefitPartners = OnefitPartners.decode(onefitExportFile)
+            val matches = MigrationMatcher.match(onefitPartners, venues)
+            MigrationProcessor.process(matches, venues)
         }
         println("Done ✅")
     }

@@ -12,7 +12,7 @@ data class VenueDetails(
     val description: String,
     val disciplines: List<String>,
     val linkedVenueSlugs: List<String>,
-    val websiteUrl: Url?,
+    val websiteUrl: Url?, // the official one, not the USC own (inferred by slug and static URL prefix)
     val importantInfo: String?,
     val openingTimes: String?,
     val postalCode: String, // from JSON script

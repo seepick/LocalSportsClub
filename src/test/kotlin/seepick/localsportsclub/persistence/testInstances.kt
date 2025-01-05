@@ -74,5 +74,8 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
 }
 
 fun Arb.Companion.singlesDbo() = arbitrary {
-    SinglesDbo(notes = "")
+    SinglesDbo(
+        notes = string().next(),
+        lastSync = localDateTime().orNull().next(),
+    )
 }

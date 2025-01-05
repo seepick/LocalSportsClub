@@ -11,11 +11,9 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate
 
 class ActivitiesSyncer(
-    private val clock: Clock,
     private val api: UscApi,
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
@@ -26,18 +24,14 @@ class ActivitiesSyncer(
     private val log = logger {}
     private val city: City = uscConfig.city
     private val plan: PlanType = uscConfig.plan
-    private val syncDaysAhead: Int = uscConfig.syncDaysAhead
 
-    suspend fun sync() {
-        log.info { "Syncing activities ..." }
+    suspend fun sync(days: List<LocalDate>) {
+        log.info { "Syncing activities for: $days" }
         val allStoredActivities = activityRepo.selectAll()
         val venuesBySlug = venueRepo.selectAll().associateBy { it.slug }.toMutableMap()
-
-        clock.daysUntil(syncDaysAhead, activityRepo.selectFutureMostDate())
-            .also { log.debug { "Syncing days: $it" } }
-            .forEach { day ->
-                syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
-            }
+        days.forEach { day ->
+            syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
+        }
     }
 
     private suspend fun syncForDay(
@@ -45,6 +39,7 @@ class ActivitiesSyncer(
         stored: List<ActivityDbo>,
         venuesBySlug: MutableMap<String, VenueDbo>
     ) {
+        log.debug { "Sync for day: $day" }
         val remoteActivities =
             api.fetchActivities(ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
         val storedActivities = stored.associateBy { it.id }

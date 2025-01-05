@@ -7,7 +7,7 @@ import java.time.LocalTime
 data class DateTimeRange(
     val from: LocalDateTime,
     val to: LocalDateTime,
-) {
+) : Comparable<DateTimeRange> {
     init {
         require(from <= to) { "From ($from) must be <= to ($to)" }
     }
@@ -21,5 +21,10 @@ data class DateTimeRange(
         if (matchFrom != null) return dateMatches && fromTime >= matchFrom
         if (matchTo != null) return dateMatches && fromTime <= matchTo
         return dateMatches
+    }
+
+    override fun compareTo(other: DateTimeRange): Int {
+        val from = this.from.compareTo(other.from)
+        return if (from != 0) from else this.to.compareTo(other.to)
     }
 }

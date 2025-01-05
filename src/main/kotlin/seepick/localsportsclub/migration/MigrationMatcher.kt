@@ -2,14 +2,75 @@ package seepick.localsportsclub.migration
 
 import seepick.localsportsclub.persistence.VenueDbo
 
-data class LinkMapping(
+data class MigrationMatch(
+    val partner: OnefitPartner,
+    val matchType: MatchType,
+)
+
+sealed interface MatchType {
+    data class LinkToExistingVenue(val venueDbo: VenueDbo) : MatchType
+    data class CreateDeletedVenue(val createMapping: CreateMapping) : MatchType
+}
+
+data class CreateMapping(
+    val partnerName: String,
+    val linkedVenueSlugs: List<String> = emptyList()
+)
+
+object MigrationMatcher {
+
+    fun match(partners: List<OnefitPartner>, venues: List<VenueDbo>): List<MigrationMatch> {
+        val intermediate = partners.filter { !MatchinDb.ignorePartners.contains(it.name) }.map { partner ->
+            var matchType: MatchType? = null
+            venues.firstOrNull { it.name == partner.name }?.also {
+                matchType = MatchType.LinkToExistingVenue(it)
+            }
+            if (matchType == null) {
+                MatchinDb.linkPartnerToExistingVenue[partner.name]?.also { linkMapping ->
+                    matchType = MatchType.LinkToExistingVenue(venues.singleOrNull { it.slug == linkMapping.venueSlug }
+                        ?: error("Not found venue by slug: ${linkMapping.venueSlug}"))
+                }
+            }
+            if (matchType == null) {
+                MatchinDb.createDeletedPartner[partner.name]?.also {
+                    require(partner.checkins.isNotEmpty() || partner.dropins.isNotEmpty()) { "Meaningless partner to be created (it's empty): ${partner.name}" }
+                    matchType = MatchType.CreateDeletedVenue(it)
+                }
+            }
+            MigrationIntermediateMatch(partner, matchType)
+        }
+        requireAllMatched(intermediate)
+        return intermediate.map { MigrationMatch(it.partner, it.matchType!!) }
+    }
+
+    private fun requireAllMatched(intermediate: List<MigrationIntermediateMatch>) {
+        val notFounds = intermediate.filter { it.matchType == null }
+        if (notFounds.isNotEmpty()) {
+            val errorMessage = buildString {
+                append(("Failed to find matching partner-venue for ${notFounds.size} items:\n"))
+                notFounds.forEach {
+                    append("- [${it.partner.name}] => ${it.partner.locations.joinToString { "${it.zipCode} ${it.city} ${it.streetName} ${it.houseNumber} ${it.addition}\n" }}")
+                }
+            }
+            throw Exception(errorMessage)
+        }
+    }
+}
+
+private data class MigrationIntermediateMatch(
+    val partner: OnefitPartner,
+    var matchType: MatchType?,
+)
+
+
+private data class LinkMapping(
     val partnerName: String,
     val venueSlug: String,
 )
 
-object MigrationMatchFinder {
+private object MatchinDb {
 
-    private val ignorePartners = setOf(
+    val ignorePartners = setOf(
         "Circling Europe",
         "EMS by Excellence Skin",
         "Femme Gym",
@@ -39,7 +100,7 @@ object MigrationMatchFinder {
         "Snap Fitness Breda", // Breda
     )
 
-    private val createDeletedPartner = listOf(
+    val createDeletedPartner = listOf(
         CreateMapping("Active Club"),
         CreateMapping(
             "Bluebirds Centrum",
@@ -54,7 +115,7 @@ object MigrationMatchFinder {
         CreateMapping("Studio Balance"),
     ).associateBy { it.partnerName }
 
-    private val linkPartnerToExistingVenue = listOf(
+    val linkPartnerToExistingVenue = listOf(
         LinkMapping("Aerials Amsterdam", "aerials-amsterdam-cla"),
         LinkMapping("Aikido with Shinyu Body & Mind", "shinyu-aikido-amsterdam-de-pijp-1"),
         LinkMapping("Canal SUP", "canalsup"),
@@ -86,56 +147,4 @@ object MigrationMatchFinder {
         LinkMapping("Yogaschool Noord", "yogaschool-noord-ndsm"),
         LinkMapping("bbb health boutique Amsterdam Jordaan", "bbb-health-boutique-jordaan"),
     ).associateBy { it.partnerName }
-
-    fun find(partners: List<MigrationPartner>, venues: List<VenueDbo>): List<MigrationMatch> {
-        val intermediate = partners.filter { !ignorePartners.contains(it.name) }.map { partner ->
-            var matchType: MatchType? = null
-            venues.firstOrNull { it.name == partner.name }?.also {
-                matchType = MatchType.LinkToExistingVenue(it)
-            }
-            if (matchType == null) {
-                linkPartnerToExistingVenue[partner.name]?.also { linkMapping ->
-                    matchType = MatchType.LinkToExistingVenue(venues.singleOrNull { it.slug == linkMapping.venueSlug }
-                        ?: error("Not found venue by slug: ${linkMapping.venueSlug}"))
-                }
-            }
-            if (matchType == null) {
-                createDeletedPartner[partner.name]?.also {
-                    require(partner.checkins.isNotEmpty() || partner.dropins.isNotEmpty()) { "Meaningless partner to be created (it's empty): ${partner.name}" }
-                    matchType = MatchType.CreateDeletedVenue(it)
-                }
-            }
-            MigrationIntermediateMatch(partner, matchType)
-        }
-        val notFounds = intermediate.filter { it.matchType == null }
-        if (notFounds.isNotEmpty()) {
-            println("Failed to find matching partner-venue for ${notFounds.size} items:")
-            notFounds.forEach {
-                println("- [${it.partner.name}] => ${it.partner.locations.joinToString { "${it.zipCode} ${it.city} ${it.streetName} ${it.houseNumber} ${it.addition}" }}")
-            }
-            throw Exception("Failed! See details above...")
-        }
-        return intermediate.map { MigrationMatch(it.partner, it.matchType!!) }
-    }
 }
-
-data class MigrationIntermediateMatch(
-    val partner: MigrationPartner,
-    var matchType: MatchType?,
-)
-
-data class MigrationMatch(
-    val partner: MigrationPartner,
-    val matchType: MatchType,
-)
-
-sealed interface MatchType {
-    data class LinkToExistingVenue(val venueDbo: VenueDbo) : MatchType
-    data class CreateDeletedVenue(val createMapping: CreateMapping) : MatchType
-}
-
-data class CreateMapping(
-    val partnerName: String,
-    val linkedVenueSlugs: List<String> = emptyList()
-)
-

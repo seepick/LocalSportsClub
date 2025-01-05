@@ -18,9 +18,7 @@ class FreetrainingViewModel(
     override fun DataStorage.selectAllItems() = selectVisibleFreetrainings()
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
-        freetrainings.forEach { freetraining ->
-            onItemAdded(freetraining)
-        }
+        onItemsAdded(freetrainings)
     }
 
     override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {

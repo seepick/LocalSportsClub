@@ -4,24 +4,25 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
-object MigrationSourceDecoder {
+object OnefitPartners {
+
     private val json = Json {
         ignoreUnknownKeys = false
     }
-    private val oldData = File(System.getProperty("user.home"), "Desktop/allfit_partners.json")
-    fun decode(): List<MigrationPartner> {
+
+    fun decode(oldData: File): List<OnefitPartner> {
         require(oldData.exists())
-        return json.decodeFromString<MigrationJson>(oldData.readText()).partners.sortedBy { it.name }
+        return json.decodeFromString<OnefitPartnersJson>(oldData.readText()).partners.sortedBy { it.name }
     }
 }
 
 @Serializable
-data class MigrationJson(
-    val partners: List<MigrationPartner>
+data class OnefitPartnersJson(
+    val partners: List<OnefitPartner>
 )
 
 @Serializable
-data class MigrationPartner(
+data class OnefitPartner(
     val id: Int,
     val name: String,
     val rating: Int,

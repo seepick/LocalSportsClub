@@ -3,16 +3,20 @@ package seepick.localsportsclub.persistence
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDateTime
 
 object SinglesTable : Table("SINGLES") {
     val notes = text("NOTES")
+    val lastSync = datetime("LAST_SYNC").nullable()
 }
 
 data class SinglesDbo(
     val notes: String,
+    val lastSync: LocalDateTime?,
 )
 
 interface SinglesRepo {
@@ -45,6 +49,7 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.selectAll().singleOrNull()?.let {
             SinglesDbo(
                 notes = it[SinglesTable.notes],
+                lastSync = it[SinglesTable.lastSync],
             )
         }
     }
@@ -54,6 +59,7 @@ object ExposedSinglesRepo : SinglesRepo {
         require(SinglesTable.selectAll().toList().isEmpty())
         SinglesTable.insert {
             it[notes] = singles.notes
+            it[lastSync] = singles.lastSync
         }
     }
 
@@ -62,7 +68,7 @@ object ExposedSinglesRepo : SinglesRepo {
         require(SinglesTable.selectAll().toList().size == 1)
         SinglesTable.update {
             it[notes] = singles.notes
+            it[lastSync] = singles.lastSync
         }
     }
-
 }

@@ -74,7 +74,7 @@ abstract class SearchOption<T>(
     protected val reset: () -> Unit,
     initiallyEnabled: Boolean,
 ) {
-
+    private val log = logger {}
     protected val alwaysTruePredicate: (T) -> Boolean = { true }
 
     var enabled by mutableStateOf(initiallyEnabled)
@@ -86,6 +86,8 @@ abstract class SearchOption<T>(
         if (enabled) buildPredicate() else null
 
     fun updateEnabled(isEnabled: Boolean) {
+        if (enabled == isEnabled) return
+        log.debug { "updateEnabled(isEnabled=$isEnabled)" }
         enabled = isEnabled
         reset()
     }

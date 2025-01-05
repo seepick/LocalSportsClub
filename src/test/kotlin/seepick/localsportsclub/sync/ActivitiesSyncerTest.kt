@@ -12,12 +12,11 @@ import io.mockk.mockk
 import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityInfo
+import seepick.localsportsclub.createDaysUntil
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
-import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
-import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDateTime
 
@@ -31,7 +30,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = StaticClock(todayNow)
     private val syncDaysAhead = 4
-
+    private val noLastSyncDate = null
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
         venueSyncInserter = mockk()
@@ -43,14 +42,12 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 syncActivityAdded += activityDbos
             }
         })
-        clock.setNowAndToday(SystemClock.now())
     }
 
     private fun syncer(daysAhead: Int) = ActivitiesSyncer(
         api = api,
         activityRepo = activityRepo,
         venueRepo = venueRepo,
-        clock = clock,
         dispatcher = syncerListenerDispatcher,
         venueSyncInserter = venueSyncInserter,
         uscConfig = Arb.uscConfig().next().copy(syncDaysAhead = daysAhead),
@@ -70,7 +67,8 @@ class ActivitiesSyncerTest : DescribeSpec() {
                         else -> emptyList()
                     }
                 }
-                syncer(syncDaysAhead).sync()
+
+                syncer(syncDaysAhead).sync(clock.today().createDaysUntil(syncDaysAhead))
 
                 activityRepo.stored.values.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id
@@ -82,8 +80,5 @@ class ActivitiesSyncerTest : DescribeSpec() {
             }
         }
     }
-
-    private fun insertActivity(date: LocalDateTime) {
-        activityRepo.insert(Arb.activityDbo().next().copy(from = date))
-    }
 }
+

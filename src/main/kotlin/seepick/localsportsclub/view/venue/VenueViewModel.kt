@@ -25,6 +25,6 @@ class VenueViewModel(
     }
 
     override fun onVenueAdded(venue: Venue) {
-        onItemAdded(venue)
+        onItemsAdded(listOf(venue))
     }
 }

@@ -11,11 +11,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* BUG: usage doesn't work, as wasCheckedin activities not in DB?!?
-* BUG: why didn't get initially (during sync) official website
-  from https://urbansportsclub.com/en/venues/wilhelmina-gasthuisterrein ?!?
-* hide partners: femme*, Ladies Only, padel, SUP
 * FEATURE: reserve-book/cancel button
+* full sync, and migrate AllFit data
+* // hide partners: femme*, Ladies Only, padel, SUP
 
 ## Backlog
 

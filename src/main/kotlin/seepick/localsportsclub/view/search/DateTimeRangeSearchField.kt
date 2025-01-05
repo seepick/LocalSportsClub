@@ -95,6 +95,7 @@ fun <T> DateTimeRangeSearchField(
         DateSelector(
             enabled = searchOption.enabled,
             searchDate = searchOption.searchDate,
+            initializeDate = searchOption::initializeDate,
             onDateSelected = searchOption::updateSearchDate
         )
         TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeStart)
@@ -107,6 +108,7 @@ fun <T> DateTimeRangeSearchField(
 fun DateSelector(
     enabled: Boolean,
     searchDate: LocalDate?,
+    initializeDate: (LocalDate) -> Unit,
     onDateSelected: (LocalDate) -> Unit,
     clock: Clock = koinInject(),
     uscConfig: UscConfig = koinInject(),
@@ -114,7 +116,7 @@ fun DateSelector(
     val today = clock.today()
     val dates = (0..<uscConfig.syncDaysAhead).map { today.plusDays(it.toLong()) }
     if (searchDate == null) {
-        onDateSelected(dates.first())
+        initializeDate(dates.first())
     }
     var currentDateIndex by mutableStateOf(dates.indexOf(searchDate))
     Button(onClick = {

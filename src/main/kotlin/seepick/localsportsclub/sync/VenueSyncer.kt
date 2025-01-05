@@ -45,7 +45,6 @@ class VenueSyncer(
         val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
         venueSyncInserter.fetchInsertAndDispatch(missingVenues.keys.toList())
     }
-
 }
 
 class VenueLink(
@@ -156,7 +155,6 @@ class VenueSyncInserterImpl(
         val resizedBytes = resizeImage(downloadedBytes, AppConfig.downloadImageSize)
         imageStorage.saveVenueImage(fileName, resizedBytes)
     }
-
 }
 
 private fun VenueDetails.toDbo(cityId: Int) = VenueDbo(
