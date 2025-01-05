@@ -8,7 +8,7 @@ import io.ktor.http.Url
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.FileSystemImageStorage
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.httpClient
@@ -57,7 +57,7 @@ class HttpDownloader(
             log.debug { "Getting alternative Google storage download URL for: $url" }
             val cleanedUrl = url.toString().replace("/download/", "/")
             val response = httpClient.safeGet(Url(cleanedUrl))
-            val json = kotlinxSerializer.parseToJsonElement(response.bodyAsText())
+            val json = serializerLenient.parseToJsonElement(response.bodyAsText())
             Url(json.jsonObject["mediaLink"]!!.jsonPrimitive.content)
         } else url
 

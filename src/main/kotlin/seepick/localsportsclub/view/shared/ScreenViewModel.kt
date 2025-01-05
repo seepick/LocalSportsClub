@@ -1,9 +1,13 @@
 package seepick.localsportsclub.view.shared
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +15,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.api.booking.BookingResult
+import seepick.localsportsclub.api.booking.CancelResult
+import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
@@ -21,6 +29,7 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.activity.BookingDialog
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.util.concurrent.atomic.AtomicBoolean
@@ -31,6 +40,7 @@ interface ScreenItem {
 
 abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>(
     private val dataStorage: DataStorage,
+    private val bookingService: BookingService,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -54,6 +64,11 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     abstract fun buildSearch(resetItems: () -> Unit): SEARCH
     val searching: SEARCH by lazy { buildSearch(::resetItems) }
     val sorting: SortingDelegate<ITEM> by lazy { SortingDelegate(tableColumns, resetSort = ::resetItems) }
+
+    var isBookingOrCancelInProgress by mutableStateOf(false)
+        private set
+    var bookingDialog: BookingDialog? by mutableStateOf(null)
+        private set
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -105,8 +120,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
         log.trace { "Selected: $venue" }
         viewModelScope.launch {
             // venue can only be clicked in VenueViewModel
-            @Suppress("UNCHECKED_CAST")
-            (selectedVenue as MutableStateFlow<Venue>).value = venue
+            @Suppress("UNCHECKED_CAST") (selectedVenue as MutableStateFlow<Venue>).value = venue
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
         }
@@ -139,6 +153,52 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     fun updateVenue() {
         venueEdit.updatePropertiesOf(selectedVenue.value!!)
         dataStorage.update(selectedVenue.value!!)
+    }
+
+    fun onBook(activity: Activity) {
+        log.debug { "onBook: $activity" }
+        bookOrCancel(activity, BookingService::book) { result ->
+            BookingDialog(
+                "Book Activity",
+                when (result) {
+                    BookingResult.BookingSuccess -> "Successfully booked '${activity.name}' ✅💪🏻"
+                    is BookingResult.BookingFail -> "Failed to book the activity 🤔\n${result.message}"
+                }
+            )
+        }
+    }
+
+    fun onCancelBooking(activity: Activity) {
+        log.debug { "onCancelBooking: $activity" }
+        bookOrCancel(activity, BookingService::cancel) { result ->
+            BookingDialog(
+                "Cancel Booking",
+                when (result) {
+                    CancelResult.CancelSuccess -> "Successfully cancelled booking for '${activity.name}'."
+                    is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
+                }
+            )
+        }
+    }
+
+    private fun <T> bookOrCancel(
+        activity: Activity,
+        bookingOperation: suspend BookingService.(Activity) -> T,
+        resultHandler: (T) -> BookingDialog,
+    ) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                isBookingOrCancelInProgress = true
+                val result = bookingService.bookingOperation(activity)
+                isBookingOrCancelInProgress = false
+                bookingDialog = resultHandler(result)
+            }
+        }
+    }
+
+    fun onCloseBookingDialog() {
+        log.debug { "onCloseBookingDialog" }
+        bookingDialog = null
     }
 
     private fun resetItems() {

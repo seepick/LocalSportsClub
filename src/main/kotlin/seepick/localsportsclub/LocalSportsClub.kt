@@ -27,7 +27,6 @@ import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
-
 object LocalSportsClub {
     @JvmStatic
     fun main(args: Array<String>) {

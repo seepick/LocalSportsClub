@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.activity
 
+import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -8,7 +9,8 @@ import seepick.localsportsclub.view.shared.ScreenViewModel
 class ActivityViewModel(
     clock: Clock,
     dataStorage: DataStorage,
-) : ScreenViewModel<Activity, ActivitySearch>(dataStorage) {
+    bookingService: BookingService,
+) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService) {
 
     override val tableColumns = activitiesTableColumns(clock)
     override val selectedItem = selectedActivity

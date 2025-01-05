@@ -10,5 +10,5 @@ class ActivitySearch(resetItems: () -> Unit) : AbstractSearch<Activity>(resetIte
         extractors = listOf({ it.name }, { it.teacher }, { it.venue.name })
     )
     val date = newDateTimeRangeSearchOption("Date") { it.dateTimeRange }
-    val booked = newBooleanSearchOption("Booked") { it.isBooked }
+    val booked = newBooleanSearchOption("Booked ✅") { it.isBooked }
 }

@@ -2,19 +2,9 @@ package seepick.localsportsclub.api.activity
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.Headers
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.encodeToString
 import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.NoopResponseStorage
@@ -22,8 +12,7 @@ import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.StatsDistrictJson
 import seepick.localsportsclub.api.StatsJson
-import seepick.localsportsclub.kotlinxSerializer
-import seepick.localsportsclub.toFlatMap
+import seepick.localsportsclub.api.buildMockClient
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -60,23 +49,6 @@ class ActivityHttpApiTest : StringSpec() {
     }
 }
 
-inline fun <reified T> buildMockClient(expectedUrl: String, phpSessionId: PhpSessionId, responsePayload: T) =
-    HttpClient(MockEngine { request ->
-        request.url.toString() shouldBe expectedUrl
-        val headers = request.headers.toFlatMap()
-        headers.shouldContain("x-requested-with" to "XMLHttpRequest")
-        headers["Cookie"].shouldContain("PHPSESSID=$phpSessionId")
-        respond(
-            content = kotlinxSerializer.encodeToString(responsePayload),
-            status = HttpStatusCode.OK,
-            headers = Headers.build {
-                append("Content-Type", "application/json")
-            })
-    }) {
-        install(ContentNegotiation) {
-            json(kotlinxSerializer)
-        }
-    }
 
 private fun buildActivitiesJson(success: Boolean, showMore: Boolean) = ActivitiesJson(
     success = success, data = ActivitiesDataJson(

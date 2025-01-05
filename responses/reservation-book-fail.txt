@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "data": {
+    "state": "error",
+    "alert": "You have reached the limit of 1 booking(s) and/or check-in(s) per day for this location. Please check if you selected the right activity."
+  }
+}

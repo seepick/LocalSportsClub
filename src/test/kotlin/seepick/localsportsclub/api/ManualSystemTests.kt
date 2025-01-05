@@ -8,6 +8,7 @@ import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.ActivitiesParser
 import seepick.localsportsclub.api.activity.ActivityHttpApi
 import seepick.localsportsclub.api.activity.ServiceType
+import seepick.localsportsclub.api.booking.BookingHttpApi
 import seepick.localsportsclub.api.checkin.CheckinHttpApi
 import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
@@ -36,15 +37,23 @@ object ManualSystemTests {
 //            testFreetrainingDetails()
 //            testCheckins()
 //            testVenues()
-            testVenue()
+//            testVenue()
 //            testActivities()
 //            testSchedule()
+            testBook(84737975)
         }
     }
 
     private fun activityApi() = ActivityHttpApi(httpClient, phpSessionId, responseStorage, uscConfig, SystemClock)
     private fun checkinApi() = CheckinHttpApi(httpClient, phpSessionId, responseStorage, SystemClock, uscConfig)
     private fun venueApi() = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig)
+    private fun bookingApi() = BookingHttpApi(httpClient, uscConfig, phpSessionId, responseStorage)
+
+    private suspend fun testBook(activityId: Int) {
+        val result = bookingApi().cancel(84937551)
+        //.book(activityId)
+        println(result)
+    }
 
     private suspend fun testFreetrainingDetails() {
         val freetrainingId = 83664090

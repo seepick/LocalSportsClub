@@ -56,7 +56,14 @@ fun <ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             )
                         }
                         selectedActivity?.also {
-                            ActivityDetail(activity = it)
+                            ActivityDetail(
+                                activity = it,
+                                onBook = viewModel::onBook,
+                                onCancelBooking = viewModel::onCancelBooking,
+                                isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
+                                bookingDialog = viewModel.bookingDialog,
+                                onCloseDialog = viewModel::onCloseBookingDialog,
+                            )
                         }
                         selectedFreetraining?.also {
                             FreetrainingDetail(freetraining = it)
@@ -64,8 +71,7 @@ fun <ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                     }
                 }
                 VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    adapter = rememberScrollbarAdapter(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
                         scrollState = tableScrollState
                     )
                 )

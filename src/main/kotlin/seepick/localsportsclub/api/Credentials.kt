@@ -1,7 +1,7 @@
 package seepick.localsportsclub.api
 
 import kotlinx.serialization.Serializable
-import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 import java.util.Base64
@@ -19,7 +19,7 @@ data class Credentials(
             if (!loginFile.exists()) {
                 error("Credentials missing! Run the CredentialsManagerApp to create the necessary login file.")
             }
-            val json = kotlinxSerializer.decodeFromString<LoginJson>(loginFile.readText())
+            val json = serializerLenient.decodeFromString<LoginJson>(loginFile.readText())
             return Credentials(
                 username = json.username,
                 password = Encrypter.decrypt(json.password),

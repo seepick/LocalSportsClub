@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.date.TimeRange
@@ -76,7 +76,7 @@ object ActivitiesParser {
 
     private fun parseSingle(div: Element, date: LocalDate): ActivityInfo {
         val dataLayerJsonString = div.select("a[href=\"#modal-class\"]").first()!!.attr("data-datalayer")
-        val dataLayer = kotlinxSerializer.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
+        val dataLayer = serializerLenient.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
         val dateTimeRange = convertFromToDateTime(
             date, DateParser.parseTime(div.select("p.smm-class-snippet__class-time").text())
         )
@@ -137,7 +137,7 @@ object ActivityParser {
         val buttonBook = div.select("button.book")
         return if (buttonBook.hasAttr("data-book-success")) {
             val json = buttonBook.attr("data-book-success")
-            val data = kotlinxSerializer.decodeFromString<ActivityBookDataJson>(json)
+            val data = serializerLenient.decodeFromString<ActivityBookDataJson>(json)
             ActivityDetails(
                 name = data.`class`.name.trim(),
                 dateTimeRange = dateRange,
@@ -148,7 +148,7 @@ object ActivityParser {
         } else {
             val buttonCancel = div.select("button.cancel")
             val json = buttonCancel.attr("data-book-cancel")
-            val data = kotlinxSerializer.decodeFromString<ActivityCancelDataJson>(json)
+            val data = serializerLenient.decodeFromString<ActivityCancelDataJson>(json)
             ActivityDetails(
                 name = data.`class`.name.trim(),
                 dateTimeRange = dateRange,
@@ -175,7 +175,7 @@ object ActivityParser {
     }
 
     private fun parseSlugFromGoogleMapUrls(jsonString: String): String {
-        val url = kotlinxSerializer.decodeFromString<List<GoogleMapUrl>>(jsonString).first().url
+        val url = serializerLenient.decodeFromString<List<GoogleMapUrl>>(jsonString).first().url
         val fileName = url.replace("%2F", "/").substringAfterLast("/").substringBeforeLast("?")
         // staticMapMedium_1280x1280_amsterdam_13834_vitality-spa-fitness-amsterdam_172647253741728.png
         val parts = fileName.split("_")

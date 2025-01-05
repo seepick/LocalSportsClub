@@ -13,6 +13,7 @@ fun serviceModule() = module {
     single { httpClient } bind HttpClient::class
     singleOf(::DataStorage)
     singleOf(::SinglesService)
+    singleOf(::BookingService)
     single {
         FileSystemImageStorage(
             venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),

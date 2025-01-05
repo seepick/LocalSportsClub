@@ -9,6 +9,8 @@ import seepick.localsportsclub.ApiMode
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.api.activity.ActivityHttpApi
+import seepick.localsportsclub.api.booking.BookingApi
+import seepick.localsportsclub.api.booking.BookingHttpApi
 import seepick.localsportsclub.api.checkin.CheckinApi
 import seepick.localsportsclub.api.checkin.CheckinHttpApi
 import seepick.localsportsclub.api.schedule.ScheduleApi
@@ -41,6 +43,7 @@ fun apiModule(config: AppConfig) = module {
         singleOf(::ActivityHttpApi) bind ActivityApi::class
         singleOf(::ScheduleHttpApi) bind ScheduleApi::class
         singleOf(::CheckinHttpApi) bind CheckinApi::class
+        singleOf(::BookingHttpApi) bind BookingApi::class
         singleOf(::UscApiAdapter) bind UscApi::class
     }
 }

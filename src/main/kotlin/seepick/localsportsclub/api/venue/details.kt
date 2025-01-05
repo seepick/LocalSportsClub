@@ -4,7 +4,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.serializerLenient
 
 data class VenueDetails(
     val title: String, // a.k.a. "name"
@@ -74,7 +74,7 @@ object VenueDetailsParser {
         var openingTimes: String? = null
         var importantInfo: String? = null
         val json = body.select("script[type=\"application/ld+json\"]").first()!!.dataNodes().first().wholeData
-        val detail = kotlinxSerializer.decodeFromString<VenueDetailEmbedJson>(json)
+        val detail = serializerLenient.decodeFromString<VenueDetailEmbedJson>(json)
         val slug = head.select("meta[property=\"og:url\"]").attr("content").substringAfterLast("/")
         val disciplines = body.select("div.disciplines").text().split(",").map { it.trim() }
         val description = body.select("p.description").text()

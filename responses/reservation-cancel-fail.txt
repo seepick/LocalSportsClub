@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "data": {
+    "state": "error",
+    "alert": "Sorry, your request could not be completed. Please try again."
+  }
+}

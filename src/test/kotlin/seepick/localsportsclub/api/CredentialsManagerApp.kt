@@ -2,7 +2,7 @@ package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.encodeToString
-import seepick.localsportsclub.kotlinxSerializer
+import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 
@@ -24,7 +24,7 @@ object CredentialsManagerApp {
         val file = FileResolver.resolve(FileEntry.Login)
         log.debug { "Storing credentials to file: ${file.absolutePath}" }
         file.writeText(
-            kotlinxSerializer.encodeToString(
+            serializerLenient.encodeToString(
                 LoginJson(
                     username = credentials.username,
                     password = Encrypter.encrypt(credentials.password),

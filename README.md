@@ -11,9 +11,10 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* FEATURE: reserve-book/cancel button
+* real system test: book/cancel feature
 * full sync, and migrate AllFit data
 * // hide partners: femme*, Ladies Only, padel, SUP
+* in activity table, DO show visited count column. important. same for freetraining.
 
 ## Backlog
 

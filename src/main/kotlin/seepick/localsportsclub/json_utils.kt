@@ -3,7 +3,7 @@ package seepick.localsportsclub
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-val kotlinxSerializer = Json {
+val serializerLenient = Json {
     isLenient = true
     allowSpecialFloatingPointValues = true
     allowStructuredMapKeys = true
