@@ -35,7 +35,7 @@ data class FreetrainingCheckinEntry(
 ) : CheckinEntry
 
 object CheckinsParser {
-    fun parse(rawHtml: String, currentYear: Int): CheckinsPage {
+    fun parse(rawHtml: String, today: LocalDate): CheckinsPage {
         val document = Jsoup.parse(rawHtml)
         val html = document.childNodes().single { it.nodeName() == "html" }
         val body = html.childNodes().single { it.nodeName() == "body" } as Element
@@ -45,7 +45,10 @@ object CheckinsParser {
         timetable.children().forEach { sub ->
             when (sub.attr("class")) {
                 "table-date" -> {
-                    currentDate = DateParser.parseDate(sub.text().trim(), currentYear)
+                    currentDate = DateParser.parseDate(sub.text().trim(), today.year).let {
+                        // transitioning to next year
+                        if (it <= today) it else it.withYear(today.year - 1)
+                    }
                 }
 
                 "smm-class-snippet row" -> {

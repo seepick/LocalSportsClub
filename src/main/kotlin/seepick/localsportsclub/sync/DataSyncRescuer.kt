@@ -10,6 +10,8 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.date.Clock
+import java.time.Month
 
 interface DataSyncRescuer {
     suspend fun fetchInsertAndDispatch(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
@@ -23,6 +25,7 @@ class DataSyncRescuerImpl(
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
+    private val clock: Clock,
 ) : DataSyncRescuer {
     private val log = logger {}
 
@@ -33,13 +36,20 @@ class DataSyncRescuerImpl(
     ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
-        val activityDetails = activityApi.fetchDetails(activityId)
+        val activityDetails = activityApi.fetchDetails(activityId).let(::adjustDate)
+
         val venue = ensureVenue(venueSlug, prefilledNotes)
         val dbo = activityDetails.toActivityDbo(activityId, venue.id)
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))
         return dbo
     }
+
+    private fun adjustDate(details: ActivityDetails): ActivityDetails =
+        if (clock.today().month == Month.JANUARY && details.dateTimeRange.from.month == Month.DECEMBER) {
+            log.debug { "Adjusting date by one year behind for 'flip-over activity'." }
+            details.copy(dateTimeRange = details.dateTimeRange.minusOneYear())
+        } else details
 
     private fun ActivityDetails.toActivityDbo(activityId: Int, venueId: Int) = ActivityDbo(
         id = activityId,
@@ -68,13 +78,19 @@ class DataSyncRescuerImpl(
     ): FreetrainingDbo {
         log.debug { "Trying to rescue locally non-existing freetraining $freetrainingId for venue [$venueSlug]" }
         require(freetrainingRepo.selectById(freetrainingId) == null)
-        val freetrainingDetail = activityApi.fetchFreetrainingDetails(freetrainingId)
+        val freetrainingDetail = activityApi.fetchFreetrainingDetails(freetrainingId).let(::adjustDate)
         val venue = ensureVenue(venueSlug, prefilledNotes)
         val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId, venue.id)
         freetrainingRepo.insert(dbo)
         dispatcher.dispatchOnFreetrainingDbosAdded(listOf(dbo))
         return dbo
     }
+
+    private fun adjustDate(details: FreetrainingDetails): FreetrainingDetails =
+        if (clock.today().month == Month.JANUARY && details.date.month == Month.DECEMBER) {
+            log.debug { "Adjusting date by one year behind for 'flip-over freetraining'." }
+            details.copy(date = details.date.minusYears(1))
+        } else details
 
     private fun FreetrainingDetails.toFreetrainingDbo(freetrainingId: Int, venueId: Int) = FreetrainingDbo(
         id = freetrainingId,

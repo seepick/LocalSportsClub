@@ -27,4 +27,9 @@ data class DateTimeRange(
         val from = this.from.compareTo(other.from)
         return if (from != 0) from else this.to.compareTo(other.to)
     }
+
+    fun minusOneYear() = DateTimeRange(
+        from = from.minusYears(1),
+        to = to.minusYears(1),
+    )
 }

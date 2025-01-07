@@ -18,7 +18,7 @@ data class AppConfig(
 //            api = ApiMode.RealHttp,
 //            sync = SyncMode.Real,
             api = ApiMode.Mock,
-            sync = SyncMode.Dummy,
+            sync = SyncMode.Noop,
 
             database = DatabaseMode.Exposed,
             logFileEnabled = true,

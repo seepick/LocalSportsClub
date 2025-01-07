@@ -21,7 +21,7 @@ class ScheduleSyncer(
         val toMarkScheduledYes = scheduleRows.minus(localScheduled.keys)
         val toMarkScheduledNo = localScheduled.minus(scheduleRows.keys)
 
-        updateAndDispatch(toMarkScheduledYes.values.toList(), true) { schedule ->
+        updateAndDispatch(toMarkScheduledYes.values.toList(), toBeScheduled = true) { schedule ->
             activityRepo.selectById(schedule.activityId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatch(
                     schedule.activityId,
@@ -30,7 +30,7 @@ class ScheduleSyncer(
                 )
             }()
         }
-        updateAndDispatch(toMarkScheduledNo.values.toList(), false) { it }
+        updateAndDispatch(toMarkScheduledNo.values.toList(), toBeScheduled = false) { it }
     }
 
     private suspend fun <T> updateAndDispatch(
@@ -38,6 +38,7 @@ class ScheduleSyncer(
         toBeScheduled: Boolean,
         extractor: suspend (T) -> ActivityDbo
     ) {
+        log.debug { "Marking ${activities.size} as booked=$toBeScheduled" }
         activities.forEach {
             val activity = extractor(it)
             require(activity.isBooked != toBeScheduled) { "Expected activity to be scheduled=${!toBeScheduled} ($activity)" }

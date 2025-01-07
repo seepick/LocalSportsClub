@@ -48,7 +48,9 @@ dependencies {
     // WEB
     listOf(
         "client-core",
-        "client-java", // cio had some issues...
+        // JVM engines: java, apache, jetty, okhttp, cio
+        // 'cio' had some issues... 'java' too: SocketException
+        "client-apache",
         "client-logging",
         "client-content-negotiation",
         "serialization-kotlinx-json"
@@ -84,7 +86,11 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg) //, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LocalSportsClub"
             packageVersion = "1.0"
-            modules("java.net.http", "java.sql")
+            modules(
+                "java.net.http",
+                "java.sql",
+                "java.naming", // for ktor-client-apache
+            )
             macOS {
                 iconFile.set(project.file("src/main/distribution/icon.icns"))
             }

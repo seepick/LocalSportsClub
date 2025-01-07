@@ -31,6 +31,6 @@ class CheckinHttpApi(
             cookie("PHPSESSID", phpSessionId.value)
         }
         responseStorage.store(response, "Checkin-$pageNr")
-        return CheckinsParser.parse(response.bodyAsText(), clock.today().year)
+        return CheckinsParser.parse(response.bodyAsText(), clock.today())
     }
 }

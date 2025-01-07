@@ -9,10 +9,10 @@ import java.time.LocalDate
 
 class CheckinsParserTest : StringSpec() {
     private val year = 2024
-    private val anyYear = 1234
+    private val today = LocalDate.of(year, 12, 30)
 
-    private fun parseTestFile(fileName: String, year: Int = anyYear) =
-        CheckinsParser.parse(readTestResponse<String>(fileName), year)
+    private fun parseTestFile(fileName: String, date: LocalDate = today) =
+        CheckinsParser.parse(readTestResponse<String>(fileName), date)
 
     init {
         "When parse empty Then return empty" {
@@ -21,7 +21,7 @@ class CheckinsParserTest : StringSpec() {
             result.entries.shouldBeEmpty()
         }
         "When parse some Then return them" {
-            val result = parseTestFile("checkins.html", year)
+            val result = parseTestFile("checkins.html")
 
             result.entries shouldBe listOf(
                 ActivityCheckinEntry(
@@ -44,8 +44,13 @@ class CheckinsParserTest : StringSpec() {
                 ),
             )
         }
+        "When parse some in the future Then return them" {
+            val result = parseTestFile("checkins.html", today.withMonth(1))
+
+            result.entries.forEach { it.date.year shouldBe (today.year - 1) }
+        }
         "When parse with activity and freetraining Then return both" {
-            val result = parseTestFile("checkins.withFreetraining.html", year)
+            val result = parseTestFile("checkins.withFreetraining.html")
 
             result.entries shouldBe listOf(
                 FreetrainingCheckinEntry(

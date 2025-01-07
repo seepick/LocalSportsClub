@@ -6,7 +6,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.openFromClasspath
 import java.io.File
 
-fun FileResolver.resolveVenueImage(fileName: String) = File(FileResolver.resolve(DirectoryEntry.VenueImages), fileName)
+fun FileResolver.resolveVenueImage(fileName: String) = File(resolve(DirectoryEntry.VenueImages), fileName)
 
 interface ImageStorage {
 

@@ -26,9 +26,11 @@ Communistic Custom Client for Urban Sports Club.
 * MIN: description/info has "\n"... replace them
 * FEATURE: support sorting asc/desc
 * notes: show scrollbar if necessary
+* after sync, display report what happened
 
 ## Later
 
+* resolve compiler warnings for loadImageBitmap
 * display venue address + link to google maps
 * FEATURE: sync workout metadata teacher (von partner site scrapen)
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
@@ -41,6 +43,8 @@ Communistic Custom Client for Urban Sports Club.
 * activity search: fav, wish, booked, rating, category
 * freetraining search: date, category, rating, fav, wish
 * venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
+* the syncer should not add the year information; return incomplete day+month only (let logic determine proper year)
+* venues table: last visit column
 
 ## Later Later
 

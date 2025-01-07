@@ -8,7 +8,7 @@ import seepick.localsportsclub.view.common.table.TableColumn
 
 fun <T, R> findIndexFor(items: List<T>, pivot: T, extractor: (T) -> R): Int {
     var index = -1
-    val pivotValue = extractor(pivot) as Comparable<R>
+    @Suppress("UNCHECKED_CAST") val pivotValue = extractor(pivot) as Comparable<R>
     for (i in items.indices) {
         val currentValue = extractor(items[i])
         val compareResult = pivotValue.compareTo(currentValue)
@@ -47,6 +47,7 @@ class SortingDelegate<T>(
 
     fun sortIt(items: List<T>): List<T> =
         items.sortedBy { item ->
+            @Suppress("UNCHECKED_CAST")
             sortColumn.sortValueExtractor!!.invoke(item) as Comparable<Any>
         }
 }
