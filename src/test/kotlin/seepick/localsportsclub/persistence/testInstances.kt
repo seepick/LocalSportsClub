@@ -69,6 +69,7 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
         category = category().next(),
         date = localDate().next(),
         venueId = int(min = 1).next(),
+        isScheduled = boolean().next(),
         wasCheckedin = boolean().next(),
     )
 }

@@ -2,7 +2,9 @@ package seepick.localsportsclub.api.checkin
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.date.TimeRange
 import java.time.LocalDate
@@ -29,18 +31,21 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "yoga-spot-olympisch-stadion",
                     date = LocalDate.of(year, 12, 24),
                     timeRange = TimeRange("15:00-16:00"),
+                    isNoShow = false,
                 ),
                 ActivityCheckinEntry(
                     activityId = 84742854,
                     venueSlug = "studio-108-3",
                     date = LocalDate.of(year, 12, 24),
-                    timeRange = TimeRange("10:00-11:15")
+                    timeRange = TimeRange("10:00-11:15"),
+                    isNoShow = false,
                 ),
                 ActivityCheckinEntry(
                     activityId = 83535971,
                     venueSlug = "de-nieuwe-yogaschool",
                     date = LocalDate.of(year, 12, 23),
-                    timeRange = TimeRange("15:45-17:00")
+                    timeRange = TimeRange("15:45-17:00"),
+                    isNoShow = false,
                 ),
             )
         }
@@ -63,8 +68,14 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "movements-city",
                     date = LocalDate.of(year, 12, 29),
                     timeRange = TimeRange("9:00-10:00"),
+                    isNoShow = false,
                 ),
             )
+        }
+        "When parse with no-show activity Then mark it" {
+            val result = parseTestFile("checkins.noshow.html")
+
+            result.entries.shouldBeSingleton().first().shouldBeInstanceOf<ActivityCheckinEntry>().isNoShow shouldBe true
         }
     }
 }

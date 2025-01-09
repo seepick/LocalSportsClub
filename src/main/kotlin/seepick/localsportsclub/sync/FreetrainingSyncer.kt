@@ -71,5 +71,6 @@ private fun FreetrainingInfo.toDbo(venueId: Int, date: LocalDate) = Freetraining
     name = name,
     category = category,
     date = date,
+    isScheduled = false,
     wasCheckedin = false,
 )

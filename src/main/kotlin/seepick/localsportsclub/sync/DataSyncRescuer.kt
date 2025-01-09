@@ -14,8 +14,12 @@ import seepick.localsportsclub.service.date.Clock
 import java.time.Month
 
 interface DataSyncRescuer {
-    suspend fun fetchInsertAndDispatch(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
-    suspend fun rescueFreetraining(freetrainingId: Int, venueSlug: String, prefilledNotes: String): FreetrainingDbo
+    suspend fun fetchInsertAndDispatchActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
+    suspend fun fetchInsertAndDispatchFreetraining(
+        freetrainingId: Int,
+        venueSlug: String,
+        prefilledNotes: String
+    ): FreetrainingDbo
 }
 
 class DataSyncRescuerImpl(
@@ -29,12 +33,12 @@ class DataSyncRescuerImpl(
 ) : DataSyncRescuer {
     private val log = logger {}
 
-    override suspend fun fetchInsertAndDispatch(
+    override suspend fun fetchInsertAndDispatchActivity(
         activityId: Int,
         venueSlug: String,
         prefilledNotes: String
     ): ActivityDbo {
-        log.debug { "Trying to rescue locally non-existing activity $activityId for venue [$venueSlug]" }
+        log.debug { "Trying to rescue locally non-existing activity with ID $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
         val activityDetails = activityApi.fetchDetails(activityId).let(::adjustDate)
 
@@ -71,7 +75,7 @@ class DataSyncRescuerImpl(
                 ?: error("Terribly failed rescuing venue: [$venueSlug]")
         }()
 
-    override suspend fun rescueFreetraining(
+    override suspend fun fetchInsertAndDispatchFreetraining(
         freetrainingId: Int,
         venueSlug: String,
         prefilledNotes: String
@@ -98,6 +102,7 @@ class DataSyncRescuerImpl(
         name = name,
         category = category,
         date = date,
+        isScheduled = false,
         wasCheckedin = false,
     )
 }

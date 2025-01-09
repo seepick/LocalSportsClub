@@ -3,17 +3,27 @@ package seepick.localsportsclub.api.schedule
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
+import seepick.localsportsclub.service.model.EntityType
 
 class ScheduleParserTest : StringSpec() {
     init {
-        "When parse Then return entries" {
-            val schedule = ScheduleParser.parse(readTestResponse("schedule.html"))
+        "When parse booked activities Then return entries" {
+            val schedule = ScheduleParser.parse(readTestResponse("schedule.activities.html"))
 
             schedule shouldBe ScheduleHtml(
                 rows = listOf(
-                    ScheduleRow(84742854, "studio-108-3"),
-                    ScheduleRow(84726253, "yoga-spot-olympisch-stadion"),
-                    ScheduleRow(84810748, "movements-city"),
+                    ScheduleRow(84742854, "studio-108-3", EntityType.Activity),
+                    ScheduleRow(84726253, "yoga-spot-olympisch-stadion", EntityType.Activity),
+                    ScheduleRow(84810748, "movements-city", EntityType.Activity),
+                )
+            )
+        }
+        "When parse scheduled freetraining Then return entry" {
+            val schedule = ScheduleParser.parse(readTestResponse("schedule.freetraining.html"))
+
+            schedule shouldBe ScheduleHtml(
+                rows = listOf(
+                    ScheduleRow(83664089, "vitality-spa-fitness-amsterdam", EntityType.Freetraining),
                 )
             )
         }

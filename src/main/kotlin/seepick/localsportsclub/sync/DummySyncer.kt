@@ -192,6 +192,7 @@ class DummySyncer(
         name = "Name",
         category = "",
         date = LocalDate.now().plusDays(3),
+        isScheduled = false,
         wasCheckedin = false,
     )
 }

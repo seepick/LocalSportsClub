@@ -45,7 +45,9 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
 fun ActivitiesTable(
     viewModel: ActivityViewModel = koinViewModel(),
 ) {
-    val selectedActivity by viewModel.selectedActivity.collectAsState()
+    val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
+    val selectedActivity = selectedSubEntity?.maybeActivity
+
     Table(
         itemsLabel = "activities",
         allItemsCount = viewModel.allItems.size,

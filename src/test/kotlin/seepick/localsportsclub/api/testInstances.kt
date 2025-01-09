@@ -5,6 +5,7 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
+import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.localDate
@@ -70,6 +71,7 @@ fun Arb.Companion.activityCheckinEntry() = arbitrary {
         venueSlug = slug().next(),
         date = localDate().next(),
         timeRange = timeRange().next(),
+        isNoShow = boolean().next(),
     )
 }
 

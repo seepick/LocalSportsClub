@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
-import seepick.localsportsclub.view.shared.ScreenItem
+import seepick.localsportsclub.view.shared.HasVenue
 
 class Activity(
     val id: Int,
@@ -16,7 +16,7 @@ class Activity(
     spotsLeft: Int,
     isBooked: Boolean,
     wasCheckedin: Boolean,
-) : ScreenItem {
+) : HasVenue {
     val nameWithTeacherIfPresent = if (teacher == null) name else "$name /$teacher"
     var spotsLeft: Int by mutableStateOf(spotsLeft)
 

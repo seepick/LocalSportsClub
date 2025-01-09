@@ -124,6 +124,7 @@ object MigrationProcessor {
                     name = "DropIn $onefitNameMarker",
                     category = "",
                     date = parseZonedDateTimeToLocalDateTime(dropin.createdAt).toLocalDate(),
+                    isScheduled = false,
                     wasCheckedin = true,
                 )
             )

@@ -99,7 +99,13 @@ class CheckinSyncerTest : StringSpec() {
             val entry = mockCheckinsPage(1, today, nonExistingActivityId)
             val rescuedActivity = Arb.activityDbo().next().copy(wasCheckedin = false)
             mockCheckinsEmptyPage(2)
-            coEvery { dataSyncRescuer.fetchInsertAndDispatch(nonExistingActivityId, entry.venueSlug, any()) } answers {
+            coEvery {
+                dataSyncRescuer.fetchInsertAndDispatchActivity(
+                    nonExistingActivityId,
+                    entry.venueSlug,
+                    any()
+                )
+            } answers {
                 activityRepo.insert(rescuedActivity)
                 rescuedActivity
             }

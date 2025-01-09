@@ -17,20 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.search.AbstractSearch
-import seepick.localsportsclub.view.activity.ActivityDetail
-import seepick.localsportsclub.view.freetraining.FreetrainingDetail
 import seepick.localsportsclub.view.venue.detail.VenueDetail
 
 @Composable
-fun <ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
+fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
     searchPanel: @Composable () -> Unit,
     table: @Composable () -> Unit,
     viewModel: ScreenViewModel<ITEM, SEARCH>,
 ) {
 
     val selectedVenue by viewModel.selectedVenue.collectAsState()
-    val selectedActivity by viewModel.selectedActivity.collectAsState()
-    val selectedFreetraining by viewModel.selectedFreetraining.collectAsState()
+    val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
+    val selectedActivity = selectedSubEntity?.maybeActivity
+    val selectedFreetraining = selectedSubEntity?.maybeFreetraining
 
     Column {
         searchPanel()
@@ -55,18 +54,15 @@ fun <ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                                 onFreetrainingClicked = viewModel::onFreetrainingSelected,
                             )
                         }
-                        selectedActivity?.also {
-                            ActivityDetail(
-                                activity = it,
+                        selectedSubEntity?.also {
+                            SubEntityDetail(
+                                subEntity = it,
                                 onBook = viewModel::onBook,
                                 onCancelBooking = viewModel::onCancelBooking,
                                 isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                                 bookingDialog = viewModel.bookingDialog,
                                 onCloseDialog = viewModel::onCloseBookingDialog,
                             )
-                        }
-                        selectedFreetraining?.also {
-                            FreetrainingDetail(freetraining = it)
                         }
                     }
                 }

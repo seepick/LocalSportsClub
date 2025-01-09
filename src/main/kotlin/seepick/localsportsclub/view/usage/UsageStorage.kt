@@ -27,15 +27,19 @@ class UsageStorage(
 
     private val config = uscConfig.usageConfig
 
+    private val bookedActivityIds = MutableStateFlow(emptySet<Int>())
+    private val scheduledFreetrainingIds = MutableStateFlow(emptySet<Int>())
     private val checkedinActivityIds = MutableStateFlow(emptySet<Int>())
     private val checkedinFreetrainingIds = MutableStateFlow(emptySet<Int>())
-    private val bookedActivityIds = MutableStateFlow(emptySet<Int>())
 
+    val bookedCount: Flow<Int> =
+        combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
+            activityIds.size + freetrainingIds.size
+        }
     val checkedinCount: Flow<Int> =
         combine(checkedinActivityIds, checkedinFreetrainingIds) { activityIds, freetrainingIds ->
             activityIds.size + freetrainingIds.size
         }
-    val bookedCount: Flow<Int> = bookedActivityIds.map { it.size }
 
     val percentageCheckedin = checkedinCount.map {
         it / config.maxBookingsForPeriod.toDouble()
@@ -101,6 +105,11 @@ class UsageStorage(
             return
         }
         when (field) {
+            FreetrainingFieldUpdate.IsScheduled -> {
+                if (freetrainingDbo.isScheduled) scheduledFreetrainingIds.update { it + freetrainingDbo.id }
+                else scheduledFreetrainingIds.update { it - freetrainingDbo.id }
+            }
+
             FreetrainingFieldUpdate.WasCheckedin -> {
                 if (freetrainingDbo.wasCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
                 else checkedinFreetrainingIds.update { it - freetrainingDbo.id }
@@ -115,9 +124,9 @@ class UsageStorage(
     }
 
     override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        checkedinFreetrainingIds.update { ids ->
-            ids - freetrainingDbos.filter { it.date in periodRange && it.wasCheckedin }.map { it.id }.toSet()
-        }
+        val inRange = freetrainingDbos.filter { it.date in periodRange }
+        scheduledFreetrainingIds.update { ids -> ids - inRange.filter { it.isScheduled }.map { it.id }.toSet() }
+        checkedinFreetrainingIds.update { ids -> ids - inRange.filter { it.wasCheckedin }.map { it.id }.toSet() }
     }
 
     private fun processActivity(activityDbo: ActivityDbo) {
@@ -128,8 +137,9 @@ class UsageStorage(
     }
 
     private fun processFreetraining(freetrainingDbo: FreetrainingDbo) {
-        if (freetrainingDbo.wasCheckedin && freetrainingDbo.date in periodRange) {
-            checkedinFreetrainingIds.update { it + freetrainingDbo.id }
+        if (freetrainingDbo.date in periodRange) {
+            if (freetrainingDbo.isScheduled) scheduledFreetrainingIds.update { it + freetrainingDbo.id }
+            if (freetrainingDbo.wasCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
         }
     }
 }

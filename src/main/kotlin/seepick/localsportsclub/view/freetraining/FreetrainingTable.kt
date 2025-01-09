@@ -35,7 +35,9 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
 fun FreetrainingsTable(
     viewModel: FreetrainingViewModel = koinViewModel(),
 ) {
-    val selectedFreetraining by viewModel.selectedFreetraining.collectAsState()
+    val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
+    val selectedFreetraining = selectedSubEntity?.maybeFreetraining
+    
     Table(
         itemsLabel = "freetrainings",
         items = viewModel.items,

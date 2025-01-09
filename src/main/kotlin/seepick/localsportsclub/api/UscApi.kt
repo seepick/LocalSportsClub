@@ -29,8 +29,8 @@ interface UscApi {
     suspend fun fetchFreetrainings(filter: ActivitiesFilter): List<FreetrainingInfo>
     suspend fun fetchScheduleRows(): List<ScheduleRow>
     suspend fun fetchCheckinsPage(pageNr: Int): CheckinsPage
-    suspend fun book(activityId: Int): BookingResult
-    suspend fun cancel(activityId: Int): CancelResult
+    suspend fun book(activityOrFreetrainingId: Int): BookingResult
+    suspend fun cancel(activityOrFreetrainingId: Int): CancelResult
 }
 
 class MockUscApi : UscApi {
@@ -86,15 +86,15 @@ class MockUscApi : UscApi {
         return CheckinsPage.empty
     }
 
-    override suspend fun book(activityId: Int): BookingResult {
-        log.info { "Mock booking: $activityId" }
+    override suspend fun book(activityOrFreetrainingId: Int): BookingResult {
+        log.info { "Mock booking: $activityOrFreetrainingId" }
         delay(1_000)
         return BookingResult.BookingSuccess
 //        return BookingResult.BookingFail("nope")
     }
 
-    override suspend fun cancel(activityId: Int): CancelResult {
-        log.info { "Mock cancel booking: $activityId" }
+    override suspend fun cancel(activityOrFreetrainingId: Int): CancelResult {
+        log.info { "Mock cancel booking: $activityOrFreetrainingId" }
         delay(1_000)
         return CancelResult.CancelSuccess
     }
@@ -132,9 +132,9 @@ class UscApiAdapter(
     override suspend fun fetchCheckinsPage(pageNr: Int) =
         checkinApi.fetchPage(pageNr)
 
-    override suspend fun book(activityId: Int): BookingResult =
-        bookingApi.book(activityId)
+    override suspend fun book(activityOrFreetrainingId: Int): BookingResult =
+        bookingApi.book(activityOrFreetrainingId)
 
-    override suspend fun cancel(activityId: Int): CancelResult =
-        bookingApi.cancel(activityId)
+    override suspend fun cancel(activityOrFreetrainingId: Int): CancelResult =
+        bookingApi.cancel(activityOrFreetrainingId)
 }

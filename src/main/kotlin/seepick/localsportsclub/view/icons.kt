@@ -13,7 +13,7 @@ object LscIcons {
     val Wishlists = WishlistFull to WishlistOutline
 
     const val checkedin = "📝"
-    const val booked = "✅"
+    const val booked = "✅" // or scheduled (for freetrainings)
 }
 
 val Icons.Lsc get() = LscIcons

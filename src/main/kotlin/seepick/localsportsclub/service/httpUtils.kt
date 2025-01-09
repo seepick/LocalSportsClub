@@ -14,6 +14,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.setCookie
 import io.ktor.serialization.kotlinx.json.json
+import org.apache.http.ConnectionClosedException
 import seepick.localsportsclub.serializerLenient
 import java.net.ConnectException
 import java.net.SocketException
@@ -53,7 +54,11 @@ private suspend fun HttpClient.safeRetry(
 ): HttpResponse =
     try {
         safeAny(method, url, block)
-    } catch (e: SocketException) {
+    } catch (e: Exception) {
+        if (e !is SocketException && e !is ConnectionClosedException) {
+            log.error { "Going to rethrow unhandled exception of type: ${e::class.qualifiedName}" }
+            throw e
+        }
         if (attempt == MAX_RETRY_ATTEMPTS) {
             log.error(e) { "After max attempt of $MAX_RETRY_ATTEMPTS failed to ${method.value}: $url" }
             error("After max attempt of $MAX_RETRY_ATTEMPTS failed to ${method.value}: $url")

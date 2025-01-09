@@ -49,12 +49,14 @@ class CheckinSyncer(
     }
 
     private suspend fun markActivityAsCheckedin(entry: ActivityCheckinEntry) {
-        val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.fetchInsertAndDispatch(
+        // FIXME use entry.isNoShow
+        val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.fetchInsertAndDispatchActivity(
             activityId = entry.activityId,
             venueSlug = entry.venueSlug,
             prefilledNotes = "[SYNC] rescued activity for past check-in"
         )
         if (activity.wasCheckedin) {
+            log.debug { "Activity was already marked as checked-in, skipping: $entry" }
             return
         }
         val updated = activity.copy(wasCheckedin = true)
@@ -63,12 +65,14 @@ class CheckinSyncer(
     }
 
     private suspend fun markFreetrainingAsCheckedin(entry: FreetrainingCheckinEntry) {
-        val freetraining = freetrainingRepo.selectById(entry.freetrainingId) ?: dataSyncRescuer.rescueFreetraining(
-            freetrainingId = entry.freetrainingId,
-            venueSlug = entry.venueSlug,
-            prefilledNotes = "[SYNC] rescued freetraining for past check-in"
-        )
+        val freetraining =
+            freetrainingRepo.selectById(entry.freetrainingId) ?: dataSyncRescuer.fetchInsertAndDispatchFreetraining(
+                freetrainingId = entry.freetrainingId,
+                venueSlug = entry.venueSlug,
+                prefilledNotes = "[SYNC] rescued freetraining for past check-in"
+            )
         if (freetraining.wasCheckedin) {
+            log.debug { "Freetraining was already marked as checked-in, skipping: $entry" }
             return
         }
         val updated = freetraining.copy(wasCheckedin = true)

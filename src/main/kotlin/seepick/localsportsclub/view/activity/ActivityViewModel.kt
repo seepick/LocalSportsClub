@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.activity
 
+import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
@@ -13,8 +14,8 @@ class ActivityViewModel(
 ) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService) {
 
     override val tableColumns = activitiesTableColumns(clock)
-    override val selectedItem = selectedActivity
-    override val selectedVenue = selectedVenueBySelectedItem
+    override val selectedItem = selectedSubEntity.map { it?.maybeActivity }
+    override val selectedVenue = selectedVenueBySelectedSubEntity
 
     override fun buildSearch(resetItems: () -> Unit) = ActivitySearch(resetItems)
     override fun DataStorage.selectAllItems() = selectVisibleActivities()

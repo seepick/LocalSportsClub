@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.time.LocalDate
@@ -21,6 +22,7 @@ data class FreetrainingDbo(
     val name: String,
     val category: String,
     val date: LocalDate,
+    val isScheduled: Boolean,
     val wasCheckedin: Boolean,
 ) {
     fun prepareInsert(statement: InsertStatement<Number>) {
@@ -29,7 +31,16 @@ data class FreetrainingDbo(
         statement[FreetrainingsTable.name] = this.name
         statement[FreetrainingsTable.category] = this.category
         statement[FreetrainingsTable.date] = this.date
+        statement[FreetrainingsTable.isScheduled] = this.isScheduled
         statement[FreetrainingsTable.wasCheckedin] = this.wasCheckedin
+    }
+
+    fun prepareUpdate(update: UpdateStatement) {
+        update[FreetrainingsTable.name] = this.name
+        update[FreetrainingsTable.category] = this.category
+        update[FreetrainingsTable.date] = this.date
+        update[FreetrainingsTable.isScheduled] = this.isScheduled
+        update[FreetrainingsTable.wasCheckedin] = this.wasCheckedin
     }
 
     companion object {
@@ -39,6 +50,7 @@ data class FreetrainingDbo(
             name = row[FreetrainingsTable.name],
             category = row[FreetrainingsTable.category],
             date = row[FreetrainingsTable.date],
+            isScheduled = row[FreetrainingsTable.isScheduled],
             wasCheckedin = row[FreetrainingsTable.wasCheckedin],
         )
     }
@@ -49,12 +61,14 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
     val name = varchar("NAME", 256)
     val category = varchar("CATEGORY", 64)
     val date = date("DATE")
+    val isScheduled = bool("IS_SCHEDULED")
     val wasCheckedin = bool("WAS_CHECKEDIN")
 }
 
 interface FreetrainingRepo {
     fun selectAll(): List<FreetrainingDbo>
     fun selectById(freetrainingId: Int): FreetrainingDbo?
+    fun selectAllScheduled(): List<FreetrainingDbo>
     fun selectFutureMostDate(): LocalDate?
     fun insert(dbo: FreetrainingDbo)
     fun update(dbo: FreetrainingDbo)
@@ -67,6 +81,7 @@ class InMemoryFreetrainingRepo : FreetrainingRepo {
     override fun selectAll() = stored.values.toList()
 
     override fun selectById(freetrainingId: Int): FreetrainingDbo? = stored[freetrainingId]
+    override fun selectAllScheduled() = stored.values.filter { it.isScheduled }
 
     override fun selectFutureMostDate(): LocalDate? = stored.values.maxByOrNull { it.date }?.date
 
@@ -107,6 +122,12 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
         }.singleOrNull()
     }
 
+    override fun selectAllScheduled(): List<FreetrainingDbo> = transaction {
+        FreetrainingsTable.selectAll().where { FreetrainingsTable.isScheduled.eq(true) }.map {
+            FreetrainingDbo.fromRow(it)
+        }
+    }
+
     override fun selectFutureMostDate(): LocalDate? = transaction {
         FreetrainingsTable.select(FreetrainingsTable.date).orderBy(FreetrainingsTable.date, SortOrder.DESC).limit(1)
             .toList().let {
@@ -123,12 +144,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
     }
 
     override fun update(dbo: FreetrainingDbo): Unit = transaction {
-        val updated = FreetrainingsTable.update(where = { FreetrainingsTable.id.eq(dbo.id) }) {
-            it[name] = dbo.name
-            it[category] = dbo.category
-            it[date] = dbo.date
-            it[wasCheckedin] = dbo.wasCheckedin
-        }
+        val updated = FreetrainingsTable.update(where = { FreetrainingsTable.id.eq(dbo.id) }) { dbo.prepareUpdate(it) }
         if (updated != 1) error("Expected 1 to be updated by ID ${dbo.id}, but was: $updated")
     }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,7 @@ import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.SortingDelegate
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -29,16 +31,55 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
-import seepick.localsportsclub.view.activity.BookingDialog
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.util.concurrent.atomic.AtomicBoolean
 
-interface ScreenItem {
+interface HasVenue {
     val venue: Venue
 }
 
-abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>(
+sealed interface SubEntity : HasVenue {
+    val maybeActivity: Activity?
+    val maybeFreetraining: Freetraining?
+
+    val id: Int
+    val name: String
+    fun dateFormatted(year: Int): String
+    val category: String
+    val isBooked: Boolean
+    val wasCheckedin: Boolean
+    val bookLabel: String
+    val bookedLabel: String
+
+    data class ActivityEntity(val activity: Activity) : SubEntity, HasVenue by activity {
+        override val maybeActivity = activity
+        override val maybeFreetraining = null
+        override val id = activity.id
+        override val name = activity.name
+        override fun dateFormatted(year: Int) = activity.dateTimeRange.prettyPrint(year)
+        override val category = activity.category
+        override val isBooked = activity.isBooked
+        override val wasCheckedin = activity.wasCheckedin
+        override val bookLabel = "Book"
+        override val bookedLabel = "booked"
+    }
+
+    data class FreetrainingEntity(val freetraining: Freetraining) : SubEntity, HasVenue by freetraining {
+        override val maybeFreetraining = freetraining
+        override val maybeActivity = null
+        override fun dateFormatted(year: Int) = freetraining.date.prettyPrint(year)
+        override val id = freetraining.id
+        override val name = freetraining.name
+        override val category = freetraining.category
+        override val isBooked = freetraining.isScheduled
+        override val wasCheckedin = freetraining.wasCheckedin
+        override val bookLabel = "Schedule"
+        override val bookedLabel = "scheduled"
+    }
+}
+
+abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val dataStorage: DataStorage,
     private val bookingService: BookingService,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
@@ -51,15 +92,14 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     val allItems: List<ITEM> = _allItems
     private val _items = mutableStateListOf<ITEM>()
     val items: List<ITEM> = _items
-    abstract val selectedItem: StateFlow<ITEM?>
+    abstract val selectedItem: Flow<ITEM?>
 
     abstract val selectedVenue: StateFlow<Venue?>
     val venueEdit = VenueEditModel()
 
-    private val _selectedFreetraining = MutableStateFlow<Freetraining?>(null)
-    val selectedFreetraining = _selectedFreetraining.asStateFlow()
-    private val _selectedActivity = MutableStateFlow<Activity?>(null)
-    val selectedActivity: StateFlow<Activity?> = _selectedActivity.asStateFlow()
+
+    private val _selectedSubEntity = MutableStateFlow<SubEntity?>(null)
+    val selectedSubEntity = _selectedSubEntity.asStateFlow()
 
     abstract fun buildSearch(resetItems: () -> Unit): SEARCH
     val searching: SEARCH by lazy { buildSearch(::resetItems) }
@@ -80,8 +120,8 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
         searching.reset()
     }
 
-    protected val selectedVenueBySelectedItem: StateFlow<Venue?> by lazy {
-        selectedItem.map { item ->
+    protected val selectedVenueBySelectedSubEntity: StateFlow<Venue?> by lazy {
+        selectedSubEntity.map { item ->
             item?.venue?.also { venue ->
                 venueEdit.init(venue)
             }
@@ -124,14 +164,13 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
         }
-        _selectedActivity.value = null
-        _selectedFreetraining.value = null
+        _selectedSubEntity.value = null
     }
 
     fun onActivitySelected(activity: Activity) {
         log.trace { "Selected: $activity" }
         viewModelScope.launch {
-            _selectedActivity.value = activity
+            _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
             onItemSelected(ActivitySelected(activity))
         }
     }
@@ -139,7 +178,7 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     fun onFreetrainingSelected(freetraining: Freetraining) {
         log.trace { "Selected: $freetraining" }
         viewModelScope.launch {
-            _selectedFreetraining.value = freetraining
+            _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
             onItemSelected(FreetrainingSelected(freetraining))
         }
     }
@@ -155,26 +194,26 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
         dataStorage.update(selectedVenue.value!!)
     }
 
-    fun onBook(activity: Activity) {
-        log.debug { "onBook: $activity" }
-        bookOrCancel(activity, BookingService::book) { result ->
+    fun onBook(subEntity: SubEntity) {
+        log.debug { "onBook: $subEntity" }
+        bookOrCancel(subEntity, BookingService::book) { result ->
             BookingDialog(
-                "Book Activity",
-                when (result) {
-                    BookingResult.BookingSuccess -> "Successfully booked '${activity.name}' ✅💪🏻"
-                    is BookingResult.BookingFail -> "Failed to book the activity 🤔\n${result.message}"
+                title = "Booking",
+                message = when (result) {
+                    BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
+                    is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
                 }
             )
         }
     }
 
-    fun onCancelBooking(activity: Activity) {
-        log.debug { "onCancelBooking: $activity" }
-        bookOrCancel(activity, BookingService::cancel) { result ->
+    fun onCancelBooking(subEntity: SubEntity) {
+        log.debug { "onCancelBooking: $subEntity" }
+        bookOrCancel(subEntity, BookingService::cancel) { result ->
             BookingDialog(
                 "Cancel Booking",
                 when (result) {
-                    CancelResult.CancelSuccess -> "Successfully cancelled booking for '${activity.name}'."
+                    CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
                     is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
                 }
             )
@@ -182,14 +221,14 @@ abstract class ScreenViewModel<ITEM : ScreenItem, SEARCH : AbstractSearch<ITEM>>
     }
 
     private fun <T> bookOrCancel(
-        activity: Activity,
-        bookingOperation: suspend BookingService.(Activity) -> T,
+        subEntity: SubEntity,
+        bookingOperation: suspend BookingService.(SubEntity) -> T,
         resultHandler: (T) -> BookingDialog,
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 isBookingOrCancelInProgress = true
-                val result = bookingService.bookingOperation(activity)
+                val result = bookingService.bookingOperation(subEntity)
                 isBookingOrCancelInProgress = false
                 bookingDialog = resultHandler(result)
             }

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.activity
+package seepick.localsportsclub.view.shared
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -15,8 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.date.prettyPrint
-import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
@@ -26,12 +24,12 @@ data class BookingDialog(
 )
 
 @Composable
-fun ActivityDetail(
-    activity: Activity,
+fun SubEntityDetail(
+    subEntity: SubEntity,
     modifier: Modifier = Modifier,
     clock: Clock = koinInject(),
-    onBook: (Activity) -> Unit,
-    onCancelBooking: (Activity) -> Unit,
+    onBook: (SubEntity) -> Unit,
+    onCancelBooking: (SubEntity) -> Unit,
     isBookingOrCancelInProgress: Boolean,
     bookingDialog: BookingDialog?,
     onCloseDialog: () -> Unit,
@@ -52,26 +50,28 @@ fun ActivityDetail(
 
     val year = clock.today().year
     Column(modifier = modifier) {
-        TitleText(activity.name)
-        Text("Date: ${activity.dateTimeRange.prettyPrint(year)}")
-        Text("Category: ${activity.category}")
-        Text("Teacher: ${activity.teacher ?: "-"}")
-        Text("Spots Left: ${activity.spotsLeft}")
-        if (activity.isBooked) {
-            Text("${Icons.Lsc.booked} Is booked")
+        TitleText(subEntity.name)
+        Text("Date: ${subEntity.dateFormatted(year)}")
+        Text("Category: ${subEntity.category}")
+        if (subEntity is SubEntity.ActivityEntity) {
+            Text("Teacher: ${subEntity.activity.teacher ?: "-"}")
+            Text("Spots Left: ${subEntity.activity.spotsLeft}")
         }
-        if (activity.wasCheckedin) {
+        if (subEntity.isBooked) {
+            Text("${Icons.Lsc.booked} Is ${subEntity.bookedLabel}")
+        }
+        if (subEntity.wasCheckedin) {
             Text("${Icons.Lsc.checkedin} Was checked-in")
         }
         Row {
             Button(onClick = {
-                if (activity.isBooked) {
-                    onCancelBooking(activity)
+                if (subEntity.isBooked) {
+                    onCancelBooking(subEntity)
                 } else {
-                    onBook(activity)
+                    onBook(subEntity)
                 }
             }, enabled = !isBookingOrCancelInProgress) {
-                Text(if (activity.isBooked) "Cancel Booking" else "Book")
+                Text(if (subEntity.isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
             }
             AnimatedVisibility(
                 visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()

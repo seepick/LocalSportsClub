@@ -138,44 +138,54 @@ class DataStorage(
         dispatchOnFreetrainingsAdded(freetrainings)
     }
 
-    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
-        allFreetrainingsByVenueId.values.flatten().first { it.id == freetrainingDbo.id }.also { freetraining ->
+    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+        allActivitiesByVenueId[activityDbo.venueId]?.singleOrNull { it.id == activityDbo.id }?.also { activity ->
             when (field) {
-                FreetrainingFieldUpdate.WasCheckedin -> {
-                    freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
-                }
+                ActivityFieldUpdate.IsBooked -> activity.isBooked = activityDbo.isBooked
+                ActivityFieldUpdate.WasCheckedin -> activity.wasCheckedin = activityDbo.wasCheckedin
             }
+        } ?: log.warn {
+            "Couldn't find activity in data storage. " +
+                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
+                    "Activity: $activityDbo"
+        }
+    }
+
+    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        allFreetrainingsByVenueId.values.flatten().firstOrNull { it.id == freetrainingDbo.id }?.also { freetraining ->
+            when (field) {
+                FreetrainingFieldUpdate.IsScheduled -> freetraining.isScheduled = freetrainingDbo.isScheduled
+                FreetrainingFieldUpdate.WasCheckedin -> freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
+            }
+        } ?: log.warn {
+            "Couldn't find freetraining in data storage. " +
+                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
+                    "Freetraining: $freetrainingDbo"
         }
     }
 
     override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        val deletedActivities = activityDbos.map { activityDbo ->
-            val allActivitiesByVenue = allActivitiesByVenueId[activityDbo.venueId]!!
-            val activity = allActivitiesByVenue.single { it.id == activityDbo.id }
-            allActivitiesByVenue.remove(activity)
+        log.debug { "onActivityDbosDeleted(${activityDbos.joinToString { it.id.toString() }})" }
+        val deletedActivities = activityDbos.mapNotNull { activityDbo ->
+            val allActivitiesByVenue = allActivitiesByVenueId[activityDbo.venueId]
+            allActivitiesByVenue?.singleOrNull { it.id == activityDbo.id }?.also {
+                allActivitiesByVenue.remove(it)
+            } // if null... deleted DBO which wasn't visible in the UI anyway
             // venuesById[activity.venue.id]!!.activities.remove(activity) // NO! do it in SyncerViewModel
-            activity
         }
         dispatchOnActivitiesDeleted(deletedActivities)
     }
 
     override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        val deletedFreetrainings = freetrainingDbos.map { freetrainingDbo ->
-            val allFreetrainingsByVenue = allFreetrainingsByVenueId[freetrainingDbo.venueId]!!
-            val freetraining = allFreetrainingsByVenue.single { it.id == freetrainingDbo.id }
-            allFreetrainingsByVenue.remove(freetraining)
+        log.debug { "onFreetrainingDbosDeleted(${freetrainingDbos.joinToString { it.id.toString() }})" }
+        val deletedFreetrainings = freetrainingDbos.mapNotNull { freetrainingDbo ->
+            val allFreetrainingsByVenue = allFreetrainingsByVenueId[freetrainingDbo.venueId]
+            allFreetrainingsByVenue?.singleOrNull { it.id == freetrainingDbo.id }?.also {
+                allFreetrainingsByVenue.remove(it)
+            } // if null... deleted DBO which wasn't visible in the UI anyway
             // venuesById[freetraining.venue.id]!!.freetrainings.remove(freetraining) // NO! do it in SyncerViewModel
-            freetraining
         }
         dispatchOnFreetrainingsDeleted(deletedFreetrainings)
-    }
-
-    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        val activity = allActivitiesByVenueId[activityDbo.venueId]!!.first { it.id == activityDbo.id }
-        when (field) {
-            ActivityFieldUpdate.IsBooked -> activity.isBooked = activityDbo.isBooked
-            ActivityFieldUpdate.WasCheckedin -> activity.wasCheckedin = activityDbo.wasCheckedin
-        }
     }
 
     fun update(venue: Venue) {
@@ -239,6 +249,7 @@ fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
     name = name,
     category = category,
     date = date,
+    isScheduled = isScheduled,
     wasCheckedin = wasCheckedin,
 )
 

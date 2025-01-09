@@ -1,5 +1,6 @@
 package seepick.localsportsclub.api.activity
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
@@ -65,6 +66,7 @@ class ActivityHttpApi(
     private val clock: Clock,
 ) : ActivityApi {
 
+    private val log = logger {}
     private val baseUrl = uscConfig.baseUrl
 
     override suspend fun fetchPages(filter: ActivitiesFilter, serviceType: ServiceType): List<ActivitiesDataJson> =
@@ -92,6 +94,7 @@ class ActivityHttpApi(
     }
 
     override suspend fun fetchDetails(id: Int): ActivityDetails {
+        log.debug { "Fetching details for $id" }
         val response = http.safeGet(Url("$baseUrl/class-details/$id")) {
             cookie("PHPSESSID", phpSessionId.value)
         }

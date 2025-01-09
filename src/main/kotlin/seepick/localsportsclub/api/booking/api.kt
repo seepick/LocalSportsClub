@@ -17,8 +17,8 @@ import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.safePost
 
 interface BookingApi {
-    suspend fun book(activityId: Int): BookingResult
-    suspend fun cancel(activityId: Int): CancelResult
+    suspend fun book(activityOrFreetrainingId: Int): BookingResult
+    suspend fun cancel(activityOrFreetrainingId: Int): CancelResult
 }
 
 class BookingHttpApi(
@@ -31,44 +31,44 @@ class BookingHttpApi(
     private val log = logger {}
     private val baseUrl = uscConfig.baseUrl
 
-    override suspend fun book(activityId: Int): BookingResult {
-        log.info { "About to book activity: $activityId" }
-        val response = http.safePost(Url("$baseUrl/search/book/$activityId")) {
+    override suspend fun book(activityOrFreetrainingId: Int): BookingResult {
+        log.info { "About to book activityOrFreetrainingId: $activityOrFreetrainingId" }
+        val response = http.safePost(Url("$baseUrl/search/book/$activityOrFreetrainingId")) {
             cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest")
         }
-        responseStorage.store(response, "Booking-$activityId")
-        return handleBookResponse(response.bodyAsText(), activityId)
+        responseStorage.store(response, "Booking-$activityOrFreetrainingId")
+        return handleBookResponse(response.bodyAsText(), activityOrFreetrainingId)
     }
 
-    private fun handleBookResponse(responseText: String, activityId: Int): BookingResult {
+    private fun handleBookResponse(responseText: String, activityOrFreetrainingId: Int): BookingResult {
         val jsonElement = serializerLenient.parseToJsonElement(responseText)
         val isSuccessElement = jsonElement.jsonObject["success"] ?: error("Invalid response json: $responseText")
         return if (isSuccessElement.jsonPrimitive.boolean) {
             val successResponse = serializerLenient.decodeFromString<BookingSuccessResponseJson>(responseText)
             require(successResponse.success)
-            require(successResponse.data.state == "booked")
+            require(successResponse.data.state == "booked" || successResponse.data.state == "scheduled")
             BookingResult.BookingSuccess
         } else {
             val errorResponse = serializerLenient.decodeFromString<BookingErrorResponseJson>(responseText)
             require(!errorResponse.success)
             require(errorResponse.data.state == "error")
-            log.warn { "Received error response from API while booking activity $activityId: $errorResponse" }
+            log.warn { "Received error response from API while booking activity/freetraining $activityOrFreetrainingId: $errorResponse" }
             return BookingResult.BookingFail(message = errorResponse.data.alert)
         }
     }
 
-    override suspend fun cancel(activityId: Int): CancelResult {
-        log.info { "About to cancel booking for activity: $activityId" }
-        val response = http.safePost(Url("$baseUrl/search/cancel/$activityId")) {
+    override suspend fun cancel(activityOrFreetrainingId: Int): CancelResult {
+        log.info { "About to cancel booking for activityOrFreetrainingId: $activityOrFreetrainingId" }
+        val response = http.safePost(Url("$baseUrl/search/cancel/$activityOrFreetrainingId")) {
             cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest")
         }
-        responseStorage.store(response, "Cancel-$activityId")
-        return handleCancelResponse(response.bodyAsText(), activityId)
+        responseStorage.store(response, "Cancel-$activityOrFreetrainingId")
+        return handleCancelResponse(response.bodyAsText(), activityOrFreetrainingId)
     }
 
-    private fun handleCancelResponse(responseText: String, activityId: Int): CancelResult {
+    private fun handleCancelResponse(responseText: String, activityOrFreetrainingId: Int): CancelResult {
         val jsonElement = serializerLenient.parseToJsonElement(responseText)
         val isSuccessElement = jsonElement.jsonObject["success"] ?: error("Invalid response json: $responseText")
         return if (isSuccessElement.jsonPrimitive.boolean) {
@@ -80,7 +80,7 @@ class BookingHttpApi(
             val errorResponse = serializerLenient.decodeFromString<CancellationErrorResponseJson>(responseText)
             require(!errorResponse.success)
             require(errorResponse.data.state == "error")
-            log.warn { "Received error response from API while booking activity $activityId: $errorResponse" }
+            log.warn { "Received error response from API while booking activity/freetraining $activityOrFreetrainingId: $errorResponse" }
             CancelResult.CancelFail(errorResponse.data.alert)
         }
     }
@@ -105,7 +105,7 @@ data class BookingSuccessResponseJson(
 @Serializable
 data class BookingSuccessDataJson(
     val id: Int,
-    val state: String, // "booked"
+    val state: String, // "booked" == activity, "scheduled" == freetraining
     // label, alert, isManual, cancelButton
     val freeSpots: FreeSpotsJson,
 )

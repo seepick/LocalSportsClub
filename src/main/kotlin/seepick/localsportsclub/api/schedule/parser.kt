@@ -3,14 +3,16 @@ package seepick.localsportsclub.api.schedule
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import seepick.localsportsclub.service.model.EntityType
 
 data class ScheduleHtml(
     val rows: List<ScheduleRow>
 )
 
 data class ScheduleRow(
-    val activityId: Int,
+    val activityOrFreetrainingId: Int,
     val venueSlug: String,
+    val entityType: EntityType,
 )
 
 object ScheduleParser {
@@ -25,8 +27,20 @@ object ScheduleParser {
 
         return ScheduleHtml(rows = divs.map { div ->
             ScheduleRow(
-                activityId = div.attr("data-appointment-id").toInt(),
+                activityOrFreetrainingId = div.attr("data-appointment-id").toInt(),
                 venueSlug = div.select("a.smm-studio-link").attr("href").substringAfterLast("/"),
+                entityType = div.select("span.smm-booking-state-label").let {
+                    if (it.hasClass("booked")) {
+                        EntityType.Activity
+                    } else if (it.hasClass("scheduled")) {
+                        EntityType.Freetraining
+                    } else error(
+                        "Couldn't determine whether it's an activity or freetraining based on CSS classes: ${
+                            it.attr("class")
+                        }"
+                    )
+
+                }
             )
         }).also {
             log.debug { "Parsed ${divs.size} reservation <div> tags to: $it" }

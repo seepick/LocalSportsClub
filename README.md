@@ -11,8 +11,10 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* implement book/cancel for freetraining (actually just add/remove from schedule)
-* real system test: book/cancel feature
+* support no-show activity: Activity.state = { Blank, Booked, Checkedin, Noshow }
+    * also: Freetraining.state = { Blank, Scheduled, Checkedin }
+    * no-show freetraining possible?? try it yourself ;)
+* real system test: book/cancel activity&freetraining
 * full sync, and migrate AllFit data
 * // hide partners: femme*, Ladies Only, padel, SUP
 * in activity table, DO show visited count column. important. same for freetraining.
@@ -44,9 +46,10 @@ Communistic Custom Client for Urban Sports Club.
 * "light sync" to only sync spots
 * activity search: fav, wish, booked, rating, category
 * freetraining search: date, category, rating, fav, wish
+* venues table: last visit column
 * venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
 * the syncer should not add the year information; return incomplete day+month only (let logic determine proper year)
-* venues table: last visit column
+* use geo-location to pre-calculate distance
 
 ## Later Later
 

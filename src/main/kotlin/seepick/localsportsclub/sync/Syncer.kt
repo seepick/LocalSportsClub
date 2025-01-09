@@ -26,7 +26,8 @@ enum class ActivityFieldUpdate {
 }
 
 enum class FreetrainingFieldUpdate {
-    WasCheckedin
+    IsScheduled,
+    WasCheckedin,
 }
 
 object NoopSyncer : Syncer {
