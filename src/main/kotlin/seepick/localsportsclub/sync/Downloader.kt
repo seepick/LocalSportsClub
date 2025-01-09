@@ -10,22 +10,12 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.FileSystemImageStorage
-import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.service.safeGet
 import java.io.File
 
 interface Downloader {
     suspend fun downloadVenueImage(url: Url): ByteArray
-}
-
-object NoopDownloader : Downloader {
-    private val log = logger {}
-
-    override suspend fun downloadVenueImage(url: Url): ByteArray {
-        log.info { "Noop image fetch." }
-        return ImageStorage.defaultVenueImage
-    }
 }
 
 class HttpDownloader(

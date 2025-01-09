@@ -39,21 +39,18 @@ fun SimpleActivitiesTable(
                 modifier = Modifier.height(min(activities.size, 2) * 52.dp),
                 columns = listOf(
                     TableColumn(
-                        size = ColSize.Width(20.dp),
-                        renderer = CellRenderer.TextRenderer {
-                            buildString {
-                                if (it.isBooked) append(Icons.Lsc.booked)
-                                if (it.wasCheckedin) append(Icons.Lsc.checkedin)
-                            }
-                        }
-                    ),
-                    TableColumn(
                         size = ColSize.Width(170.dp),
                         renderer = CellRenderer.TextRenderer { it.dateTimeRange.prettyPrint(currentYear) },
                     ),
                     TableColumn(
                         size = ColSize.Weight(1.0f),
-                        renderer = CellRenderer.TextRenderer { it.name },
+                        renderer = CellRenderer.TextRenderer {
+                            buildString {
+                                if (it.isBooked) append(Icons.Lsc.booked).append(" ")
+                                if (it.wasCheckedin) append(Icons.Lsc.checkedin).append(" ")
+                                append(it.name)
+                            }
+                        },
                     )
                 ),
                 onItemClicked = onActivityClicked,

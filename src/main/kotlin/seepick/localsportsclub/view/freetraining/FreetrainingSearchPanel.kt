@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.freetraining
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.view.search.DateSearchField
 import seepick.localsportsclub.view.search.StringSearchField
 
 @Composable
@@ -11,5 +12,6 @@ fun FreetrainingSearchPanel(
 ) {
     Row {
         StringSearchField(viewModel.searching.name)
+        DateSearchField(viewModel.searching.date)
     }
 }

@@ -10,13 +10,13 @@ class FreetrainingViewModel(
     clock: Clock,
     dataStorage: DataStorage,
     bookingService: BookingService,
-) : ScreenViewModel<Freetraining, FreetrainingsSearch>(dataStorage, bookingService) {
+) : ScreenViewModel<Freetraining, FreetrainingSearch>(dataStorage, bookingService) {
 
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedFreetraining
     override val selectedVenue = selectedVenueBySelectedItem
 
-    override fun buildSearch(resetItems: () -> Unit) = FreetrainingsSearch(resetItems)
+    override fun buildSearch(resetItems: () -> Unit) = FreetrainingSearch(resetItems)
     override fun DataStorage.selectAllItems() = selectVisibleFreetrainings()
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {

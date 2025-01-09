@@ -23,6 +23,7 @@ dependencies {
     val ktorVersion = "3.0.1"
 
     implementation(compose.desktop.currentOs)
+    implementation(compose.components.resources)
     implementation(compose.material3)
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     // implementation("androidx.compose.material:material-icons-extended:1.x.x")

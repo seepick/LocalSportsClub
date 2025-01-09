@@ -2,7 +2,6 @@ package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -74,16 +75,21 @@ fun RowScope.TableHeader(
     onClick: () -> Unit
 ) {
     var isHovered by remember { mutableStateOf(false) }
-    TableCell(text, size, modifier = Modifier
-        .onPointerEvent(PointerEventType.Enter) { isHovered = true }
-        .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-        .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.background)
-        .let {
-            if (isSortActive || !isSortEnabled) it else {
-                it.onClick { onClick() }
+    TableCell(
+        text = text,
+        size = size,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+            .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+            .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.background)
+            .let {
+                if (isSortActive || !isSortEnabled) it else {
+                    it.onClick { onClick() }
+                }
             }
-        }
-        .let { if (isSortActive) it.background(Color.Green) else it }
+            .let { if (isSortActive) it.background(Color.Green) else it }
     )
 }
 
@@ -99,16 +105,19 @@ fun RowScope.TableCell(
     text: String,
     size: ColSize,
     textDecoration: TextDecoration? = null,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
     modifier: Modifier = Modifier,
 ) {
     Text(
         text = text,
         textDecoration = textDecoration,
         maxLines = 1,
+        textAlign = textAlign,
+        fontWeight = fontWeight,
         overflow = TextOverflow.Ellipsis,
         modifier = Modifier
-            .border(1.dp, Color.Black)
-            .padding(8.dp)
+            .padding(top = 2.dp, bottom = 2.dp)
             .let { applyColSize(it, size) }
             .then(modifier)
     )

@@ -11,6 +11,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
+* implement book/cancel for freetraining (actually just add/remove from schedule)
 * real system test: book/cancel feature
 * full sync, and migrate AllFit data
 * // hide partners: femme*, Ladies Only, padel, SUP
@@ -30,7 +31,8 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Later
 
-* resolve compiler warnings for loadImageBitmap
+* table: alternating row color
+* ad venue table: show "is hidden" column
 * display venue address + link to google maps
 * FEATURE: sync workout metadata teacher (von partner site scrapen)
 * UI BUG: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)

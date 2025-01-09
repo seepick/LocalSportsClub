@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.date.DateTimeRange
+import java.time.LocalDate
 
 abstract class AbstractSearch<T>(
     private val resetItems: () -> Unit,
@@ -36,6 +37,20 @@ abstract class AbstractSearch<T>(
             label = label,
             reset = ::reset,
             extractor = extractor,
+            initiallyEnabled = initiallyEnabled,
+        ).also {
+            options += it
+        }
+
+    protected fun newDateSearchOption(
+        label: String,
+        initiallyEnabled: Boolean = false,
+        extractor: (T) -> LocalDate,
+    ) =
+        DateSearchOption(
+            label = label,
+            reset = ::reset,
+            dateExtractor = extractor,
             initiallyEnabled = initiallyEnabled,
         ).also {
             options += it

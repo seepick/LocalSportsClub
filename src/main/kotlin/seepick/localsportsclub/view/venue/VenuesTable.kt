@@ -26,14 +26,14 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
             textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
         )
     }, sortValueExtractor = { it.name.lowercase() }),
-    TableColumn("Act", ColSize.Width(100.dp), TextRenderer { it.activities.size }),
-    TableColumn("Chk", ColSize.Width(100.dp), TextRenderer {
+    TableColumn("Act", ColSize.Width(50.dp), TextRenderer { it.activities.size }),
+    TableColumn("Chk", ColSize.Width(40.dp), TextRenderer {
         it.activities.filter { it.wasCheckedin }.size + it.freetrainings.filter { it.wasCheckedin }.size
     }),
-    TableColumn("Bkd", ColSize.Width(100.dp), TextRenderer {
+    TableColumn("Bkd", ColSize.Width(40.dp), TextRenderer {
         it.activities.filter { it.isBooked }.size
     }),
-    TableColumn("Rating", ColSize.Width(150.dp), TextRenderer { it.rating.string }),
+    TableColumn("Rating", ColSize.Width(90.dp), TextRenderer { it.rating.string }),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },
 )

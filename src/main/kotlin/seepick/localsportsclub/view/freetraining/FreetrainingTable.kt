@@ -20,13 +20,13 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue.imageFileName },
     TableColumn("Name", ColSize.Weight(0.5f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
     TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", ColSize.Width(170.dp), CellRenderer.TextRenderer { it.category }),
+    TableColumn("Category", ColSize.Width(150.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date",
-        ColSize.Width(120.dp),
+        ColSize.Width(100.dp),
         CellRenderer.TextRenderer(extractor = { it.date.prettyPrint(clock.today().year) }, sortExtractor = { it.date })
     ),
-    TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
+    TableColumn("Rating", ColSize.Width(90.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
 )

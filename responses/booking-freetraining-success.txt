@@ -1,0 +1,25 @@
+
+
+POST https://urbansportsclub.com/en/search/book/83663927
+
+{
+    "success": true,
+    "data": {
+        "id": 83663927,
+        "state": "scheduled",
+        "label": "Scheduled",
+        "alert": "This course has been added to your schedule. Please arrive early in order to guarantee a spot.",
+        "isManual": false,
+        "cancelButton": {
+            "text": "Remove from my schedule",
+            "confirm": {
+                "title": "Are you sure you want to remove this from your schedule?",
+                "button": "Yes, remove"
+            }
+        },
+        "freeSpots": {
+            "current": 2147483647,
+            "maximum": 2147483647
+        }
+    }
+}

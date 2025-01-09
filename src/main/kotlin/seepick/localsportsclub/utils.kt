@@ -13,5 +13,5 @@ fun readFromClasspath(classpath: String): String {
 
 fun openFromClasspath(classpath: String): InputStream {
     return ResourceLocator::class.java.getResourceAsStream(classpath)
-        ?: throw Exception("Classpath resource not found at: $classpath")
+        ?: throw Exception("Classpath resource not found at: [$classpath]")
 }

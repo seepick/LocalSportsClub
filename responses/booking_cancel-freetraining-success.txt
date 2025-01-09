@@ -1,0 +1,15 @@
+POST https://urbansportsclub.com/en/search/cancel/83663927
+
+{
+    "success": true,
+    "data": {
+        "id": 83663927,
+        "state": "cancel_customer",
+        "label": "Removed",
+        "alert": "Removed from your schedule.",
+        "freeSpots": {
+            "current": 2147483647,
+            "maximum": 2147483647
+        }
+    }
+}
