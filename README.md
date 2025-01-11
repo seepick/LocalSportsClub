@@ -17,7 +17,6 @@ Communistic Custom Client for Urban Sports Club.
 * ad venues table: "last visited (nullable)" column
 * ... no-show for freetraining possible?? try it yourself ;)
 * make it possible to manually convert activity from noshow into checkedin (or somehow detect programmatically?)
-* remember window size/position on exit and redo on startup
 
 ## Backlog
 
@@ -41,9 +40,6 @@ Communistic Custom Client for Urban Sports Club.
 * enable up/down arrow for table (would require a global listener, and knowing which table got focus...)
 * UI: if textfield elipse ("foo...") => show tooltip full text
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
-* FEATURE: sync with google calendar; on booking/cancellation
-    * https://developers.google.com/calendar/api/guides/create-events
-    * https://github.com/seepick/gadsu/blob/master/src/main/kotlin/at/cpickl/gadsu/service/google.kt
 * use compose's snackbar to indicate notifications about sync
 * "light sync" to only sync spots
 * activity search: fav, wish, booked, rating, category
@@ -51,7 +47,11 @@ Communistic Custom Client for Urban Sports Club.
 * venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
 * the syncer should not add the year information; return incomplete day+month only (let logic determine proper year)
 * use geo-location to pre-calculate distance
-* compile 'net.ricecode:string-similarity:1.0.0'
+* use 'net.ricecode:string-similarity:1.0.0'
+* UI: use space for activities/freetraining sub-table ONLY up to row count (if only 1 row, use only that space, but NOT
+  more)
+* UI: ad ScreenTemplate: how to get vertical scroll if use Column instead LazyColumn? (need weight 1.0f from Column to
+  fill height)
 
 ## Later Later
 

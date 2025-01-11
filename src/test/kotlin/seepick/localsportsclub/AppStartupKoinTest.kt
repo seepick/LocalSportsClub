@@ -17,6 +17,7 @@ class AppStartupKoinTest : StringSpec() {
                             database = DatabaseMode.InMemory,
                             api = ApiMode.Mock,
                             sync = SyncMode.Noop,
+                            gcal = GcalMode.Noop,
                         )
                     )
                 )

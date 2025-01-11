@@ -28,3 +28,13 @@ fun rootModule(config: AppConfig): Module = module {
     singleOf(::ApplicationLifecycle)
     // or use includeModules() ;)
 }
+
+// not working for compose ViewModels :(
+//@OptIn(KoinInternalApi::class)
+//inline fun <reified T : Any> getAllCustom(): List<T> =
+//    getKoin().let { koin ->
+//        koin.instanceRegistry.instances.map { it.value.beanDefinition }
+//            .filter { it.kind == Kind.Singleton }
+//            .filter { it.primaryType.isSubclassOf(T::class) }
+//            .map { koin.get(clazz = it.primaryType, qualifier = null, parameters = null) }
+//    }

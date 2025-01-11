@@ -34,7 +34,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
             }
             Spacer(Modifier.width(10.dp))
             Box {
-//                val tableScrollState = rememberLazyListState() // TODO how to get vertical scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
+//                val tableScrollState = rememberLazyListState()
                 Column(
 //                    state = tableScrollState,
                     modifier = Modifier.width(600.dp).fillMaxHeight(1.0f)

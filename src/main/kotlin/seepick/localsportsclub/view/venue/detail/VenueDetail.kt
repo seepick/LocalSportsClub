@@ -59,7 +59,7 @@ fun VenueDetail(
             activities = venue.activities,
             selectedActivity = activity,
             onActivityClicked = onActivityClicked,
-            modifier = Modifier.weight(0.5f), // TODO use space ONLY up to row count (if only 1 row, use only that space, but NOT more)
+            modifier = Modifier.weight(0.5f),
         )
         SimpleFreetrainingsTable(
             freetrainings = venue.freetrainings,

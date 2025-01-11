@@ -91,6 +91,7 @@ class DataStorage(
     }
 
     fun registerListener(listener: DataStorageListener) {
+        log.debug { "Registering DataStorageListener: ${listener::class.qualifiedName}" }
         listeners += listener
     }
 

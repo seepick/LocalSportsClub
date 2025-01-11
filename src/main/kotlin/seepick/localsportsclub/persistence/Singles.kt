@@ -7,16 +7,19 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.WindowPref
 import java.time.LocalDateTime
 
 object SinglesTable : Table("SINGLES") {
     val notes = text("NOTES")
     val lastSync = datetime("LAST_SYNC").nullable()
+    val windowPref = varchar("WINDOW_PREF", 128).nullable()
 }
 
 data class SinglesDbo(
     val notes: String,
     val lastSync: LocalDateTime?,
+    val windowPref: WindowPref?,
 )
 
 interface SinglesRepo {
@@ -50,6 +53,7 @@ object ExposedSinglesRepo : SinglesRepo {
             SinglesDbo(
                 notes = it[SinglesTable.notes],
                 lastSync = it[SinglesTable.lastSync],
+                windowPref = WindowPref.readFromSqlString(it[SinglesTable.windowPref]),
             )
         }
     }
@@ -60,6 +64,7 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.insert {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
+            it[windowPref] = singles.windowPref?.toSqlString()
         }
     }
 
@@ -69,6 +74,7 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.update {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
+            it[windowPref] = singles.windowPref?.toSqlString()
         }
     }
 }

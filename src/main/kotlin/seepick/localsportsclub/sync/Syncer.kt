@@ -40,9 +40,11 @@ object NoopSyncer : Syncer {
 }
 
 class SyncerListenerDispatcher {
+    private val log = logger {}
     private val listeners = mutableListOf<SyncerListener>()
 
     fun registerListener(listener: SyncerListener) {
+        log.debug { "registering SyncerListener: ${listener::class.qualifiedName}" }
         listeners += listener
     }
 

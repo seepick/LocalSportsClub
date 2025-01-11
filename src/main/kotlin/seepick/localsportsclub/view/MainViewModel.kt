@@ -4,11 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.sync.Syncer
 
@@ -25,14 +21,17 @@ class MainViewModel(
         private set
 
     fun startSync() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        executeBackgroundTask(
+            doBefore = {
                 log.info { "startSync()" }
                 isSyncing = true
-                syncer.sync()
+            },
+            doFinally = {
                 log.info { "startSync() DONE" }
                 isSyncing = false
             }
+        ) {
+            syncer.sync()
         }
     }
 

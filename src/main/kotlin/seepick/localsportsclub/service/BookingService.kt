@@ -14,26 +14,27 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 import seepick.localsportsclub.view.shared.SubEntity
-import seepick.localsportsclub.view.usage.UsageStorage
 
 class BookingService(
     private val uscApi: UscApi,
-    // TODO register listeners externally instead!
-    dataStorage: DataStorage,
-    usageStorage: UsageStorage,
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val gcalService: GcalService,
 ) {
     private val log = logger {}
-    private val listeners: List<SyncerListener> = listOf(dataStorage, usageStorage)
+
+    private val listeners = mutableListOf<SyncerListener>()
+
+    fun registerListener(listener: SyncerListener) {
+        log.debug { "Registering listener: ${listener::class.qualifiedName}" }
+        listeners += listener
+    }
 
     suspend fun book(subEntity: SubEntity): BookingResult =
         bookOrCancel(

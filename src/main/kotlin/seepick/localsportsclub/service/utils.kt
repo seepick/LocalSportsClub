@@ -31,3 +31,16 @@ suspend fun <T, R> workParallel(coroutineCount: Int, data: List<T>, processor: s
         result
     }
 }
+
+fun String.ensureMaxLength(maxLength: Int): String =
+    lines().joinToString("\n") { line ->
+        var leftOver = line
+        val tmp = StringBuilder()
+        do {
+            val eat = leftOver.take(maxLength)
+            leftOver = leftOver.drop(eat.length)
+            tmp.append(eat)
+            if (leftOver.isNotEmpty()) tmp.appendLine()
+        } while (leftOver.isNotEmpty())
+        tmp
+    }

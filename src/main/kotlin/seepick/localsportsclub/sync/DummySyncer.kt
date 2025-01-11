@@ -27,6 +27,12 @@ class DummySyncer(
     private var freetrainingId = 1
 
     override suspend fun sync() {
+        if (true) {
+            val venue = generateVenues().first()//.copy(slug = "foobar")
+            val inserted = venueRepo.insert(venue)
+            dispatcher.dispatchOnVenueDboAdded(inserted)
+            return
+        }
 //        val bytes = withContext(Dispatchers.IO) {
 //            DelayedSyncer::class.java.getResourceAsStream("/defaultVenueImage.png")!!.readAllBytes()
 //        }

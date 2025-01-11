@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
@@ -32,6 +30,7 @@ import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.executeBackgroundTask
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -194,17 +193,15 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     fun onBook(subEntity: SubEntity) {
         log.debug { "onBook: $subEntity" }
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                bookOrCancel(subEntity, BookingService::book) { result ->
-                    BookingDialog(
-                        title = "Booking",
-                        message = when (result) {
-                            BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
-                            is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
-                        }
-                    )
-                }
+        executeBackgroundTask {
+            bookOrCancel(subEntity, BookingService::book) { result ->
+                BookingDialog(
+                    title = "Booking",
+                    message = when (result) {
+                        BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
+                        is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
+                    }
+                )
             }
         }
     }
@@ -212,17 +209,15 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     fun onCancelBooking(subEntity: SubEntity) {
         log.debug { "onCancelBooking: $subEntity" }
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                bookOrCancel(subEntity, BookingService::cancel) { result ->
-                    BookingDialog(
-                        "Cancel Booking",
-                        when (result) {
-                            CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
-                            is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
-                        }
-                    )
-                }
+        executeBackgroundTask {
+            bookOrCancel(subEntity, BookingService::cancel) { result ->
+                BookingDialog(
+                    "Cancel Booking",
+                    when (result) {
+                        CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
+                        is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
+                    }
+                )
             }
         }
     }
@@ -232,20 +227,16 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         bookingOperation: suspend BookingService.(SubEntity) -> T,
         resultHandler: (T) -> BookingDialog,
     ) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        executeBackgroundTask(
+            doBefore = {
                 isBookingOrCancelInProgress = true
-                try {
-                    val result = bookingService.bookingOperation(subEntity)
-                    bookingDialog = resultHandler(result)
-                } catch (e: Exception) {
-                    log.error(e) { "Failed to book/cancel $subEntity" }
-                    bookingDialog = BookingDialog("Error", "${e::class.simpleName}: ${e.message}")
-                } finally {
-                    isBookingOrCancelInProgress = false
-                }
-
-            }
+            },
+            doFinally = {
+                isBookingOrCancelInProgress = false
+            },
+        ) {
+            val result = bookingService.bookingOperation(subEntity)
+            bookingDialog = resultHandler(result)
         }
     }
 

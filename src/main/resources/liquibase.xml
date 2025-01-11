@@ -147,6 +147,9 @@
             <column name="LAST_SYNC" type="datetime">
                 <constraints nullable="true"/>
             </column>
+            <column name="WINDOW_PREF" type="varchar(128)">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
 
     </changeSet>

@@ -10,14 +10,18 @@ class SinglesService(
     private var cache: SinglesDbo? = null
 
     fun readNotes() = cachedOrSelect().notes
-    fun readLastSync() = cachedOrSelect().lastSync
-
     fun updateNotes(notes: String) {
         update { copy(notes = notes) }
     }
 
+    fun readLastSync() = cachedOrSelect().lastSync
     fun updateLastSync(lastSync: LocalDateTime) {
         update { copy(lastSync = lastSync) }
+    }
+
+    fun readWindowPref() = cachedOrSelect().windowPref
+    fun updateWindowPref(windowPref: WindowPref) {
+        update { copy(windowPref = windowPref) }
     }
 
     private fun update(withDbo: SinglesDbo.() -> SinglesDbo) {
@@ -33,6 +37,7 @@ class SinglesService(
                 SinglesDbo(
                     notes = "",
                     lastSync = null,
+                    windowPref = null,
                 ).also {
                     singlesRepo.insert(it)
                 }
@@ -41,4 +46,33 @@ class SinglesService(
                 cache = it
             }
         }
+
+}
+
+data class WindowPref(
+    val width: Int,
+    val height: Int,
+    val posX: Int,
+    val posY: Int,
+) {
+    fun toSqlString() = "$width,$height,$posX,$posY"
+
+    companion object {
+        val default = WindowPref(
+            width = 1500,
+            height = 1200,
+            posX = 100,
+            posY = 100,
+        )
+
+        fun readFromSqlString(string: String?): WindowPref? =
+            string?.split(",")?.let {
+                WindowPref(
+                    width = it[0].toInt(),
+                    height = it[1].toInt(),
+                    posX = it[2].toInt(),
+                    posY = it[3].toInt(),
+                )
+            }
+    }
 }

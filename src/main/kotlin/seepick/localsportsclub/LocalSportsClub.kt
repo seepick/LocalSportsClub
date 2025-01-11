@@ -14,6 +14,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.SinglesService
+import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
@@ -36,8 +39,7 @@ object LocalSportsClub {
             AppConfig.production
         }
         reconfigureLog(
-            useFileAppender = config.logFileEnabled,
-            packageSettings = mapOf(
+            useFileAppender = config.logFileEnabled, packageSettings = mapOf(
                 "seepick.localsportsclub" to Level.TRACE,
                 "liquibase" to Level.INFO,
                 "Exposed" to Level.INFO,
@@ -52,33 +54,62 @@ object LocalSportsClub {
                 val keyboard: GlobalKeyboard = koinInject()
                 val applicationLifecycle: ApplicationLifecycle = koinInject()
                 applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
+                val singlesService: SinglesService = koinInject()
+                val windowPref = singlesService.readWindowPref() ?: WindowPref.default
                 Window(
                     title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
                     state = rememberWindowState(
-                        width = 1_500.dp, height = 1200.dp,
-                        position = WindowPosition(100.dp, 100.dp),
+                        width = windowPref.width.dp, height = windowPref.height.dp,
+                        position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
                     ),
                     onKeyEvent = { keyboard.process(it); false },
                     onCloseRequest = {
-                        applicationLifecycle.onExit() // when window close button is clicked
+                        applicationLifecycle.onExit() // when the window close button is clicked
                         exitApplication()
                     },
                 ) {
                     val syncer = koinInject<Syncer>()
                     val dataStorage = koinInject<DataStorage>()
                     val usageStorage = koinInject<UsageStorage>()
-                    syncer.registerListener(dataStorage)
-                    syncer.registerListener(usageStorage)
-                    dataStorage.registerListener(koinViewModel<SyncerViewModel>())
-                    dataStorage.registerListener(koinViewModel<ActivityViewModel>())
-                    dataStorage.registerListener(koinViewModel<FreetrainingViewModel>())
-                    dataStorage.registerListener(koinViewModel<VenueViewModel>())
+                    val bookingService = koinInject<BookingService>()
+                    val syncerListeners = listOf(dataStorage, usageStorage)
+                    syncerListeners.forEach {
+                        syncer.registerListener(it)
+                        bookingService.registerListener(it)
+                    }
 
-                    applicationLifecycle.registerListener(usageStorage)
-                    applicationLifecycle.registerListener(koinViewModel<ActivityViewModel>())
-                    applicationLifecycle.registerListener(koinViewModel<FreetrainingViewModel>())
-                    applicationLifecycle.registerListener(koinViewModel<VenueViewModel>())
-                    applicationLifecycle.registerListener(koinViewModel<NotesViewModel>())
+                    val dataStorageListeners = listOf(
+                        koinViewModel<SyncerViewModel>(),
+                        koinViewModel<ActivityViewModel>(),
+                        koinViewModel<FreetrainingViewModel>(),
+                        koinViewModel<VenueViewModel>(),
+                    )
+                    dataStorageListeners.forEach {
+                        dataStorage.registerListener(it)
+                    }
+
+                    val applicationLifecycleListeners = listOf(
+                        usageStorage,
+                        koinViewModel<ActivityViewModel>(),
+                        koinViewModel<FreetrainingViewModel>(),
+                        koinViewModel<VenueViewModel>(),
+                        koinViewModel<NotesViewModel>(),
+                        object : ApplicationLifecycleListener {
+                            override fun onExit() {
+                                singlesService.updateWindowPref(
+                                    WindowPref(
+                                        width = window.width,
+                                        height = window.height,
+                                        posX = window.x,
+                                        posY = window.y,
+                                    )
+                                )
+                            }
+                        },
+                    )
+                    applicationLifecycleListeners.forEach {
+                        applicationLifecycle.registerListener(it)
+                    }
 
                     window.addWindowListener(object : WindowAdapter() {
                         // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
