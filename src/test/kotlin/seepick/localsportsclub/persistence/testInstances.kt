@@ -79,5 +79,6 @@ fun Arb.Companion.singlesDbo() = arbitrary {
     SinglesDbo(
         notes = string().next(),
         lastSync = localDateTime().orNull().next(),
+        windowPref = null,
     )
 }

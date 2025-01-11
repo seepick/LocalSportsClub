@@ -72,7 +72,7 @@ class CheckinSyncerTest : StringSpec() {
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
             val activity = testRepo.insertActivity(state = ActivityState.Blank)
-            val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id)
+            val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id, isNoShow = false)
             coEvery { uscApi.fetchCheckinsPage(1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 
