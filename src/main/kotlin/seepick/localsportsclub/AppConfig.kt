@@ -1,8 +1,7 @@
 package seepick.localsportsclub
 
-import io.ktor.http.Url
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
+import seepick.localsportsclub.api.UscConfig
+import seepick.localsportsclub.gcal.GcalConfig
 import seepick.localsportsclub.view.Screen
 
 data class AppConfig(
@@ -12,13 +11,19 @@ data class AppConfig(
     val firstScreen: Screen? = null,
     val usc: UscConfig = UscConfig(),
     val logFileEnabled: Boolean = false,
+    val gcal: GcalMode,
+    val gcalConfig: GcalConfig = GcalConfig(),
 ) {
     companion object {
         val development = AppConfig(
-            api = ApiMode.RealHttp,
-            sync = SyncMode.Real,
-//            api = ApiMode.Mock,
-//            sync = SyncMode.Noop,
+//            api = ApiMode.RealHttp,
+            api = ApiMode.Mock,
+
+//            sync = SyncMode.Real,
+            sync = SyncMode.Noop,
+
+//            gcal = GcalMode.Real,
+            gcal = GcalMode.Noop,
 
             database = DatabaseMode.Exposed,
             logFileEnabled = true,
@@ -27,6 +32,7 @@ data class AppConfig(
         val production = AppConfig(
             database = DatabaseMode.Exposed,
             api = ApiMode.RealHttp,
+            gcal = GcalMode.Real,
             sync = SyncMode.Real,
             logFileEnabled = true,
         )
@@ -47,17 +53,8 @@ enum class SyncMode {
     Noop, Delayed, Dummy, Real
 }
 
-data class UscConfig(
-    val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
-    val city: City = City.Amsterdam,
-    val plan: PlanType = PlanType.Large,
-    val storeResponses: Boolean = true,
-    val syncDaysAhead: Int = 14, // including today
-    val usageConfig: UsageConfig = UsageConfig(),
-) {
-    init {
-        require(syncDaysAhead >= 1) { "sync days ahead must be >= 1 but was: $syncDaysAhead" }
-    }
+enum class GcalMode {
+    Noop, Real
 }
 
 data class UsageConfig(

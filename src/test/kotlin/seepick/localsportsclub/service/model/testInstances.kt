@@ -5,6 +5,7 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
@@ -49,7 +50,6 @@ fun Arb.Companion.activity() = arbitrary {
         dateTimeRange = dateTimeRange().next(),
         spotsLeft = int(min = 0, max = 20).next(),
         teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().next(),
-        isBooked = boolean().next(),
-        wasCheckedin = boolean().next(),
+        state = enum<ActivityState>().next(),
     )
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.UscConfig
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -88,14 +88,17 @@ class UsageStorage(
             return
         }
         when (field) {
-            ActivityFieldUpdate.IsBooked -> {
-                if (activityDbo.isBooked) bookedActivityIds.update { it + activityDbo.id }
-                else bookedActivityIds.update { it - activityDbo.id }
-            }
-
-            ActivityFieldUpdate.WasCheckedin -> {
-                if (activityDbo.wasCheckedin) checkedinActivityIds.update { it + activityDbo.id }
-                else checkedinActivityIds.update { it - activityDbo.id }
+            ActivityFieldUpdate.State -> {
+                if (activityDbo.isBooked) {
+                    bookedActivityIds.update { it + activityDbo.id }
+                } else if (bookedActivityIds.value.contains(activityDbo.id)) {
+                    bookedActivityIds.update { it - activityDbo.id }
+                }
+                if (activityDbo.isCheckedin) {
+                    checkedinActivityIds.update { it + activityDbo.id }
+                } else if (checkedinActivityIds.value.contains(activityDbo.id)) {
+                    checkedinActivityIds.update { it - activityDbo.id }
+                }
             }
         }
     }
@@ -105,33 +108,36 @@ class UsageStorage(
             return
         }
         when (field) {
-            FreetrainingFieldUpdate.IsScheduled -> {
-                if (freetrainingDbo.isScheduled) scheduledFreetrainingIds.update { it + freetrainingDbo.id }
-                else scheduledFreetrainingIds.update { it - freetrainingDbo.id }
-            }
-
-            FreetrainingFieldUpdate.WasCheckedin -> {
-                if (freetrainingDbo.wasCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
-                else checkedinFreetrainingIds.update { it - freetrainingDbo.id }
+            FreetrainingFieldUpdate.State -> {
+                if (freetrainingDbo.isScheduled) {
+                    scheduledFreetrainingIds.update { it + freetrainingDbo.id }
+                } else if (scheduledFreetrainingIds.value.contains(freetrainingDbo.id)) {
+                    scheduledFreetrainingIds.update { it - freetrainingDbo.id }
+                }
+                if (freetrainingDbo.isCheckedin) {
+                    checkedinFreetrainingIds.update { it + freetrainingDbo.id }
+                } else if (checkedinFreetrainingIds.value.contains(freetrainingDbo.id)) {
+                    checkedinFreetrainingIds.update { it - freetrainingDbo.id }
+                }
             }
         }
     }
 
     override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
         val inRange = activityDbos.filter { it.from.toLocalDate() in periodRange }
-        checkedinActivityIds.update { ids -> ids - inRange.filter { it.wasCheckedin }.map { it.id }.toSet() }
+        checkedinActivityIds.update { ids -> ids - inRange.filter { it.isCheckedin }.map { it.id }.toSet() }
         bookedActivityIds.update { ids -> ids - inRange.filter { it.isBooked }.map { it.id }.toSet() }
     }
 
     override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
         val inRange = freetrainingDbos.filter { it.date in periodRange }
         scheduledFreetrainingIds.update { ids -> ids - inRange.filter { it.isScheduled }.map { it.id }.toSet() }
-        checkedinFreetrainingIds.update { ids -> ids - inRange.filter { it.wasCheckedin }.map { it.id }.toSet() }
+        checkedinFreetrainingIds.update { ids -> ids - inRange.filter { it.isCheckedin }.map { it.id }.toSet() }
     }
 
     private fun processActivity(activityDbo: ActivityDbo) {
         if (activityDbo.from.toLocalDate() in periodRange) {
-            if (activityDbo.wasCheckedin) checkedinActivityIds.update { it + activityDbo.id }
+            if (activityDbo.isCheckedin) checkedinActivityIds.update { it + activityDbo.id }
             if (activityDbo.isBooked) bookedActivityIds.update { it + activityDbo.id }
         }
     }
@@ -139,7 +145,7 @@ class UsageStorage(
     private fun processFreetraining(freetrainingDbo: FreetrainingDbo) {
         if (freetrainingDbo.date in periodRange) {
             if (freetrainingDbo.isScheduled) scheduledFreetrainingIds.update { it + freetrainingDbo.id }
-            if (freetrainingDbo.wasCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
+            if (freetrainingDbo.isCheckedin) checkedinFreetrainingIds.update { it + freetrainingDbo.id }
         }
     }
 }

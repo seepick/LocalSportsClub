@@ -8,6 +8,8 @@ import seepick.localsportsclub.persistence.ExposedVenueLinksRepo
 import seepick.localsportsclub.persistence.ExposedVenueRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -108,8 +110,7 @@ object MigrationProcessor {
                     from = parseZonedDateTimeToLocalDateTime(checkin.start),
                     to = parseZonedDateTimeToLocalDateTime(checkin.end),
                     teacher = null,
-                    isBooked = false,
-                    wasCheckedin = true,
+                    state = ActivityState.Checkedin,
                 )
             )
         }
@@ -124,8 +125,7 @@ object MigrationProcessor {
                     name = "DropIn $onefitNameMarker",
                     category = "",
                     date = parseZonedDateTimeToLocalDateTime(dropin.createdAt).toLocalDate(),
-                    isScheduled = false,
-                    wasCheckedin = true,
+                    state = FreetrainingState.Checkedin,
                 )
             )
         }

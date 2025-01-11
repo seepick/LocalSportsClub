@@ -1,8 +1,10 @@
 package seepick.localsportsclub.view.freetraining
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.date.Clock
@@ -37,7 +39,7 @@ fun FreetrainingsTable(
 ) {
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
     val selectedFreetraining = selectedSubEntity?.maybeFreetraining
-    
+
     Table(
         itemsLabel = "freetrainings",
         items = viewModel.items,
@@ -47,5 +49,6 @@ fun FreetrainingsTable(
         sortColumn = viewModel.sorting.sortColumn,
         onItemClicked = viewModel::onFreetrainingSelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
+        columnModifier = Modifier.padding(bottom = 20.dp),
     )
 }

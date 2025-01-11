@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
 data class FreetrainingDbo(
@@ -22,25 +23,25 @@ data class FreetrainingDbo(
     val name: String,
     val category: String,
     val date: LocalDate,
-    val isScheduled: Boolean,
-    val wasCheckedin: Boolean,
+    val state: FreetrainingState,
 ) {
+    val isScheduled = state == FreetrainingState.Scheduled
+    val isCheckedin = state == FreetrainingState.Checkedin
+
     fun prepareInsert(statement: InsertStatement<Number>) {
         statement[FreetrainingsTable.id] = this.id
         statement[FreetrainingsTable.venueId] = this.venueId
         statement[FreetrainingsTable.name] = this.name
         statement[FreetrainingsTable.category] = this.category
         statement[FreetrainingsTable.date] = this.date
-        statement[FreetrainingsTable.isScheduled] = this.isScheduled
-        statement[FreetrainingsTable.wasCheckedin] = this.wasCheckedin
+        statement[FreetrainingsTable.state] = this.state
     }
 
     fun prepareUpdate(update: UpdateStatement) {
         update[FreetrainingsTable.name] = this.name
         update[FreetrainingsTable.category] = this.category
         update[FreetrainingsTable.date] = this.date
-        update[FreetrainingsTable.isScheduled] = this.isScheduled
-        update[FreetrainingsTable.wasCheckedin] = this.wasCheckedin
+        update[FreetrainingsTable.state] = this.state
     }
 
     companion object {
@@ -50,8 +51,7 @@ data class FreetrainingDbo(
             name = row[FreetrainingsTable.name],
             category = row[FreetrainingsTable.category],
             date = row[FreetrainingsTable.date],
-            isScheduled = row[FreetrainingsTable.isScheduled],
-            wasCheckedin = row[FreetrainingsTable.wasCheckedin],
+            state = row[FreetrainingsTable.state],
         )
     }
 }
@@ -61,8 +61,7 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
     val name = varchar("NAME", 256)
     val category = varchar("CATEGORY", 64)
     val date = date("DATE")
-    val isScheduled = bool("IS_SCHEDULED")
-    val wasCheckedin = bool("WAS_CHECKEDIN")
+    val state = enumerationByName<FreetrainingState>("STATE", 32)
 }
 
 interface FreetrainingRepo {
@@ -92,7 +91,7 @@ class InMemoryFreetrainingRepo : FreetrainingRepo {
 
     override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> {
         val delete = stored.values.filter {
-            !it.wasCheckedin && it.date < threshold
+            it.state == FreetrainingState.Blank && it.date < threshold
         }
         delete.forEach {
             stored.remove(it.id)
@@ -123,7 +122,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
     }
 
     override fun selectAllScheduled(): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().where { FreetrainingsTable.isScheduled.eq(true) }.map {
+        FreetrainingsTable.selectAll().where { FreetrainingsTable.state eq FreetrainingState.Scheduled }.map {
             FreetrainingDbo.fromRow(it)
         }
     }
@@ -150,7 +149,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
 
     override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> = transaction {
         val deleted = FreetrainingsTable.selectAll().where {
-            FreetrainingsTable.wasCheckedin.eq(false).and(FreetrainingsTable.date.less(threshold))
+            (FreetrainingsTable.state neq FreetrainingState.Checkedin) and (FreetrainingsTable.date less threshold)
         }.map { FreetrainingDbo.fromRow(it) }
 
         val deletedCount = FreetrainingsTable.deleteWhere { FreetrainingsTable.id.inList(deleted.map { it.id }) }

@@ -18,6 +18,8 @@ import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.someOther
 import java.time.LocalDateTime
 
 class ExposedActivityRepoTest : DescribeSpec() {
@@ -63,13 +65,13 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given 2 checkedin Then return newest") {
                 val venue = venueRepo.insert(venue())
                 val activity1 = activity().copy(
-                    wasCheckedin = true,
+                    state = ActivityState.Checkedin,
                     from = todayTime.plusDays(7),
                     to = todayTime.plusDays(7).plusHours(1),
                     venueId = venue.id
                 )
                 val activity2 = activity().copy(
-                    wasCheckedin = true,
+                    state = ActivityState.Checkedin,
                     from = todayTime.plusDays(3),
                     to = todayTime.plusDays(3).plusHours(1),
                     venueId = venue.id
@@ -82,13 +84,13 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given 1 old checkedin and 1 new non-checkedin Then return old one") {
                 val venue = venueRepo.insert(venue())
                 val activity1 = activity().copy(
-                    wasCheckedin = false,
+                    state = ActivityState.Blank,
                     from = todayTime.plusDays(7),
                     to = todayTime.plusDays(7).plusHours(1),
                     venueId = venue.id
                 )
                 val activity2 = activity().copy(
-                    wasCheckedin = true,
+                    state = ActivityState.Checkedin,
                     from = todayTime.plusDays(3),
                     to = todayTime.plusDays(3).plusHours(1),
                     venueId = venue.id
@@ -152,8 +154,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                     id = activity.id,
                     spotsLeft = activity.spotsLeft + 1,
                     teacher = "${activity.teacher} 2",
-                    isBooked = !activity.isBooked,
-                    wasCheckedin = !activity.wasCheckedin,
+                    state = activity.state.someOther(),
                     venueId = ignoredVenueId,
                     name = "ignored",
                     category = "ignored",
@@ -165,8 +166,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity.copy(
                     spotsLeft = updateActivity.spotsLeft,
                     teacher = updateActivity.teacher,
-                    isBooked = updateActivity.isBooked,
-                    wasCheckedin = updateActivity.wasCheckedin,
+                    state = updateActivity.state,
                 )
             }
             it("Given no activity Then fail") {
@@ -177,17 +177,17 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When delete non-booked and non-checkedin before") {
             it("Given older but was checkedin Then keep") {
-                testRepo.insertActivity(wasCheckedin = true, from = yesterdayTime, createVenue = true)
+                testRepo.insertActivity(state = ActivityState.Checkedin, from = yesterdayTime, createVenue = true)
 
-                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeSingleton()
                 deleted.shouldBeEmpty()
             }
             it("Given older but is booked Then keep") {
-                testRepo.insertActivity(isBooked = true, from = yesterdayTime, createVenue = true)
+                testRepo.insertActivity(state = ActivityState.Booked, from = yesterdayTime, createVenue = true)
 
-                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeSingleton()
                 deleted.shouldBeEmpty()
@@ -195,7 +195,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given same date Then keep") {
                 createActivityForDeletion(todayTime)
 
-                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteBlanksBefore(todayDate)
                 deleted.shouldBeEmpty()
 
                 activityRepo.selectAll().shouldBeSingleton()
@@ -203,7 +203,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given older date Then delete") {
                 val activity = createActivityForDeletion(yesterdayTime)
 
-                val deleted = activityRepo.deleteNonBookedNonCheckedinBefore(todayDate)
+                val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
                 activityRepo.selectAll().shouldBeEmpty()
                 deleted shouldBeEqual listOf(activity)
@@ -213,9 +213,9 @@ class ExposedActivityRepoTest : DescribeSpec() {
 
     private fun createActivityForDeletion(date: LocalDateTime) =
         testRepo.insertActivity(
-            wasCheckedin = false,
-            isBooked = false,
+            state = ActivityState.Blank,
             from = date,
             createVenue = true
         )
 }
+

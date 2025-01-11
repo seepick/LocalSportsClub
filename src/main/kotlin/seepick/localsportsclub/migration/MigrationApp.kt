@@ -23,8 +23,8 @@ object MigrationApp {
 
     private fun connectToDatabase() {
         val home = File(System.getProperty("user.home"))
-        val connect = ".lsc"
-//        val connect = ".lsc-dev"
+//        val connect = ".lsc"
+        val connect = ".lsc-dev"
         val dbDir = File(home, "$connect/database")
         val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}/h2"
         println("Connecting to database for migration: $jdbcUrl")

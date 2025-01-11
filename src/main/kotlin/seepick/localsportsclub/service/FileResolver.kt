@@ -21,7 +21,9 @@ object FileResolver {
         appDirectory.createIfNeededOrFail()
     }
 
-    fun resolve(entry: FileEntry) = File(appDirectory, entry.fileName)
+    fun resolve(entry: FileEntry) =
+        File(if (entry.directory == null) appDirectory else resolve(entry.directory), entry.fileName)
+
     fun resolve(entry: DirectoryEntry) = File(appDirectory, entry.directoryName).createIfNeededOrFail()
 }
 
@@ -34,13 +36,15 @@ private fun File.createIfNeededOrFail() = apply {
     }
 }
 
-enum class FileEntry(val fileName: String) {
-    Login("login.json"),
+enum class FileEntry(val directory: DirectoryEntry?, val fileName: String) {
+    Login(null, "login.json"),
+    GcalCredentials(DirectoryEntry.Gcal, "credentials.json"),
 }
 
 enum class DirectoryEntry(val directoryName: String) {
     Database("database"),
     ApiLogs("api_logs"),
     VenueImages("venueImages"),
-    ApplicationLogs("app_logs"),
+    Logs("logs"),
+    Gcal("google_calendar"),
 }

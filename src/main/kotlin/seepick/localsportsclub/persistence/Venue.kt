@@ -45,6 +45,7 @@ interface VenueRepo {
     fun selectAll(): List<VenueDbo>
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
+    fun selectById(id: Int): VenueDbo?
     fun selectBySlug(slug: String): VenueDbo?
 }
 
@@ -81,6 +82,12 @@ object ExposedVenueRepo : VenueRepo {
         VenuesTable.selectAll().map {
             VenueDbo.fromRow(it)
         }
+    }
+
+    override fun selectById(id: Int): VenueDbo? = transaction {
+        VenuesTable.selectAll().where { VenuesTable.id.eq(id) }.map {
+            VenueDbo.fromRow(it)
+        }.singleOrNull()
     }
 
     override fun selectBySlug(slug: String): VenueDbo? = transaction {
@@ -166,6 +173,8 @@ class InMemoryVenueRepo : VenueRepo {
     override fun selectAll(): List<VenueDbo> = stored.values.toList().sortedBy { it.id }
 
     override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
+
+    override fun selectById(id: Int): VenueDbo? = stored.values.firstOrNull { it.id == id }
 
     override fun insert(venue: VenueDbo): VenueDbo {
         val newVenue = venue.copy(id = currentId++)

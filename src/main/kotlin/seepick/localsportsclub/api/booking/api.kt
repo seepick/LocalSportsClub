@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.ResponseStorage
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.safePost
 

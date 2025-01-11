@@ -15,6 +15,8 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.freetrainingDbo
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.usageConfig
 import seepick.localsportsclub.uscConfig
@@ -94,7 +96,7 @@ class UsageStorageTest : DescribeSpec() {
         }
         describe("When starting up") {
             it("Given fitting activity Then checkedin counter increased") {
-                activityRepo.insert(activity("2.5.") { copy(wasCheckedin = true) })
+                activityRepo.insert(activity("2.5.") { copy(state = ActivityState.Checkedin) })
 
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
                 usage.onStartUp()
@@ -102,7 +104,7 @@ class UsageStorageTest : DescribeSpec() {
                 usage checkedinCountShouldBe 1
             }
             it("Given fitting freetraining Then checkedin counter increased") {
-                freetrainingRepo.insert(freetraining("5.5.") { copy(wasCheckedin = true) })
+                freetrainingRepo.insert(freetraining("5.5.") { copy(state = FreetrainingState.Checkedin) })
 
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
                 usage.onStartUp()
@@ -114,37 +116,37 @@ class UsageStorageTest : DescribeSpec() {
             it("When fitting activity added Then counter increased") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
 
-                usage.onActivityAdded(activity("5.5.") { copy(wasCheckedin = true) })
+                usage.onActivityAdded(activity("5.5.") { copy(state = ActivityState.Checkedin) })
 
                 usage checkedinCountShouldBe 1
             }
             it("When too early activity added Then counter stays") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
 
-                usage.onActivityAdded(activity("18.4.") { copy(wasCheckedin = true) })
+                usage.onActivityAdded(activity("18.4.") { copy(state = ActivityState.Checkedin) })
 
                 usage checkedinCountShouldBe 0
             }
             it("When too late activity added Then counter stays") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
 
-                usage.onActivityAdded(activity("18.6.") { copy(wasCheckedin = true) })
+                usage.onActivityAdded(activity("18.6.") { copy(state = ActivityState.Checkedin) })
 
                 usage checkedinCountShouldBe 0
             }
             it("Given fitting activity added When update making it unfitting Then counter decreased") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
-                val activity = activity("5.5.") { copy(wasCheckedin = true) }
+                val activity = activity("5.5.") { copy(state = ActivityState.Checkedin) }
                 usage.onActivityAdded(activity)
 
-                usage.onActivityDboUpdated(activity.copy(wasCheckedin = false), ActivityFieldUpdate.WasCheckedin)
+                usage.onActivityDboUpdated(activity.copy(state = ActivityState.Blank), ActivityFieldUpdate.State)
 
                 usage checkedinCountShouldBe 0
             }
         }
         describe("activity booked") {
             it("Given fitting activity Then booked counter increased") {
-                activityRepo.insert(activity("20.5.") { copy(isBooked = true) })
+                activityRepo.insert(activity("20.5.") { copy(state = ActivityState.Booked) })
 
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
                 usage.onStartUp()
@@ -156,7 +158,7 @@ class UsageStorageTest : DescribeSpec() {
             it("When fitting freetraining added Then checkedin counter increased") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
 
-                usage.onFreetrainingAdded(freetraining("5.5.") { copy(wasCheckedin = true) })
+                usage.onFreetrainingAdded(freetraining("5.5.") { copy(state = FreetrainingState.Checkedin) })
 
                 usage checkedinCountShouldBe 1
             }
@@ -165,8 +167,8 @@ class UsageStorageTest : DescribeSpec() {
             it("then added count") {
                 val usage = usage(today = "15.5.") { copy(periodConfiguredFirstDay = 1) }
 
-                usage.onActivityAdded(activity("4.5.") { copy(wasCheckedin = true) })
-                usage.onFreetrainingAdded(freetraining("6.5.") { copy(wasCheckedin = true) })
+                usage.onActivityAdded(activity("4.5.") { copy(state = ActivityState.Checkedin) })
+                usage.onFreetrainingAdded(freetraining("6.5.") { copy(state = FreetrainingState.Checkedin) })
 
                 usage checkedinCountShouldBe 2
             }
@@ -187,7 +189,7 @@ class UsageStorageTest : DescribeSpec() {
                     usage(today = "1.12.") { copy(periodConfiguredFirstDay = 1, maxBookingsForPeriod = 10) }
                         .also { usage ->
                             repeat(countCheckins) {
-                                usage.onFreetrainingAdded(freetraining("3.12.") { copy(wasCheckedin = true) })
+                                usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingState.Checkedin) })
                             }
                         }
                         .percentageCheckedinShouldBe(expected)
@@ -202,7 +204,7 @@ class UsageStorageTest : DescribeSpec() {
                     usage(today = "1.12.") { copy(periodConfiguredFirstDay = 1, maxBookingsForPeriod = 10) }
                         .also { usage ->
                             repeat(countCheckins) {
-                                usage.onActivityAdded(activity("3.12.") { copy(isBooked = true) })
+                                usage.onActivityAdded(activity("3.12.") { copy(state = ActivityState.Booked) })
                             }
                         }
                         .percentageBookedShouldBe(expected)

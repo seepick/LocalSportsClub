@@ -111,10 +111,7 @@
             <column name="TEACHER" type="varchar(64)">
                 <constraints nullable="true"/>
             </column>
-            <column name="IS_BOOKED" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-            <column name="WAS_CHECKEDIN" type="boolean">
+            <column name="STATE" type="varchar(32)">
                 <constraints nullable="false"/>
             </column>
             <column name="VENUE_ID" type="integer">
@@ -135,7 +132,7 @@
             <column name="DATE" type="date">
                 <constraints nullable="false"/>
             </column>
-            <column name="WAS_CHECKEDIN" type="boolean">
+            <column name="STATE" type="varchar(32)">
                 <constraints nullable="false"/>
             </column>
             <column name="VENUE_ID" type="integer">
@@ -152,13 +149,5 @@
             </column>
         </createTable>
 
-    </changeSet>
-    <changeSet id="2" author="owner" failOnError="true">
-        <comment>adding FREETRAININGS.IS_SCHEDULED</comment>
-        <addColumn tableName="FREETRAININGS">
-            <column name="IS_SCHEDULED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>

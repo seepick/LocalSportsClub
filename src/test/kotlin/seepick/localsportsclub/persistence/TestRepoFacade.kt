@@ -1,9 +1,10 @@
 package seepick.localsportsclub.persistence
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.next
+import seepick.localsportsclub.service.model.ActivityState
 import java.time.LocalDateTime
 
 class TestRepoFacade(
@@ -14,8 +15,7 @@ class TestRepoFacade(
     private var activitySequence = 1
 
     fun insertActivity(
-        wasCheckedin: Boolean = Arb.boolean().next(),
-        isBooked: Boolean = Arb.boolean().next(),
+        state: ActivityState = Arb.enum<ActivityState>().next(),
         from: LocalDateTime = Arb.localDateTime().next(),
         createVenue: Boolean = false,
     ): ActivityDbo {
@@ -27,8 +27,7 @@ class TestRepoFacade(
         val activity = Arb.activityDbo().next()
             .copy(
                 id = activitySequence++,
-                isBooked = isBooked,
-                wasCheckedin = wasCheckedin,
+                state = state,
                 from = from,
                 to = from.plusMinutes(30),
             ).let {

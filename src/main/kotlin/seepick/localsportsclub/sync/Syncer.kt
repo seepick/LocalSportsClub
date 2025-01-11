@@ -21,13 +21,11 @@ interface SyncerListener {
 }
 
 enum class ActivityFieldUpdate {
-    IsBooked,
-    WasCheckedin,
+    State,
 }
 
 enum class FreetrainingFieldUpdate {
-    IsScheduled,
-    WasCheckedin,
+    State,
 }
 
 object NoopSyncer : Syncer {

@@ -3,7 +3,7 @@ package seepick.localsportsclub.view.common.table
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.onClick
 import androidx.compose.material.MaterialTheme
@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,6 +82,7 @@ fun RowScope.TableHeader(
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
         modifier = Modifier
+            .defaultMinSize(0.dp, 25.dp)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
             .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.background)
@@ -117,8 +119,8 @@ fun RowScope.TableCell(
         fontWeight = fontWeight,
         overflow = TextOverflow.Ellipsis,
         modifier = Modifier
-            .padding(top = 2.dp, bottom = 2.dp)
             .let { applyColSize(it, size) }
+            .align(Alignment.CenterVertically)
             .then(modifier)
     )
 }

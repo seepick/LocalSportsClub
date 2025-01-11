@@ -39,20 +39,20 @@ fun <T> Table(
     headerEnabled: Boolean = true,
     itemsLabel: String? = null,
     allItemsCount: Int? = null,
-    modifier: Modifier = Modifier,
+    boxModifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier, // bottom = 20.dp, // for the status bar
 ) {
-    Box(modifier = Modifier.then(modifier)) {
+    Box(modifier = boxModifier) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
             modifier = Modifier.padding(
                 end = 12.dp, // for the scrollbar to the right
-                bottom = 20.dp, // for the status bar
-            ),
+            ).then(columnModifier),
         ) {
             if (headerEnabled) {
                 stickyHeader {
-                    Row(Modifier.background(Color.Gray)) {
+                    Row(Modifier) {
                         columns.forEach { col ->
                             TableHeader(
                                 text = col.headerLabel ?: error("Missing header label for: $col"),

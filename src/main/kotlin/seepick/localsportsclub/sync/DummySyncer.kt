@@ -10,6 +10,8 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
 class DummySyncer(
@@ -93,11 +95,11 @@ class DummySyncer(
             from = now.plusDays(3), to = now.plusDays(3).plusMinutes(20)
         )
         this += dummyActivity(activityId++, 4).copy(
-            name = "You will be there", isBooked = true, teacher = "Brittany Mock",
+            name = "You will be there", state = ActivityState.Booked, teacher = "Brittany Mock",
             from = now.plusHours(3), to = now.plusHours(4),
         )
         this += dummyActivity(activityId++, 4).copy(
-            name = "You were there", wasCheckedin = true,
+            name = "You were there", state = ActivityState.Checkedin,
             from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
         )
         this += dummyActivity(activityId++, 4).copy(
@@ -115,35 +117,33 @@ class DummySyncer(
 
     private fun generateFreetrainings(): List<FreetrainingDbo> = buildList {
         this += dummyFreetraining().copy(
-            id = freetrainingId++,
             venueId = 4,
             name = "Delete Me",
             category = "Nope",
             date = LocalDate.now(),
-            wasCheckedin = false,
         )
         this += dummyFreetraining().copy(
-            id = freetrainingId++,
             venueId = 4,
             name = "Free Sport",
             category = "Wellness",
             date = LocalDate.now().plusDays(1),
-            wasCheckedin = true,
+            state = FreetrainingState.Checkedin,
         )
         this += dummyFreetraining().copy(
-            id = freetrainingId++,
             venueId = 4,
             name = "Irrevelant passed",
             category = "Wellness",
             date = LocalDate.now().minusDays(1),
         )
         this += dummyFreetraining().copy(
-            id = freetrainingId++,
             venueId = 4,
             name = "Was Yesterday",
             date = LocalDate.now().minusDays(1),
         )
-        this += dummyFreetraining().copy(venueId = 10, name = "Hidden Freetraining")
+        this += dummyFreetraining().copy(
+            venueId = 10,
+            name = "Hidden Freetraining",
+        )
     }
 
     private fun dummyVenue() = VenueDbo(
@@ -181,8 +181,7 @@ class DummySyncer(
             from = now.plusDays(1),
             to = now.plusDays(1).plusMinutes(75),
             teacher = null,
-            isBooked = false,
-            wasCheckedin = false,
+            state = ActivityState.Blank,
         )
     }
 
@@ -192,7 +191,6 @@ class DummySyncer(
         name = "Name",
         category = "",
         date = LocalDate.now().plusDays(3),
-        isScheduled = false,
-        wasCheckedin = false,
+        state = FreetrainingState.Blank,
     )
 }

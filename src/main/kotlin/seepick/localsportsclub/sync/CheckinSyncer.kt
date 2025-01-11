@@ -7,6 +7,8 @@ import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.checkin.FreetrainingCheckinEntry
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingRepo
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
 class CheckinSyncer(
@@ -49,19 +51,20 @@ class CheckinSyncer(
     }
 
     private suspend fun markActivityAsCheckedin(entry: ActivityCheckinEntry) {
-        // FIXME use entry.isNoShow
         val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.fetchInsertAndDispatchActivity(
             activityId = entry.activityId,
             venueSlug = entry.venueSlug,
             prefilledNotes = "[SYNC] rescued activity for past check-in"
         )
-        if (activity.wasCheckedin) {
+        if (activity.state == ActivityState.Checkedin) {
             log.debug { "Activity was already marked as checked-in, skipping: $entry" }
             return
         }
-        val updated = activity.copy(wasCheckedin = true)
+        val updated = activity.copy(
+            state = if (entry.isNoShow) ActivityState.Noshow else ActivityState.Checkedin
+        )
         activityRepo.update(updated)
-        dispatcher.dispatchOnActivityDboUpdated(updated, ActivityFieldUpdate.WasCheckedin)
+        dispatcher.dispatchOnActivityDboUpdated(updated, ActivityFieldUpdate.State)
     }
 
     private suspend fun markFreetrainingAsCheckedin(entry: FreetrainingCheckinEntry) {
@@ -71,12 +74,12 @@ class CheckinSyncer(
                 venueSlug = entry.venueSlug,
                 prefilledNotes = "[SYNC] rescued freetraining for past check-in"
             )
-        if (freetraining.wasCheckedin) {
+        if (freetraining.isCheckedin) {
             log.debug { "Freetraining was already marked as checked-in, skipping: $entry" }
             return
         }
-        val updated = freetraining.copy(wasCheckedin = true)
+        val updated = freetraining.copy(state = FreetrainingState.Checkedin)
         freetrainingRepo.update(updated)
-        dispatcher.dispatchOnFreetrainingDboUpdated(updated, FreetrainingFieldUpdate.WasCheckedin)
+        dispatcher.dispatchOnFreetrainingDboUpdated(updated, FreetrainingFieldUpdate.State)
     }
 }

@@ -15,7 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.TitleText
 
 data class BookingDialog(
@@ -35,8 +38,7 @@ fun SubEntityDetail(
     onCloseDialog: () -> Unit,
 ) {
     if (bookingDialog != null) {
-        AlertDialog(
-            title = { Text(bookingDialog.title) },
+        AlertDialog(title = { Text(bookingDialog.title) },
             text = { Text(bookingDialog.message) },
             onDismissRequest = onCloseDialog,
             backgroundColor = MaterialTheme.colors.background,
@@ -44,39 +46,61 @@ fun SubEntityDetail(
                 Button(onClick = onCloseDialog) {
                     Text("Close")
                 }
-            }
-        )
+            })
     }
 
     val year = clock.today().year
+    val (isBooked, isCheckedin, isNoshow) = when (subEntity) {
+        is SubEntity.ActivityEntity -> {
+            Triple(
+                subEntity.activity.state == ActivityState.Booked,
+                subEntity.activity.state == ActivityState.Checkedin,
+                subEntity.activity.state == ActivityState.Noshow
+            )
+        }
+
+        is SubEntity.FreetrainingEntity -> {
+            Triple(
+                subEntity.freetraining.state == FreetrainingState.Scheduled,
+                subEntity.freetraining.state == FreetrainingState.Checkedin,
+                false
+            )
+        }
+    }
+
     Column(modifier = modifier) {
         TitleText(subEntity.name)
-        Text("Date: ${subEntity.dateFormatted(year)}")
-        Text("Category: ${subEntity.category}")
+        LabeledText("Date", subEntity.dateFormatted(year))
+        LabeledText("Category", subEntity.category)
         if (subEntity is SubEntity.ActivityEntity) {
-            Text("Teacher: ${subEntity.activity.teacher ?: "-"}")
-            Text("Spots Left: ${subEntity.activity.spotsLeft}")
+            LabeledText("Teacher", subEntity.activity.teacher ?: "-")
+            LabeledText("Spots Left", subEntity.activity.spotsLeft.toString())
         }
-        if (subEntity.isBooked) {
+        if (isBooked) {
             Text("${Icons.Lsc.booked} Is ${subEntity.bookedLabel}")
         }
-        if (subEntity.wasCheckedin) {
+        if (isCheckedin) {
             Text("${Icons.Lsc.checkedin} Was checked-in")
         }
-        Row {
-            Button(onClick = {
-                if (subEntity.isBooked) {
-                    onCancelBooking(subEntity)
-                } else {
-                    onBook(subEntity)
+        if (isNoshow) {
+            Text("${Icons.Lsc.noshow} No show")
+        }
+        if (subEntity.date >= clock.today()) {
+            Row {
+                Button(onClick = {
+                    if (isBooked) {
+                        onCancelBooking(subEntity)
+                    } else {
+                        onBook(subEntity)
+                    }
+                }, enabled = !isBookingOrCancelInProgress) {
+                    Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                 }
-            }, enabled = !isBookingOrCancelInProgress) {
-                Text(if (subEntity.isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
-            }
-            AnimatedVisibility(
-                visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()
-            ) {
-                CircularProgressIndicator()
+                AnimatedVisibility(
+                    visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }

@@ -11,6 +11,8 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.Month
 
 interface DataSyncRescuer {
@@ -36,7 +38,7 @@ class DataSyncRescuerImpl(
     override suspend fun fetchInsertAndDispatchActivity(
         activityId: Int,
         venueSlug: String,
-        prefilledNotes: String
+        prefilledNotes: String,
     ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity with ID $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
@@ -64,8 +66,7 @@ class DataSyncRescuerImpl(
         from = dateTimeRange.from,
         to = dateTimeRange.to,
         teacher = null,
-        isBooked = false,
-        wasCheckedin = false,
+        state = ActivityState.Blank,
     )
 
     private suspend fun ensureVenue(venueSlug: String, prefilledNotes: String): VenueDbo =
@@ -84,7 +85,7 @@ class DataSyncRescuerImpl(
         require(freetrainingRepo.selectById(freetrainingId) == null)
         val freetrainingDetail = activityApi.fetchFreetrainingDetails(freetrainingId).let(::adjustDate)
         val venue = ensureVenue(venueSlug, prefilledNotes)
-        val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId, venue.id)
+        val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId = freetrainingId, venueId = venue.id)
         freetrainingRepo.insert(dbo)
         dispatcher.dispatchOnFreetrainingDbosAdded(listOf(dbo))
         return dbo
@@ -102,7 +103,6 @@ class DataSyncRescuerImpl(
         name = name,
         category = category,
         date = date,
-        isScheduled = false,
-        wasCheckedin = false,
+        state = FreetrainingState.Blank,
     )
 }

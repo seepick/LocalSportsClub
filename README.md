@@ -11,13 +11,13 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Next up
 
-* support no-show activity: Activity.state = { Blank, Booked, Checkedin, Noshow }
-    * also: Freetraining.state = { Blank, Scheduled, Checkedin }
-    * no-show freetraining possible?? try it yourself ;)
 * real system test: book/cancel activity&freetraining
-* full sync, and migrate AllFit data
-* // hide partners: femme*, Ladies Only, padel, SUP
-* in activity table, DO show visited count column. important. same for freetraining.
+* full sync, and migrate AllFit data // hide partners: femme*, Ladies Only, padel, SUP
+* in activity/freetraining table, show column "visited count"
+* ad venues table: "last visited (nullable)" column
+* ... no-show for freetraining possible?? try it yourself ;)
+* make it possible to manually convert activity from noshow into checkedin (or somehow detect programmatically?)
+* remember window size/position on exit and redo on startup
 
 ## Backlog
 
@@ -29,7 +29,7 @@ Communistic Custom Client for Urban Sports Club.
 * MIN: description/info has "\n"... replace them
 * FEATURE: support sorting asc/desc
 * notes: show scrollbar if necessary
-* after sync, display report what happened
+* after sync, display report what happened ++ big WARNING if new noshow was detected!
 
 ## Later
 
@@ -42,14 +42,16 @@ Communistic Custom Client for Urban Sports Club.
 * UI: if textfield elipse ("foo...") => show tooltip full text
 * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 * FEATURE: sync with google calendar; on booking/cancellation
+    * https://developers.google.com/calendar/api/guides/create-events
+    * https://github.com/seepick/gadsu/blob/master/src/main/kotlin/at/cpickl/gadsu/service/google.kt
 * use compose's snackbar to indicate notifications about sync
 * "light sync" to only sync spots
 * activity search: fav, wish, booked, rating, category
 * freetraining search: date, category, rating, fav, wish
-* venues table: last visit column
 * venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
 * the syncer should not add the year information; return incomplete day+month only (let logic determine proper year)
 * use geo-location to pre-calculate distance
+* compile 'net.ricecode:string-similarity:1.0.0'
 
 ## Later Later
 

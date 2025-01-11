@@ -13,7 +13,7 @@ class CleanupSyncer(
     fun sync() {
         val today = clock.today()
 
-        val activities = activityRepo.deleteNonBookedNonCheckedinBefore(today)
+        val activities = activityRepo.deleteBlanksBefore(today)
         dispatcher.dispatchOnActivityDbosDeleted(activities)
 
         val freetrainings = freetrainingRepo.deleteNonCheckedinBefore(today)

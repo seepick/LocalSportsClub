@@ -33,6 +33,7 @@ import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
+import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface HasVenue {
@@ -42,13 +43,11 @@ interface HasVenue {
 sealed interface SubEntity : HasVenue {
     val maybeActivity: Activity?
     val maybeFreetraining: Freetraining?
-
     val id: Int
     val name: String
     fun dateFormatted(year: Int): String
     val category: String
-    val isBooked: Boolean
-    val wasCheckedin: Boolean
+    val date: LocalDate
     val bookLabel: String
     val bookedLabel: String
 
@@ -59,10 +58,9 @@ sealed interface SubEntity : HasVenue {
         override val name = activity.name
         override fun dateFormatted(year: Int) = activity.dateTimeRange.prettyPrint(year)
         override val category = activity.category
-        override val isBooked = activity.isBooked
-        override val wasCheckedin = activity.wasCheckedin
         override val bookLabel = "Book"
         override val bookedLabel = "booked"
+        override val date: LocalDate = activity.dateTimeRange.from.toLocalDate()
     }
 
     data class FreetrainingEntity(val freetraining: Freetraining) : SubEntity, HasVenue by freetraining {
@@ -72,10 +70,9 @@ sealed interface SubEntity : HasVenue {
         override val id = freetraining.id
         override val name = freetraining.name
         override val category = freetraining.category
-        override val isBooked = freetraining.isScheduled
-        override val wasCheckedin = freetraining.wasCheckedin
         override val bookLabel = "Schedule"
         override val bookedLabel = "scheduled"
+        override val date = freetraining.date
     }
 }
 
@@ -196,27 +193,37 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onBook(subEntity: SubEntity) {
         log.debug { "onBook: $subEntity" }
-        bookOrCancel(subEntity, BookingService::book) { result ->
-            BookingDialog(
-                title = "Booking",
-                message = when (result) {
-                    BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
-                    is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                bookOrCancel(subEntity, BookingService::book) { result ->
+                    BookingDialog(
+                        title = "Booking",
+                        message = when (result) {
+                            BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
+                            is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
     fun onCancelBooking(subEntity: SubEntity) {
         log.debug { "onCancelBooking: $subEntity" }
-        bookOrCancel(subEntity, BookingService::cancel) { result ->
-            BookingDialog(
-                "Cancel Booking",
-                when (result) {
-                    CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
-                    is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                bookOrCancel(subEntity, BookingService::cancel) { result ->
+                    BookingDialog(
+                        "Cancel Booking",
+                        when (result) {
+                            CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
+                            is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
@@ -228,9 +235,16 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 isBookingOrCancelInProgress = true
-                val result = bookingService.bookingOperation(subEntity)
-                isBookingOrCancelInProgress = false
-                bookingDialog = resultHandler(result)
+                try {
+                    val result = bookingService.bookingOperation(subEntity)
+                    bookingDialog = resultHandler(result)
+                } catch (e: Exception) {
+                    log.error(e) { "Failed to book/cancel $subEntity" }
+                    bookingDialog = BookingDialog("Error", "${e::class.simpleName}: ${e.message}")
+                } finally {
+                    isBookingOrCancelInProgress = false
+                }
+
             }
         }
     }

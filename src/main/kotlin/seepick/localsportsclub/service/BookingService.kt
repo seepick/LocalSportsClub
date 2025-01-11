@@ -4,9 +4,18 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
+import seepick.localsportsclub.gcal.GcalEntry
+import seepick.localsportsclub.gcal.GcalService
+import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
+import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
+import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
@@ -15,10 +24,13 @@ import seepick.localsportsclub.view.usage.UsageStorage
 
 class BookingService(
     private val uscApi: UscApi,
+    // TODO register listeners externally instead!
     dataStorage: DataStorage,
     usageStorage: UsageStorage,
     private val activityRepo: ActivityRepo,
+    private val venueRepo: VenueRepo,
     private val freetrainingRepo: FreetrainingRepo,
+    private val gcalService: GcalService,
 ) {
     private val log = logger {}
     private val listeners: List<SyncerListener> = listOf(dataStorage, usageStorage)
@@ -39,38 +51,102 @@ class BookingService(
             operationSucceeded = { it is CancelResult.CancelSuccess },
         )
 
+    private val SubEntity.isBookable: Boolean
+        get() =
+            when (this) {
+                is SubEntity.ActivityEntity -> activity.state == ActivityState.Blank
+                is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Blank
+            }
+    private val SubEntity.isCancellable: Boolean
+        get() =
+            when (this) {
+                is SubEntity.ActivityEntity -> activity.state == ActivityState.Booked
+                is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Scheduled
+            }
+
+    private val ActivityDbo.isBookable: Boolean get() = state == ActivityState.Blank
+    private val ActivityDbo.isCancellable: Boolean get() = state == ActivityState.Booked
+    private val FreetrainingDbo.isSchedulable: Boolean get() = state == FreetrainingState.Blank
+    private val FreetrainingDbo.isCancellable: Boolean get() = state == FreetrainingState.Scheduled
+    private fun ActivityDbo.Companion.bookingState(isBooking: Boolean) =
+        if (isBooking) ActivityState.Booked else ActivityState.Blank
+
+    private fun FreetrainingDbo.Companion.bookingState(isBooking: Boolean) =
+        if (isBooking) FreetrainingState.Scheduled else FreetrainingState.Blank
+
     private suspend fun <T> bookOrCancel(
         subEntity: SubEntity,
         isBooking: Boolean,
         apiOperation: suspend UscApi.(Int) -> T,
         operationSucceeded: (T) -> Boolean,
     ): T {
-        require(subEntity.isBooked == !isBooking)
+        log.debug { "book=$isBooking => $subEntity" }
+        require(if (isBooking) subEntity.isBookable else subEntity.isCancellable)
         log.info { "${if (isBooking) "Booking" else "Cancel"} started for: $subEntity" }
         val result = uscApi.apiOperation(subEntity.id)
         if (operationSucceeded(result)) {
             when (subEntity) {
                 is SubEntity.ActivityEntity -> {
-                    val activityDbo = activityRepo.selectById(subEntity.id)!!
-                    require(activityDbo.isBooked != isBooking)
-                    val updatedActivityDbo = activityDbo.copy(isBooked = isBooking)
-                    activityRepo.update(updatedActivityDbo)
-                    listeners.forEach {
-                        it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.IsBooked)
-                    }
+                    bookOrCancelActivity(subEntity, isBooking)
                 }
 
                 is SubEntity.FreetrainingEntity -> {
-                    val freetrainingDbo = freetrainingRepo.selectById(subEntity.id)!!
-                    require(freetrainingDbo.isScheduled != isBooking)
-                    val updatedFreetrainingDbo = freetrainingDbo.copy(isScheduled = isBooking)
-                    freetrainingRepo.update(updatedFreetrainingDbo)
-                    listeners.forEach {
-                        it.onFreetrainingDboUpdated(updatedFreetrainingDbo, FreetrainingFieldUpdate.IsScheduled)
-                    }
+                    bookOrCancelFreetraining(subEntity, isBooking)
                 }
             }
         }
         return result
+    }
+
+    private fun bookOrCancelActivity(subEntity: SubEntity.ActivityEntity, isBooking: Boolean) {
+        val activityDbo = activityRepo.selectById(subEntity.id)!!
+        require(if (isBooking) activityDbo.isBookable else activityDbo.isCancellable)
+        val updatedActivityDbo = activityDbo.copy(state = ActivityDbo.bookingState(isBooking))
+        activityRepo.update(updatedActivityDbo)
+        if (isBooking) {
+            createCalendarActivity(updatedActivityDbo)
+        }
+        listeners.forEach {
+            it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State)
+        }
+    }
+
+    private fun VenueDbo.location() = "${name}, $street, $postalCode $addressLocality"
+
+    private fun createCalendarActivity(activityDbo: ActivityDbo) {
+        val venue = venueRepo.selectById(activityDbo.venueId) ?: error("Venue not found for: $activityDbo")
+        gcalService.create(GcalEntry.GcalActivity(
+            activityId = activityDbo.id,
+            title = activityDbo.nameWithTeacherIfPresent,
+            dateTimeRange = DateTimeRange(from = activityDbo.from, to = activityDbo.to),
+            location = venue.location(),
+            notes = "[LSC] created${
+                venue.officialWebsite?.let { "\n$it" } ?: ""
+            }",
+        ))
+    }
+
+    private fun bookOrCancelFreetraining(subEntity: SubEntity.FreetrainingEntity, isBooking: Boolean) {
+        val freetrainingDbo = freetrainingRepo.selectById(subEntity.id)!!
+        require(if (isBooking) freetrainingDbo.isSchedulable else freetrainingDbo.isCancellable)
+        val updatedFreetrainingDbo = freetrainingDbo.copy(state = FreetrainingDbo.bookingState(isBooking))
+        freetrainingRepo.update(updatedFreetrainingDbo)
+        createCalendarFreetraining(updatedFreetrainingDbo)
+        listeners.forEach {
+            it.onFreetrainingDboUpdated(updatedFreetrainingDbo, FreetrainingFieldUpdate.State)
+        }
+    }
+
+    private fun createCalendarFreetraining(freetrainingDbo: FreetrainingDbo) {
+        val venue = venueRepo.selectById(freetrainingDbo.venueId) ?: error("Venue not found for: $freetrainingDbo")
+        gcalService.create(GcalEntry.GcalFreetraining(
+            freetrainingId = freetrainingDbo.id,
+            title = freetrainingDbo.name,
+            date = freetrainingDbo.date,
+            location = venue.location(),
+            notes = "[LSC] created${
+                venue.officialWebsite?.let { "\n$it" } ?: ""
+            }",
+        ))
     }
 }

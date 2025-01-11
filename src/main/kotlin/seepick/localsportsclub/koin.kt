@@ -4,7 +4,9 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.apiModule
+import seepick.localsportsclub.gcal.gcalModule
 import seepick.localsportsclub.persistence.persistenceModule
 import seepick.localsportsclub.service.serviceModule
 import seepick.localsportsclub.sync.syncModule
@@ -15,6 +17,7 @@ fun allModules(config: AppConfig) = listOf(
     persistenceModule(config),
     apiModule(config),
     serviceModule(),
+    gcalModule(config),
     syncModule(config),
     viewModule(config),
 )

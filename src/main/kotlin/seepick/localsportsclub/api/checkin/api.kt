@@ -5,9 +5,9 @@ import io.ktor.client.request.cookie
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.Url
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.ResponseStorage
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.safeGet
 

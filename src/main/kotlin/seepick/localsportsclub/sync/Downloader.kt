@@ -31,7 +31,7 @@ class HttpDownloader(
 //                    Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FvenueCatalog_311x175_bmrtjlmxbveot0zlvwuj_1727358338834864.png?generation=1727358339345039&alt=media")
                     Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2Foriginal_1680x945_e1cbnfnj6zdwdi2kght3_1727428109645212.png?generation=1727428109770038&amp;alt=media")
                 val bytes = HttpDownloader(httpClient).downloadVenueImage(imageUrl)
-                FileSystemImageStorage(File(".")).saveVenueImage("foo.png", bytes)
+                FileSystemImageStorage(File(".")).saveAndResizeVenueImage("foo.png", bytes)
             }
         }
     }

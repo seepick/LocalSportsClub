@@ -3,7 +3,7 @@ package seepick.localsportsclub.sync
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
-import seepick.localsportsclub.UscConfig
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import java.time.LocalDate

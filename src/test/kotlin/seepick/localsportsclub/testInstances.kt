@@ -13,6 +13,7 @@ import io.kotest.property.arbitrary.string
 import io.ktor.http.Url
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
+import seepick.localsportsclub.api.UscConfig
 
 fun Arb.Companion.uscConfig() = arbitrary {
     UscConfig(

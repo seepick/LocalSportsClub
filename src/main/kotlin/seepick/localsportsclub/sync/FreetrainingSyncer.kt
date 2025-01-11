@@ -1,16 +1,17 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.FreetrainingInfo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
 class FreetrainingSyncer(
@@ -71,6 +72,5 @@ private fun FreetrainingInfo.toDbo(venueId: Int, date: LocalDate) = Freetraining
     name = name,
     category = category,
     date = date,
-    isScheduled = false,
-    wasCheckedin = false,
+    state = FreetrainingState.Blank,
 )

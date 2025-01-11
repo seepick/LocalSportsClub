@@ -14,6 +14,7 @@ import io.kotest.property.arbitrary.next
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.model.FreetrainingState
 
 class ExposedFreetrainingRepoTest : DescribeSpec() {
 
@@ -76,21 +77,21 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
         }
         describe("deleteNonCheckedinBefore") {
             it("Given old checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, wasCheckedin = true) }
+                insertTrainingAndVenue { copy(date = yesterdayDate, state = FreetrainingState.Checkedin) }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
                 freetrainingRepo.selectAll().shouldBeSingleton()
             }
             it("Given old non-checkedin Then delete") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, wasCheckedin = false) }
+                insertTrainingAndVenue { copy(date = yesterdayDate, state = FreetrainingState.Blank) }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
                 freetrainingRepo.selectAll().shouldBeEmpty()
             }
             it("Given newer non-checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = todayDate, wasCheckedin = false) }
+                insertTrainingAndVenue { copy(date = todayDate, state = FreetrainingState.Blank) }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 

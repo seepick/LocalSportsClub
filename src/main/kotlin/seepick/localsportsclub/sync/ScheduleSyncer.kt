@@ -6,7 +6,9 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
+import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.EntityType
+import seepick.localsportsclub.service.model.FreetrainingState
 
 class ScheduleSyncer(
     private val uscApi: UscApi,
@@ -24,15 +26,15 @@ class ScheduleSyncer(
             .associateBy { it.activityOrFreetrainingId }
         val scheduleFreetrainings = scheduleRows.filter { it.entityType == EntityType.Freetraining }
             .associateBy { it.activityOrFreetrainingId }
-        val localScheduledActivities = activityRepo.selectAllBooked().associateBy { it.id }
+        val localBookedActivities = activityRepo.selectAllBooked().associateBy { it.id }
         val localScheduledFreetrainings = freetrainingRepo.selectAllScheduled().associateBy { it.id }
 
-        val activitiesYes = scheduleActivities.minus(localScheduledActivities.keys)
-        val activitiesNo = localScheduledActivities.minus(scheduleActivities.keys)
+        val activitiesYes = scheduleActivities.minus(localBookedActivities.keys)
+        val activitiesNo = localBookedActivities.minus(scheduleActivities.keys)
         val freetrainingsYes = scheduleFreetrainings.minus(localScheduledFreetrainings.keys)
         val freetrainingsNo = localScheduledFreetrainings.minus(scheduleFreetrainings.keys)
 
-        updateAndDispatchActivities(activitiesYes.values.toList(), toBeScheduled = true) { schedule ->
+        updateAndDispatchActivities(activitiesYes.values.toList(), toBeBooked = true) { schedule ->
             activityRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
                     schedule.activityOrFreetrainingId,
@@ -41,7 +43,7 @@ class ScheduleSyncer(
                 )
             }()
         }
-        updateAndDispatchActivities(activitiesNo.values.toList(), toBeScheduled = false) { it }
+        updateAndDispatchActivities(activitiesNo.values.toList(), toBeBooked = false) { it }
 
         updateAndDispatchFreetrainings(freetrainingsYes.values.toList(), toBeScheduled = true) { schedule ->
             freetrainingRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
@@ -57,16 +59,17 @@ class ScheduleSyncer(
 
     private suspend fun <T> updateAndDispatchActivities(
         activities: List<T>,
-        toBeScheduled: Boolean,
+        toBeBooked: Boolean,
         extractor: suspend (T) -> ActivityDbo
     ) {
-        log.debug { "Marking ${activities.size} activities as booked=$toBeScheduled" }
+        log.debug { "Marking ${activities.size} activities as booked=$toBeBooked" }
+        val targetState = if (toBeBooked) ActivityState.Booked else ActivityState.Blank
         activities.forEach {
             val activity = extractor(it)
-            require(activity.isBooked != toBeScheduled) { "Expected activity to be scheduled=${!toBeScheduled} ($activity)" }
-            val updatedActivity = activity.copy(isBooked = toBeScheduled)
+            require(activity.state != targetState) { "Expected activity state not to be $targetState: $activity" }
+            val updatedActivity = activity.copy(state = targetState)
             activityRepo.update(updatedActivity)
-            dispatcher.dispatchOnActivityDboUpdated(updatedActivity, ActivityFieldUpdate.IsBooked)
+            dispatcher.dispatchOnActivityDboUpdated(updatedActivity, ActivityFieldUpdate.State)
         }
     }
 
@@ -76,12 +79,13 @@ class ScheduleSyncer(
         extractor: suspend (T) -> FreetrainingDbo
     ) {
         log.debug { "Marking ${freetrainings.size} freetrainings as scheduled=$toBeScheduled" }
+        val targetState = if (toBeScheduled) FreetrainingState.Scheduled else FreetrainingState.Blank
         freetrainings.forEach {
             val freetraining = extractor(it)
-            require(freetraining.isScheduled != toBeScheduled) { "Expected freetraining to be scheduled=${!toBeScheduled} ($freetraining)" }
-            val updatedFreetraining = freetraining.copy(isScheduled = toBeScheduled)
+            require(freetraining.state != targetState) { "Expected freetraining state not to be $targetState: $freetraining" }
+            val updatedFreetraining = freetraining.copy(state = targetState)
             freetrainingRepo.update(updatedFreetraining)
-            dispatcher.dispatchOnFreetrainingDboUpdated(updatedFreetraining, FreetrainingFieldUpdate.IsScheduled)
+            dispatcher.dispatchOnFreetrainingDboUpdated(updatedFreetraining, FreetrainingFieldUpdate.State)
         }
     }
 }

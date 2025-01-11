@@ -2,11 +2,10 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import seepick.localsportsclub.AppConfig
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
@@ -14,7 +13,6 @@ import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
-import seepick.localsportsclub.service.resizeImage
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 
@@ -152,8 +150,7 @@ class VenueSyncInserterImpl(
 
     private suspend fun downloadAndSaveImage(fileName: String, originalImageUrl: Url) {
         val downloadedBytes = downloader.downloadVenueImage(originalImageUrl)
-        val resizedBytes = resizeImage(downloadedBytes, AppConfig.downloadImageSize)
-        imageStorage.saveVenueImage(fileName, resizedBytes)
+        imageStorage.saveAndResizeVenueImage(fileName, downloadedBytes)
     }
 }
 

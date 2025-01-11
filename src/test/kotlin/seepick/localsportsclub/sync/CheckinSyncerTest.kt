@@ -18,6 +18,7 @@ import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.TestRepoFacade
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.model.ActivityState
 import java.time.LocalDate
 
 class CheckinSyncerTest : StringSpec() {
@@ -70,22 +71,22 @@ class CheckinSyncerTest : StringSpec() {
 
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
-            val activity = testRepo.insertActivity(wasCheckedin = false)
+            val activity = testRepo.insertActivity(state = ActivityState.Blank)
             val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id)
             coEvery { uscApi.fetchCheckinsPage(1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 
             syncer.sync()
 
-            val expected = activity.copy(wasCheckedin = true)
+            val expected = activity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(activity.id) shouldBe expected
-            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.WasCheckedin)
+            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State)
         }
         "Given local checked-in activity Then sync until that time although more pages potentially available" {
-            val activity1 = testRepo.insertActivity(wasCheckedin = false, from = now.minusDays(5))
-            val activity2 = testRepo.insertActivity(wasCheckedin = false, from = now.minusDays(5))
-            val activity3 = testRepo.insertActivity(wasCheckedin = false, from = now.minusDays(5))
-            testRepo.insertActivity(wasCheckedin = true, from = now.minusDays(1)) // pivot activity
+            val activity1 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
+            val activity2 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
+            val activity3 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
+            testRepo.insertActivity(state = ActivityState.Checkedin, from = now.minusDays(1)) // pivot activity
 
             mockCheckinsPage(1, today, activity1.id)
             mockCheckinsPage(2, today.minusDays(1), activity2.id)
@@ -97,7 +98,7 @@ class CheckinSyncerTest : StringSpec() {
         "Given checkin for locally non-existing activity Then refetch and rescue it" {
             val nonExistingActivityId = 42
             val entry = mockCheckinsPage(1, today, nonExistingActivityId)
-            val rescuedActivity = Arb.activityDbo().next().copy(wasCheckedin = false)
+            val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
             mockCheckinsEmptyPage(2)
             coEvery {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
@@ -112,9 +113,9 @@ class CheckinSyncerTest : StringSpec() {
 
             syncer.sync()
 
-            val expected = rescuedActivity.copy(wasCheckedin = true)
+            val expected = rescuedActivity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(expected.id) shouldBe expected
-            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.WasCheckedin)
+            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State)
         }
     }
 

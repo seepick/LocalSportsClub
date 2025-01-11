@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
@@ -14,6 +15,8 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.FreetrainingState
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).next()
@@ -53,8 +56,7 @@ fun Arb.Companion.activityDbo() = arbitrary {
         from = from,
         to = from.plusMinutes(long(min = 30, max = 120).next()),
         teacher = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().next(),
-        isBooked = boolean().next(),
-        wasCheckedin = boolean().next(),
+        state = enum<ActivityState>().next(),
     )
 }
 
@@ -69,8 +71,7 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
         category = category().next(),
         date = localDate().next(),
         venueId = int(min = 1).next(),
-        isScheduled = boolean().next(),
-        wasCheckedin = boolean().next(),
+        state = enum<FreetrainingState>().next(),
     )
 }
 

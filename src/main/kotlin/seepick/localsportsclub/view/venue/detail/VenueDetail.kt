@@ -1,42 +1,28 @@
 package seepick.localsportsclub.view.venue.detail
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.UscConfig
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.CheckboxText
+import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.TitleText
-import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.shared.SimpleActivitiesTable
 import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable
 import seepick.localsportsclub.view.venue.VenueImage
-
-@Composable
-fun LabeledText(label: String, text: String) {
-    Row {
-        Text("$label:", fontWeight = FontWeight.Bold)
-        Tooltip(text) {
-            Text(text, fontSize = 10.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
-        }
-    }
-}
 
 @Composable
 fun VenueDetail(
@@ -73,11 +59,13 @@ fun VenueDetail(
             activities = venue.activities,
             selectedActivity = activity,
             onActivityClicked = onActivityClicked,
+            modifier = Modifier.weight(0.5f), // TODO use space ONLY up to row count (if only 1 row, use only that space, but NOT more)
         )
         SimpleFreetrainingsTable(
             freetrainings = venue.freetrainings,
             selectedFreetraining = freetraining,
             onFreetrainingClicked = onFreetrainingClicked,
+            modifier = Modifier.weight(0.5f),
         )
         Button(
             onClick = onUpdateVenue,

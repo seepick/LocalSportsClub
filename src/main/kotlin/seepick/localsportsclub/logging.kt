@@ -42,7 +42,7 @@ private fun buildFileAppender(
     level: Level,
     suffix: String = ""
 ): RollingFileAppender<ILoggingEvent> {
-    val logsDir = FileResolver.resolve(DirectoryEntry.ApplicationLogs)
+    val logsDir = FileResolver.resolve(DirectoryEntry.Logs)
     val targetLogFile = File(logsDir, "app_logs$suffix.log")
     prelog("Writing logs to: ${targetLogFile.absolutePath}")
     return RollingFileAppender<ILoggingEvent>().also { appender ->

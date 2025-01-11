@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.toSize
 import org.koin.compose.KoinApplication
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import seepick.localsportsclub.UscConfig
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange

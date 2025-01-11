@@ -2,8 +2,8 @@ package seepick.localsportsclub.service.model
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import seepick.localsportsclub.UscConfig
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -66,7 +66,7 @@ class DataStorage(
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         val today = clock.today()
         activityRepo.selectAll()
-            .filter { it.wasCheckedin || it.from.toLocalDate() >= today }
+            .filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
             .sortedByDescending { it.from }
             .map { activityDbo ->
                 val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
@@ -79,7 +79,7 @@ class DataStorage(
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
         val today = clock.today()
         freetrainingRepo.selectAll()
-            .filter { it.wasCheckedin || it.date >= today }
+            .filter { it.state != FreetrainingState.Blank || it.date >= today }
             .sortedByDescending { it.date }
             .map { freetrainingDbo ->
                 val venueForFreetraining =
@@ -99,7 +99,9 @@ class DataStorage(
 
     fun selectVisibleActivities(): List<Activity> {
         val today = clock.today()
-        return allActivitiesByVenueId.values.toList().flatten().filter { it.dateTimeRange.from.toLocalDate() >= today }
+        return allActivitiesByVenueId.values.toList().flatten()
+            // keep the past non-blanks one in the total list (for partner details table), but display only upcoming ones in big table
+            .filter { it.dateTimeRange.from.toLocalDate() >= today }
     }
 
     fun selectVisibleFreetrainings(): List<Freetraining> {
@@ -141,8 +143,7 @@ class DataStorage(
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         allActivitiesByVenueId[activityDbo.venueId]?.singleOrNull { it.id == activityDbo.id }?.also { activity ->
             when (field) {
-                ActivityFieldUpdate.IsBooked -> activity.isBooked = activityDbo.isBooked
-                ActivityFieldUpdate.WasCheckedin -> activity.wasCheckedin = activityDbo.wasCheckedin
+                ActivityFieldUpdate.State -> activity.state = activityDbo.state
             }
         } ?: log.warn {
             "Couldn't find activity in data storage. " +
@@ -154,8 +155,7 @@ class DataStorage(
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         allFreetrainingsByVenueId.values.flatten().firstOrNull { it.id == freetrainingDbo.id }?.also { freetraining ->
             when (field) {
-                FreetrainingFieldUpdate.IsScheduled -> freetraining.isScheduled = freetrainingDbo.isScheduled
-                FreetrainingFieldUpdate.WasCheckedin -> freetraining.wasCheckedin = freetrainingDbo.wasCheckedin
+                FreetrainingFieldUpdate.State -> freetraining.state = freetrainingDbo.state
             }
         } ?: log.warn {
             "Couldn't find freetraining in data storage. " +
@@ -239,8 +239,7 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     spotsLeft = spotsLeft,
     teacher = teacher,
     dateTimeRange = DateTimeRange(from, to),
-    isBooked = isBooked,
-    wasCheckedin = wasCheckedin,
+    state = state,
 )
 
 fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
@@ -249,8 +248,7 @@ fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
     name = name,
     category = category,
     date = date,
-    isScheduled = isScheduled,
-    wasCheckedin = wasCheckedin,
+    state = state,
 )
 
 fun Venue.toDbo() = VenueDbo(

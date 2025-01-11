@@ -37,6 +37,36 @@ class VenueSyncerTest : StringSpec() {
     private lateinit var imageStorage: MemorizableImageStorage
     private lateinit var syncer: VenueSyncer
 
+    override suspend fun beforeEach(testCase: TestCase) {
+        super.beforeEach(testCase)
+        api = mockk<UscApi>()
+        venueRepo = InMemoryVenueRepo()
+        venueLinksRepo = InMemoryVenueLinksRepo()
+        imageStorage = MemorizableImageStorage()
+        syncVenueDbosAdded.clear()
+
+        val syncerListenerDispatcher = SyncerListenerDispatcher()
+        syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
+            override fun onVenueDboAdded(venueDbo: VenueDbo) {
+                syncVenueDbosAdded += venueDbo
+            }
+        })
+        syncer = VenueSyncer(
+            api = api,
+            venueRepo = venueRepo,
+            venueSyncInserter = VenueSyncInserterImpl(
+                api,
+                venueRepo,
+                venueLinksRepo,
+                NoopDownloader,
+                imageStorage,
+                syncerListenerDispatcher,
+                uscConfig
+            ),
+            uscConfig = uscConfig,
+        )
+    }
+
     init {
         extension(DbListener())
 
@@ -82,35 +112,5 @@ class VenueSyncerTest : StringSpec() {
                 it.shouldContain(2 to 1)
             }
         }
-    }
-
-    override suspend fun beforeEach(testCase: TestCase) {
-        super.beforeEach(testCase)
-        api = mockk<UscApi>()
-        venueRepo = InMemoryVenueRepo()
-        venueLinksRepo = InMemoryVenueLinksRepo()
-        imageStorage = MemorizableImageStorage()
-        syncVenueDbosAdded.clear()
-
-        val syncerListenerDispatcher = SyncerListenerDispatcher()
-        syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
-            override fun onVenueDboAdded(venueDbo: VenueDbo) {
-                syncVenueDbosAdded += venueDbo
-            }
-        })
-        syncer = VenueSyncer(
-            api = api,
-            venueRepo = venueRepo,
-            venueSyncInserter = VenueSyncInserterImpl(
-                api,
-                venueRepo,
-                venueLinksRepo,
-                NoopDownloader,
-                imageStorage,
-                syncerListenerDispatcher,
-                uscConfig
-            ),
-            uscConfig = uscConfig,
-        )
     }
 }
