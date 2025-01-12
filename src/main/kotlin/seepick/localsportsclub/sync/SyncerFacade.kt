@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -15,6 +16,7 @@ class SyncerFacade(
     private val freetrainingSyncer: FreetrainingSyncer,
     private val scheduleSyncer: ScheduleSyncer,
     private val checkinSyncer: CheckinSyncer,
+    private val thirdPartySyncer: ThirdPartySyncer,
     private val cleanupSyncer: CleanupSyncer,
     private val dispatcher: SyncerListenerDispatcher,
     private val singlesService: SinglesService,
@@ -55,15 +57,16 @@ class SyncerFacade(
         val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
         transaction {
             runBlocking {
-                if (lastSync == null || lastSync.toLocalDate() != now.toLocalDate()) {
-                    venueSyncer.sync()
-                } else {
-                    log.debug { "Skip syncing venues as already did today (not assuming much change there)." }
-                }
-                activitiesSyncer.sync(days)
-                freetrainingSyncer.sync(days)
-                scheduleSyncer.sync()
-                checkinSyncer.sync()
+//                if (lastSync == null || lastSync.toLocalDate() != now.toLocalDate()) {
+//                    venueSyncer.sync()
+//                } else {
+//                    log.debug { "Skip syncing venues as already did today (not assuming much change there)." }
+//                }
+//                activitiesSyncer.sync(days)
+//                freetrainingSyncer.sync(days)
+//                scheduleSyncer.sync()
+//                checkinSyncer.sync()
+                thirdPartySyncer.sync()
                 cleanupSyncer.sync()
                 singlesService.updateLastSync(now)
             }

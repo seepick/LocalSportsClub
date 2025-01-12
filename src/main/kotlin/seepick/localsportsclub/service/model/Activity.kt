@@ -25,15 +25,16 @@ class Activity(
     val name: String,
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
-    val teacher: String?,
+    teacher: String?,
     spotsLeft: Int,
     state: ActivityState,
 ) : HasVenue {
 
-    val nameWithTeacherIfPresent = if (teacher == null) name else "$name /$teacher"
-    
+    val nameWithTeacherIfPresent =
+        if (teacher == null) name else "$name /$teacher" // TODO would need Flow to react to change of any of the two
     var state: ActivityState by mutableStateOf(state)
+    var teacher: String? by mutableStateOf(teacher)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
 
-    override fun toString() = "Activity[id=$id, name=$name, venue.slug=${venue.slug}]"
+    override fun toString() = "Activity[id=$id, name=$name, teacher=$teacher, venue.slug=${venue.slug}]"
 }

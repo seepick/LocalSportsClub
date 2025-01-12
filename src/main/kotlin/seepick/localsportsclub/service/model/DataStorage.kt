@@ -145,6 +145,7 @@ class DataStorage(
         allActivitiesByVenueId[activityDbo.venueId]?.singleOrNull { it.id == activityDbo.id }?.also { activity ->
             when (field) {
                 ActivityFieldUpdate.State -> activity.state = activityDbo.state
+                ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
             }
         } ?: log.warn {
             "Couldn't find activity in data storage. " +

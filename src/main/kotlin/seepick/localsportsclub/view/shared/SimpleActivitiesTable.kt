@@ -1,8 +1,10 @@
 package seepick.localsportsclub.view.shared
 
+import androidx.compose.foundation.border
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
@@ -30,7 +32,7 @@ fun SimpleActivitiesTable(
             items = activities,
             headerEnabled = false,
             selectedItem = selectedActivity,
-            boxModifier = modifier,
+            boxModifier = Modifier.border(2.dp, Color.Black).then(modifier),
             columns = listOf(
                 TableColumn(
                     size = ColSize.Width(170.dp),
@@ -39,7 +41,7 @@ fun SimpleActivitiesTable(
                 TableColumn(
                     size = ColSize.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
-                        "${it.state.iconStringAndSuffix()}${it.name}"
+                        "${it.state.iconStringAndSuffix()}${it.nameWithTeacherIfPresent}"
                     },
                 )
             ),

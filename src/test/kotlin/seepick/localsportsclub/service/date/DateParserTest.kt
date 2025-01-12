@@ -10,11 +10,11 @@ class DateParserTest : DescribeSpec() {
     init {
         describe("parseTime") {
             it("successfully") {
-                DateParser.parseTime("13:14—15:16") shouldBe TimeRange(
+                DateParser.parseTimes("13:14—15:16") shouldBe TimeRange(
                     start = LocalTime.of(13, 14),
                     end = LocalTime.of(15, 16),
                 )
-                DateParser.parseTime("03:04—05:06") shouldBe TimeRange(
+                DateParser.parseTimes("03:04—05:06") shouldBe TimeRange(
                     start = LocalTime.of(3, 4),
                     end = LocalTime.of(5, 6),
                 )

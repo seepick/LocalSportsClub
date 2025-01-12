@@ -11,6 +11,6 @@ data class TimeRange(
     }
 
     companion object {
-        operator fun invoke(fromTo: String) = DateParser.parseTime(fromTo, "-")
+        operator fun invoke(fromTo: String) = DateParser.parseTimes(fromTo, "-")
     }
 }

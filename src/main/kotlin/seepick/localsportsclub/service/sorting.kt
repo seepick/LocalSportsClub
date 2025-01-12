@@ -48,6 +48,7 @@ class SortingDelegate<T>(
     fun sortIt(items: List<T>): List<T> =
         items.sortedBy { item ->
             @Suppress("UNCHECKED_CAST")
-            sortColumn.sortValueExtractor!!.invoke(item) as Comparable<Any>
+            sortColumn.sortValueExtractor!!.invoke(item) as? Comparable<Any>
+
         }
 }

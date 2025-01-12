@@ -6,6 +6,9 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.SyncMode
+import seepick.localsportsclub.sync.thirdparty.HotFlowYogaFetcher
+import seepick.localsportsclub.sync.thirdparty.MovementsYogaFetcher
+import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncer
 
 private val log = logger {}
 
@@ -25,8 +28,12 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::FreetrainingSyncer)
             singleOf(::ScheduleSyncer)
             singleOf(::CheckinSyncer)
+            singleOf(::MovementsYogaFetcher)
+            singleOf(::HotFlowYogaFetcher)
+            singleOf(::ThirdPartySyncer)
             singleOf(::CleanupSyncer)
             singleOf(::SyncerFacade) bind Syncer::class
+
         }
     }
 }

@@ -1,11 +1,9 @@
 package seepick.localsportsclub.view.activity
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.date.Clock
@@ -20,6 +18,8 @@ import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
+import seepick.localsportsclub.view.shared.CheckedinColumn
+import seepick.localsportsclub.view.shared.RatingColumn
 
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue.imageFileName },
@@ -35,17 +35,18 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         ColSize.Width(200.dp),
         CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },
-            sortExtractor = { it.dateTimeRange })
+            sortExtractor = { it.dateTimeRange },
+        )
     ),
-    TableColumn("Rating", ColSize.Width(120.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
+    CheckedinColumn(),
+    RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
     TableColumn(
         "Bkd",
         ColSize.Width(30.dp),
         CellRenderer.TextRenderer { if (it.state == ActivityState.Booked) Icons.Lsc.booked else "" }),
-
-    )
+)
 
 @Composable
 fun ActivitiesTable(
@@ -63,6 +64,5 @@ fun ActivitiesTable(
         columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
         selectedItem = selectedActivity,
-        columnModifier = Modifier.padding(bottom = 20.dp),
     )
 }

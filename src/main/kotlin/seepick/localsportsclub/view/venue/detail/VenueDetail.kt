@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.venue.detail
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -38,19 +39,29 @@ fun VenueDetail(
 ) {
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
-        VenueImage(venue.imageFileName)
-        LabeledText("Facilities", venue.facilities.joinToString(", "))
+        Row {
+            VenueImage(venue.imageFileName)
+            Column {
+                if (venue.facilities.isNotEmpty()) {
+                    Text(venue.facilities.joinToString(", "))
+                }
+                RatingPanel(venueEdit.rating)
+            }
+        }
         LabeledText("Description", venue.description)
         if (venue.city != uscConfig.city) LabeledText("City", venue.city.label)
         venue.importantInfo?.also { LabeledText("Info", it) }
         venue.openingTimes?.also { LabeledText("Times", it) }
-        CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)
-        CheckboxText("Wishlisted", venueEdit.isWishlisted, Icons.Lsc.Wishlists)
-        CheckboxText("Hidden", venueEdit.isHidden)
-        RatingPanel(venueEdit.rating)
+        Row {
+            CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)
+            CheckboxText("Wishlisted", venueEdit.isWishlisted, Icons.Lsc.Wishlists)
+            CheckboxText("Hidden", venueEdit.isHidden)
+        }
         UrlTextField(
-            label = "Venue Site", url = venueEdit.officialWebsite.value,
-            onChange = { venueEdit.officialWebsite.value = it }, modifier = Modifier.fillMaxWidth()
+            label = "Venue Site",
+            url = venueEdit.officialWebsite.value,
+            onChange = { venueEdit.officialWebsite.value = it },
+            modifier = Modifier.fillMaxWidth()
         )
         UrlTextField(label = "USC Site", url = venue.uscWebsite, modifier = Modifier.fillMaxWidth())
         val (notes, notesSetter) = venueEdit.notes

@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
+import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
 import seepick.localsportsclub.gcal.GcalService
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -106,6 +107,14 @@ class BookingService(
         activityRepo.update(updatedActivityDbo)
         if (isBooking) {
             createCalendarActivity(updatedActivityDbo)
+        } else {
+            gcalService.delete(
+                GcalDeletion(
+                    day = subEntity.activity.dateTimeRange.from.toLocalDate(),
+                    activityOrFreetrainingId = subEntity.activity.id,
+                    isActivity = true,
+                )
+            )
         }
         listeners.forEach {
             it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State)
@@ -132,7 +141,17 @@ class BookingService(
         require(if (isBooking) freetrainingDbo.isSchedulable else freetrainingDbo.isCancellable)
         val updatedFreetrainingDbo = freetrainingDbo.copy(state = FreetrainingDbo.bookingState(isBooking))
         freetrainingRepo.update(updatedFreetrainingDbo)
-        createCalendarFreetraining(updatedFreetrainingDbo)
+        if (isBooking) {
+            createCalendarFreetraining(updatedFreetrainingDbo)
+        } else {
+            gcalService.delete(
+                GcalDeletion(
+                    day = subEntity.freetraining.date,
+                    activityOrFreetrainingId = subEntity.freetraining.id,
+                    isActivity = false,
+                )
+            )
+        }
         listeners.forEach {
             it.onFreetrainingDboUpdated(updatedFreetrainingDbo, FreetrainingFieldUpdate.State)
         }

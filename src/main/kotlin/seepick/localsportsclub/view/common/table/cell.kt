@@ -31,7 +31,7 @@ data class TableColumn<T>(
     val size: ColSize,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,
-    var sortValueExtractor: ((T) -> Any)? = null,
+    var sortValueExtractor: ((T) -> Any?)? = null,
 ) {
     init {
         if (sortValueExtractor == null) {
@@ -44,7 +44,7 @@ data class TableColumn<T>(
 }
 
 sealed interface CellRenderer<T> {
-    data class TextRenderer<T>(val extractor: (T) -> Any, val sortExtractor: (T) -> Any) : CellRenderer<T> {
+    data class TextRenderer<T>(val extractor: (T) -> Any, val sortExtractor: (T) -> Any?) : CellRenderer<T> {
         companion object {
             operator fun <T> invoke(extractor: (T) -> Any): TextRenderer<T> =
                 TextRenderer(extractor, extractor)
@@ -85,7 +85,7 @@ fun RowScope.TableHeader(
             .defaultMinSize(0.dp, 25.dp)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-            .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.background)
+            .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.surface)
             .let {
                 if (isSortActive || !isSortEnabled) it else {
                     it.onClick { onClick() }

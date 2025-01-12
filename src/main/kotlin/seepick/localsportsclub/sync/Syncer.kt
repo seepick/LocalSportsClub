@@ -21,7 +21,7 @@ interface SyncerListener {
 }
 
 enum class ActivityFieldUpdate {
-    State,
+    State, Teacher,
 }
 
 enum class FreetrainingFieldUpdate {

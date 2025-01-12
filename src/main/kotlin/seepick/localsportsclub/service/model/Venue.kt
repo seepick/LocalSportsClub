@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.view.shared.HasVenue
+import java.time.LocalDate
 
 class Venue(
     val id: Int,
@@ -46,6 +47,15 @@ class Venue(
     val freetrainings = mutableStateListOf<Freetraining>()
 
     var officialWebsite: String? by mutableStateOf(officialWebsite)
+
+    fun lastVisit(): LocalDate? {
+        val nope = LocalDate.of(2000, 1, 1)
+        val actMax = activities.filter { it.state == ActivityState.Checkedin }
+            .maxByOrNull { it.dateTimeRange }?.dateTimeRange?.from?.toLocalDate() ?: nope
+        val freMax =
+            freetrainings.filter { it.state == FreetrainingState.Checkedin }.maxByOrNull { it.date }?.date ?: nope
+        return maxOf(actMax, freMax).let { if (it == nope) null else it }
+    }
 
     companion object {
         fun dummy() = Venue(

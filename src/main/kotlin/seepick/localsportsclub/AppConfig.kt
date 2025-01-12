@@ -16,15 +16,15 @@ data class AppConfig(
 ) {
     companion object {
         val development = AppConfig(
-//            api = ApiMode.RealHttp,
-            api = ApiMode.Mock,
+            api = ApiMode.RealHttp,
+//            api = ApiMode.Mock,
 
-//            sync = SyncMode.Real,
+            sync = SyncMode.Real,
 //            sync = SyncMode.Noop,
-            sync = SyncMode.Dummy,
+//            sync = SyncMode.Dummy,
 
-//            gcal = GcalMode.Real,
-            gcal = GcalMode.Noop,
+            gcal = GcalMode.Real,
+//            gcal = GcalMode.Noop,
 
             database = DatabaseMode.Exposed,
             logFileEnabled = true,

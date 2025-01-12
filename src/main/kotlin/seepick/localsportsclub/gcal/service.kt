@@ -20,6 +20,7 @@ import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.date.DateTimeRange
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -28,6 +29,9 @@ import java.util.TimeZone
 
 interface GcalService {
     fun create(entry: GcalEntry)
+
+    /** @return true if successfully deleted, false if not found/existing. */
+    fun delete(deletion: GcalDeletion): Boolean
 }
 
 object NoopGcalService : GcalService {
@@ -35,7 +39,18 @@ object NoopGcalService : GcalService {
     override fun create(entry: GcalEntry) {
         log.warn { "Not creating: $entry" }
     }
+
+    override fun delete(deletion: GcalDeletion): Boolean {
+        log.warn { "Not deleting: $deletion" }
+        return true
+    }
 }
+
+data class GcalDeletion(
+    val day: LocalDate,
+    val activityOrFreetrainingId: Int,
+    val isActivity: Boolean,
+)
 
 sealed interface GcalEntry {
     val title: String
@@ -82,9 +97,7 @@ class RealGcalService(
     private val credentials: Credential by lazy {
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsJsonFile.inputStream().reader())
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
-            .setDataStoreFactory(FileDataStoreFactory(datastoreDir))
-            .setAccessType("offline")
-            .build()
+            .setDataStoreFactory(FileDataStoreFactory(datastoreDir)).setAccessType("offline").build()
         val receiver = LocalServerReceiver.Builder().setPort(8888).build()
         AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }
@@ -94,10 +107,9 @@ class RealGcalService(
     }
 
     companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
+        private fun GcalService.createDummy() {
             val start = LocalDateTime.now().plusHours(2).withMinute(0).withSecond(0).withNano(0)
-            RealGcalService("bpdgd31mckn8niqcjpkju8197c@group.calendar.google.com").create(
+            create(
                 GcalEntry.GcalActivity(
                     activityId = 1337,
                     title = "from LSC",
@@ -110,49 +122,110 @@ class RealGcalService(
                 )
             )
         }
+
+        private fun GcalService.deleteDummy() {
+            delete(
+                GcalDeletion(
+                    day = LocalDate.now(),
+                    activityOrFreetrainingId = 1337,
+                    isActivity = true,
+                )
+            )
+        }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            RealGcalService("bpdgd31mckn8niqcjpkju8197c@group.calendar.google.com")
+//                .createDummy()
+                .deleteDummy()
+        }
+
+        private const val PROP_IS_ACTIVITY = "isActivity"
+        private const val PROP_ENTITY_ID = "activityOrFreetrainingId"
+
     }
 
     override fun create(entry: GcalEntry) {
         log.info { "Creating google calendar entry: $entry" }
+        // TODO reusable "retry {}" function => SocketException: Connection reset; and if failed, then don't break the flow above (dispatching thingy)
         val created = calendar.events().insert(calendarId, entry.toEvent()).execute()
         // created.id ... could store it in DB for later deletion on cancellation?!
         log.debug { "Successfully created entry at: ${created.htmlLink}" }
     }
 
+    override fun delete(deletion: GcalDeletion): Boolean {
+        log.info { "Deleting: $deletion" }
+        val events = calendar.events().list(calendarId)
+            .setSingleEvents(true)
+            .setTimeMin(LocalDateTime.of(deletion.day, LocalTime.of(0, 0)).toGoogleDateTime())
+            .setTimeMax(LocalDateTime.of(deletion.day, LocalTime.of(23, 59)).toGoogleDateTime())
+            .execute().items
+        val found = events.firstOrNull { e ->
+            log.trace { "Checking event: $e" }
+            e.getPrivateExtendedProperty(PROP_IS_ACTIVITY)?.toBoolean() == deletion.isActivity &&
+                    e.getPrivateExtendedProperty(PROP_ENTITY_ID)?.toInt() == deletion.activityOrFreetrainingId
+        }
+        if (found == null) {
+            log.info { "Not going to delete calendar event as not found..." }
+            return false
+        }
+        calendar.events().delete(calendarId, found.id).execute()
+        log.debug { "Successfully deleted calendar event." }
+        return true
+    }
+
+    private fun Event.getPrivateExtendedProperty(key: String): String? =
+        extendedProperties?.private?.get(key)
+
+    private fun Event.setPrivateExtendedProperties(properties: Map<String, String>) = apply {
+        extendedProperties = Event.ExtendedProperties().apply {
+            private = properties
+        }
+    }
+
     private fun GcalEntry.toEvent() =
-        Event()
-            .setSummary("☑️ $title")
+        Event().setSummary("☑️ $title")
             .setLocation(location)
             .setDescription(notes)
-            .also { date(this, it) }
-            .setExtendedProperties(Event.ExtendedProperties().also {
-                it.set("isActivity", isActivity)
-                it.set("activityOrFreetrainingId", activityOrFreetrainingId)
-            })
+            .also { setDateForEntry(this, it) }
+            .setPrivateExtendedProperties(
+                mapOf(
+                    PROP_IS_ACTIVITY to isActivity.toString(),
+                    PROP_ENTITY_ID to activityOrFreetrainingId.toString(),
+                )
+            )
 
-    private fun date(entry: GcalEntry, event: Event) {
+    private fun setDateForEntry(entry: GcalEntry, event: Event) {
         when (entry) {
             is GcalEntry.GcalActivity -> {
-                event.setStart(
-                    EventDateTime().setDateTime(entry.dateTimeRange.from.toGoogleDateTime()).setTimeZone(timeZone)
-                )
-                event.setEnd(
-                    EventDateTime().setDateTime(entry.dateTimeRange.to.toGoogleDateTime()).setTimeZone(timeZone)
-                )
+                event.setStartEnd(entry.dateTimeRange)
             }
 
             is GcalEntry.GcalFreetraining -> {
-                val start = DateTime(dateFormatter.format(entry.date))
-                val end = DateTime(dateFormatter.format(entry.date.plusDays(1)))
-                event.setStart(EventDateTime().setDate(start).setTimeZone(timeZone))
-//                        it.setEndTimeUnspecified(true)
-                event.setEnd(EventDateTime().setDate(end).setTimeZone(timeZone))
+                event.setStartEnd(entry.date)
             }
         }
     }
 
+    private fun Event.setStartEnd(date: LocalDate) {
+        setStart(date.toEventDateTime())
+        setEnd(date.plusDays(1).toEventDateTime())
+    }
+
+    private fun Event.setStartEnd(dateTimeRange: DateTimeRange) {
+        setStart(dateTimeRange.from.toEventDateTime())
+        setEnd(dateTimeRange.to.toEventDateTime())
+    }
+
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
-    private fun LocalDateTime.toGoogleDateTime() =
-        DateTime(atZone(zoneId).toEpochSecond() * 1_000)
+    private fun LocalDate.toEventDateTime() = EventDateTime().setDate(toGoogleDateTime()).setTimeZone(timeZone)
+
+    private fun LocalDate.toGoogleDateTime() = DateTime(dateFormatter.format(this))
+
+    private fun LocalDateTime.toEventDateTime() =
+        EventDateTime().setDateTime(this.toGoogleDateTime()).setTimeZone(timeZone)
+
+    private fun LocalDateTime.toGoogleDateTime() = DateTime(atZone(zoneId).toEpochSecond() * 1_000)
+
 }

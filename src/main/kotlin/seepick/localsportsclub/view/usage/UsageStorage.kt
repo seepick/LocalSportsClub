@@ -100,6 +100,9 @@ class UsageStorage(
                     checkedinActivityIds.update { it - activityDbo.id }
                 }
             }
+
+            ActivityFieldUpdate.Teacher -> { /* no-op*/
+            }
         }
     }
 

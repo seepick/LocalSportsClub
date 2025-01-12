@@ -3,12 +3,13 @@ package seepick.localsportsclub.view.common.table
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -40,15 +42,18 @@ fun <T> Table(
     itemsLabel: String? = null,
     allItemsCount: Int? = null,
     boxModifier: Modifier = Modifier,
-    columnModifier: Modifier = Modifier, // bottom = 20.dp, // for the status bar
+    columnModifier: Modifier = Modifier,
 ) {
+    val colorEvenRow = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     Box(modifier = boxModifier) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
             modifier = Modifier.padding(
                 end = 12.dp, // for the scrollbar to the right
-            ).then(columnModifier),
+            ).let {
+                if (itemsLabel == null) it else it.padding(bottom = 14.dp)
+            }.then(columnModifier),
         ) {
             if (headerEnabled) {
                 stickyHeader {
@@ -65,14 +70,18 @@ fun <T> Table(
                     }
                 }
             }
-            items(items) { item ->
+            itemsIndexed(items) { index, item ->
                 var isHovered by remember { mutableStateOf(false) }
-                val bgColor =
-                    if (onItemClicked != null) {
-                        if (isHovered) Color.Green else if (selectedItem == item) Color.Red else MaterialTheme.colors.background
-                    } else {
-                        if (selectedItem == item) Color.Red else MaterialTheme.colors.background
-                    }
+                val rowColor = if (index % 2 == 0) {
+                    colorEvenRow
+                } else {
+                    MaterialTheme.colors.background
+                }
+                val bgColor = if (onItemClicked != null) {
+                    if (isHovered) Color.Green else if (selectedItem == item) Color.Red else rowColor
+                } else {
+                    if (selectedItem == item) Color.Red else rowColor
+                }
                 Row(Modifier/*.fillMaxWidth()*/.background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }
@@ -105,7 +114,8 @@ fun <T> Table(
         )
         if (itemsLabel != null) {
             Text(
-                text = "Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
+                text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
+                fontSize = 10.sp,
                 modifier = Modifier.align(Alignment.BottomStart)
             )
         }

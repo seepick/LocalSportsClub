@@ -27,8 +27,6 @@ class Freetraining(
     state: FreetrainingState
 ) : HasVenue {
     var state: FreetrainingState by mutableStateOf(state)
-    val isScheduled get() = state == FreetrainingState.Scheduled
-    val isCheckedin get() = state == FreetrainingState.Checkedin
 
     override fun toString(): String =
         "Freetraining[id=$id, name=$name, venue.slug=${venue.slug}, date=$date, state=$state]"

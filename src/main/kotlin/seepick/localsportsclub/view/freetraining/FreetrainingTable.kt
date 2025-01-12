@@ -1,10 +1,8 @@
 package seepick.localsportsclub.view.freetraining
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.date.Clock
@@ -17,6 +15,8 @@ import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
+import seepick.localsportsclub.view.shared.CheckedinColumn
+import seepick.localsportsclub.view.shared.RatingColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue.imageFileName },
@@ -28,10 +28,12 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         ColSize.Width(100.dp),
         CellRenderer.TextRenderer(extractor = { it.date.prettyPrint(clock.today().year) }, sortExtractor = { it.date })
     ),
-    TableColumn("Rating", ColSize.Width(90.dp), CellRenderer.TextRenderer { it.venue.rating.string }),
+    CheckedinColumn(),
+    RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
 )
+
 
 @Composable
 fun FreetrainingsTable(
@@ -49,6 +51,5 @@ fun FreetrainingsTable(
         sortColumn = viewModel.sorting.sortColumn,
         onItemClicked = viewModel::onFreetrainingSelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
-        columnModifier = Modifier.padding(bottom = 20.dp),
     )
 }

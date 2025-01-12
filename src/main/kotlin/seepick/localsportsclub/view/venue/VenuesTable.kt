@@ -1,13 +1,13 @@
 package seepick.localsportsclub.view.venue
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
@@ -21,6 +21,7 @@ import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
+import seepick.localsportsclub.view.shared.RatingColumn
 
 fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it.imageFileName },
@@ -34,12 +35,18 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     TableColumn("Act", ColSize.Width(50.dp), TextRenderer { it.activities.size }),
     TableColumn("Fre", ColSize.Width(50.dp), TextRenderer { it.freetrainings.size }),
     TableColumn(LscIcons.checkedin, ColSize.Width(40.dp), TextRenderer {
-        it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.isCheckedin }.size
+        it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
     }),
     TableColumn(LscIcons.booked, ColSize.Width(40.dp), TextRenderer {
         it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
     }),
-    TableColumn("Rating", ColSize.Width(90.dp), TextRenderer { it.rating.string }),
+    TableColumn(
+        "Last Visit", ColSize.Width(80.dp), TextRenderer(
+            extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
+            sortExtractor = { it.lastVisit() },
+        )
+    ),
+    RatingColumn(),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },
 )
@@ -58,6 +65,5 @@ fun VenuesTable(
         columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
         selectedItem = selectedVenue,
-        columnModifier = Modifier.padding(bottom = 20.dp),
     )
 }

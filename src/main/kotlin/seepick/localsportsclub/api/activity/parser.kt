@@ -78,7 +78,7 @@ object ActivitiesParser {
         val dataLayerJsonString = div.select("a[href=\"#modal-class\"]").first()!!.attr("data-datalayer")
         val dataLayer = serializerLenient.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
         val dateTimeRange = convertFromToDateTime(
-            date, DateParser.parseTime(div.select("p.smm-class-snippet__class-time").text())
+            date, DateParser.parseTimes(div.select("p.smm-class-snippet__class-time").text())
         )
         require(
             div.attr("data-appointment-id").toInt() == dataLayer.id.toInt()

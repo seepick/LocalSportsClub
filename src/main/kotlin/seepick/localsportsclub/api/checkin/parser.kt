@@ -67,7 +67,7 @@ object CheckinsParser {
                             date = currentDate!!,
                             activityId = id,
                             venueSlug = venueSlug,
-                            timeRange = DateParser.parseTime(sub.select("p.smm-class-snippet__class-time").text()),
+                            timeRange = DateParser.parseTimes(sub.select("p.smm-class-snippet__class-time").text()),
                             isNoShow = sub.select("span.smm-booking-state-label").hasClass("noshow"),
                         )
                     }

@@ -88,15 +88,18 @@ interface ActivityRepo {
     fun selectFutureMostDate(): LocalDate?
     fun selectNewestCheckedinDate(): LocalDate?
     fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo>
+    fun selectAllForVenueId(venueId: Int): List<ActivityDbo>
 }
 
 class InMemoryActivityRepo : ActivityRepo {
 
     val stored = mutableMapOf<Int, ActivityDbo>()
 
-    override fun selectAll(): List<ActivityDbo> = stored.values.toList()
+    override fun selectAll() = stored.values.toList()
 
     override fun selectAllBooked() = stored.filter { it.value.state == ActivityState.Booked }.values.toList()
+
+    override fun selectAllForVenueId(venueId: Int) = stored.values.filter { it.venueId == venueId }
 
     override fun selectById(id: Int): ActivityDbo? = stored[id]
 
@@ -144,6 +147,13 @@ object ExposedActivityRepo : ActivityRepo {
     override fun selectAllBooked(): List<ActivityDbo> = transaction {
         ActivitiesTable.selectAll().orderBy(ActivitiesTable.from)
             .where { ActivitiesTable.state eq ActivityState.Booked }.map {
+                ActivityDbo.fromRow(it)
+            }
+    }
+
+    override fun selectAllForVenueId(venueId: Int): List<ActivityDbo> = transaction {
+        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from)
+            .where { ActivitiesTable.venueId eq venueId }.map {
                 ActivityDbo.fromRow(it)
             }
     }

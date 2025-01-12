@@ -1,9 +1,11 @@
 package seepick.localsportsclub.view.shared
 
+import androidx.compose.foundation.border
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
@@ -31,7 +33,7 @@ fun SimpleFreetrainingsTable(
             items = freetrainings,
             headerEnabled = false,
             selectedItem = selectedFreetraining,
-            boxModifier = modifier,
+            boxModifier = Modifier.border(2.dp, Color.Black).then(modifier),
             columns = listOf(
                 TableColumn(
                     size = ColSize.Width(170.dp),
