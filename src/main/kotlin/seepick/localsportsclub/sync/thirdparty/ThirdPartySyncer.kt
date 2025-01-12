@@ -13,25 +13,32 @@ class ThirdPartySyncer(
     private val venueRepo: VenueRepo,
     private val dispatcher: SyncerListenerDispatcher,
     private val clock: Clock,
-    
     private val movementsYogaFetcher: MovementsYogaFetcher,
-    private val hotFlowYogaFetcher: HotFlowYogaFetcher,
-    // movement amsterdam
+    private val eversportsFetcher: EversportsFetcher,
     // de nieuwe yoga school
 ) {
     private val log = logger {}
+
     suspend fun sync() {
         log.info { "Syncing third party data..." }
-        MovementsYogaVenue.entries.forEach {
+        MovementsYogaStudio.entries.forEach {
             syncThirdParty(movementsYogaFetcher::fetch, it)
         }
-        HotFlowYogaVenue.entries.forEach {
-            syncThirdParty(hotFlowYogaFetcher::fetch, it)
+        buildList {
+            addAll(HotFlowYogaStudio.entries)
+            add(
+                EversportsFetchRequestImpl(
+                    eversportsId = "J3pkIl",
+                    slug = "movement-amsterdam",
+                )
+            )
+        }.forEach { studio ->
+            syncThirdParty(eversportsFetcher::fetch, studio)
         }
     }
 
-    private suspend fun <P : ThirdVenue> syncThirdParty(fetch: suspend (P) -> List<ThirdEvent>, param: P) {
-        log.debug { "Syncing events for venue: ${param.slug}" }
+    private suspend fun <P : HasSlug> syncThirdParty(fetch: suspend (P) -> List<ThirdEvent>, param: P) {
+        log.debug { "Syncing third party events for venue: ${param.slug}" }
         val venue = venueRepo.selectBySlug(param.slug)
             ?: error("Venue not found in DB with slug [${param.slug}]")
         val events = fetch(param)
@@ -51,7 +58,7 @@ class ThirdPartySyncer(
     }
 }
 
-interface ThirdVenue {
+interface HasSlug {
     val slug: String
 }
 

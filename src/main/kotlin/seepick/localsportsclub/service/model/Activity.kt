@@ -32,6 +32,10 @@ class Activity(
 
     val nameWithTeacherIfPresent =
         if (teacher == null) name else "$name /$teacher" // TODO would need Flow to react to change of any of the two
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val nameWithTeacherIfPresent: Flow<String> = snapshotFlow { name to teacher }
+//        .mapLatest { (name, teacher) -> if (teacher == null) name else "$name /$teacher" }
+
     var state: ActivityState by mutableStateOf(state)
     var teacher: String? by mutableStateOf(teacher)
     var spotsLeft: Int by mutableStateOf(spotsLeft)

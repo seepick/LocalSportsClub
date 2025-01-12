@@ -12,6 +12,9 @@ import java.util.Locale
 fun LocalDate.prettyPrint(currentYear: Int): String = if (year != currentYear) dayDateFormatterWithYear.format(this)
 else dayDateFormatter.format(this)
 
+private val machineDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+fun LocalDate.machinePrint(): String = machineDateFormatter.format(this)
+
 /**
  * @return "3.11."
  */

@@ -17,10 +17,10 @@ import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-enum class MovementsYogaVenue(
+enum class MovementsYogaStudio(
     val apiId: Int,
     override val slug: String,
-) : ThirdVenue {
+) : HasSlug {
     Vondelpark(apiId = 1, slug = "movements-overtoom"),
     City(apiId = 3, slug = "movements-city")
 }
@@ -38,7 +38,7 @@ class MovementsYogaFetcher(
                 val events = MovementsYogaFetcher(
                     http = httpClient,
                     responseStorage = NoopResponseStorage,
-                ).fetch(MovementsYogaVenue.City)
+                ).fetch(MovementsYogaStudio.City)
                 println("received ${events.size} events:")
                 events.forEach {
                     println("- $it")
@@ -47,18 +47,18 @@ class MovementsYogaFetcher(
         }
     }
 
-    suspend fun fetch(venue: MovementsYogaVenue): List<ThirdEvent> {
+    suspend fun fetch(studio: MovementsYogaStudio): List<ThirdEvent> {
         log.debug { "Fetching events for movements yoga for this and next 2 weeks..." }
-        return fetchWeek(venue, 0) + fetchWeek(venue, 1) + fetchWeek(venue, 2)
+        return fetchWeek(studio, 0) + fetchWeek(studio, 1) + fetchWeek(studio, 2)
     }
 
-    private suspend fun fetchWeek(venue: MovementsYogaVenue, weekOffset: Int): List<ThirdEvent> {
+    private suspend fun fetchWeek(studio: MovementsYogaStudio, weekOffset: Int): List<ThirdEvent> {
         val response = http.safeGet(Url("https://movementsyoga.zingfit.com/reserve/index.cfm")) {
             parameter("action", "Reserve.chooseClass")
             parameter("wk", weekOffset)
-            parameter("site", venue.apiId)
+            parameter("site", studio.apiId)
         }
-        responseStorage.store(response, "MovementsYoga-${venue.slug}-$weekOffset")
+        responseStorage.store(response, "MovementsYoga-${studio.slug}-$weekOffset")
         return MovementsYogaParser.parse(response.bodyAsText())
     }
 }

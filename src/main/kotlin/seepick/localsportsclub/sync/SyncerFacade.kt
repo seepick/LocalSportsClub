@@ -57,17 +57,18 @@ class SyncerFacade(
         val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
         transaction {
             runBlocking {
-//                if (lastSync == null || lastSync.toLocalDate() != now.toLocalDate()) {
-//                    venueSyncer.sync()
-//                } else {
-//                    log.debug { "Skip syncing venues as already did today (not assuming much change there)." }
-//                }
-//                activitiesSyncer.sync(days)
-//                freetrainingSyncer.sync(days)
-//                scheduleSyncer.sync()
-//                checkinSyncer.sync()
+                val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
+                if (isFullSync) {
+                    venueSyncer.sync()
+                    activitiesSyncer.sync(days)
+                    freetrainingSyncer.sync(days)
+                }
+                scheduleSyncer.sync()
+                checkinSyncer.sync()
                 thirdPartySyncer.sync()
-                cleanupSyncer.sync()
+                if (isFullSync) {
+                    cleanupSyncer.sync()
+                }
                 singlesService.updateLastSync(now)
             }
         }

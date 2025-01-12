@@ -1,5 +1,6 @@
 package seepick.localsportsclub.sync.thirdparty
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
@@ -8,10 +9,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import seepick.localsportsclub.api.NoopResponseStorage
+import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.date.SystemClock
+import seepick.localsportsclub.service.date.machinePrint
 import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
@@ -19,24 +23,47 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-enum class HotFlowYogaVenue(
-    val apiId: String,
+enum class HotFlowYogaStudio(
+    override val eversportsId: String,
     override val slug: String,
-) : ThirdVenue {
+) : HasSlug, EversportsFetchRequest {
     Jordaan("_WO5Hk", "hot-flow-yoga-jordaan"),
     Rivierenbuurt("MQYBtq", "hot-flow-yoga-rivierenbuurt"),
-    Zuid("i102x0", "hot-flow-yoga-zuid"),
+    Zuid("i102x0", "hot-flow-yoga-zuid");
+
+    override val logId = slug
 }
 
-class HotFlowYogaFetcher(
+interface EversportsFetchRequest {
+    val eversportsId: String
+    val logId: String
+}
+
+data class EversportsFetchRequestImpl(
+    override val eversportsId: String,
+    override val slug: String,
+) : EversportsFetchRequest, HasSlug {
+    override val logId = slug
+}
+
+class EversportsFetcher(
     private val httpClient: HttpClient,
+    private val responseStorage: ResponseStorage,
     private val clock: Clock,
 ) {
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
             runBlocking {
-                val events = HotFlowYogaFetcher(httpClient, SystemClock).fetch(HotFlowYogaVenue.Jordaan)
+                val events =
+                    EversportsFetcher(httpClient, NoopResponseStorage, SystemClock)
+                        .fetch(
+                            EversportsFetchRequestImpl(
+                                HotFlowYogaStudio.Jordaan.eversportsId,
+                                "hotflowyoga-jordaan"
+                            )
+                        )
                 println("events.size=${events.size}")
                 events.forEach {
                     println("  - $it")
@@ -45,38 +72,44 @@ class HotFlowYogaFetcher(
         }
     }
 
+    private val log = logger {}
+
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
-    suspend fun fetch(venue: HotFlowYogaVenue): List<ThirdEvent> =
-        fetchSingle(venue, clock.today()) + fetchSingle(venue, clock.today().plusDays(7))
+    suspend fun fetch(request: EversportsFetchRequest): List<ThirdEvent> {
+        log.debug { "Fetching eversports events for: ${request.logId}" }
+        val today = clock.today()
+        return fetchSingle(request, today) + fetchSingle(request, today.plusDays(7))
+    }
 
-    private suspend fun fetchSingle(venue: HotFlowYogaVenue, date: LocalDate): List<ThirdEvent> {
+    private suspend fun fetchSingle(request: EversportsFetchRequest, date: LocalDate): List<ThirdEvent> {
         val response = httpClient.safeGet(Url("https://www.eversports.nl/widget/api/eventsession/calendar")) {
-            // ?facilityShortId=i102x0&startDate=2025-01-13&activeEventType=universal
-            parameter("facilityShortId", venue.apiId)
+            parameter("facilityShortId", request.eversportsId)
             parameter("startDate", dateFormatter.format(date))
             parameter("activeEventType", "universal")
         }
-        val json = response.body<HotFlowYogaJson>()
+        responseStorage.store(response, "${request.logId}-${date.machinePrint()}")
+        val json = response.body<EversportRootJson>()
         require(json.status == "success") { "Invalid response status [${json.status}]" }
-        return HotFlowYogaParser.parse(json.data.html)
+        return EversportsParser.parse(json.data.html)
     }
 }
 
+
 @Serializable
-data class HotFlowYogaJson(
+data class EversportRootJson(
     val status: String, //  "success"
-    val data: HotFlowYogaDataJson
+    val data: EversportsDataJson
 )
 
 @Serializable
-data class HotFlowYogaDataJson(
+data class EversportsDataJson(
     val html: String,
     val dateRange: String, // "13/01/2025 - 19/01/2025"
     // val navigation ...
 )
 
-object HotFlowYogaParser {
+object EversportsParser {
 
     private const val TIME_DELIMITER = "●"
 
@@ -86,8 +119,8 @@ object HotFlowYogaParser {
         val body = html.children()[1]
         val rootDiv = body.children()
         return rootDiv.select("ul.calendar__slot-list").mapNotNull { ul ->
-            val firstDiv = ul.select("div").first()!!
-            if (!firstDiv.hasAttr("data-day")) {
+            val firstDiv = ul.select("div").first()
+            if (firstDiv == null || !firstDiv.hasAttr("data-day")) {
                 null
             } else {
                 val date = DateParser.parseMachineDate(firstDiv.attr("data-day"))
