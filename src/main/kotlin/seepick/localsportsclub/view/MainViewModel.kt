@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.sync.Syncer
+import seepick.localsportsclub.view.common.executeBackgroundTask
 
 class MainViewModel(
     private val syncer: Syncer,
@@ -22,6 +23,7 @@ class MainViewModel(
 
     fun startSync() {
         executeBackgroundTask(
+            "Synchronisation of data failed!",
             doBefore = {
                 log.info { "startSync()" }
                 isSyncing = true

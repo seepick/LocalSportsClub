@@ -28,6 +28,9 @@ class DummySyncer(
 
     override suspend fun sync() {
         if (true) {
+            throw Exception("foobar")
+        }
+        if (true) {
             val venue = generateVenues().first()//.copy(slug = "foobar")
             val inserted = venueRepo.insert(venue)
             dispatcher.dispatchOnVenueDboAdded(inserted)

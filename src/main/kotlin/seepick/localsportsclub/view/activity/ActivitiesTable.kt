@@ -10,7 +10,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.Table
@@ -26,14 +26,13 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         "Name",
         ColSize.Weight(0.5f),
-        CellRenderer.TextRenderer({ it.nameWithTeacherIfPresent }, { it.nameWithTeacherIfPresent.lowercase() })
+        CellRenderer.TextRenderer({ if (it.teacher == null) it.name else "${it.name} /${it.teacher}" },
+            { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
     TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
     TableColumn("Category", ColSize.Width(150.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        "Date",
-        ColSize.Width(200.dp),
-        CellRenderer.TextRenderer(
+        "Date", ColSize.Width(200.dp), CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
         )
@@ -42,8 +41,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
-    TableColumn(
-        "Bkd",
+    TableColumn("Bkd",
         ColSize.Width(30.dp),
         CellRenderer.TextRenderer { if (it.state == ActivityState.Booked) Icons.Lsc.booked else "" }),
 )

@@ -29,8 +29,8 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.common.executeBackgroundTask
 import seepick.localsportsclub.view.common.table.TableColumn
-import seepick.localsportsclub.view.executeBackgroundTask
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -192,33 +192,27 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onBook(subEntity: SubEntity) {
         log.debug { "onBook: $subEntity" }
-
-        executeBackgroundTask {
-            bookOrCancel(subEntity, BookingService::book) { result ->
-                BookingDialog(
-                    title = "Booking",
-                    message = when (result) {
-                        BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
-                        is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
-                    }
-                )
-            }
+        bookOrCancel(subEntity, BookingService::book) { result ->
+            BookingDialog(
+                title = "Booking",
+                message = when (result) {
+                    BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
+                    is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
+                }
+            )
         }
     }
 
     fun onCancelBooking(subEntity: SubEntity) {
         log.debug { "onCancelBooking: $subEntity" }
-
-        executeBackgroundTask {
-            bookOrCancel(subEntity, BookingService::cancel) { result ->
-                BookingDialog(
-                    "Cancel Booking",
-                    when (result) {
-                        CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
-                        is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
-                    }
-                )
-            }
+        bookOrCancel(subEntity, BookingService::cancel) { result ->
+            BookingDialog(
+                "Cancel Booking",
+                when (result) {
+                    CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
+                    is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
+                }
+            )
         }
     }
 
@@ -228,6 +222,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         resultHandler: (T) -> BookingDialog,
     ) {
         executeBackgroundTask(
+            "Booking/Canceling activity/freetraining failed!",
             doBefore = {
                 isBookingOrCancelInProgress = true
             },

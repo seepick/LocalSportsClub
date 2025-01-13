@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view
+package seepick.localsportsclub.view.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.ImageBitmap

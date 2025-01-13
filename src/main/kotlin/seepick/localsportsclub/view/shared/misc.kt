@@ -3,7 +3,7 @@ package seepick.localsportsclub.view.shared
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.view.LscIcons
+import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.TableColumn

@@ -14,9 +14,9 @@ import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.LabeledText
+import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.TitleText

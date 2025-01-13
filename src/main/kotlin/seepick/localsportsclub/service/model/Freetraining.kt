@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.view.LscIcons
+import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
 

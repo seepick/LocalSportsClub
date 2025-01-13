@@ -41,7 +41,7 @@ fun SimpleActivitiesTable(
                 TableColumn(
                     size = ColSize.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
-                        "${it.state.iconStringAndSuffix()}${it.nameWithTeacherIfPresent}"
+                        "${it.state.iconStringAndSuffix()}${if (it.teacher == null) it.name else "${it.name} /${it.teacher}"}"
                     },
                 )
             ),

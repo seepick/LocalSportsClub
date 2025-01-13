@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.venue.VenueImage
 
 fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> {

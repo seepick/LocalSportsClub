@@ -69,7 +69,7 @@ object ActivitiesParser {
                 id = div.attr("data-appointment-id").toInt(),
                 name = div.select("div.title a.title").text().trim(),
                 category = div.select("div.title p").text().trim(),
-                venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/"),
+                venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
             )
         }
     }
@@ -85,10 +85,10 @@ object ActivitiesParser {
         ) { "IDs expected to be identical but weren't!" }
         return ActivityInfo(
             id = dataLayer.id.toInt(),
-            name = dataLayer.name,
-            venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/"),
+            name = dataLayer.name.trim(),
+            venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
             dateTimeRange = dateTimeRange,
-            category = dataLayer.category,
+            category = dataLayer.category.trim(),
             spotsLeft = dataLayer.spots_left.toInt(),
         )
     }

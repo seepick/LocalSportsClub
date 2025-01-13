@@ -65,8 +65,8 @@ class SyncerFacade(
                 }
                 scheduleSyncer.sync()
                 checkinSyncer.sync()
-                thirdPartySyncer.sync()
                 if (isFullSync) {
+                    thirdPartySyncer.sync()
                     cleanupSyncer.sync()
                 }
                 singlesService.updateLastSync(now)

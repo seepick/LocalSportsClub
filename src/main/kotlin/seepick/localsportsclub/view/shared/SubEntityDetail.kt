@@ -17,8 +17,8 @@ import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.LabeledText
+import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
 data class BookingDialog(

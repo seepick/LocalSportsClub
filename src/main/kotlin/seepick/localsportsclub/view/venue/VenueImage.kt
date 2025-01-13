@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.resolveVenueImage
-import seepick.localsportsclub.view.readImageBitmapFromClasspath
-import seepick.localsportsclub.view.readImageBitmapFromFile
+import seepick.localsportsclub.view.common.readImageBitmapFromClasspath
+import seepick.localsportsclub.view.common.readImageBitmapFromFile
 
 private val defaultVenueImageBitmap: ImageBitmap = readImageBitmapFromClasspath("/defaultVenueImage.png")
 

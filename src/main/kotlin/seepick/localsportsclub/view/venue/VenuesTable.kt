@@ -11,7 +11,7 @@ import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.view.LscIcons
+import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.ColSize

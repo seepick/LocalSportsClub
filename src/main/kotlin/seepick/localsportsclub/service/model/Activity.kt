@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
-import seepick.localsportsclub.view.LscIcons
+import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.shared.HasVenue
 
 enum class ActivityState {
@@ -30,8 +30,9 @@ class Activity(
     state: ActivityState,
 ) : HasVenue {
 
-    val nameWithTeacherIfPresent =
-        if (teacher == null) name else "$name /$teacher" // TODO would need Flow to react to change of any of the two
+//    val nameWithTeacherIfPresent =
+//        if (teacher == null) name else "$name /$teacher"
+    // not possible due to mixed setup of table columns (doing logic in view/composable together)
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    val nameWithTeacherIfPresent: Flow<String> = snapshotFlow { name to teacher }
 //        .mapLatest { (name, teacher) -> if (teacher == null) name else "$name /$teacher" }
