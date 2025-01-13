@@ -1,8 +1,7 @@
 package seepick.localsportsclub.api.schedule
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
+import seepick.localsportsclub.service.jsoupBody
 import seepick.localsportsclub.service.model.EntityType
 
 data class ScheduleHtml(
@@ -20,9 +19,7 @@ object ScheduleParser {
     private val log = logger {}
 
     fun parse(html: String): ScheduleHtml {
-        val document = Jsoup.parse(html)
-        val htmlTag = document.childNodes().single { it.nodeName() == "html" }
-        val body = htmlTag.childNodes().single { it.nodeName() == "body" } as Element
+        val body = jsoupBody(html)
         val divs = body.select("div.reservations div.timetable div[class=\"smm-class-snippet row\"]").toList()
 
         return ScheduleHtml(rows = divs.map { div ->

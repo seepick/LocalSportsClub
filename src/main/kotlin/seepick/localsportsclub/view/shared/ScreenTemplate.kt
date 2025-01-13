@@ -60,6 +60,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             bookingDialog = viewModel.bookingDialog,
                             onCloseDialog = viewModel::onCloseBookingDialog,
+                            onActivityNoshowToCheckedin = viewModel::onActivityNoshowToCheckedin,
                         )
                     }
                 }

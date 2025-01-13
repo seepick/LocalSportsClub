@@ -2,9 +2,8 @@ package seepick.localsportsclub.api.venue
 
 import io.ktor.http.Url
 import kotlinx.serialization.Serializable
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import seepick.localsportsclub.serializerLenient
+import seepick.localsportsclub.service.jsoupHeadAndBody
 
 data class VenueDetails(
     val title: String, // a.k.a. "name"
@@ -63,10 +62,7 @@ object VenueDetailsParser {
     private const val NO_IMAGE_SET_URL = "https://urbansportsclub.com/images/merchant/venueHome.jpg"
 
     fun parse(htmlString: String): VenueDetails {
-        val document = Jsoup.parse(htmlString)
-        val html = document.childNodes().single { it.nodeName() == "html" }
-        val head = html.childNodes().single { it.nodeName() == "head" } as Element
-        val body = html.childNodes().single { it.nodeName() == "body" } as Element
+        val (head, body) = jsoupHeadAndBody(htmlString)
 
         val title = body.select("h1").text()
         val linkedVenues = mutableListOf<String>()

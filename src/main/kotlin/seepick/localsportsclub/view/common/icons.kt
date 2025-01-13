@@ -15,6 +15,7 @@ object LscIcons {
     const val checkedin = "📝"
     const val booked = "✅" // or scheduled (for freetrainings)
     const val noshow = "❌"
+    const val hidden = "🙈"
 }
 
 val Icons.Lsc get() = LscIcons

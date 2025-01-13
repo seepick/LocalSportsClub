@@ -114,6 +114,7 @@ fun <T> Table(
         )
         if (itemsLabel != null) {
             Text(
+                // TODO allItemsCount also includes hidden items; but it shouldn't. adjust above.
                 text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
                 fontSize = 10.sp,
                 modifier = Modifier.align(Alignment.BottomStart)

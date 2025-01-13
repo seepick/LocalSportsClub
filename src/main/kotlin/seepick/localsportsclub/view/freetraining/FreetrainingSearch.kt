@@ -1,9 +1,11 @@
 package seepick.localsportsclub.view.freetraining
 
 import seepick.localsportsclub.service.model.Freetraining
+import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
 
-class FreetrainingSearch(resetItems: () -> Unit) : AbstractSearch<Freetraining>(resetItems) {
+class FreetrainingSearch(allCategories: List<String>, resetItems: () -> Unit) :
+    AbstractSearch<Freetraining>(resetItems) {
     val hidden = newBooleanSearchOption("hidden", initiallyEnabled = true, initialValue = false) {
         it.venue.isHidden
     }
@@ -12,6 +14,9 @@ class FreetrainingSearch(resetItems: () -> Unit) : AbstractSearch<Freetraining>(
         extractors = listOf({ it.name }, { it.venue.name })
     )
     val date = newDateSearchOption("Date") { it.date }
-//    val date = newDateTimeRangeSearchOption("Date") { it.dateTimeRange }
-//    val booked = newBooleanSearchOption("Booked") { it.isBooked }
+    val category = newSelectSearchOption("Category", allOptions = allCategories) { listOf(it.category) }
+    val rating = newRatingSearchOption("Rating") { it.venue.rating }
+    val favorited = newBooleanSearchOption("Favorited") { it.venue.isFavorited }
+    val wishlisted = newBooleanSearchOption("Wishlisted") { it.venue.isWishlisted }
+    val scheduled = newBooleanSearchOption("Scheduled") { it.state == FreetrainingState.Scheduled }
 }

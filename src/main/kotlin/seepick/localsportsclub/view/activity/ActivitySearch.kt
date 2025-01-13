@@ -4,7 +4,7 @@ import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.search.AbstractSearch
 
-class ActivitySearch(resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
+class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
     val hidden = newBooleanSearchOption("hidden", initiallyEnabled = true, initialValue = false) { it.venue.isHidden }
     val name = newStringSearchOption(
         "Activity/Venue Name", initiallyEnabled = true,
@@ -12,4 +12,8 @@ class ActivitySearch(resetItems: () -> Unit) : AbstractSearch<Activity>(resetIte
     )
     val date = newDateTimeRangeSearchOption("Date") { it.dateTimeRange }
     val booked = newBooleanSearchOption("Booked ✅") { it.state == ActivityState.Booked }
+    val favorited = newBooleanSearchOption("Favorited") { it.venue.isFavorited }
+    val wishlisted = newBooleanSearchOption("Wishlisted") { it.venue.isWishlisted }
+    val rating = newRatingSearchOption("Rating") { it.venue.rating }
+    val categories = newSelectSearchOption("Category", allOptions = allCategories) { listOf(it.category) }
 }

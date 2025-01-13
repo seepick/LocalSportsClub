@@ -7,6 +7,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
+import java.time.LocalDate
 
 class ThirdPartySyncer(
     private val activityRepo: ActivityRepo,
@@ -14,12 +15,12 @@ class ThirdPartySyncer(
     private val dispatcher: SyncerListenerDispatcher,
     private val clock: Clock,
     private val movementsYogaFetcher: MovementsYogaFetcher,
+    private val deNieuweYogaSchoolFetcher: DeNieuweYogaSchoolFetcher,
     private val eversportsFetcher: EversportsFetcher,
-    // de nieuwe yoga school
 ) {
     private val log = logger {}
 
-    suspend fun sync() {
+    suspend fun sync(days: List<LocalDate>) {
         log.info { "Syncing third party data..." }
         MovementsYogaStudio.entries.forEach {
             syncThirdParty(movementsYogaFetcher::fetch, it)
@@ -35,6 +36,7 @@ class ThirdPartySyncer(
         }.forEach { studio ->
             syncThirdParty(eversportsFetcher::fetch, studio)
         }
+        syncThirdParty(deNieuweYogaSchoolFetcher::fetch, DeNieuweYogaSchoolFetcherRequest(days))
     }
 
     private suspend fun <P : HasSlug> syncThirdParty(fetch: suspend (P) -> List<ThirdEvent>, param: P) {
@@ -64,6 +66,6 @@ interface HasSlug {
 
 data class ThirdEvent(
     val title: String,
-    val dateTimeRange: DateTimeRange,
     val teacher: String,
+    val dateTimeRange: DateTimeRange,
 )

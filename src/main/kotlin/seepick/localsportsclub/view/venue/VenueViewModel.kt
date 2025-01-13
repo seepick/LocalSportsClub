@@ -9,7 +9,7 @@ import seepick.localsportsclub.view.shared.SelectedItemType
 import seepick.localsportsclub.view.shared.VenueSelected
 
 class VenueViewModel(
-    dataStorage: DataStorage,
+    private val dataStorage: DataStorage,
     bookingService: BookingService,
 ) : ScreenViewModel<Venue, VenueSearch>(dataStorage, bookingService) {
 
@@ -17,7 +17,7 @@ class VenueViewModel(
     override val selectedVenue = MutableStateFlow<Venue?>(null)
     override val selectedItem = selectedVenue
 
-    override fun buildSearch(resetItems: () -> Unit) = VenueSearch(resetItems)
+    override fun buildSearch(resetItems: () -> Unit) = VenueSearch(dataStorage.venuesCategories, resetItems)
     override fun DataStorage.selectAllItems() = selectVisibleVenues()
 
     override fun onItemSelected(item: SelectedItemType) {

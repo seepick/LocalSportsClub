@@ -1,9 +1,8 @@
 package seepick.localsportsclub.api.checkin
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.TimeRange
+import seepick.localsportsclub.service.jsoupBody
 import java.time.LocalDate
 
 data class CheckinsPage(
@@ -37,9 +36,7 @@ data class FreetrainingCheckinEntry(
 
 object CheckinsParser {
     fun parse(rawHtml: String, today: LocalDate): CheckinsPage {
-        val document = Jsoup.parse(rawHtml)
-        val html = document.childNodes().single { it.nodeName() == "html" }
-        val body = html.childNodes().single { it.nodeName() == "body" } as Element
+        val body = jsoupBody(rawHtml)
         var currentDate: LocalDate? = null
         val entries = mutableListOf<CheckinEntry>()
         val timetable = body.select("div.timetable").first() ?: return CheckinsPage.empty

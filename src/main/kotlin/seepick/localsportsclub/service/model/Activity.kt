@@ -41,5 +41,5 @@ class Activity(
     var teacher: String? by mutableStateOf(teacher)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
 
-    override fun toString() = "Activity[id=$id, name=$name, teacher=$teacher, venue.slug=${venue.slug}]"
+    override fun toString() = "Activity[id=$id, name=$name, state=$state teacher=$teacher, venue.slug=${venue.slug}]"
 }

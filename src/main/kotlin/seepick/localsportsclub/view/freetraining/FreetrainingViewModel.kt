@@ -9,7 +9,7 @@ import seepick.localsportsclub.view.shared.ScreenViewModel
 
 class FreetrainingViewModel(
     clock: Clock,
-    dataStorage: DataStorage,
+    private val dataStorage: DataStorage,
     bookingService: BookingService,
 ) : ScreenViewModel<Freetraining, FreetrainingSearch>(dataStorage, bookingService) {
 
@@ -17,7 +17,9 @@ class FreetrainingViewModel(
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }
     override val selectedVenue = selectedVenueBySelectedSubEntity
 
-    override fun buildSearch(resetItems: () -> Unit) = FreetrainingSearch(resetItems)
+    override fun buildSearch(resetItems: () -> Unit) =
+        FreetrainingSearch(dataStorage.freetrainingsCategories, resetItems)
+
     override fun DataStorage.selectAllItems() = selectVisibleFreetrainings()
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {

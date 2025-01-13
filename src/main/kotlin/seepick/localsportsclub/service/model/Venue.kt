@@ -13,7 +13,7 @@ class Venue(
     val name: String,
     val slug: String,
     val description: String,
-    val facilities: List<String>,
+    val categories: List<String>,
     val city: City,
     val postalCode: String,
     val street: String,
@@ -62,7 +62,7 @@ class Venue(
             id = 42,
             name = "Dummy Venue",
             slug = "dummy-venue",
-            facilities = listOf("Gym"),
+            categories = listOf("Gym"),
             city = City.Amsterdam,
             rating = Rating.R4,
             notes = "no notes",
@@ -90,7 +90,7 @@ class Venue(
         slug: String = this.slug,
         name: String = this.name,
         description: String = this.description,
-        facilities: List<String> = this.facilities,
+        categories: List<String> = this.categories,
         city: City = this.city,
         postalCode: String = this.postalCode,
         street: String = this.street,
@@ -113,7 +113,7 @@ class Venue(
         slug = slug,
         name = name,
         description = description,
-        facilities = facilities,
+        categories = categories,
         city = city,
         postalCode = postalCode,
         street = street,
@@ -137,7 +137,7 @@ class Venue(
     override fun hashCode() = slug.hashCode()
     override fun equals(other: Any?): Boolean {
         if (other !is Venue) return false
-        return id == other.id && slug == other.slug && name == other.name && description == other.description && facilities == other.facilities && city == other.city &&
+        return id == other.id && slug == other.slug && name == other.name && description == other.description && categories == other.categories && city == other.city &&
 //                name == other.name &&
                 notes == other.notes && imageFileName == other.imageFileName && isFavorited == other.isFavorited && rating == other.rating
     }

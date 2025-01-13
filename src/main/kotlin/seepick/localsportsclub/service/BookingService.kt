@@ -14,6 +14,7 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
@@ -168,5 +169,15 @@ class BookingService(
                 venue.officialWebsite?.let { "\n$it" } ?: ""
             }",
         ))
+    }
+
+    fun markActivityFromNoshowToCheckedin(activity: Activity) {
+        log.debug { "markActivityFromNoshowToCheckedin($activity)" }
+        require(activity.state == ActivityState.Noshow)
+        val updated = activityRepo.selectById(activity.id)!!.copy(state = ActivityState.Checkedin)
+        activityRepo.update(updated)
+        listeners.forEach {
+            it.onActivityDboUpdated(updated, ActivityFieldUpdate.State)
+        }
     }
 }

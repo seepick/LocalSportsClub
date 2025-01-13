@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.Rating
 import java.time.LocalDate
 
 abstract class AbstractSearch<T>(
@@ -68,6 +69,52 @@ abstract class AbstractSearch<T>(
             extractor = extractor,
             initialValue = initialValue,
             initiallyEnabled = initiallyEnabled,
+        ).also {
+            options += it
+        }
+
+    protected fun newIntSearchOption(
+        label: String,
+        initialValue: Int? = null,
+        initiallyEnabled: Boolean = false,
+        extractor: (T) -> Int,
+    ) =
+        IntSearchOption(
+            label = label,
+            reset = ::reset,
+            extractor = extractor,
+            initialValue = initialValue,
+            initiallyEnabled = initiallyEnabled,
+        ).also {
+            options += it
+        }
+
+    protected fun newRatingSearchOption(
+        label: String,
+        initiallyEnabled: Boolean = false,
+        extractor: (T) -> Rating,
+    ) =
+        RatingSearchOption(
+            label = label,
+            reset = ::reset,
+            extractor = extractor,
+            initiallyEnabled = initiallyEnabled,
+        ).also {
+            options += it
+        }
+
+    protected fun newSelectSearchOption(
+        label: String,
+        initiallyEnabled: Boolean = false,
+        allOptions: List<String>,
+        extractor: (T) -> List<String>,
+    ) =
+        SelectSearchOption(
+            label = label,
+            reset = ::reset,
+            extractor = extractor,
+            initiallyEnabled = initiallyEnabled,
+            allOptions = allOptions,
         ).also {
             options += it
         }

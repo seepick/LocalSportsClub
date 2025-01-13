@@ -20,9 +20,11 @@ import seepick.localsportsclub.sync.SyncerListener
 interface DataStorageListener {
     fun onVenueAdded(venue: Venue)
     fun onVenueUpdated(venue: Venue)
+
     fun onActivitiesAdded(activities: List<Activity>)
-    fun onFreetrainingsAdded(freetrainings: List<Freetraining>)
     fun onActivitiesDeleted(activities: List<Activity>)
+
+    fun onFreetrainingsAdded(freetrainings: List<Freetraining>)
     fun onFreetrainingsDeleted(freetrainings: List<Freetraining>)
 }
 
@@ -63,6 +65,21 @@ class DataStorage(
         venueRepo.selectAll().map { it.toVenue(baseUrl) }.associateBy { it.id }.toMutableMap()
     }
 
+    val venuesCategories: List<String> by lazy {
+        venuesById.values.asSequence()
+            .flatMap { it.categories }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+    }
+
+    val activitiesCategories: List<String> by lazy {
+        allActivitiesByVenueId.values.asSequence()
+            .flatten().map { it.category }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+    }
+
+    val freetrainingsCategories: List<String> by lazy {
+        allFreetrainingsByVenueId.values.asSequence()
+            .flatten().map { it.category }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+    }
+
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         val today = clock.today()
         activityRepo.selectAll()
@@ -99,10 +116,10 @@ class DataStorage(
         venuesById.values.toList()
 
     fun selectVisibleActivities(): List<Activity> {
-        val today = clock.today()
+        val now = clock.now()
         return allActivitiesByVenueId.values.toList().flatten()
             // keep the past non-blanks one in the total list (for partner details table), but display only upcoming ones in big table
-            .filter { it.dateTimeRange.from.toLocalDate() >= today }
+            .filter { it.dateTimeRange.from >= now }
     }
 
     fun selectVisibleFreetrainings(): List<Freetraining> {
@@ -257,7 +274,7 @@ fun Venue.toDbo() = VenueDbo(
     id = id,
     name = name,
     slug = slug,
-    facilities = facilities.joinToString(","),
+    facilities = categories.joinToString(","),
     cityId = city.id,
     officialWebsite = officialWebsite?.toString(),
     rating = rating.value,
@@ -281,7 +298,7 @@ fun VenueDbo.toVenue(baseUrl: Url) = Venue(
     id = id,
     name = name,
     slug = slug,
-    facilities = facilities.split(","),
+    categories = facilities.split(","),
     city = City.byId(cityId),
     rating = Rating.byValue(rating),
     notes = notes,

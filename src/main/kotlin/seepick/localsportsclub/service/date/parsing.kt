@@ -33,7 +33,7 @@ object DateParser {
     /** @param dateString e.g. "2025-01-12" */
     fun parseMachineDate(dateString: String): LocalDate = parseAnyDate(dateString, machineDateFormatter)
 
-    private fun parseAnyDate(dateString: String, dateFormatter: DateTimeFormatter): LocalDate {
+    fun parseAnyDate(dateString: String, dateFormatter: DateTimeFormatter): LocalDate {
         val dateTemporal = dateFormatter.parse(dateString)
         return LocalDate.of(
             dateTemporal[ChronoField.YEAR],
@@ -83,6 +83,35 @@ object DateParser {
             null
         }
 
+    // locale doesn't work when app is packaged?!
+    // private val dutchDateParser = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("nl-nl"))
+    private val dutchMonths: Map<String, Int> = mapOf(
+        "januari" to 1,
+        "februari" to 2,
+        "maart" to 3,
+        "april" to 4,
+        "mei" to 5,
+        "juni" to 6,
+        "juli" to 7,
+        "augustus" to 8,
+        "september" to 9,
+        "oktober" to 10,
+        "november" to 11,
+        "december" to 12,
+    )
+//    (1..12).associateBy {
+//        Month.of(it).getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("nl"))
+//    }
+
+    /** @param string e.g. "14 januari 2025" */
+    fun parseDutchDate(string: String): LocalDate {
+        val parts = string.split(" ")
+        return LocalDate.of(
+            parts[2].toInt(),
+            dutchMonths[parts[1]] ?: error("Couldn't find dutch month '${parts[1]}'!"),
+            parts[0].toInt()
+        )
+    }
 }
 
 private fun Pair<Int, Int>.toLocalTime() = LocalTime.of(first, second)

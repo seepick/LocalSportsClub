@@ -17,6 +17,7 @@ import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.Lsc
+import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.TitleText
@@ -42,8 +43,8 @@ fun VenueDetail(
         Row {
             VenueImage(venue.imageFileName)
             Column {
-                if (venue.facilities.isNotEmpty()) {
-                    Text(venue.facilities.joinToString(", "))
+                if (venue.categories.isNotEmpty()) {
+                    Text(venue.categories.joinToString(", "))
                 }
                 RatingPanel(venueEdit.rating)
             }
@@ -55,7 +56,7 @@ fun VenueDetail(
         Row {
             CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)
             CheckboxText("Wishlisted", venueEdit.isWishlisted, Icons.Lsc.Wishlists)
-            CheckboxText("Hidden", venueEdit.isHidden)
+            CheckboxText("Hidden ${LscIcons.hidden}", venueEdit.isHidden)
         }
         UrlTextField(
             label = "Venue Site",

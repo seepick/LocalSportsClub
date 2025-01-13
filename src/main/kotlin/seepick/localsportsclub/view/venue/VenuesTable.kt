@@ -40,6 +40,9 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     TableColumn(LscIcons.booked, ColSize.Width(40.dp), TextRenderer {
         it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
     }),
+    TableColumn(LscIcons.hidden, ColSize.Width(40.dp), TextRenderer {
+        if (it.isHidden) LscIcons.hidden else ""
+    }),
     TableColumn(
         "Last Visit", ColSize.Width(80.dp), TextRenderer(
             extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },

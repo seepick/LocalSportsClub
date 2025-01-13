@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service.date
 
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -36,6 +37,10 @@ fun DateTimeRange.prettyPrint(currentYear: Int): String =
     from.format(if (from.year != currentYear) dayDatetimeFormatterWithYear else dayDatetimeFormatter) + "-" + to.format(
         timeFormatter
     )
+
+fun LocalDate.daysBetween(other: LocalDate): Long =
+    Duration.between(atStartOfDay(), other.atStartOfDay()).toDays()
+
 
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 

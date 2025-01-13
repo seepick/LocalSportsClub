@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.view.common.LabeledText
@@ -36,6 +37,7 @@ fun SubEntityDetail(
     isBookingOrCancelInProgress: Boolean,
     bookingDialog: BookingDialog?,
     onCloseDialog: () -> Unit,
+    onActivityNoshowToCheckedin: (Activity) -> Unit,
 ) {
     if (bookingDialog != null) {
         AlertDialog(title = { Text(bookingDialog.title) },
@@ -100,6 +102,13 @@ fun SubEntityDetail(
                     visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()
                 ) {
                     CircularProgressIndicator()
+                }
+            }
+        }
+        if (subEntity is SubEntity.ActivityEntity) {
+            if (subEntity.activity.state == ActivityState.Noshow) {
+                Button(onClick = { onActivityNoshowToCheckedin(subEntity.activity) }) {
+                    Text("Change noshow to checkedin")
                 }
             }
         }

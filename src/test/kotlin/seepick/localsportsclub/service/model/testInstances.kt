@@ -21,7 +21,7 @@ fun Arb.Companion.venue() = arbitrary {
         slug = slug().next(),
         description = string(minSize = 5, maxSize = 20).next(),
         notes = string(minSize = 5, maxSize = 20).next(),
-        facilities = emptyList(),
+        categories = emptyList(),
         city = City.entries.random(),
         postalCode = "",
         addressLocality = "",

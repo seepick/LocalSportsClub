@@ -194,8 +194,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.debug { "onBook: $subEntity" }
         bookOrCancel(subEntity, BookingService::book) { result ->
             BookingDialog(
-                title = "Booking",
-                message = when (result) {
+                title = "Booking", message = when (result) {
                     BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
                     is BookingResult.BookingFail -> "Error while booking 🤔\n${result.message}"
                 }
@@ -207,8 +206,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.debug { "onCancelBooking: $subEntity" }
         bookOrCancel(subEntity, BookingService::cancel) { result ->
             BookingDialog(
-                "Cancel Booking",
-                when (result) {
+                "Cancel Booking", when (result) {
                     CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}'."
                     is CancelResult.CancelFail -> "Failed to cancel the booking 🤔\n${result.message}"
                 }
@@ -238,6 +236,11 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     fun onCloseBookingDialog() {
         log.debug { "onCloseBookingDialog" }
         bookingDialog = null
+    }
+
+    fun onActivityNoshowToCheckedin(activity: Activity) {
+        log.debug { "onActivityNoshowToCheckedin($activity)" }
+        bookingService.markActivityFromNoshowToCheckedin(activity)
     }
 
     private fun resetItems() {

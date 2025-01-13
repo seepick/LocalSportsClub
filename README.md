@@ -13,15 +13,10 @@ Communistic Custom Client for Urban Sports Club.
 
 * all ViewModels, invoking logic: surround with backgroundTask wrapper
 * real system test: book/cancel activity&freetraining
-* make it possible to manually convert activity from noshow into checkedin (or somehow detect programmatically?)
-* activity search: fav, wish, booked, rating, category
-* freetraining search: date, category, rating, fav, wish
-* venue search: fav, wish, rating, hidden, activities.count, checkins.count, bookings.count, category
-* ad venue table: show "is hidden" column
-* ... no-show for freetraining possible?? try it yourself ;)
 
 ## Backlog
 
+* ... no-show for freetraining possible?? try it yourself ;)
 * UI: fine tune UI (table, details, colors); use theme colors only (dark/light mode)
 * UI: table row color highlighted for favorited/wishlisted/booked (gradient for multiples)
 * FEATURE: display linked venues (be aware, that each stored entity is a bi-directional link, although just stored
@@ -58,6 +53,7 @@ Communistic Custom Client for Urban Sports Club.
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * (switch to ZonedDate?)
 * investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
+* DateParser dutch locale doesn't work when packaged as app...?!
 
 # Compose help:
 
