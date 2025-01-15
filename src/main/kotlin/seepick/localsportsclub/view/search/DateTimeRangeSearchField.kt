@@ -1,15 +1,14 @@
 package seepick.localsportsclub.view.search
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -34,53 +33,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import org.koin.compose.KoinApplication
-import org.koin.dsl.bind
-import org.koin.dsl.module
-import seepick.localsportsclub.api.UscConfig
-import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateParser
-import seepick.localsportsclub.service.date.DateTimeRange
-import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
 import java.time.LocalTime
-
-@Composable
-@Preview
-        /*
-        Caused by: java.lang.NoSuchMethodError: 'int[] kotlin.text.HexExtensionsKt.getBYTE_TO_LOWER_CASE_HEX_DIGITS()'
-            at kotlin.uuid.UuidKt__UuidKt.formatBytesInto$UuidKt__UuidKt(Uuid.kt:435)
-            at kotlin.uuid.UuidKt__UuidKt.access$formatBytesInto(Uuid.kt:1)
-            at kotlin.uuid.Uuid.toString(Uuid.kt:131)
-            at org.koin.mp.KoinPlatformToolsKt.generateId(KoinPlatformTools.kt:39)
-            at org.koin.core.module.Module.<init>(Module.kt:45)
-            at org.koin.dsl.ModuleDSLKt.module(ModuleDSL.kt:35)
-            at org.koin.dsl.ModuleDSLKt.module$default(ModuleDSL.kt:33)
-            at seepick.localsportsclub.view.search.DateTimeRangeSearchFieldKt.DateTimeRangeSearchField_Preview$lambda$2$lambda$1(DateTimeRangeSearchField.kt:49)
-            at org.koin.dsl.KoinApplicationKt.koinApplication(KoinApplication.kt:33)
-            at org.koin.dsl.KoinApplicationKt.koinApplication(KoinApplication.kt:49)
-            at org.koin.compose.KoinApplicationKt.KoinApplication(KoinApplication.kt:113)
-            at seepick.localsportsclub.view.search.DateTimeRangeSearchFieldKt.DateTimeRangeSearchField_Preview(DateTimeRangeSearchField.kt:48)
-            ... 60 more
-         */
-fun DateTimeRangeSearchField_Preview() {
-    KoinApplication(application = {
-        modules(module {
-            single { SystemClock } bind Clock::class
-            single { UscConfig(syncDaysAhead = 3) }
-        })
-    }) {
-        DateTimeRangeSearchField(
-            searchOption = DateTimeRangeSearchOption<Any>(
-                label = "Label",
-                reset = {},
-                extractor = { DateTimeRange(SystemClock.now(), SystemClock.now().plusHours(1)) },
-            ),
-        )
-    }
-}
-
 
 @Composable
 fun <T> DateTimeRangeSearchField(
@@ -88,16 +44,18 @@ fun <T> DateTimeRangeSearchField(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(searchOption.label)
-        Checkbox(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
-        DateSelector(
-            enabled = searchOption.enabled,
-            searchDate = searchOption.searchDate,
-            initializeDate = searchOption::initializeDate,
-            onDateSelected = searchOption::updateSearchDate
-        )
-        TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeStart)
-        Text("-")
-        TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeEnd)
+        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        if (searchOption.enabled) {
+            DateSelector(
+                enabled = searchOption.enabled,
+                searchDate = searchOption.searchDate,
+                initializeDate = searchOption::initializeDate,
+                onDateSelected = searchOption::updateSearchDate
+            )
+            TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeStart)
+            Text("-")
+            TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeEnd)
+        }
     }
 }
 

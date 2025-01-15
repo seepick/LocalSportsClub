@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.WindowPref
 import java.time.LocalDateTime
 
@@ -14,12 +15,15 @@ object SinglesTable : Table("SINGLES") {
     val notes = text("NOTES")
     val lastSync = datetime("LAST_SYNC").nullable()
     val windowPref = varchar("WINDOW_PREF", 128).nullable()
+    val homeLatitude = double("HOME_LATITUDE").nullable()
+    val homeLongitude = double("HOME_LONGITUDE").nullable()
 }
 
 data class SinglesDbo(
     val notes: String,
     val lastSync: LocalDateTime?,
     val windowPref: WindowPref?,
+    val home: Location?,
 )
 
 interface SinglesRepo {
@@ -49,11 +53,14 @@ object ExposedSinglesRepo : SinglesRepo {
 
     override fun select() = transaction {
         log.debug { "select()" }
-        SinglesTable.selectAll().singleOrNull()?.let {
+        SinglesTable.selectAll().singleOrNull()?.let { row ->
             SinglesDbo(
-                notes = it[SinglesTable.notes],
-                lastSync = it[SinglesTable.lastSync],
-                windowPref = WindowPref.readFromSqlString(it[SinglesTable.windowPref]),
+                notes = row[SinglesTable.notes],
+                lastSync = row[SinglesTable.lastSync],
+                windowPref = WindowPref.readFromSqlString(row[SinglesTable.windowPref]),
+                home = row[SinglesTable.homeLatitude]?.let {
+                    Location(longitude = row[SinglesTable.homeLongitude]!!, latitude = row[SinglesTable.homeLatitude]!!)
+                }
             )
         }
     }
@@ -65,6 +72,8 @@ object ExposedSinglesRepo : SinglesRepo {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
             it[windowPref] = singles.windowPref?.toSqlString()
+            it[homeLatitude] = singles.home?.latitude
+            it[homeLongitude] = singles.home?.longitude
         }
     }
 
@@ -75,6 +84,8 @@ object ExposedSinglesRepo : SinglesRepo {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
             it[windowPref] = singles.windowPref?.toSqlString()
+            it[homeLatitude] = singles.home?.latitude
+            it[homeLongitude] = singles.home?.longitude
         }
     }
 }

@@ -49,6 +49,7 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
             sortExtractor = { it.lastVisit() },
         )
     ),
+    TableColumn("km", ColSize.Width(50.dp), TextRenderer { it.distanceInKm?.toString() ?: "" }),
     RatingColumn(),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },
@@ -63,6 +64,7 @@ fun VenuesTable(
         itemsLabel = "venues",
         allItemsCount = viewModel.allItems.size,
         items = viewModel.items,
+        customTableItemBgColorEnabled = true,
         onItemClicked = viewModel::onVenueSelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
         columns = viewModel.tableColumns,

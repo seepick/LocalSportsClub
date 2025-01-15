@@ -12,15 +12,14 @@ import org.jetbrains.compose.resources.decodeToImageBitmap
 import seepick.localsportsclub.openFromClasspath
 import java.io.File
 
+private val log = logger {}
+
 @OptIn(ExperimentalResourceApi::class)
 fun readImageBitmapFromClasspath(classpath: String): ImageBitmap =
     openFromClasspath(classpath).readAllBytes().decodeToImageBitmap()
 
 @OptIn(ExperimentalResourceApi::class)
 fun readImageBitmapFromFile(file: File): ImageBitmap = file.inputStream().readAllBytes().decodeToImageBitmap()
-
-
-private val log = logger {}
 
 fun ViewModel.executeBackgroundTask(
     errorMessage: String,
@@ -34,13 +33,22 @@ fun ViewModel.executeBackgroundTask(
             doBefore()
             try {
                 doTask()
-            } catch (e: Exception) {
-                log.error(e) { "Background task failed!" }
-                showErrorDialog(
-                    title = "Background Task Failed!",
-                    message = errorMessage,
-                    exception = e,
-                )
+            } catch (e: Throwable) {
+                when (e) {
+                    is Exception, is NoClassDefFoundError -> {
+                        log.error(e) { "Background task failed!" }
+                        showErrorDialog(
+                            title = "Background Task Failed!",
+                            message = errorMessage,
+                            exception = e,
+                        )
+                    }
+
+                    else -> {
+                        log.error(e) { "Unhandled error thrown during background task! ($errorMessage)" }
+                        throw e
+                    }
+                }
             } finally {
                 doFinally()
             }

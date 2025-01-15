@@ -61,11 +61,6 @@ fun UsageView(
                 }
                 append(" / ${usageConfig.maxBookingsForPeriod}")
             })
-//            Text("Usage: ")
-//            Text(checkedinCount.toString(), color = colorCheckedin)
-//            Text("+")
-//            Text(bookedCount.toString(), color = colorBooked)
-//            Text()
         }
         UsageIndicator(
             percentagePeriod = usageStorage.percentagePeriod,

@@ -93,7 +93,6 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     abstract val selectedVenue: StateFlow<Venue?>
     val venueEdit = VenueEditModel()
 
-
     private val _selectedSubEntity = MutableStateFlow<SubEntity?>(null)
     val selectedSubEntity = _selectedSubEntity.asStateFlow()
 
@@ -156,7 +155,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.trace { "Selected: $venue" }
         viewModelScope.launch {
             // venue can only be clicked in VenueViewModel
-            @Suppress("UNCHECKED_CAST") (selectedVenue as MutableStateFlow<Venue>).value = venue
+            @Suppress("UNCHECKED_CAST")
+            (selectedVenue as MutableStateFlow<Venue>).value = venue
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
         }

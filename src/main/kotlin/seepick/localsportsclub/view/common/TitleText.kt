@@ -4,10 +4,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun TitleText(
@@ -17,12 +15,12 @@ fun TitleText(
 ) {
     Text(
         text = text,
-        fontSize = 25.sp,
+        style = MaterialTheme.typography.h1,
+//        fontSize = 25.sp,
         textDecoration = textDecoration,
-        fontWeight = FontWeight.Bold,
+//        fontWeight = FontWeight.Bold,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        color = MaterialTheme.colors.primary,
         modifier = modifier,
     )
 }

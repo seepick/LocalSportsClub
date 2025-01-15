@@ -24,6 +24,11 @@ class SinglesService(
         update { copy(windowPref = windowPref) }
     }
 
+    fun readHome() = cachedOrSelect().home
+    fun updateHome(home: Location?) {
+        update { copy(home = home) }
+    }
+
     private fun update(withDbo: SinglesDbo.() -> SinglesDbo) {
         val dbo = cachedOrSelect()
         val updated = dbo.withDbo()
@@ -38,6 +43,7 @@ class SinglesService(
                     notes = "",
                     lastSync = null,
                     windowPref = null,
+                    home = null,
                 ).also {
                     singlesRepo.insert(it)
                 }

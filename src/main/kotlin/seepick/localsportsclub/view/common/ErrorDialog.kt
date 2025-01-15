@@ -25,7 +25,7 @@ import javax.swing.JTextArea
 fun showErrorDialog(
     title: String,
     message: String,
-    exception: Exception?,
+    exception: Throwable?,
 ) {
     ErrorDialog(title, message, exception).isVisible = true
 }
@@ -33,7 +33,7 @@ fun showErrorDialog(
 private class ErrorDialog(
     title: String,
     message: String,
-    exception: Exception?,
+    exception: Throwable?,
 ) : JDialog(null as JDialog?, title, true) {
 
     private val panelDetails = JPanel()
@@ -72,7 +72,7 @@ private class ErrorDialog(
         SwingUtil.setCenterLocation(this)
     }
 
-    private fun initComponents(message: String, exception: Exception?): JPanel {
+    private fun initComponents(message: String, exception: Throwable?): JPanel {
         val wrapPanel = JPanel(BorderLayout())
 
         val westPanel = JPanel(FlowLayout(FlowLayout.CENTER))
@@ -118,7 +118,7 @@ private class ErrorDialog(
         return wrapPanel
     }
 
-    private fun createExceptionPanel(exception: Exception): JPanel {
+    private fun createExceptionPanel(exception: Throwable): JPanel {
         panelDetails.layout = BorderLayout(0, 5)
         panelDetails.isVisible = false
 

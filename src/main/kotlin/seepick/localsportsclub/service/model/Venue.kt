@@ -4,7 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.api.City
+import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
 
@@ -18,8 +22,8 @@ class Venue(
     val postalCode: String,
     val street: String,
     val addressLocality: String,
-    val latitude: String,
-    val longitude: String,
+    val location: Location?,
+    val distanceInKm: Double?,
     val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
@@ -33,7 +37,9 @@ class Venue(
     isFavorited: Boolean,
     isWishlisted: Boolean,
     isHidden: Boolean,
-) : HasVenue {
+) : HasVenue, TableItemBgColor {
+
+    override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
 
     //  val linkedVenues: MutableList<Venue>,
     override val venue = this // for ScreenItem
@@ -45,7 +51,6 @@ class Venue(
 
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
-
     var officialWebsite: String? by mutableStateOf(officialWebsite)
 
     fun lastVisit(): LocalDate? {
@@ -58,6 +63,12 @@ class Venue(
     }
 
     companion object {
+        private fun computeBgColor(
+            isFavorited: Boolean,
+            isWishlisted: Boolean,
+        ): Color? =
+            if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null
+
         fun dummy() = Venue(
             id = 42,
             name = "Dummy Venue",
@@ -79,8 +90,8 @@ class Venue(
             postalCode = "1001",
             street = "Street",
             addressLocality = "Amsterdam, Netherlands",
-            latitude = "0.1",
-            longitude = "0.2",
+            location = null,
+            distanceInKm = null,
 //            linkedVenues = emptyList(),
         )
     }
@@ -95,8 +106,8 @@ class Venue(
         postalCode: String = this.postalCode,
         street: String = this.street,
         addressLocality: String = this.addressLocality,
-        latitude: String = this.latitude,
-        longitude: String = this.longitude,
+        location: Location? = this.location,
+        distanceInKm: Double? = this.distanceInKm,
         officialWebsite: String? = this.officialWebsite,
         imageFileName: String? = this.imageFileName,
         importantInfo: String? = this.importantInfo,
@@ -118,8 +129,8 @@ class Venue(
         postalCode = postalCode,
         street = street,
         addressLocality = addressLocality,
-        latitude = latitude,
-        longitude = longitude,
+        location = location,
+        distanceInKm = distanceInKm,
         officialWebsite = officialWebsite,
         imageFileName = imageFileName,
         importantInfo = importantInfo,

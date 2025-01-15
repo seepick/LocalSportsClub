@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.view.common.LscIcons
+import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.shared.HasVenue
 
 enum class ActivityState {
@@ -28,8 +29,7 @@ class Activity(
     teacher: String?,
     spotsLeft: Int,
     state: ActivityState,
-) : HasVenue {
-
+) : HasVenue, TableItemBgColor by venue {
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
     // not possible due to mixed setup of table columns (doing logic in view/composable together)

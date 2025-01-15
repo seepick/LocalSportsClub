@@ -45,27 +45,13 @@ suspend fun HttpClient.safeGet(url: Url, block: HttpRequestBuilder.() -> Unit = 
 suspend fun HttpClient.safePost(url: Url, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse =
     safeRetry(HttpMethod.Post, url, block)
 
-private const val MAX_RETRY_ATTEMPTS = 3
 private suspend fun HttpClient.safeRetry(
     method: HttpMethod,
     url: Url,
     block: HttpRequestBuilder.() -> Unit = {},
-    attempt: Int = 0
 ): HttpResponse =
-    try {
+    retrySuspended(maxAttempts = 3, listOf(SocketException::class.java, ConnectionClosedException::class.java)) {
         safeAny(method, url, block)
-    } catch (e: Exception) {
-        if (e !is SocketException && e !is ConnectionClosedException) {
-            log.error { "Going to rethrow unhandled exception of type: ${e::class.qualifiedName}" }
-            throw e
-        }
-        if (attempt == MAX_RETRY_ATTEMPTS) {
-            log.error(e) { "After max attempt of $MAX_RETRY_ATTEMPTS failed to ${method.value}: $url" }
-            error("After max attempt of $MAX_RETRY_ATTEMPTS failed to ${method.value}: $url")
-        } else {
-            log.warn(e) { "Retrying failed ${method.value}: $url" }
-            safeRetry(method, url, block, attempt + 1)
-        }
     }
 
 private suspend fun HttpClient.safeAny(

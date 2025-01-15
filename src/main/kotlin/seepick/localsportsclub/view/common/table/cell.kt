@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.Lsc
 
 data class TableColumn<T>(
     val headerLabel: String? = null,
@@ -76,6 +76,10 @@ fun RowScope.TableHeader(
     onClick: () -> Unit
 ) {
     var isHovered by remember { mutableStateOf(false) }
+    val bgColor =
+        if (isSortActive) Lsc.colors.itemSelectedBg
+        else if (isHovered && isSortEnabled) Lsc.colors.itemHoverBg
+        else MaterialTheme.colors.surface
     TableCell(
         text = text,
         size = size,
@@ -85,13 +89,12 @@ fun RowScope.TableHeader(
             .defaultMinSize(0.dp, 25.dp)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-            .background(color = if (isHovered && !isSortActive && isSortEnabled) Color.LightGray else MaterialTheme.colors.surface)
+            .background(bgColor)
             .let {
                 if (isSortActive || !isSortEnabled) it else {
                     it.onClick { onClick() }
                 }
             }
-            .let { if (isSortActive) it.background(Color.Green) else it }
     )
 }
 

@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 data class SearchSelect(
     val text: String,
 ) {
-    var selected: Boolean by mutableStateOf(false)
+    var isSelected: Boolean by mutableStateOf(false)
     fun toggleSelected() {
-        selected = !selected
+        isSelected = !isSelected
     }
 }
 
@@ -31,7 +31,7 @@ class SelectSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean {
-        val selected = allSelects.filter { it.selected }.map { it.text }
+        val selected = allSelects.filter { it.isSelected }.map { it.text }
         return if (selected.isEmpty()) alwaysTruePredicate
         else { item ->
             val itemsOptions = extractor(item)

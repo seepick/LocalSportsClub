@@ -18,6 +18,8 @@ import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.retry
+import java.net.SocketException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -142,14 +144,14 @@ class RealGcalService(
 
         private const val PROP_IS_ACTIVITY = "isActivity"
         private const val PROP_ENTITY_ID = "activityOrFreetrainingId"
-
     }
 
     override fun create(entry: GcalEntry) {
         log.info { "Creating google calendar entry: $entry" }
-        // TODO reusable "retry {}" function => SocketException: Connection reset; and if failed, then don't break the flow above (dispatching thingy)
-        val created = calendar.events().insert(calendarId, entry.toEvent()).execute()
-        // created.id ... could store it in DB for later deletion on cancellation?!
+        val created = retry(maxAttempts = 3, listOf(SocketException::class.java)) {
+            calendar.events().insert(calendarId, entry.toEvent()).execute()
+        }
+        // created.id ... could store it in DB for later (direct) deletion on cancellation?!
         log.debug { "Successfully created entry at: ${created.htmlLink}" }
     }
 
@@ -161,15 +163,16 @@ class RealGcalService(
             .setTimeMax(LocalDateTime.of(deletion.day, LocalTime.of(23, 59)).toGoogleDateTime())
             .execute().items
         val found = events.firstOrNull { e ->
-            log.trace { "Checking event: $e" }
             e.getPrivateExtendedProperty(PROP_IS_ACTIVITY)?.toBoolean() == deletion.isActivity &&
                     e.getPrivateExtendedProperty(PROP_ENTITY_ID)?.toInt() == deletion.activityOrFreetrainingId
         }
         if (found == null) {
-            log.info { "Not going to delete calendar event as not found..." }
+            log.info { "Not going to delete calendar event, not found..." }
             return false
         }
-        calendar.events().delete(calendarId, found.id).execute()
+        retry(maxAttempts = 3, listOf(SocketException::class.java)) {
+            calendar.events().delete(calendarId, found.id).execute()
+        }
         log.debug { "Successfully deleted calendar event." }
         return true
     }

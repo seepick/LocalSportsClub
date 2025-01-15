@@ -1,4 +1,4 @@
-package seepick.localsportsclub.migration
+package seepick.localsportsclub.tools.migration
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.migration
+package seepick.localsportsclub.tools.migration
 
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.persistence.ActivityDbo

@@ -135,6 +135,11 @@ object ExposedVenueRepo : VenueRepo {
             it[isFavorited] = venue.isFavorited
             it[isDeleted] = venue.isDeleted
             it[officialWebsite] = venue.officialWebsite
+            it[street] = venue.street
+            it[postalCode] = venue.postalCode
+            it[addressLocality] = venue.addressLocality
+            it[longitude] = venue.longitude
+            it[latitude] = venue.latitude
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
         venue

@@ -96,6 +96,7 @@ compose.desktop {
                 "java.net.http",
                 "java.sql",
                 "java.naming", // for ktor-client-apache
+                "jdk.httpserver", // for com/sun/net/httpserver/HttpHandler for GCal (google jetty OAuth2)
             )
             macOS {
                 iconFile.set(project.file("src/main/distribution/icon.icns"))

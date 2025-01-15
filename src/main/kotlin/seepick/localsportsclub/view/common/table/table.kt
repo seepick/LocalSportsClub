@@ -3,7 +3,6 @@ package seepick.localsportsclub.view.common.table
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +26,11 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.view.common.rowBgColor
+
+interface TableItemBgColor {
+    val tableBgColor: Color?
+}
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -39,12 +42,12 @@ fun <T> Table(
     onHeaderClicked: (TableColumn<T>) -> Unit = {},
     sortColumn: TableColumn<T>?,
     headerEnabled: Boolean = true,
+    customTableItemBgColorEnabled: Boolean = false,
     itemsLabel: String? = null,
     allItemsCount: Int? = null,
     boxModifier: Modifier = Modifier,
     columnModifier: Modifier = Modifier,
 ) {
-    val colorEvenRow = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     Box(modifier = boxModifier) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
@@ -72,16 +75,15 @@ fun <T> Table(
             }
             itemsIndexed(items) { index, item ->
                 var isHovered by remember { mutableStateOf(false) }
-                val rowColor = if (index % 2 == 0) {
-                    colorEvenRow
-                } else {
-                    MaterialTheme.colors.background
-                }
-                val bgColor = if (onItemClicked != null) {
-                    if (isHovered) Color.Green else if (selectedItem == item) Color.Red else rowColor
-                } else {
-                    if (selectedItem == item) Color.Red else rowColor
-                }
+
+                val bgColor = rowBgColor(
+                    index = index,
+                    isHovered = isHovered,
+                    isSelected = selectedItem == item,
+                    isClickable = onItemClicked != null,
+                    primaryColor = if (customTableItemBgColorEnabled && item is TableItemBgColor) item.tableBgColor else null
+                )
+
                 Row(Modifier/*.fillMaxWidth()*/.background(color = bgColor)
                     .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }
@@ -114,7 +116,6 @@ fun <T> Table(
         )
         if (itemsLabel != null) {
             Text(
-                // TODO allItemsCount also includes hidden items; but it shouldn't. adjust above.
                 text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
                 fontSize = 10.sp,
                 modifier = Modifier.align(Alignment.BottomStart)

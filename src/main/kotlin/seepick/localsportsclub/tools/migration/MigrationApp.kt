@@ -1,8 +1,8 @@
-package seepick.localsportsclub.migration
+package seepick.localsportsclub.tools.migration
 
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.persistence.ExposedVenueRepo
+import seepick.localsportsclub.tools.connectToDatabase
 import java.io.File
 
 object MigrationApp {
@@ -11,7 +11,7 @@ object MigrationApp {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        connectToDatabase()
+        connectToDatabase(isProd = false)
         val venues = ExposedVenueRepo.selectAll().sortedBy { it.name }
         transaction {
             val onefitPartners = OnefitPartners.decode(onefitExportFile)
@@ -21,13 +21,4 @@ object MigrationApp {
         println("Done ✅")
     }
 
-    private fun connectToDatabase() {
-        val home = File(System.getProperty("user.home"))
-        val connect = ".lsc"
-//        val connect = ".lsc-dev"
-        val dbDir = File(home, "$connect/database")
-        val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}/h2"
-        println("Connecting to database for migration: $jdbcUrl")
-        Database.connect(jdbcUrl)
-    }
 }

@@ -46,6 +46,7 @@ fun FreetrainingsTable(
         itemsLabel = "freetrainings",
         items = viewModel.items,
         selectedItem = selectedFreetraining,
+        customTableItemBgColorEnabled = true,
         allItemsCount = viewModel.allItems.size,
         columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,

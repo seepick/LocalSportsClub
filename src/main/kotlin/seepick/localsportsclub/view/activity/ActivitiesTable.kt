@@ -57,6 +57,7 @@ fun ActivitiesTable(
         itemsLabel = "activities",
         allItemsCount = viewModel.allItems.size,
         items = viewModel.items,
+        customTableItemBgColorEnabled = true,
         onItemClicked = viewModel::onActivitySelected,
         onHeaderClicked = viewModel.sorting::onHeaderClicked,
         columns = viewModel.tableColumns,

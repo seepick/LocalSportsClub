@@ -42,15 +42,19 @@ data class ActivityDbo(
         statement[ActivitiesTable.category] = this.category
         statement[ActivitiesTable.from] = this.from
         statement[ActivitiesTable.to] = this.to
-        statement[ActivitiesTable.spotsLeft] = this.spotsLeft
-        statement[ActivitiesTable.teacher] = this.teacher
         statement[ActivitiesTable.state] = this.state
+        statement[ActivitiesTable.teacher] = this.teacher
+        statement[ActivitiesTable.spotsLeft] = this.spotsLeft
     }
 
     fun prepareUpdate(update: UpdateStatement) {
+        update[ActivitiesTable.name] = this.name
+        update[ActivitiesTable.category] = this.category
+        update[ActivitiesTable.from] = this.from
+        update[ActivitiesTable.to] = this.to
+        update[ActivitiesTable.state] = this.state
         update[ActivitiesTable.teacher] = this.teacher
         update[ActivitiesTable.spotsLeft] = this.spotsLeft
-        update[ActivitiesTable.state] = this.state
     }
 
     companion object {
@@ -61,9 +65,9 @@ data class ActivityDbo(
             category = row[ActivitiesTable.category],
             from = row[ActivitiesTable.from].withNano(0),
             to = row[ActivitiesTable.to].withNano(0),
-            spotsLeft = row[ActivitiesTable.spotsLeft],
-            teacher = row[ActivitiesTable.teacher],
             state = row[ActivitiesTable.state],
+            teacher = row[ActivitiesTable.teacher],
+            spotsLeft = row[ActivitiesTable.spotsLeft],
         )
     }
 }

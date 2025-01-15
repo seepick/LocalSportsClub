@@ -16,59 +16,74 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.search.SelectSearchOption
+import seepick.localsportsclub.view.common.rowBgColor
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
     val tableScrollState = rememberLazyListState()
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(searchOption.label)
-        Checkbox(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
-        Box(
-            modifier = Modifier
-                .height(60.dp)
-                .width(200.dp)
-                .border(1.dp, Color.Black)
-        ) {
-            LazyColumn(
-                state = tableScrollState, modifier = Modifier.padding(end = 12.dp) // for the scrollbar to the right
+        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        if (searchOption.enabled) {
+            Box(
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(200.dp)
+                    .border(1.dp, Lsc.colors.onSurface)
             ) {
-                itemsIndexed(searchOption.allSelects) { index, select ->
-                    val backgroundColor = if (select.selected) Color.Green
-                    else if (index % 2 == 0) Color.LightGray
-                    else null
-                    Text(
-                        text = select.text,
-                        modifier = Modifier
-                            .fillMaxWidth(1.0f)
-                            .let { m ->
-                                if (searchOption.enabled) {
-                                    m.onClick {
-                                        searchOption.toggleSelect(select)
-                                    }
-                                } else m
-                            }.let { m ->
-                                backgroundColor?.let { color ->
-                                    m.background(color)
-                                } ?: m
-                            }
-                    )
+                LazyColumn(
+                    state = tableScrollState, modifier = Modifier.padding(end = 12.dp) // for the scrollbar to the right
+                ) {
+                    itemsIndexed(searchOption.allSelects) { index, select ->
+                        var isHovered by remember { mutableStateOf(false) }
+                        val backgroundColor = if (searchOption.enabled) rowBgColor(
+                            index = index,
+                            isHovered = isHovered,
+                            isSelected = select.isSelected,
+                            isClickable = true,
+                        ) else MaterialTheme.colors.background
+                        Text(
+                            text = select.text,
+                            color = Color.DarkGray,
+                            modifier = Modifier
+                                .fillMaxWidth(1.0f)
+                                .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                                .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+                                .let { m ->
+                                    if (searchOption.enabled) {
+                                        m.onClick {
+                                            searchOption.toggleSelect(select)
+                                        }
+                                    } else m
+                                }.background(backgroundColor)
+                        )
+                    }
                 }
-            }
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
-                    scrollState = tableScrollState
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
+                        scrollState = tableScrollState
+                    )
                 )
-            )
+            }
         }
     }
 }

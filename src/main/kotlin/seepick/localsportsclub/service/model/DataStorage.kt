@@ -11,8 +11,12 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.distance
+import seepick.localsportsclub.service.round
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
@@ -54,6 +58,7 @@ class DataStorage(
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val clock: Clock,
+    private val singlesService: SinglesService,
     uscConfig: UscConfig,
 ) : SyncerListener {
 
@@ -62,7 +67,8 @@ class DataStorage(
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
-        venueRepo.selectAll().map { it.toVenue(baseUrl) }.associateBy { it.id }.toMutableMap()
+        venueRepo.selectAll().map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
+            .associateBy { it.id }.toMutableMap()
     }
 
     val venuesCategories: List<String> by lazy {
@@ -129,7 +135,7 @@ class DataStorage(
 
     override fun onVenueDboAdded(venueDbo: VenueDbo) {
         log.debug { "onVenueAdded($venueDbo)" }
-        val venue = venueDbo.toVenue(baseUrl)
+        val venue = venueDbo.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(venueDbo))
         venuesById[venue.id] = venue
         dispatchOnVenueAdded(venue)
     }
@@ -250,6 +256,17 @@ class DataStorage(
     }
 }
 
+private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location?, Double?> {
+    val location = if (venueDbo.latitude.isEmpty()) null else Location(
+        latitude = venueDbo.latitude.toDouble(),
+        longitude = venueDbo.longitude.toDouble(),
+    )
+
+    if (location == null) return null to null
+    val home = readHome() ?: return location to null
+    return location to round(distance(home, location), 2)
+}
+
 fun ActivityDbo.toActivity(venue: Venue) = Activity(
     id = id,
     venue = venue,
@@ -280,8 +297,8 @@ fun Venue.toDbo() = VenueDbo(
     rating = rating.value,
     notes = notes,
     description = description,
-    longitude = longitude,
-    latitude = latitude,
+    longitude = location?.longitude?.toString() ?: "",
+    latitude = location?.latitude?.toString() ?: "",
     street = street,
     addressLocality = addressLocality,
     postalCode = postalCode,
@@ -294,17 +311,17 @@ fun Venue.toDbo() = VenueDbo(
     isDeleted = isDeleted,
 )
 
-fun VenueDbo.toVenue(baseUrl: Url) = Venue(
+fun VenueDbo.toVenue(baseUrl: Url, locationDistance: Pair<Location?, Double?>) = Venue(
     id = id,
     name = name,
     slug = slug,
-    categories = facilities.split(","),
+    categories = facilities.split(",").filter { it.isNotEmpty() },
     city = City.byId(cityId),
     rating = Rating.byValue(rating),
     notes = notes,
     description = description,
-    longitude = longitude,
-    latitude = latitude,
+    location = locationDistance.first,
+    distanceInKm = locationDistance.second,
     street = street,
     addressLocality = addressLocality,
     postalCode = postalCode,

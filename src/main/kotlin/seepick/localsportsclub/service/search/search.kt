@@ -149,7 +149,7 @@ abstract class SearchOption<T>(
 
     fun updateEnabled(isEnabled: Boolean) {
         if (enabled == isEnabled) return
-        log.debug { "updateEnabled(isEnabled=$isEnabled)" }
+        log.debug { "${this::class.simpleName} - updateEnabled(isEnabled=$isEnabled)" }
         enabled = isEnabled
         reset()
     }

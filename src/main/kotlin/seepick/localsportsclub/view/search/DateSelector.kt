@@ -1,9 +1,8 @@
 package seepick.localsportsclub.view.search
 
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
-import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,13 +38,15 @@ fun DateSelector(
     }, enabled = enabled && currentDateIndex > 0) {
         Text("<")
     }
-    BasicTextField(
-        value = searchDate?.prettyPrint(today.year) ?: "",
-        onValueChange = {},
-        singleLine = true,
-        readOnly = true,
-        enabled = enabled,
-        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+    Text(
+        text = searchDate?.prettyPrint(today.year) ?: "-",
+//        onValueChange = {},
+//        singleLine = true,
+//        readOnly = true,
+//        enabled = enabled,
+        //textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colors.onBackground,
         modifier = Modifier.width(100.dp),
     )
     Button(onClick = {

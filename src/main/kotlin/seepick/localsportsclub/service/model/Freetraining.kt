@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.view.common.LscIcons
+import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
 
@@ -25,7 +26,7 @@ class Freetraining(
     val category: String,
     val date: LocalDate,
     state: FreetrainingState
-) : HasVenue {
+) : HasVenue, TableItemBgColor by venue {
     var state: FreetrainingState by mutableStateOf(state)
 
     override fun toString(): String =

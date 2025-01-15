@@ -1,6 +1,7 @@
 package seepick.localsportsclub
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.view.common.showErrorDialog
 import java.awt.desktop.QuitHandler
 
 interface ApplicationLifecycleListener {
@@ -24,7 +25,12 @@ class ApplicationLifecycle {
 
     fun onExit() {
         log.info { "onExit" }
-        listeners.forEach(ApplicationLifecycleListener::onExit)
+        try {
+            listeners.forEach(ApplicationLifecycleListener::onExit)
+        } catch (e: Exception) {
+            log.error(e) { "Error during exiting." }
+            showErrorDialog("Exit error!", "An exception occured during exiting the application.", e)
+        }
     }
 
     fun attachMacosQuitHandler() {

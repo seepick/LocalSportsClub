@@ -13,12 +13,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
@@ -72,12 +72,12 @@ fun SubEntityDetail(
 
     Column(modifier = modifier) {
         TitleText(subEntity.name)
-        LabeledText("Date", subEntity.dateFormatted(year))
-        LabeledText("Category", subEntity.category)
-        if (subEntity is SubEntity.ActivityEntity) {
-            LabeledText("Teacher", subEntity.activity.teacher ?: "-")
-            LabeledText("Spots Left", subEntity.activity.spotsLeft.toString())
-        }
+        Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        val addition = if (subEntity is SubEntity.ActivityEntity) {
+            subEntity.activity.teacher?.let { " with $it" } ?: ""
+        } else ""
+        Text("${subEntity.category}$addition", maxLines = 1, overflow = TextOverflow.Ellipsis)
+
         if (isBooked) {
             Text("${Icons.Lsc.booked} Is ${subEntity.bookedLabel}")
         }

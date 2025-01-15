@@ -7,12 +7,103 @@ import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 
-private val log = logger {}
+// https://mdigi.tools/lighten-color/#337be2
+interface LscColors {
+    // btn bg (smooth white): #
+// btn disabled bg: A3BCED
+// btn disabled text color: white over 95% alpha
+    val isFavorited: Color get() = Color(0x66C12600)
+    val isWishlisted: Color get() = Color(0x66D0C742)
+
+    // custom
+    val itemHoverBg: Color get() = primaryBrighter
+
+    // custom
+    val itemSelectedBg: Color get() = primaryDarker
+
+    // button bg
+    val primary: Color
+
+    // custom
+    val primaryBrighter: Color
+
+    // custom
+    val primaryDarker: Color
+    val primaryVariant: Color
+    val onPrimary: Color
+
+    val background: Color
+
+    // custom: for alternating row color in lists/tables
+    val backgroundVariant: Color
+
+    // regular text button (not for button text)
+    val onBackground: Color
+
+    // checkbox selected
+    val secondary: Color
+
+    // switch selected
+    val secondaryVariant: Color
+    val onSecondary: Color
+
+    val surface: Color
+
+    // outlines inputfields, labels, bg textfields
+    val onSurface: Color
+
+    val error: Color
+    val onError: Color
+}
+
+private val colorUnset = Color.Red
+
+object DarkLscColors : LscColors {
+    override val primary = Color(0xFF5c95e8)
+    override val primaryBrighter = Color(0xFF6CA0EA)
+    override val primaryDarker = Color(0xFF337BE2)
+    override val primaryVariant = colorUnset
+    override val onPrimary = Color(0xFFF9F9F9)
+    override val secondary = primary
+    override val secondaryVariant = primary
+    override val onSecondary = colorUnset
+    override val background = Color(0xFF1E1F22)
+    override val backgroundVariant = Color(0xFF26282B)
+    override val onBackground = Color.White
+    override val surface = Color(0xFF2A2C2F)
+    override val onSurface = Color(0xFF48494B)
+    override val error = colorUnset
+    override val onError = colorUnset
+    //  = Color(0xFF)
+}
+
+object LightLscColors : LscColors {
+    override val primary = Color(0xFF5C95E8)
+    override val primaryBrighter = Color(0xFF6CA0EA)
+    override val primaryDarker = Color(0xFF337BE2)
+    override val primaryVariant = colorUnset
+    override val onPrimary = Color(0xFFF9F9F9)
+    override val secondary = primary
+    override val secondaryVariant = primary
+    override val onSecondary = colorUnset
+    override val background = Color.White
+    override val backgroundVariant = Color(0xFFF9F9F9)
+    override val onBackground = Color.Black
+    override val surface = Color(0xFFF9F9F9)
+    override val onSurface = Color(0xFF48494B)
+    override val error = colorUnset
+    override val onError = colorUnset
+}
+
+object Lsc {
+    val isDarkTheme = currentSystemTheme == SystemTheme.DARK
+    val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
+}
 
 // access via: MaterialTheme.colors.primary
 @Composable
@@ -20,50 +111,34 @@ fun LscTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colors = if (darkTheme) {
-        log.debug { "Dark theme enabled" }
-        Colors(
-            primary = Color(0xFFBB86FC),
-            primaryVariant = Color(0xFF3700B3),
-            secondary = Color(0xFF03DAC6),
-            secondaryVariant = Color(0xFF03DAC6),
-            background = Color(0xFF292E36),
-            surface = Color(0xFF121212),
-            error = Color(0xFFCF6679),
-            onPrimary = Color.Black,
-            onSecondary = Color.Black,
-            onBackground = Color.White,
-            onSurface = Color.White,
-            onError = Color.Black,
-            isLight = false,
-        )
-    } else {
-        log.debug { "Light theme enabled" }
-        Colors(
-            primary = Color(0xFF6200EE),
-            primaryVariant = Color(0xFF3700B3),
-            secondary = Color(0xFF03DAC6),
-            secondaryVariant = Color(0xFF018786),
-            background = Color.White,
-            surface = Color.White,
-            error = Color(0xFFB00020),
-            onPrimary = Color.White,
-            onSecondary = Color.Black,
-            onBackground = Color.Black,
-            onSurface = Color.Black,
-            onError = Color.White,
-            isLight = true,
-        )
-    }
+    require(darkTheme == Lsc.isDarkTheme)
+    val colors = Colors(
+        primary = Lsc.colors.primary,
+        primaryVariant = Lsc.colors.primaryVariant,
+        secondary = Lsc.colors.secondary,
+        secondaryVariant = Lsc.colors.secondaryVariant,
+        background = Lsc.colors.background,
+        surface = Lsc.colors.surface,
+        error = Lsc.colors.error,
+        onPrimary = Lsc.colors.onPrimary,
+        onSecondary = Lsc.colors.onSecondary,
+        onBackground = Lsc.colors.onBackground,
+        onSurface = Lsc.colors.onSurface,
+        onError = Lsc.colors.onError,
+        isLight = darkTheme,
+    )
     val typography = Typography(
         body1 = TextStyle(
-            fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
         ),
+        h1 = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 25.sp,
+        ),
         button = TextStyle(
             fontWeight = FontWeight.Thin,
-            color = Color.Black,
+            color = Lsc.colors.onPrimary,
         )
     )
 //    val shapes = Shapes(...)

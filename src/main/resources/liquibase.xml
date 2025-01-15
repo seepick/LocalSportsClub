@@ -151,6 +151,18 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
-
     </changeSet>
+
+    <changeSet id="2" author="owner" failOnError="true">
+        <comment>add partner fields</comment>
+        <addColumn tableName="SINGLES">
+            <column name="HOME_LATITUDE" type="double">
+                <constraints nullable="true"/>
+            </column>
+            <column name="HOME_LONGITUDE" type="double">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

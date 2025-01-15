@@ -17,15 +17,17 @@ class SyncerViewModel(
     private val log = logger {}
 
     override fun onActivitiesAdded(activities: List<Activity>) {
-        addOrRemoveActivities("Adding", activities) { venues, add -> venues += add }
+        addOrRemoveActivities("Adding", activities) { venues, acts -> venues += acts }
     }
 
     override fun onActivitiesDeleted(activities: List<Activity>) {
-        addOrRemoveActivities("Deleting", activities) { venues, add -> venues -= add }
+        addOrRemoveActivities("Deleting", activities) { venues, acts -> venues -= acts }
     }
 
     private fun addOrRemoveActivities(
-        logPrompt: String, activities: List<Activity>, addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
+        logPrompt: String,
+        activities: List<Activity>,
+        addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
     ) {
         viewModelScope.launch {
             log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
@@ -37,11 +39,11 @@ class SyncerViewModel(
     }
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining("Adding", freetrainings) { venues, add -> venues += add }
+        removeOrAddFretraining("Adding", freetrainings) { venues, frees -> venues += frees }
     }
 
     override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining("Deleting", freetrainings) { venues, delete -> venues -= delete }
+        removeOrAddFretraining("Deleting", freetrainings) { venues, frees -> venues -= frees }
     }
 
     private fun removeOrAddFretraining(
