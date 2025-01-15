@@ -20,11 +20,6 @@ class DateSearchOption<T>(
         reset()
     }
 
-    fun initializeDate(date: LocalDate) {
-        searchDate = date
-        // no reset()
-    }
-
     override fun buildPredicate(): (T) -> Boolean =
         searchDate?.let { date ->
             { item -> date == dateExtractor(item) }

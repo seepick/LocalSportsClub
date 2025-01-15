@@ -1,23 +1,25 @@
 package seepick.localsportsclub.view.search
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.search.DateSearchOption
+import java.time.LocalDate
 
 @Composable
-fun DateSearchField(searchOption: DateSearchOption<Freetraining>) {
+fun DateSearchField(
+    searchOption: DateSearchOption<Freetraining>,
+    dates: List<LocalDate>,
+) {
+    if (searchOption.searchDate == null) searchOption.updateSearchDate(dates.first())
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(searchOption.label)
-        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        searchOption.buildClickableText()
         if (searchOption.enabled) {
             DateSelector(
                 enabled = searchOption.enabled,
                 searchDate = searchOption.searchDate,
-                initializeDate = searchOption::initializeDate,
+                dates = dates,
                 onDateSelected = searchOption::updateSearchDate
             )
         }

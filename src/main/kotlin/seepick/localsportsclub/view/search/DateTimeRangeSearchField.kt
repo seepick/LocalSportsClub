@@ -8,7 +8,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -36,21 +35,23 @@ import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
+import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
 fun <T> DateTimeRangeSearchField(
     searchOption: DateTimeRangeSearchOption<T>,
+    dates: List<LocalDate>,
 ) {
+    if (searchOption.searchDate == null) searchOption.updateSearchDate(dates.first())
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(searchOption.label)
-        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        searchOption.buildClickableText()
         if (searchOption.enabled) {
             DateSelector(
                 enabled = searchOption.enabled,
+                dates = dates,
                 searchDate = searchOption.searchDate,
-                initializeDate = searchOption::initializeDate,
-                onDateSelected = searchOption::updateSearchDate
+                onDateSelected = searchOption::updateSearchDate,
             )
             TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeStart)
             Text("-")

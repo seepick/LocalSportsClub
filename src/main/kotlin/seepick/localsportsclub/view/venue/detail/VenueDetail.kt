@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
@@ -57,7 +58,6 @@ fun VenueDetail(
                 if (venue.categories.isNotEmpty()) {
                     Text(venue.categories.joinToString(", "))
                 }
-                RatingPanel(venueEdit.rating)
 
                 Tooltip("Open Google Maps") {
                     UrlText(
@@ -75,12 +75,25 @@ fun VenueDetail(
                         fontSize = 10.sp,
                     )
                 }
+
+                RatingPanel(venueEdit.rating)
             }
         }
-        LabeledText("Description", venue.description)
-        if (venue.city != uscConfig.city) LabeledText("City", venue.city.label)
-        venue.importantInfo?.also { LabeledText("Info", it) }
-        venue.openingTimes?.also { LabeledText("Times", it) }
+        Tooltip(venue.description) {
+            Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        }
+        if (venue.city != uscConfig.city) {
+            Spacer(Modifier.height(5.dp))
+            LabeledText("City", venue.city.label)
+        }
+        venue.importantInfo?.also {
+            Spacer(Modifier.height(5.dp))
+            LabeledText("Info", it)
+        }
+        venue.openingTimes?.also {
+            Spacer(Modifier.height(5.dp))
+            LabeledText("Times", it)
+        }
         Row {
             CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)
             CheckboxText("Wishlisted", venueEdit.isWishlisted, Icons.Lsc.Wishlists)
@@ -95,7 +108,7 @@ fun VenueDetail(
                     Text("USC Site")
                 }
             }
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(8.dp))
             UrlTextField(
                 label = "Venue Site",
                 url = venueEdit.officialWebsite.value,
@@ -105,6 +118,11 @@ fun VenueDetail(
         }
         val (notes, notesSetter) = venueEdit.notes
         NotesTextField(notes = notes, setter = notesSetter)
+        Button(
+            onClick = onUpdateVenue,
+            enabled = !venueEdit.isClean(),
+        ) { Text("Update") }
+
         SimpleActivitiesTable(
             activities = venue.activities,
             selectedActivity = activity,
@@ -117,9 +135,5 @@ fun VenueDetail(
             onFreetrainingClicked = onFreetrainingClicked,
             modifier = Modifier.weight(0.5f),
         )
-        Button(
-            onClick = onUpdateVenue,
-            enabled = !venueEdit.isClean(),
-        ) { Text("Update") }
     }
 }

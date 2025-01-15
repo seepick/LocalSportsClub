@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.onPointerEvent
@@ -52,10 +53,11 @@ fun UrlText(url: String, displayText: String = url) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 fun ClickableText(
     text: String,
+    notHoveredColor: Color = Lsc.colors.primary,
     onClicked: () -> Unit,
 ) {
     var isHovered by remember { mutableStateOf(false) }
-    val color = if (!isHovered) Lsc.colors.primary else Lsc.colors.primaryBrighter
+    val color = if (!isHovered) notHoveredColor else Lsc.colors.primaryBrighter
     Text(
         text = text,
         maxLines = 1,

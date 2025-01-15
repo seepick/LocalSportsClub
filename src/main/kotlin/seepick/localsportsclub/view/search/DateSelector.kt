@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import java.time.LocalDate
@@ -21,16 +20,11 @@ import java.time.LocalDate
 fun DateSelector(
     enabled: Boolean,
     searchDate: LocalDate?,
-    initializeDate: (LocalDate) -> Unit,
     onDateSelected: (LocalDate) -> Unit,
+    dates: List<LocalDate>,
     clock: Clock = koinInject(),
-    uscConfig: UscConfig = koinInject(),
 ) {
     val today = clock.today()
-    val dates = (0..<uscConfig.syncDaysAhead).map { today.plusDays(it.toLong()) }
-    if (searchDate == null) {
-        initializeDate(dates.first())
-    }
     var currentDateIndex by mutableStateOf(dates.indexOf(searchDate))
     Button(onClick = {
         currentDateIndex--
@@ -40,11 +34,6 @@ fun DateSelector(
     }
     Text(
         text = searchDate?.prettyPrint(today.year) ?: "-",
-//        onValueChange = {},
-//        singleLine = true,
-//        readOnly = true,
-//        enabled = enabled,
-        //textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
         textAlign = TextAlign.Center,
         color = MaterialTheme.colors.onBackground,
         modifier = Modifier.width(100.dp),

@@ -19,6 +19,7 @@ interface LscColors {
 // btn disabled text color: white over 95% alpha
     val isFavorited: Color get() = Color(0x66C12600)
     val isWishlisted: Color get() = Color(0x66D0C742)
+    val backgroundToolip: Color
 
     // custom
     val itemHoverBg: Color get() = primaryBrighter
@@ -79,6 +80,7 @@ object DarkLscColors : LscColors {
     override val onSurface = Color(0xFF48494B)
     override val error = colorUnset
     override val onError = colorUnset
+    override val backgroundToolip = backgroundVariant
     //  = Color(0xFF)
 }
 
@@ -98,6 +100,7 @@ object LightLscColors : LscColors {
     override val onSurface = Color(0xFF48494B)
     override val error = colorUnset
     override val onError = colorUnset
+    override val backgroundToolip = Color(255, 255, 210)
 }
 
 object Lsc {

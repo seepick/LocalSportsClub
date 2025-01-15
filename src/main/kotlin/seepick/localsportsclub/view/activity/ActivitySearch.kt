@@ -11,7 +11,7 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
         extractors = listOf({ it.name }, { it.teacher }, { it.venue.name })
     )
     val date = newDateTimeRangeSearchOption("Date") { it.dateTimeRange }
-    val booked = newBooleanSearchOption("Booked ✅") { it.state == ActivityState.Booked }
+    val booked = newBooleanSearchOption("Booked") { it.state == ActivityState.Booked }
     val favorited = newBooleanSearchOption("Favorited") { it.venue.isFavorited }
     val wishlisted = newBooleanSearchOption("Wishlisted") { it.venue.isWishlisted }
     val rating = newRatingSearchOption("Rating") { it.venue.rating }

@@ -8,7 +8,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -36,8 +35,7 @@ fun <T> IntSearchField(searchOption: IntSearchOption<T>) {
     val icon = if (isMenuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(searchOption.label)
-        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        searchOption.buildClickableText()
         if (searchOption.enabled) {
             Column {
                 OutlinedTextField(

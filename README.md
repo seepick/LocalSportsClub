@@ -11,8 +11,10 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Pre-Release
 
+* UI: dropdown menu needs better colors; also seems they "block", once expanded?!
+* UI: dropdown select for date (instead only via arrow navigation)
 * FEATURE: display linked venues (be aware that each stored entity is a bi-directional link, although just stored 1-way)
-* MIN: description/info has "\n"... replace them
+* MIN: description/info has \n, and \" ... replace them
 * FEATURE: support sorting asc/desc
 * ... no-show for freetraining possible?? try it yourself ;)
 * notes: show scrollbar if necessary

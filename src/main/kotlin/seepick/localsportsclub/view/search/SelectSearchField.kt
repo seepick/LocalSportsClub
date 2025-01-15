@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,10 +38,8 @@ import seepick.localsportsclub.view.common.rowBgColor
 @Composable
 fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
     val tableScrollState = rememberLazyListState()
-
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(searchOption.label)
-        Switch(checked = searchOption.enabled, onCheckedChange = { searchOption.updateEnabled(it) })
+        searchOption.buildClickableText()
         if (searchOption.enabled) {
             Box(
                 modifier = Modifier

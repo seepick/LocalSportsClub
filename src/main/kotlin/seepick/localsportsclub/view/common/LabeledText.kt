@@ -11,7 +11,7 @@ fun LabeledText(label: String, text: String) {
     Row {
         Text("$label: ", fontWeight = FontWeight.Bold)
         Tooltip(text) {
-            Text(text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(text, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }
