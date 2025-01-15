@@ -80,5 +80,6 @@ fun Arb.Companion.singlesDbo() = arbitrary {
         notes = string().next(),
         lastSync = localDateTime().orNull().next(),
         windowPref = null,
+        home = null,
     )
 }

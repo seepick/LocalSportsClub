@@ -143,11 +143,10 @@ class ExposedActivityRepoTest : DescribeSpec() {
             }
         }
         describe("When update") {
-            it("Given venue and activity Then update relevant fields") {
-                val ignoredDate = SystemClock.now()
-                val ignoredVenueId = 42
-                val venue = venueRepo.insert(venue())
-                val activity = activity().copy(venueId = venue.id)
+            it("Given venue and activity Then update all excluding venueId") {
+                val venue1 = venueRepo.insert(venue())
+                val venue2 = venueRepo.insert(venue())
+                val activity = activity().copy(venueId = venue1.id)
                 activityRepo.insert(activity)
 
                 val updateActivity = ActivityDbo(
@@ -155,19 +154,16 @@ class ExposedActivityRepoTest : DescribeSpec() {
                     spotsLeft = activity.spotsLeft + 1,
                     teacher = "${activity.teacher} 2",
                     state = activity.state.someOther(),
-                    venueId = ignoredVenueId,
-                    name = "ignored",
-                    category = "ignored",
-                    from = ignoredDate,
-                    to = ignoredDate,
+                    name = activity.name + "2",
+                    category = activity.category + "2",
+                    from = activity.from.plusHours(1),
+                    to = activity.to.plusHours(1),
+                    venueId = venue2.id,
                 )
                 activityRepo.update(updateActivity)
 
-                activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity.copy(
-                    spotsLeft = updateActivity.spotsLeft,
-                    teacher = updateActivity.teacher,
-                    state = updateActivity.state,
-                )
+                activityRepo.selectAll().shouldBeSingleton()
+                    .first() shouldBe updateActivity.copy(venueId = activity.venueId)
             }
             it("Given no activity Then fail") {
                 shouldThrow<IllegalStateException> {

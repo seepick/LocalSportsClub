@@ -60,7 +60,7 @@ class CheckinSyncerTest : StringSpec() {
 
 
     private fun mockCheckinsPage(pageNr: Int, date: LocalDate, activityId: Int): CheckinEntry {
-        val entry = Arb.activityCheckinEntry().next().copy(activityId = activityId, date = date)
+        val entry = Arb.activityCheckinEntry().next().copy(activityId = activityId, date = date, isNoShow = false)
         coEvery { uscApi.fetchCheckinsPage(pageNr) } returns CheckinsPage(listOf(entry))
         return entry
     }
@@ -97,13 +97,13 @@ class CheckinSyncerTest : StringSpec() {
         }
         "Given checkin for locally non-existing activity Then refetch and rescue it" {
             val nonExistingActivityId = 42
-            val entry = mockCheckinsPage(1, today, nonExistingActivityId)
-            val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
+            val checkinEntry = mockCheckinsPage(1, today, nonExistingActivityId)
             mockCheckinsEmptyPage(2)
+            val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
             coEvery {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
                     nonExistingActivityId,
-                    entry.venueSlug,
+                    checkinEntry.venueSlug,
                     any()
                 )
             } answers {
