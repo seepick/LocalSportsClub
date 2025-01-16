@@ -87,3 +87,5 @@ private suspend fun <T> doRetrySuspend(
             doRetrySuspend(maxAttempts = maxAttempts, suppressExceptions, currentAttempt = currentAttempt + 1, code)
         } else throw e
     }
+
+fun String.unescape(): String = replace("\\\"", "\"").replace("\\n", "\n")

@@ -14,4 +14,4 @@ fun <T : HasVenue> CheckedinColumn() =
     })
 
 fun <T : HasVenue> RatingColumn() =
-    TableColumn<T>("Rating", ColSize.Width(100.dp), CellRenderer.TextRenderer { it.venue.rating.string })
+    TableColumn<T>("Rating", ColSize.Width(100.dp), CellRenderer.TextRenderer { it.venue.rating.label })

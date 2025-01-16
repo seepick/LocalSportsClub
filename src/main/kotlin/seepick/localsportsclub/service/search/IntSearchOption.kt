@@ -3,15 +3,18 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import seepick.localsportsclub.view.common.HasLabel
 
 enum class IntSearchComparator(
     val symbol: String,
     val compareTo: (Int, Int) -> Boolean
-) {
+) : HasLabel {
     Equals("=", { x, y -> x == y }),
     Not("!=", { x, y -> x != y }),
     Lower("<", { x, y -> x < y }),
-    Bigger(">", { x, y -> x > y }),
+    Bigger(">", { x, y -> x > y });
+
+    override val label = symbol
 }
 
 class IntSearchOption<T>(

@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.api.City
 import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
@@ -154,7 +155,7 @@ class Venue(
     }
 }
 
-class Rating private constructor(val value: Int) : Comparable<Rating> {
+class Rating private constructor(val value: Int) : Comparable<Rating>, HasLabel {
     companion object {
         private val ratingByValue by lazy {
             entries.associateBy { it.value }
@@ -171,7 +172,7 @@ class Rating private constructor(val value: Int) : Comparable<Rating> {
         val entries = listOf(R0, R1, R2, R3, R4, R5)
     }
 
-    val string = (0..<value).fold("") { acc, _ -> "${acc}⭐️" }
+    override val label = (0..<value).fold("") { acc, _ -> "${acc}⭐️" }
     override operator fun compareTo(other: Rating): Int = value.compareTo(other.value)
 
     override fun toString(): String = "Rating$value"

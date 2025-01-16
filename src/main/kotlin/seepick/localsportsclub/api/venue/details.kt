@@ -4,6 +4,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.jsoupHeadAndBody
+import seepick.localsportsclub.service.unescape
 
 data class VenueDetails(
     val title: String, // a.k.a. "name"
@@ -26,10 +27,7 @@ data class VenueDetails(
 
 @Serializable
 data class VenueDetailEmbedJson(
-    val telephone: String,
-    val image: String,
-    val address: VenueDetailEmbedAddress,
-    val geo: VenueDetailEmbedGeo
+    val telephone: String, val image: String, val address: VenueDetailEmbedAddress, val geo: VenueDetailEmbedGeo
 )
 
 @Serializable
@@ -105,9 +103,9 @@ object VenueDetailsParser {
             linkedVenueSlugs = linkedVenues,
             websiteUrl = website?.let { Url(it) },
             disciplines = disciplines,
-            description = description,
-            importantInfo = importantInfo,
-            openingTimes = openingTimes,
+            description = description.unescape(),
+            importantInfo = importantInfo?.unescape()?.let { cleanVenueInfo(it) },
+            openingTimes = openingTimes?.unescape(),
             originalImageUrl = detail.image.let { if (it == NO_IMAGE_SET_URL) null else Url(it) },
             latitude = detail.geo.latitude,
             longitude = detail.geo.longitude,
@@ -115,5 +113,13 @@ object VenueDetailsParser {
             addressLocality = detail.address.addressLocality,
             postalCode = detail.address.postalCode,
         )
+    }
+}
+
+private val venueInfoMisbeginnings = listOf(".let op!", ".let op:", "let op:", ".note:", "note:", ".", "/")
+fun cleanVenueInfo(input: String): String? {
+    val prefix = venueInfoMisbeginnings.firstOrNull { input.startsWith(it, true) } ?: return input
+    return input.substring(prefix.length).trim().let {
+        it.ifEmpty { null }
     }
 }

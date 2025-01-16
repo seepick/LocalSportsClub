@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -28,13 +26,13 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
+import seepick.localsportsclub.view.common.LscDropdownMenu
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -53,29 +51,37 @@ fun <T> DateTimeRangeSearchField(
                 searchDate = searchOption.searchDate,
                 onDateSelected = searchOption::updateSearchDate,
             )
-            TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeStart)
+            TimeRangeSelector(
+                enabled = searchOption.enabled,
+                onTimeSelected = searchOption::updateSearchTimeStart,
+                selectedTime = searchOption.searchTimeStart,
+            )
             Text("-")
-            TimeRangeSelector(enabled = searchOption.enabled, onTimeSelected = searchOption::updateSearchTimeEnd)
+            TimeRangeSelector(
+                enabled = searchOption.enabled,
+                onTimeSelected = searchOption::updateSearchTimeEnd,
+                selectedTime = searchOption.searchTimeEnd,
+            )
         }
     }
 }
 
-private val timesAndStrings = (6..22).map {
-    val time = LocalTime.of(it, 0)
-    time to time.prettyPrint()
+private val times: List<LocalTime> = (6..22).map {
+    LocalTime.of(it, 0)
 }
 
 @Composable
 fun TimeRangeSelector(
     enabled: Boolean,
     onTimeSelected: (LocalTime?) -> Unit,
+    selectedTime: LocalTime?,
 ) {
     var time: LocalTime? by remember { mutableStateOf(null) }
     var timeAsString by remember { mutableStateOf("") }
 
-    var isMenuExpanded by remember { mutableStateOf(false) }
+    var isMenuExpanded = remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon = if (isMenuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+    val icon = if (isMenuExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
     Column {
         TextField(
@@ -119,27 +125,23 @@ fun TimeRangeSelector(
                 Icon(icon, null, Modifier.let {
                     if (enabled) {
                         it.clickable {
-                            isMenuExpanded = !isMenuExpanded
+                            isMenuExpanded.value = !isMenuExpanded.value
                         }
                     } else it
                 })
             },
         )
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            onDismissRequest = { isMenuExpanded = false },
-            modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-        ) {
-            timesAndStrings.forEach { timeAndString ->
-                DropdownMenuItem(onClick = {
-                    time = timeAndString.first
-                    timeAsString = timeAndString.second
-                    onTimeSelected(timeAndString.first)
-                    isMenuExpanded = false
-                }) {
-                    Text(text = timeAndString.second)
-                }
-            }
-        }
+        LscDropdownMenu(
+            items = times,
+            isMenuExpanded = isMenuExpanded,
+            textFieldSize = textFieldSize,
+            onItemClicked = {
+                time = it
+                timeAsString = it?.prettyPrint() ?: ""
+                onTimeSelected(it)
+            },
+            selectedItem = selectedTime,
+            itemFormatter = { it?.prettyPrint() ?: "" }
+        )
     }
 }

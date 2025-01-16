@@ -16,8 +16,10 @@ class DateTimeRangeSearchOption<T>(
 
     var searchDate: LocalDate? by mutableStateOf(null)
         private set
-    private var searchTimeStart: LocalTime? by mutableStateOf(null)
-    private var searchTimeEnd: LocalTime? by mutableStateOf(null)
+    var searchTimeStart: LocalTime? by mutableStateOf(null)
+        private set
+    var searchTimeEnd: LocalTime? by mutableStateOf(null)
+        private set
 
 
     fun updateSearchDate(date: LocalDate) {
