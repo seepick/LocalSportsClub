@@ -48,8 +48,8 @@ class VenueSyncerTest : StringSpec() {
 
         val syncerListenerDispatcher = SyncerListenerDispatcher()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
-            override fun onVenueDboAdded(venueDbo: VenueDbo) {
-                syncVenueDbosAdded += venueDbo
+            override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
+                syncVenueDbosAdded += venueDbos
             }
         })
         syncer = VenueSyncer(
