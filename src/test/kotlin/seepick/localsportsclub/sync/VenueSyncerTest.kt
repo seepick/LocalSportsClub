@@ -3,8 +3,8 @@ package seepick.localsportsclub.sync
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.maps.shouldContain
-import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -20,6 +20,7 @@ import seepick.localsportsclub.persistence.DbListener
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.uscConfig
@@ -109,7 +110,7 @@ class VenueSyncerTest : StringSpec() {
 
             venueLinksRepo.stored.also {
                 it.shouldHaveSize(1)
-                it.shouldContain(2 to 1)
+                it.shouldContain(VenueIdLink(2, 1))
             }
         }
     }

@@ -13,22 +13,23 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class VenueLinksRepoTest : StringSpec() {
     private val venueRepo = ExposedVenueRepo
-    private val repo = ExposedVenueLinksRepo
+    private val linksRepo = ExposedVenueLinksRepo
     private val nonExistingVenueId1 = 41
     private val nonExistingVenueId2 = 42
 
     init {
         extension(DbListener())
+
         "When insert without venues Then fail" {
             shouldThrow<ExposedSQLException> {
-                repo.insert(nonExistingVenueId1, nonExistingVenueId2)
+                linksRepo.insert(VenueIdLink(nonExistingVenueId1, nonExistingVenueId2))
             }.shouldHaveCauseOfType<JdbcSQLIntegrityConstraintViolationException>()
         }
         "Given both venues exist When insert Then persisted" {
             val venue1 = venueRepo.insert(Arb.venueDbo().next())
             val venue2 = venueRepo.insert(Arb.venueDbo().next())
 
-            repo.insert(venue1.id, venue2.id)
+            linksRepo.insert(VenueIdLink(venue1.id, venue2.id))
 
             transaction {
                 VenueLinksTable.selectAll().toList() shouldHaveSize 1
@@ -37,10 +38,13 @@ class VenueLinksRepoTest : StringSpec() {
         "Given both venues and link exist When insert Then fail" {
             val venue1 = venueRepo.insert(Arb.venueDbo().next())
             val venue2 = venueRepo.insert(Arb.venueDbo().next())
-            repo.insert(venue1.id, venue2.id)
+            linksRepo.insert(VenueIdLink(venue1.id, venue2.id))
 
-            shouldThrow<ExposedSQLException> {
-                repo.insert(venue1.id, venue2.id)
+            shouldThrow<IllegalStateException> {
+                linksRepo.insert(VenueIdLink(venue1.id, venue2.id))
+            }
+            shouldThrow<IllegalStateException> {
+                linksRepo.insert(VenueIdLink(venue2.id, venue1.id))
             }
         }
     }

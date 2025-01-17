@@ -11,19 +11,17 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Pre-Release
 
-* 7: display linked venues (be aware that each stored entity is a bi-directional link, although just stored 1-way)
-* 6: support sorting asc/desc
-* 5: show scrollbar if necessary
-* 4: after sync, display report what happened ++ big WARNING if new noshow was detected!
+* 4: support sorting asc/desc
+* 3: after sync, display report what happened ++ big WARNING if new noshow was detected!
     * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
-* 3: if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
-* 2: if textfield elipse ("foo...") => show tooltip full text
-* 1: use space for activities/freetraining sub-table ONLY up to rows (if only 1 row, use only that space, but NOT more)
+* 2: use space for activities/freetraining sub-table ONLY up to rows (if only 1 row, use only that space, but NOT more)
+* 1: data cleaner tool: change EMS health studio: category from Fitness to EMS
 
 ## Release v1
 
-* prefs: home city (make list more complete)
-* make third party info syncer optional (match with configured city)
+* prefs: home city (complete list of options)
+    * filter activity/freetraining/venues (info stored in DB?!)
+    * make third party info syncer city-dependent
 * prefs: USC creds
 * prefs: gcal feature on/off (calendar ID; use Switch compose component)
 * sync membership plan (infer limits)
@@ -36,6 +34,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Post-Release
 
+* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
+* table header has little gap above, one pixel "see through" -> remove it
+* tooltips for table headers (some are not self-explanatory)
 * when click on dropdown, select (dropdown closes); then immediately wanting to open => click on textfield has no
   effect!
 * ... no-show for freetraining possible?? try it yourself ;)
@@ -43,6 +44,7 @@ Communistic Custom Client for Urban Sports Club.
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
 * DateParser dutch locale doesn't work when packaged as app...?!
 * feedback about sync progress while running (indicate current state, maybe even deterministic progress)
+* if textfield elipse ("foo...") => show tooltip full text
 * "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 * UI/ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
 * could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");

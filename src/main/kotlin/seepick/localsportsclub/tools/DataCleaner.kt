@@ -5,15 +5,18 @@ import seepick.localsportsclub.api.venue.cleanVenueInfo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
+import seepick.localsportsclub.persistence.ExposedVenueLinksRepo
 import seepick.localsportsclub.persistence.ExposedVenueRepo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueIdLink
+import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.unescape
 
 object DataCleaner {
 
-    private const val prodMode = false
+    private const val prodMode = true
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -30,13 +33,15 @@ object DataCleaner {
 
 //        cleanActivityNames()
 //        cleanVenueAddresses()
-        cleanTexts()
+//        cleanTexts()
+//        linkMissingVenues()
         println("Done ✅")
     }
 
     private val activityRepo: ActivityRepo = ExposedActivityRepo
     private val freetrainingRepo: FreetrainingRepo = ExposedFreetrainingRepo
     private val venueRepo: VenueRepo = ExposedVenueRepo
+    private val linkRepo: VenueLinksRepo = ExposedVenueLinksRepo
 
     enum class VenueDboText {
         description {
@@ -140,6 +145,51 @@ object DataCleaner {
         }
         venueRepo.selectAll().filter { it.addressLocality == "Amsterdam" }.forEach {
             venueRepo.update(it.copy(addressLocality = "Amsterdam, Netherlands"))
+        }
+    }
+
+    private fun linkMissingVenues() {
+        if (prodMode) error("This is NOT necessary for PROD anymore, as syncer was already fixed!")
+        val links = linkRepo.selectAll()
+//        val links = listOf(VenueIdLink(1, 2), VenueIdLink(1, 3)) // {1,3} missing
+        val circles = mutableSetOf<MutableSet<Int>>()
+        links.forEach { (id1, id2) ->
+            if (circles.none { circle ->
+                    if (circle.contains(id1)) {
+                        circle.add(id2)
+                        true
+                    } else if (circle.contains(id2)) {
+                        circle.add(id1)
+                        true
+                    } else {
+                        false
+                    }
+                }) {
+                // no circle contained it, create a new one
+                circles += mutableSetOf<Int>().also {
+                    it.add(id1)
+                    it.add(id2)
+                }
+            }
+        }
+//        circles.forEach {
+//            println(it)
+//        }
+
+        val linksPerVenues = mutableMapOf<Int, MutableSet<Int>>()
+        links.forEach { (id1, id2) ->
+            linksPerVenues.getOrPut(id1) { mutableSetOf() } += id2
+            linksPerVenues.getOrPut(id2) { mutableSetOf() } += id1
+        }
+        val newLinks = linksPerVenues.flatMap { (id, actual) ->
+            val expected = circles.single { it.contains(id) } - id
+            val missing = expected - actual
+            missing.map { VenueIdLink(id, it) }
+        }.toSet().distinct()
+
+        newLinks.forEach {
+            println(it)
+            linkRepo.insert(it)
         }
     }
 }

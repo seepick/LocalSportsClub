@@ -45,6 +45,7 @@ abstract class AbstractSearch<T>(
 
     protected fun newDateSearchOption(
         label: String,
+        initialDate: LocalDate,
         initiallyEnabled: Boolean = false,
         extractor: (T) -> LocalDate,
     ) =
@@ -53,6 +54,7 @@ abstract class AbstractSearch<T>(
             reset = ::reset,
             dateExtractor = extractor,
             initiallyEnabled = initiallyEnabled,
+            initialDate = initialDate,
         ).also {
             options += it
         }

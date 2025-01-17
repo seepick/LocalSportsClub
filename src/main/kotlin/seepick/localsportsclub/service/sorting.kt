@@ -30,11 +30,12 @@ fun <T, R> findIndexFor(items: List<T>, pivot: T, extractor: (T) -> R): Int {
 class SortingDelegate<T>(
     columns: List<TableColumn<T>>,
     private val resetSort: () -> Unit,
+    initialSortColumn: TableColumn<T>? = null,
 ) {
 
     private val log = logger {}
     val selectedColumnValueExtractor get() = sortColumn.sortValueExtractor!!
-    var sortColumn: TableColumn<T> by mutableStateOf(columns.first { it.sortingEnabled })
+    var sortColumn: TableColumn<T> by mutableStateOf(initialSortColumn ?: columns.first { it.sortingEnabled })
         private set
 
     fun onHeaderClicked(column: TableColumn<T>) {

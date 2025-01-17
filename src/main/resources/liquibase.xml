@@ -154,7 +154,8 @@
     </changeSet>
 
     <changeSet id="2" author="owner" failOnError="true">
-        <comment>add partner fields</comment>
+        <comment>add home location</comment>
+        <!-- not yet deployed to PROD -->
         <addColumn tableName="SINGLES">
             <column name="HOME_LATITUDE" type="double">
                 <constraints nullable="true"/>

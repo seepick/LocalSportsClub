@@ -21,6 +21,7 @@ fun readImageBitmapFromClasspath(classpath: String): ImageBitmap =
 @OptIn(ExperimentalResourceApi::class)
 fun readImageBitmapFromFile(file: File): ImageBitmap = file.inputStream().readAllBytes().decodeToImageBitmap()
 
+
 fun ViewModel.executeBackgroundTask(
     errorMessage: String,
     doBefore: () -> Unit = {},
@@ -29,29 +30,49 @@ fun ViewModel.executeBackgroundTask(
 ) {
     viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            log.debug { "Executing background task..." }
-            doBefore()
-            try {
-                doTask()
-            } catch (e: Throwable) {
-                when (e) {
-                    is Exception, is NoClassDefFoundError -> {
-                        log.error(e) { "Background task failed!" }
-                        showErrorDialog(
-                            title = "Background Task Failed!",
-                            message = errorMessage,
-                            exception = e,
-                        )
-                    }
+            executeTask(errorMessage, doBefore, doFinally, doTask)
+        }
+    }
+}
 
-                    else -> {
-                        log.error(e) { "Unhandled error thrown during background task! ($errorMessage)" }
-                        throw e
-                    }
-                }
-            } finally {
-                doFinally()
+fun ViewModel.executeViewTask(
+    errorMessage: String,
+    doBefore: () -> Unit = {},
+    doFinally: () -> Unit = {},
+    doTask: suspend () -> Unit,
+) {
+    viewModelScope.launch {
+        executeTask(errorMessage, doBefore, doFinally, doTask)
+    }
+}
+
+private suspend fun executeTask(
+    errorMessage: String,
+    doBefore: () -> Unit = {},
+    doFinally: () -> Unit = {},
+    doTask: suspend () -> Unit,
+) {
+    log.debug { "Executing background task..." }
+    doBefore()
+    try {
+        doTask()
+    } catch (e: Throwable) {
+        when (e) {
+            is Exception, is NoClassDefFoundError -> {
+                log.error(e) { "Background task failed!" }
+                showErrorDialog(
+                    title = "Background Task Failed!",
+                    message = errorMessage,
+                    exception = e,
+                )
+            }
+
+            else -> {
+                log.error(e) { "Unhandled error thrown during background task! ($errorMessage)" }
+                throw e
             }
         }
+    } finally {
+        doFinally()
     }
 }

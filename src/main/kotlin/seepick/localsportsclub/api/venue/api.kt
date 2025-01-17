@@ -42,6 +42,7 @@ class VenueHttpApi(
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
     private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
+        log.debug { "Fetching venue page $page" }
         val response = http.safeGet(Url("$baseUrl/venues")) {
             cookie("PHPSESSID", phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!

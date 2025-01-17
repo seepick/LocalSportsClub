@@ -2,10 +2,8 @@
 
 package seepick.localsportsclub.view.common
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.OutlinedTextField
@@ -33,8 +31,6 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 
 data class DropDownTextFieldEdits(
@@ -51,8 +47,8 @@ fun <T : HasLabel> DropDownTextField(
     selectedItem: T,
     onItemSelected: (T) -> Unit,
     label: String? = null,
-    enabled: Boolean,
-    textWidth: Dp = 200.dp,
+    enabled: Boolean = true,
+    textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
 ) {
     _DropDownTextField(
@@ -61,7 +57,7 @@ fun <T : HasLabel> DropDownTextField(
         selectedItem = selectedItem,
         onItemSelected = onItemSelected,
         enabled = enabled,
-        textWidth = textWidth,
+        textSize = textSize,
         textFieldEdits = textFieldEdits,
     )
 }
@@ -73,8 +69,8 @@ fun <T> DropDownTextField(
     onItemSelected: (T) -> Unit,
     label: String? = null,
     selectedItem: T,
-    enabled: Boolean,
-    textWidth: Dp = 200.dp,
+    enabled: Boolean = true,
+    textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
 ) {
     _DropDownTextField(
@@ -84,12 +80,11 @@ fun <T> DropDownTextField(
         selectedItem = selectedItem,
         onItemSelected = onItemSelected,
         enabled = enabled,
-        textWidth = textWidth,
+        textSize = textSize,
         textFieldEdits = textFieldEdits,
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun <T> _DropDownTextField(
     label: String? = null,
@@ -98,7 +93,7 @@ private fun <T> _DropDownTextField(
     onItemSelected: (T) -> Unit,
     itemFormatter: ((T) -> String)? = null,
     enabled: Boolean,
-    textWidth: Dp = 200.dp,
+    textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
 ) {
     val selectedItemLabel = (selectedItem as? HasLabel)?.label ?: itemFormatter!!(selectedItem)
@@ -115,7 +110,8 @@ private fun <T> _DropDownTextField(
                 readOnly = true,
                 enabled = enabled,
                 singleLine = true,
-                modifier = Modifier.width(textWidth)
+                modifier = Modifier
+                    .widthOrFill(textSize)
                     .onGloballyPositioned { coordinates ->
                         textFieldSize = coordinates.size.toSize()
                     }
@@ -143,7 +139,8 @@ private fun <T> _DropDownTextField(
                 isError = textFieldEdits.errorChecker(),
                 enabled = enabled,
                 singleLine = true,
-                modifier = Modifier.width(textWidth)
+                modifier = Modifier
+                    .widthOrFill(textSize)
                     .onGloballyPositioned { coordinates ->
                         textFieldSize = coordinates.size.toSize()
                     }

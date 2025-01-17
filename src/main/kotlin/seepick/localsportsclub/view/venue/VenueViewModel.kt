@@ -16,6 +16,7 @@ class VenueViewModel(
     override val tableColumns = venuesTableColumns()
     override val selectedVenue = MutableStateFlow<Venue?>(null)
     override val selectedItem = selectedVenue
+    override val showLinkedVenues = true
 
     override fun buildSearch(resetItems: () -> Unit) = VenueSearch(dataStorage.venuesCategories, resetItems)
     override fun DataStorage.selectAllItems() = selectVisibleVenues()
@@ -26,7 +27,7 @@ class VenueViewModel(
         }
     }
 
-    override fun onVenueAdded(venue: Venue) {
-        onItemsAdded(listOf(venue))
+    override fun onVenuesAdded(venues: List<Venue>) {
+        onItemsAdded(venues)
     }
 }

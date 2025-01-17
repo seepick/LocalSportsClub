@@ -1,18 +1,18 @@
 package seepick.localsportsclub.view.activity
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.view.common.Lsc
+import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
-import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
@@ -25,25 +25,26 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue.imageFileName },
     TableColumn(
         "Name",
-        ColSize.Weight(0.5f),
-        CellRenderer.TextRenderer({ if (it.teacher == null) it.name else "${it.name} /${it.teacher}" },
-            { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
+        WidthOrWeight.Weight(0.5f),
+        CellRenderer.TextRenderer(extractor = { if (it.teacher == null) it.name else "${it.name} /${it.teacher}" },
+            sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
-    TableColumn("Venue", ColSize.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", ColSize.Width(150.dp), CellRenderer.TextRenderer { it.category }),
+    TableColumn("Venue", WidthOrWeight.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn("Category", WidthOrWeight.Width(150.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        "Date", ColSize.Width(200.dp), CellRenderer.TextRenderer(
+        "Date", WidthOrWeight.Width(170.dp), CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
+            textAlign = TextAlign.Right,
         )
     ),
-    CheckedinColumn(),
+    CheckedinColumn(paddingRight = true),
     RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
-    TableColumn("Bkd",
-        ColSize.Width(30.dp),
-        CellRenderer.TextRenderer { if (it.state == ActivityState.Booked) Icons.Lsc.booked else "" }),
+    TableColumn(Lsc.icons.booked, WidthOrWeight.Width(30.dp), CellRenderer.TextRenderer(textAlign = TextAlign.Center) {
+        if (it.state == ActivityState.Booked) Lsc.icons.booked else ""
+    }),
 )
 
 @Composable

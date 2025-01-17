@@ -15,6 +15,7 @@ import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.DropDownTextFieldEdits
+import seepick.localsportsclub.view.common.WidthOrFill
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -71,7 +72,7 @@ fun TimeRangeSelector(
             onTimeSelected(it)
         },
         enabled = enabled,
-        textWidth = 160.dp,
+        textSize = WidthOrFill.Width(160.dp),
         textFieldEdits = DropDownTextFieldEdits(
             text = timeAsString,
             onTextChanged = { enteredString: String ->

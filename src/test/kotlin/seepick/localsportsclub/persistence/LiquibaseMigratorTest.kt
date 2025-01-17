@@ -20,7 +20,7 @@ class LiquibaseMigratorTest : StringSpec() {
 
             val raw2 = Arb.venueDbo().next()
             val venue2 = ExposedVenueRepo.insert(raw2)
-            ExposedVenueLinksRepo.insert(venue1.id, venue2.id)
+            ExposedVenueLinksRepo.insert(VenueIdLink(venue1.id, venue2.id))
 
             val activity = Arb.activityDbo().next().copy(venueId = venue1.id)
             ExposedActivityRepo.insert(activity)

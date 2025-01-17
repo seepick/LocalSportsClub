@@ -11,7 +11,7 @@ interface Syncer {
 }
 
 interface SyncerListener {
-    fun onVenueDboAdded(venueDbo: VenueDbo)
+    fun onVenueDbosAdded(venueDbos: List<VenueDbo>)
     fun onActivityDbosAdded(activityDbos: List<ActivityDbo>)
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
     fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>)
@@ -48,9 +48,9 @@ class SyncerListenerDispatcher {
         listeners += listener
     }
 
-    fun dispatchOnVenueDboAdded(venueDbo: VenueDbo) {
+    fun dispatchOnVenueDbosAdded(venueDbos: List<VenueDbo>) {
         listeners.forEach {
-            it.onVenueDboAdded(venueDbo)
+            it.onVenueDbosAdded(venueDbos)
         }
     }
 

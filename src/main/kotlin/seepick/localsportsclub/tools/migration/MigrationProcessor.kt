@@ -8,6 +8,7 @@ import seepick.localsportsclub.persistence.ExposedVenueLinksRepo
 import seepick.localsportsclub.persistence.ExposedVenueRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDateTime
@@ -74,7 +75,7 @@ object MigrationProcessor {
         )
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id
         linkedVenueSlugs.forEach { otherSlug ->
-            ExposedVenueLinksRepo.insert(insertedVenueId, venues.single { it.slug == otherSlug }.id)
+            ExposedVenueLinksRepo.insert(VenueIdLink(insertedVenueId, venues.single { it.slug == otherSlug }.id))
         }
         insertCheckinsAndDropins(partner, insertedVenueId)
     }

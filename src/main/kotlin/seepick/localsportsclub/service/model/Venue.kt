@@ -38,8 +38,8 @@ class Venue(
     isFavorited: Boolean,
     isWishlisted: Boolean,
     isHidden: Boolean,
-) : HasVenue, TableItemBgColor {
-
+) : HasVenue, HasLabel, TableItemBgColor {
+    override val label = name
     override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
 
     //  val linkedVenues: MutableList<Venue>,
@@ -53,6 +53,8 @@ class Venue(
     val activities = mutableStateListOf<Activity>()
     val freetrainings = mutableStateListOf<Freetraining>()
     var officialWebsite: String? by mutableStateOf(officialWebsite)
+
+    val linkedVenues = mutableStateListOf<Venue>()
 
     fun lastVisit(): LocalDate? {
         val nope = LocalDate.of(2000, 1, 1)
@@ -93,7 +95,6 @@ class Venue(
             addressLocality = "Amsterdam, Netherlands",
             location = null,
             distanceInKm = null,
-//            linkedVenues = emptyList(),
         )
     }
 
@@ -120,6 +121,7 @@ class Venue(
         notes: String = this.notes,
         rating: Rating = this.rating,
         isFavorited: Boolean = this.isFavorited,
+        linkedVenues: List<Venue> = this.linkedVenues,
     ) = Venue(
         id = id,
         slug = slug,

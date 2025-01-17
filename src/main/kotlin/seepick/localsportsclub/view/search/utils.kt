@@ -10,5 +10,5 @@ import seepick.localsportsclub.view.common.darker
 fun SearchOption<*>.ClickableSearchText() {
     ClickableText(text = label,
         notHoveredColor = if (enabled) Lsc.colors.primary else Lsc.colors.primary.darker(),
-        onClicked = { updateEnabled(!enabled) })
+        onClick = { updateEnabled(!enabled) })
 }

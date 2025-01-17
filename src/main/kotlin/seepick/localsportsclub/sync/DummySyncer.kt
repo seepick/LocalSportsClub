@@ -7,6 +7,7 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
@@ -33,7 +34,7 @@ class DummySyncer(
         if (true) {
             val venue = generateVenues().first()//.copy(slug = "foobar")
             val inserted = venueRepo.insert(venue)
-            dispatcher.dispatchOnVenueDboAdded(inserted)
+            dispatcher.dispatchOnVenueDbosAdded(listOf(inserted))
             return
         }
 //        val bytes = withContext(Dispatchers.IO) {
@@ -43,9 +44,9 @@ class DummySyncer(
             delay(200)
             val inserted = venueRepo.insert(venueDbo)
 //            imageStorage.saveVenueImage("${inserted.slug}.png", bytes)
-            dispatcher.dispatchOnVenueDboAdded(inserted)
+            dispatcher.dispatchOnVenueDbosAdded(listOf(inserted))
         }
-        venueLinksRepo.insert(5, 6)
+        venueLinksRepo.insert(VenueIdLink(5, 6))
 
         generateActivities().forEach { activityDbo ->
             delay(50)

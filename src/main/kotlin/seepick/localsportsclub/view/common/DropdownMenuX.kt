@@ -17,6 +17,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.Lsc
 
 @Composable
@@ -91,6 +92,7 @@ fun <T> _DropdownMenuX(
                 Text(
                     color = Lsc.colors.onBackground,
                     text = if (item is HasLabel) item.label else itemFormatter!!(item),
+                    fontSize = 13.sp,
                 )
             }
         }

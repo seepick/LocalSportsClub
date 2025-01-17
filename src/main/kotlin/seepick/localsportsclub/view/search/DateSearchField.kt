@@ -12,7 +12,6 @@ fun DateSearchField(
     searchOption: DateSearchOption<Freetraining>,
     dates: List<LocalDate>,
 ) {
-    if (searchOption.searchDate == null) searchOption.updateSearchDate(dates.first())
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {

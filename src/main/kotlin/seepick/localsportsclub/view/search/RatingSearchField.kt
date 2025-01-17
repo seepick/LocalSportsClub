@@ -8,6 +8,7 @@ import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.search.IntSearchComparator
 import seepick.localsportsclub.service.search.RatingSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.WidthOrFill
 
 @Composable
 fun <T> RatingSearchField(searchOption: RatingSearchOption<T>) {
@@ -19,14 +20,14 @@ fun <T> RatingSearchField(searchOption: RatingSearchOption<T>) {
                 selectedItem = searchOption.searchComparator,
                 onItemSelected = { searchOption.updateSearchComparator(it) },
                 enabled = searchOption.enabled,
-                textWidth = 100.dp,
+                textSize = WidthOrFill.Width(100.dp),
             )
             DropDownTextField(
                 items = Rating.entries,
                 selectedItem = searchOption.searchRating,
                 onItemSelected = { searchOption.updateSearchRating(it) },
                 enabled = searchOption.enabled,
-                textWidth = 160.dp,
+                textSize = WidthOrFill.Width(160.dp),
             )
         }
     }

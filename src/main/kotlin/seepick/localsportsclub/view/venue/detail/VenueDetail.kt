@@ -10,6 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
@@ -22,6 +23,7 @@ import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxText
+import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.LscIcons
@@ -31,6 +33,7 @@ import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlText
 import seepick.localsportsclub.view.common.UrlTextField
+import seepick.localsportsclub.view.common.WidthOrFill
 import seepick.localsportsclub.view.shared.SimpleActivitiesTable
 import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable
 import seepick.localsportsclub.view.venue.VenueImage
@@ -44,6 +47,8 @@ fun VenueDetail(
     venueEdit: VenueEditModel,
     onUpdateVenue: () -> Unit,
     onActivityClicked: ((Activity) -> Unit)?,
+    showLinkedVenues: Boolean,
+    onVenueSelected: (Venue) -> Unit,
     onFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
     uscConfig: UscConfig = koinInject(),
@@ -58,26 +63,37 @@ fun VenueDetail(
                 if (venue.categories.isNotEmpty()) {
                     Text(venue.categories.joinToString(", "))
                 }
-
-                Tooltip("Open Google Maps") {
-                    UrlText(
-                        url = "https://www.google.com/maps/search/?api=1&query=${
-                            URLEncoder.encode(
-                                "${venue.street}, ${venue.postalCode} ${venue.addressLocality}", "UTF-8"
-                            )
-                        }",
-                        displayText = "${venue.street}${if (venue.street.isEmpty()) "" else ", "}${venue.postalCode}",
-                    )
-                }
-                venue.distanceInKm?.also { distance ->
-                    Text(
-                        text = "${distance}km away",
-                        fontSize = 10.sp,
-                    )
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Tooltip("Open Google Maps") {
+                        UrlText(
+                            url = "https://www.google.com/maps/search/?api=1&query=${
+                                URLEncoder.encode(
+                                    "${venue.street}, ${venue.postalCode} ${venue.addressLocality}", "UTF-8"
+                                )
+                            }",
+                            displayText = "${venue.street}${if (venue.street.isEmpty()) "" else ", "}${venue.postalCode}",
+                        )
+                    }
+                    venue.distanceInKm?.also { distance ->
+                        Text(
+                            text = " ${distance}km away",
+                            fontSize = 10.sp,
+                        )
+                    }
                 }
 
                 RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
             }
+        }
+        if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
+            DropDownTextField(
+                label = "Linked Venues",
+                items = venue.linkedVenues,
+                onItemSelected = { onVenueSelected(it!!) },
+                itemFormatter = { it?.name ?: "" },
+                selectedItem = null as Venue?,
+                textSize = WidthOrFill.Width(200.dp),
+            )
         }
         Tooltip(venue.description) {
             Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)

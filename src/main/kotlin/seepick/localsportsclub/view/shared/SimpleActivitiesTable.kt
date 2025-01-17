@@ -10,8 +10,8 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
-import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 
@@ -35,11 +35,11 @@ fun SimpleActivitiesTable(
             boxModifier = Modifier.border(1.dp, Lsc.colors.onSurface).then(modifier),
             columns = listOf(
                 TableColumn(
-                    size = ColSize.Width(170.dp),
+                    size = WidthOrWeight.Width(170.dp),
                     renderer = CellRenderer.TextRenderer { it.dateTimeRange.prettyPrint(currentYear) },
                 ),
                 TableColumn(
-                    size = ColSize.Weight(1.0f),
+                    size = WidthOrWeight.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
                         "${it.state.iconStringAndSuffix()}${if (it.teacher == null) it.name else "${it.name} /${it.teacher}"}"
                     },

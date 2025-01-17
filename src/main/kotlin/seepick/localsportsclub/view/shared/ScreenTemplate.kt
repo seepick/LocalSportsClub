@@ -45,9 +45,11 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             venue = selectedVenue!!,
                             activity = selectedActivity,
                             freetraining = selectedFreetraining,
+                            showLinkedVenues = viewModel.showLinkedVenues,
                             venueEdit = viewModel.venueEdit,
                             onUpdateVenue = viewModel::updateVenue,
                             onActivityClicked = viewModel::onActivitySelected,
+                            onVenueSelected = viewModel::onVenueSelected,
                             onFreetrainingClicked = viewModel::onFreetrainingSelected,
                             modifier = Modifier.weight(1.0f),
                         )

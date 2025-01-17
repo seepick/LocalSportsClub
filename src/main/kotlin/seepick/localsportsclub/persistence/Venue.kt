@@ -122,6 +122,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isHidden] = venue.isHidden
             it[isDeleted] = venue.isDeleted
         }.value
+        log.trace { "New venue ID=$nextId" }
         venue.copy(id = nextId)
     }
 

@@ -22,7 +22,7 @@ import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 
 interface DataStorageListener {
-    fun onVenueAdded(venue: Venue)
+    fun onVenuesAdded(venues: List<Venue>)
     fun onVenueUpdated(venue: Venue)
 
     fun onActivitiesAdded(activities: List<Activity>)
@@ -33,7 +33,7 @@ interface DataStorageListener {
 }
 
 object NoopDataStorageListener : DataStorageListener {
-    override fun onVenueAdded(venue: Venue) {
+    override fun onVenuesAdded(venues: List<Venue>) {
     }
 
     override fun onVenueUpdated(venue: Venue) {
@@ -67,8 +67,15 @@ class DataStorage(
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
-        venueRepo.selectAll().map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
-            .associateBy { it.id }.toMutableMap()
+        val venues = venueRepo.selectAll().map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
+            .associateBy { it.id }
+        venueLinksRepo.selectAll().forEach { (id1, id2) ->
+            val venue1 = venues[id1] ?: error("Linking venue1 not found by ID: $id1")
+            val venue2 = venues[id2] ?: error("Linking venue2 not found by ID: $id2")
+            venue1.linkedVenues += venue2
+            venue2.linkedVenues += venue1
+        }
+        venues.toMutableMap()
     }
 
     val venuesCategories: List<String> by lazy {
@@ -133,11 +140,27 @@ class DataStorage(
         return allFreetrainingsByVenueId.values.toList().flatten().filter { it.date >= today }
     }
 
-    override fun onVenueDboAdded(venueDbo: VenueDbo) {
-        log.debug { "onVenueAdded($venueDbo)" }
-        val venue = venueDbo.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(venueDbo))
-        venuesById[venue.id] = venue
-        dispatchOnVenueAdded(venue)
+    override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
+        log.debug { "onVenueDbosAdded(venueDbos.size=${venueDbos.size})" }
+        val venues = venueDbos.map { venueDbo ->
+            val venue = venueDbo.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(venueDbo))
+            venuesById[venue.id] = venue
+            venue
+        }
+        val links = venueLinksRepo.selectAll()
+        venues.forEach { venue ->
+            links.filter { (id1, id2) ->
+                id1 == venue.id || id2 == venue.id
+            }.forEach { (id1, id2) ->
+                val venue1 = venuesById[id1] ?: error("Linking venue1 not found by ID: $id1")
+                val venue2 = venuesById[id2] ?: error("Linking venue2 not found by ID: $id2")
+                if (!venue1.linkedVenues.contains(venue2) && !venue2.linkedVenues.contains(venue1)) {
+                    venue1.linkedVenues += venue2
+                    venue2.linkedVenues += venue1
+                }
+            }
+        }
+        dispatchOnVenuesAdded(venues)
     }
 
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
@@ -219,9 +242,9 @@ class DataStorage(
         dispatchOnVenueUpdated(venue)
     }
 
-    private fun dispatchOnVenueAdded(venue: Venue) {
+    private fun dispatchOnVenuesAdded(venues: List<Venue>) {
         listeners.forEach {
-            it.onVenueAdded(venue)
+            it.onVenuesAdded(venues)
         }
     }
 
@@ -293,7 +316,7 @@ fun Venue.toDbo() = VenueDbo(
     slug = slug,
     facilities = categories.joinToString(","),
     cityId = city.id,
-    officialWebsite = officialWebsite?.toString(),
+    officialWebsite = officialWebsite,
     rating = rating.value,
     notes = notes,
     description = description,
@@ -311,7 +334,10 @@ fun Venue.toDbo() = VenueDbo(
     isDeleted = isDeleted,
 )
 
-fun VenueDbo.toVenue(baseUrl: Url, locationDistance: Pair<Location?, Double?>) = Venue(
+fun VenueDbo.toVenue(
+    baseUrl: Url,
+    locationDistance: Pair<Location?, Double?>,
+) = Venue(
     id = id,
     name = name,
     slug = slug,

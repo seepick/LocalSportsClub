@@ -19,7 +19,9 @@ class FreetrainingViewModel(
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }
     override val selectedVenue = selectedVenueBySelectedSubEntity
-
+    override val showLinkedVenues = false
+    override val initialSortColumn = tableColumns.single { it.headerLabel == "Date" }
+    
     val syncDates: List<LocalDate>
 
     init {
@@ -28,7 +30,7 @@ class FreetrainingViewModel(
     }
 
     override fun buildSearch(resetItems: () -> Unit) =
-        FreetrainingSearch(dataStorage.freetrainingsCategories, resetItems)
+        FreetrainingSearch(dataStorage.freetrainingsCategories, syncDates, resetItems)
 
     override fun DataStorage.selectAllItems() = selectVisibleFreetrainings()
 

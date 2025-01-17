@@ -11,6 +11,7 @@ import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.WidthOrFill
 import java.time.LocalDate
 
 @Composable
@@ -36,7 +37,7 @@ fun DateSelector(
         itemFormatter = { it?.prettyPrint(today.year) ?: "-" },
         onItemSelected = { onDateSelected(it!!) },
         selectedItem = selectedDate,
-        textWidth = 150.dp,
+        textSize = WidthOrFill.Width(150.dp),
     )
 
     Button(onClick = {

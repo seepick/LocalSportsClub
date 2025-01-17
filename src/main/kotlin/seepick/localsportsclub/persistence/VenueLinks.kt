@@ -14,41 +14,57 @@ object VenueLinksTable : Table("PUBLIC.VENUE_LINKS") {
 }
 
 interface VenueLinksRepo {
-    fun selectAll(): List<Pair<Int, Int>>
-    fun insert(venueId1: Int, venueId2: Int)
+    fun selectAll(): List<VenueIdLink>
+    fun insert(venueIdLink: VenueIdLink)
+}
+
+data class VenueIdLink(
+    val id1: Int, val id2: Int
+) {
+    init {
+        require(id1 != id2) { "id1[$id1] == id2[$id2]" }
+    }
+
+    override fun toString() = "VenueIdLink[$id1/$id2]"
+    override fun hashCode() = id1.hashCode() + id2.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other !is VenueIdLink) return false
+        return (id1 == other.id1 && id2 == other.id2) ||
+                (id1 == other.id2 && id2 == other.id1)
+    }
 }
 
 object ExposedVenueLinksRepo : VenueLinksRepo {
 
     private val log = logger {}
 
-    override fun selectAll(): List<Pair<Int, Int>> =
-        transaction {
-            VenueLinksTable.selectAll().map {
-                it[VenueLinksTable.venue1Id].value to it[VenueLinksTable.venue2Id].value
-            }
+    override fun selectAll(): List<VenueIdLink> = transaction {
+        VenueLinksTable.selectAll().map {
+            VenueIdLink(
+                it[VenueLinksTable.venue1Id].value,
+                it[VenueLinksTable.venue2Id].value,
+            )
         }
+    }
 
-
-    override fun insert(venueId1: Int, venueId2: Int) {
-        log.debug { "adding venue links for: $venueId1 and $venueId2" }
-        if (venueId1 == venueId2) error("Venue can't reference itself!")
-        transaction {
-            VenueLinksTable.insert {
-                it[venue1Id] = venueId1
-                it[venue2Id] = venueId2
-            }
+    override fun insert(venueIdLink: VenueIdLink): Unit = transaction {
+        if (selectAll().toSet().contains(venueIdLink)) {
+            error("Duplicate venue link: $venueIdLink")
+        }
+        VenueLinksTable.insert {
+            it[venue1Id] = venueIdLink.id1
+            it[venue2Id] = venueIdLink.id2
         }
     }
 }
 
 class InMemoryVenueLinksRepo : VenueLinksRepo {
-    val stored = mutableMapOf<Int, Int>()
-    override fun selectAll(): List<Pair<Int, Int>> =
+    val stored = mutableSetOf<VenueIdLink>()
+    override fun selectAll(): List<VenueIdLink> =
         stored.toList()
 
-    override fun insert(venueId1: Int, venueId2: Int) {
-        stored += venueId1 to venueId2
+    override fun insert(venueIdLink: VenueIdLink) {
+        stored += venueIdLink
     }
 
 }

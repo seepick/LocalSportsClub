@@ -71,7 +71,7 @@ class UsageStorage(
         freetrainingRepo.selectAll().forEach(::processFreetraining)
     }
 
-    override fun onVenueDboAdded(venueDbo: VenueDbo) {
+    override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
         // no-op
     }
 

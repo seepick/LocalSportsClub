@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.venue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
@@ -12,9 +13,9 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.LscIcons
+import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
-import seepick.localsportsclub.view.common.table.ColSize
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableCell
 import seepick.localsportsclub.view.common.table.TableColumn
@@ -25,31 +26,35 @@ import seepick.localsportsclub.view.shared.RatingColumn
 
 fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it.imageFileName },
-    TableColumn("Name", ColSize.Weight(0.7f), CellRenderer.CustomRenderer { venue, col ->
+    TableColumn("Name", WidthOrWeight.Weight(0.7f), CellRenderer.CustomRenderer { venue, col ->
         TableCell(
             text = venue.name,
             size = col.size,
             textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
         )
     }, sortValueExtractor = { it.name.lowercase() }),
-    TableColumn("Act", ColSize.Width(50.dp), TextRenderer { it.activities.size }),
-    TableColumn("Fre", ColSize.Width(50.dp), TextRenderer { it.freetrainings.size }),
-    TableColumn(LscIcons.checkedin, ColSize.Width(40.dp), TextRenderer {
+    TableColumn("Act", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.activities.size }),
+    TableColumn("Fre", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size }),
+    TableColumn(LscIcons.checkedin, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
     }),
-    TableColumn(LscIcons.booked, ColSize.Width(40.dp), TextRenderer {
+    TableColumn(LscIcons.booked, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
     }),
-    TableColumn(LscIcons.hidden, ColSize.Width(40.dp), TextRenderer {
+    TableColumn(LscIcons.hidden, WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Center) {
         if (it.isHidden) LscIcons.hidden else ""
     }),
     TableColumn(
-        "Last Visit", ColSize.Width(80.dp), TextRenderer(
+        "Last Visit", WidthOrWeight.Width(80.dp), TextRenderer(
             extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
             sortExtractor = { it.lastVisit() },
+            textAlign = TextAlign.Right,
         )
     ),
-    TableColumn("km", ColSize.Width(50.dp), TextRenderer { it.distanceInKm?.toString() ?: "" }),
+    TableColumn(
+        "km",
+        WidthOrWeight.Width(50.dp),
+        TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm?.toString() ?: "" }),
     RatingColumn(),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },

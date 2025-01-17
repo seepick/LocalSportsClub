@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
@@ -30,7 +29,9 @@ import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.executeBackgroundTask
+import seepick.localsportsclub.view.common.executeViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -92,13 +93,21 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     abstract val selectedVenue: StateFlow<Venue?>
     val venueEdit = VenueEditModel()
+    abstract val showLinkedVenues: Boolean
 
     private val _selectedSubEntity = MutableStateFlow<SubEntity?>(null)
     val selectedSubEntity = _selectedSubEntity.asStateFlow()
 
     abstract fun buildSearch(resetItems: () -> Unit): SEARCH
     val searching: SEARCH by lazy { buildSearch(::resetItems) }
-    val sorting: SortingDelegate<ITEM> by lazy { SortingDelegate(tableColumns, resetSort = ::resetItems) }
+    open val initialSortColumn: TableColumn<ITEM>? = null
+    val sorting: SortingDelegate<ITEM> by lazy {
+        SortingDelegate(
+            tableColumns,
+            initialSortColumn = initialSortColumn,
+            resetSort = ::resetItems
+        )
+    }
 
     var isBookingOrCancelInProgress by mutableStateOf(false)
         private set
@@ -152,28 +161,28 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onVenueSelected(venue: Venue) {
-        log.trace { "Selected: $venue" }
-        viewModelScope.launch {
-            // venue can only be clicked in VenueViewModel
+        executeViewTask("Unable to select venue!") {
+            log.trace { "Selected: $venue" }
+            require(this::class == VenueViewModel::class) { "venue can only be clicked in VenueViewModel" }
             @Suppress("UNCHECKED_CAST")
             (selectedVenue as MutableStateFlow<Venue>).value = venue
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
+            _selectedSubEntity.value = null
         }
-        _selectedSubEntity.value = null
     }
 
     fun onActivitySelected(activity: Activity) {
-        log.trace { "Selected: $activity" }
-        viewModelScope.launch {
+        executeViewTask("Unable to select activity!") {
+            log.trace { "Selected: $activity" }
             _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
             onItemSelected(ActivitySelected(activity))
         }
     }
 
     fun onFreetrainingSelected(freetraining: Freetraining) {
-        log.trace { "Selected: $freetraining" }
-        viewModelScope.launch {
+        executeViewTask("Unable to select freetraiing!") {
+            log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
             onItemSelected(FreetrainingSelected(freetraining))
         }

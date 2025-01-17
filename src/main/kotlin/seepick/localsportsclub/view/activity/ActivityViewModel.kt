@@ -19,7 +19,8 @@ class ActivityViewModel(
     override val tableColumns = activitiesTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeActivity }
     override val selectedVenue = selectedVenueBySelectedSubEntity
-
+    override val showLinkedVenues = false
+    override val initialSortColumn = tableColumns.single { it.headerLabel == "Date" }
     val syncDates: List<LocalDate>
 
     init {

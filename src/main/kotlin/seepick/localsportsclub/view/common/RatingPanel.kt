@@ -16,6 +16,6 @@ fun RatingPanel(
         selectedItem = selectedRating,
         onItemSelected = onRatingSelected,
         enabled = enabled,
-        textWidth = 150.dp,
+        textSize = WidthOrFill.Width(150.dp),
     )
 }

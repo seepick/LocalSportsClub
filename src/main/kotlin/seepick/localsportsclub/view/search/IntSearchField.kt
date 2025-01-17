@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.search.IntSearchComparator
 import seepick.localsportsclub.service.search.IntSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.WidthOrFill
 
 @Composable
 fun <T> IntSearchField(searchOption: IntSearchOption<T>) {
@@ -21,7 +22,7 @@ fun <T> IntSearchField(searchOption: IntSearchOption<T>) {
                 selectedItem = searchOption.searchComparator,
                 onItemSelected = { searchOption.updateSearchComparator(it) },
                 enabled = searchOption.enabled,
-                textWidth = 100.dp,
+                textSize = WidthOrFill.Width(100.dp),
             )
             OutlinedTextField(
                 value = searchOption.searchInt?.toString() ?: "",

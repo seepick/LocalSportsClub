@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
+import seepick.localsportsclub.view.common.LscIcons
 
 // https://mdigi.tools/lighten-color/#337be2
 interface LscColors {
@@ -106,6 +107,7 @@ object LightLscColors : LscColors {
 object Lsc {
     val isDarkTheme = currentSystemTheme == SystemTheme.DARK
     val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
+    val icons = LscIcons
 }
 
 // access via: MaterialTheme.colors.primary

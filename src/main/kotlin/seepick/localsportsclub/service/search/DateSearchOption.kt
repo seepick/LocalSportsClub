@@ -9,11 +9,11 @@ class DateSearchOption<T>(
     label: String,
     reset: () -> Unit,
     private val dateExtractor: (T) -> LocalDate,
+    initialDate: LocalDate,
     initiallyEnabled: Boolean = false,
 ) : SearchOption<T>(label, reset, initiallyEnabled) {
 
-    // TODO make searchDate: LocalDate non-nullable; preselect in call hierarchy above
-    var searchDate: LocalDate? by mutableStateOf(null)
+    var searchDate: LocalDate by mutableStateOf(initialDate)
         private set
 
     fun updateSearchDate(date: LocalDate) {
@@ -22,7 +22,5 @@ class DateSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean =
-        searchDate?.let { date ->
-            { item -> date == dateExtractor(item) }
-        } ?: alwaysTruePredicate
+        { item -> searchDate == dateExtractor(item) }
 }

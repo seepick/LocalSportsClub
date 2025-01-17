@@ -60,7 +60,7 @@ fun <T> Table(
         ) {
             if (headerEnabled) {
                 stickyHeader {
-                    Row(Modifier) {
+                    Row {
                         columns.forEach { col ->
                             TableHeader(
                                 text = col.headerLabel ?: error("Missing header label for: $col"),
@@ -102,6 +102,16 @@ fun <T> Table(
                                 TableCell(
                                     text = col.renderer.extractor(item).toString(),
                                     size = col.size,
+                                    textAlign = col.renderer.textAlign,
+                                    modifier = Modifier.let { m1 ->
+                                        val m2 = if (col.renderer.paddingLeft) {
+                                            m1.padding(start = 8.dp)
+                                        } else m1
+                                        val m3 = if (col.renderer.paddingRight) {
+                                            m2.padding(end = 8.dp)
+                                        } else m2
+                                        m3
+                                    }
                                 )
                             }
                         }

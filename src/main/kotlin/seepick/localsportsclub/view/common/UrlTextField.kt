@@ -46,7 +46,7 @@ fun _UrlTextField() {
 @Composable
 fun UrlText(url: String, displayText: String = url) {
     val uriHandler = LocalUriHandler.current
-    ClickableText(text = displayText, onClicked = { uriHandler.openUri(url) })
+    ClickableText(text = displayText, onClick = { uriHandler.openUri(url) })
 }
 
 @Composable
@@ -54,7 +54,7 @@ fun UrlText(url: String, displayText: String = url) {
 fun ClickableText(
     text: String,
     notHoveredColor: Color = Lsc.colors.primary,
-    onClicked: () -> Unit,
+    onClick: () -> Unit,
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val color = if (!isHovered) notHoveredColor else Lsc.colors.primaryBrighter
@@ -65,7 +65,7 @@ fun ClickableText(
         color = color,
         modifier = Modifier
             .padding(top = 3.dp, bottom = 3.dp)
-            .onClick(onClick = onClicked)
+            .onClick(onClick = onClick)
             .pointerHoverIcon(PointerIcon.Hand)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }

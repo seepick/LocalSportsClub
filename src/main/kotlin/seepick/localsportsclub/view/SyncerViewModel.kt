@@ -1,14 +1,13 @@
 package seepick.localsportsclub.view
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.launch
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
+import seepick.localsportsclub.view.common.executeViewTask
 
 class SyncerViewModel(
     private val dataStorage: DataStorage,
@@ -29,7 +28,7 @@ class SyncerViewModel(
         activities: List<Activity>,
         addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
     ) {
-        viewModelScope.launch {
+        executeViewTask("Unable to add/remove activities!") {
             log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
@@ -51,7 +50,7 @@ class SyncerViewModel(
         freetrainings: List<Freetraining>,
         addOrRemove: (MutableList<Freetraining>, Set<Freetraining>) -> Unit
     ) {
-        viewModelScope.launch {
+        executeViewTask("Unable to add/remove freetraining") {
             log.debug { "$logPrompt ${freetrainings.size} freetrainings from/to their corresponding venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->

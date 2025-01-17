@@ -9,6 +9,7 @@ import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
@@ -45,13 +46,13 @@ class VenueSyncer(
     }
 }
 
-class VenueLink(
+class VenueSlugLink(
     val slug1: String, val slug2: String
 ) {
-    override fun toString() = "VenueLink[$slug1/$slug2]"
+    override fun toString() = "VenueSlugLink[$slug1/$slug2]"
     override fun hashCode() = slug1.hashCode() + slug2.hashCode()
     override fun equals(other: Any?): Boolean {
-        if (other !is VenueLink) return false
+        if (other !is VenueSlugLink) return false
         return (slug1 == other.slug1 && slug2 == other.slug2) ||
                 (slug1 == other.slug2 && slug2 == other.slug1)
     }
@@ -81,57 +82,67 @@ class VenueSyncInserterImpl(
         prefilledNotes: String,
     ) {
         log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
-        fetchAllInsertDispatch(venueSlugs, prefilledNotes, newLinks = mutableSetOf())
+        val newDbos = mutableListOf<VenueDbo>()
+        val newLinks = mutableSetOf<VenueSlugLink>()
+        fetchAllInsertDispatch(
+            venueSlugs,
+            prefilledNotes,
+            newDbos = newDbos,
+            newLinks = newLinks,
+        )
+        log.trace { "Inserting links: $newLinks" }
+        val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
+        newLinks.map { newLink ->
+            VenueIdLink(
+                existingVenues[newLink.slug1] ?: error("Venue1 not found by slug for link: $newLink"),
+                existingVenues[newLink.slug2] ?: error("Venue2 not found by slug for link: $newLink"),
+            )
+        }.toSet().distinct().forEach(venueLinksRepo::insert)
+
+        dispatcher.dispatchOnVenueDbosAdded(newDbos)
     }
 
     private suspend fun fetchAllInsertDispatch(
         venueSlugs: List<String>,
         prefilledNotes: String = "",
-        newLinks: MutableSet<VenueLink>,
+        newDbos: MutableList<VenueDbo>,
+        newLinks: MutableSet<VenueSlugLink>,
     ) {
-        val dbos = workParallel(5, venueSlugs) { slug ->
+        log.trace { "fetchAllInsertDispatch(venueSlugs=$venueSlugs, newLinks=$newLinks)" }
+        newDbos += workParallel(5, venueSlugs) { slug ->
             fetchDetailsDownloadImage(slug, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
-        linkVenues(newLinks)
-        dbos.forEach { dbo ->
-            dispatcher.dispatchOnVenueDboAdded(dbo)
-        }
+        linkVenues(newDbos, newLinks)
     }
 
-    private suspend fun linkVenues(newLinks: MutableSet<VenueLink>) {
+    private suspend fun linkVenues(
+        newDbos: MutableList<VenueDbo>,
+        newLinks: MutableSet<VenueSlugLink>,
+    ) {
         val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
-
-        val missingVenuesBySlug = (newLinks.mapNotNull {
-            if (existingVenues.containsKey(it.slug1)) null else it.slug1
-        } + newLinks.mapNotNull {
-            if (existingVenues.containsKey(it.slug2)) null else it.slug2
-        }).distinct().sorted()
-
-        if (missingVenuesBySlug.isEmpty()) {
-            newLinks.map {
-                existingVenues[it.slug1]!! to existingVenues[it.slug2]!!
-            }.forEach {
-                venueLinksRepo.insert(it.first, it.second)
-            }
-        } else {
+        val newLinkSlugs = newLinks.map { it.slug1 }.plus(newLinks.map { it.slug2 }).distinct()
+        val missingVenuesBySlug = newLinkSlugs - existingVenues.keys
+        log.trace { "linkVenues ... missingVenuesBySlug=$missingVenuesBySlug" }
+        if (missingVenuesBySlug.isNotEmpty()) {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
             fetchAllInsertDispatch(
                 missingVenuesBySlug,
                 prefilledNotes = "[SYNC] refetch due to missing venue link",
-                newLinks
+                newDbos,
+                newLinks,
             )
         }
     }
 
     private suspend fun fetchDetailsDownloadImage(
         slug: String,
-        venueLinks: MutableSet<VenueLink>
+        venueSlugLinks: MutableSet<VenueSlugLink>
     ): VenueDbo {
         val details = api.fetchVenueDetail(slug)
         details.linkedVenueSlugs.forEach {
-            venueLinks += VenueLink(details.slug, it)
+            venueSlugLinks += VenueSlugLink(details.slug, it)
         }
         return details.toDbo(city.id).ensureHasImageIfPresent(details)
     }
