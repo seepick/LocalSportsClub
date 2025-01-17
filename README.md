@@ -11,7 +11,6 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Pre-Release
 
-* 8: dropdown select for daterange-search (instead only via arrow navigation)
 * 7: display linked venues (be aware that each stored entity is a bi-directional link, although just stored 1-way)
 * 6: support sorting asc/desc
 * 5: show scrollbar if necessary
@@ -26,7 +25,7 @@ Communistic Custom Client for Urban Sports Club.
 * prefs: home city (make list more complete)
 * make third party info syncer optional (match with configured city)
 * prefs: USC creds
-* prefs: gcal feature on/off (calendar ID)
+* prefs: gcal feature on/off (calendar ID; use Switch compose component)
 * sync membership plan (infer limits)
 * display version number
 * online version checker

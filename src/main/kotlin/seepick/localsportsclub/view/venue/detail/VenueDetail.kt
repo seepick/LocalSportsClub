@@ -76,7 +76,7 @@ fun VenueDetail(
                     )
                 }
 
-                RatingPanel(venueEdit.rating)
+                RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
             }
         }
         Tooltip(venue.description) {

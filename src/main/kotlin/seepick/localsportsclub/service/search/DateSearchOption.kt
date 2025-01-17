@@ -12,6 +12,7 @@ class DateSearchOption<T>(
     initiallyEnabled: Boolean = false,
 ) : SearchOption<T>(label, reset, initiallyEnabled) {
 
+    // TODO make searchDate: LocalDate non-nullable; preselect in call hierarchy above
     var searchDate: LocalDate? by mutableStateOf(null)
         private set
 

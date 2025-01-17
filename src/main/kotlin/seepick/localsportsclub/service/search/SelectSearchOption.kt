@@ -21,7 +21,6 @@ class SelectSearchOption<T>(
     reset: () -> Unit,
 ) : SearchOption<T>(label, reset, initiallyEnabled) {
 
-
     var allSelects: List<SearchSelect> = mutableListOf(*allOptions.map { SearchSelect(it) }.toTypedArray())
         private set
 

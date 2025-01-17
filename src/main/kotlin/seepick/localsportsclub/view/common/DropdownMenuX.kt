@@ -19,15 +19,51 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.platform.LocalDensity
 import seepick.localsportsclub.Lsc
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun <T> LscDropdownMenu(
+fun <T : HasLabel> DropdownMenuX(
     items: List<T>,
     isMenuExpanded: MutableState<Boolean>,
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T,
+) {
+    _DropdownMenuX(
+        items = items,
+        isMenuExpanded = isMenuExpanded,
+        textFieldSize = textFieldSize,
+        onItemClicked = onItemClicked,
+        selectedItem = selectedItem,
+    )
+}
+
+@Composable
+fun <T> DropdownMenuX(
+    items: List<T>,
+    itemFormatter: (T) -> String,
+    isMenuExpanded: MutableState<Boolean>,
+    textFieldSize: Size,
+    onItemClicked: (T) -> Unit,
+    selectedItem: T,
+) {
+    _DropdownMenuX(
+        items = items,
+        isMenuExpanded = isMenuExpanded,
+        itemFormatter = itemFormatter,
+        textFieldSize = textFieldSize,
+        onItemClicked = onItemClicked,
+        selectedItem = selectedItem,
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun <T> _DropdownMenuX(
+    items: List<T>,
     itemFormatter: ((T) -> String)? = null,
+    isMenuExpanded: MutableState<Boolean>,
+    textFieldSize: Size,
+    onItemClicked: (T) -> Unit,
+    selectedItem: T,
 ) {
     DropdownMenu(
         expanded = isMenuExpanded.value,

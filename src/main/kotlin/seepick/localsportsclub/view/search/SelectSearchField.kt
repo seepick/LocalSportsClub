@@ -39,7 +39,7 @@ import seepick.localsportsclub.view.common.rowBgColor
 fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
     val tableScrollState = rememberLazyListState()
     Row(verticalAlignment = Alignment.CenterVertically) {
-        searchOption.buildClickableText()
+        searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             Box(
                 modifier = Modifier

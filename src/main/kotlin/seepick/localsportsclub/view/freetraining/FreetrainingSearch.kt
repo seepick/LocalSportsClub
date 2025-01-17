@@ -4,7 +4,10 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
 
-class FreetrainingSearch(allCategories: List<String>, resetItems: () -> Unit) :
+class FreetrainingSearch(
+    allCategories: List<String>,
+    resetItems: () -> Unit,
+) :
     AbstractSearch<Freetraining>(resetItems) {
     val hidden = newBooleanSearchOption("hidden", initiallyEnabled = true, initialValue = false) {
         it.venue.isHidden

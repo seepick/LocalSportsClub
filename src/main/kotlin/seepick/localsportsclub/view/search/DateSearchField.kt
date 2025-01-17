@@ -14,11 +14,11 @@ fun DateSearchField(
 ) {
     if (searchOption.searchDate == null) searchOption.updateSearchDate(dates.first())
     Row(verticalAlignment = Alignment.CenterVertically) {
-        searchOption.buildClickableText()
+        searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             DateSelector(
                 enabled = searchOption.enabled,
-                searchDate = searchOption.searchDate,
+                selectedDate = searchOption.searchDate,
                 dates = dates,
                 onDateSelected = searchOption::updateSearchDate
             )

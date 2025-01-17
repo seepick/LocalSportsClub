@@ -10,7 +10,7 @@ import seepick.localsportsclub.service.search.BooleanSearchOption
 @Composable
 fun <T> BooleanSearchField(searchOption: BooleanSearchOption<T>) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        searchOption.buildClickableText()
+        searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             Checkbox(
                 checked = searchOption.searchBoolean,
