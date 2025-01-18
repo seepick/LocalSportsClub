@@ -1,8 +1,6 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.activity.ActivitiesFilter
@@ -11,7 +9,9 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.PlanType
 import java.time.LocalDate
 
 class FreetrainingSyncer(

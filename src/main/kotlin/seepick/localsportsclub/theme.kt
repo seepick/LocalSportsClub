@@ -14,6 +14,8 @@ import org.jetbrains.skiko.currentSystemTheme
 import seepick.localsportsclub.view.common.LscIcons
 
 // https://mdigi.tools/lighten-color/#337be2
+
+// see ColorScheme for description of colors
 interface LscColors {
     // btn bg (smooth white): #
 // btn disabled bg: A3BCED
@@ -136,6 +138,7 @@ fun LscTheme(
         body1 = TextStyle(
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
+            color = Lsc.colors.onBackground,
         ),
         h1 = TextStyle(
             fontWeight = FontWeight.Bold,

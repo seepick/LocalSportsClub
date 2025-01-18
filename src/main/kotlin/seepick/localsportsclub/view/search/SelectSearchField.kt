@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
@@ -60,7 +59,7 @@ fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
                         ) else MaterialTheme.colors.background
                         Text(
                             text = select.text,
-                            color = Color.DarkGray,
+                            color = Lsc.colors.onBackground,
                             modifier = Modifier
                                 .fillMaxWidth(1.0f)
                                 .onPointerEvent(PointerEventType.Enter) { isHovered = true }

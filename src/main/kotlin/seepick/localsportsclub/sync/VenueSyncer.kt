@@ -2,8 +2,6 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.venue.VenueDetails
@@ -14,6 +12,8 @@ import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 

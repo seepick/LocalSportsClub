@@ -22,6 +22,7 @@ class GlobalKeyboard {
                 Key.Two -> changeToScreen(2)
                 Key.Three -> changeToScreen(3)
                 Key.Four -> changeToScreen(4)
+                Key.Five -> changeToScreen(5)
             }
         }
     }

@@ -11,16 +11,23 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
 import io.ktor.http.Url
-import seepick.localsportsclub.api.City
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.UscConfig
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 
 fun Arb.Companion.uscConfig() = arbitrary {
     UscConfig(
         baseUrl = url().next(),
-        city = enum<City>().next(),
+        city = city().next(),
         plan = enum<PlanType>().next(),
         storeResponses = boolean().next(),
+    )
+}
+
+fun Arb.Companion.city() = arbitrary {
+    City(
+        id = int().next(),
+        label = string().next(),
     )
 }
 

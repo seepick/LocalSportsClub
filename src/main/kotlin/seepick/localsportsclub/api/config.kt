@@ -3,6 +3,8 @@ package seepick.localsportsclub.api
 import io.ktor.http.Url
 import seepick.localsportsclub.UsageConfig
 import seepick.localsportsclub.UscLang
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 
 data class UscConfig(
     val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),

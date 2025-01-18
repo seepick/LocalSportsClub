@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import seepick.localsportsclub.Lsc
-import seepick.localsportsclub.api.City
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemBgColor

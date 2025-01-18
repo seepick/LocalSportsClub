@@ -14,6 +14,7 @@ data class Credentials(
     val password: String,
 ) {
     companion object {
+        // TODO delete me load Credentials
         fun load(): Credentials {
             val loginFile = FileResolver.resolve(FileEntry.Login)
             if (!loginFile.exists()) {

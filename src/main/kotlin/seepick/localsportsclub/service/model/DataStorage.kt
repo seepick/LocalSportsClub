@@ -2,7 +2,6 @@ package seepick.localsportsclub.service.model
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
-import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -286,7 +285,7 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
     )
 
     if (location == null) return null to null
-    val home = readHome() ?: return location to null
+    val home = readPreferences().home ?: return location to null
     return location to round(distance(home, location), 2)
 }
 
@@ -342,7 +341,7 @@ fun VenueDbo.toVenue(
     name = name,
     slug = slug,
     categories = facilities.split(",").filter { it.isNotEmpty() },
-    city = City.byId(cityId),
+    city = CitiesCountries.cityById(cityId),
     rating = Rating.byValue(rating),
     notes = notes,
     description = description,

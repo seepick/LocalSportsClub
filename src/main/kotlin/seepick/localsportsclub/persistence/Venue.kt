@@ -14,7 +14,7 @@ data class VenueDbo(
     val id: Int,
     val name: String,
     val slug: String,
-    val facilities: String, // "," separated
+    val facilities: String, // categories "," separated
     /** @see [seepick.localsportsclub.api.City] */
     val cityId: Int,
     val officialWebsite: String?,
@@ -137,6 +137,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isDeleted] = venue.isDeleted
             it[officialWebsite] = venue.officialWebsite
             it[street] = venue.street
+            it[facilities] = venue.facilities
             it[postalCode] = venue.postalCode
             it[addressLocality] = venue.addressLocality
             it[longitude] = venue.longitude

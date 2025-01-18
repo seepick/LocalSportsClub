@@ -17,6 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
 import seepick.localsportsclub.view.notes.NotesScreen
+import seepick.localsportsclub.view.preferences.PreferencesScreen
 import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
@@ -49,6 +50,7 @@ fun MainView(
             Screen.Freetrainings -> FreetrainingsScreen()
             Screen.Venues -> VenueScreen()
             Screen.Notes -> NotesScreen()
+            Screen.Preferefences -> PreferencesScreen()
         }
     }
 }

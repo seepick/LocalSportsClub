@@ -2,6 +2,8 @@ package seepick.localsportsclub.service
 
 import seepick.localsportsclub.persistence.SinglesDbo
 import seepick.localsportsclub.persistence.SinglesRepo
+import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Preferences
 import java.time.LocalDateTime
 
 class SinglesService(
@@ -24,9 +26,9 @@ class SinglesService(
         update { copy(windowPref = windowPref) }
     }
 
-    fun readHome() = cachedOrSelect().home
-    fun updateHome(home: Location?) {
-        update { copy(home = home) }
+    fun readPreferences() = cachedOrSelect().preferences
+    fun updatePreferences(preferences: Preferences) {
+        update { copy(preferences = preferences) }
     }
 
     private fun update(withDbo: SinglesDbo.() -> SinglesDbo) {
@@ -43,7 +45,12 @@ class SinglesService(
                     notes = "",
                     lastSync = null,
                     windowPref = null,
-                    home = null,
+                    preferences = Preferences(
+                        uscCredentials = null,
+                        city = null,
+                        home = null,
+                        gcal = Gcal.GcalDisabled,
+                    ),
                 ).also {
                     singlesRepo.insert(it)
                 }

@@ -10,7 +10,6 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
-import seepick.localsportsclub.api.City
 import seepick.localsportsclub.service.date.dateTimeRange
 import seepick.localsportsclub.slug
 
@@ -22,7 +21,7 @@ fun Arb.Companion.venue() = arbitrary {
         description = string(minSize = 5, maxSize = 20).next(),
         notes = string(minSize = 5, maxSize = 20).next(),
         categories = emptyList(),
-        city = City.entries.random(),
+        city = CitiesCountries.allCities.random(),
         postalCode = "",
         addressLocality = "",
         street = "",

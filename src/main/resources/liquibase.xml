@@ -163,6 +163,18 @@
             <column name="HOME_LONGITUDE" type="double">
                 <constraints nullable="true"/>
             </column>
+            <column name="GOOGLE_CALENDAR_ID" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="USC_CITY_ID" type="integer">
+                <constraints nullable="true"/>
+            </column>
+            <column name="USC_CREDENTIAL_USERNAME" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="USC_CREDENTIAL_PASSWORD" type="varchar(128)">
+                <constraints nullable="true"/>
+            </column>
         </addColumn>
     </changeSet>
 

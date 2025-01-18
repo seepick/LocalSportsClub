@@ -15,6 +15,8 @@ import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.httpClient
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 import java.time.LocalDate
 
 object ManualSystemTests {

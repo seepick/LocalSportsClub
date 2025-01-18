@@ -23,8 +23,10 @@ import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.SyncerViewModel
 import seepick.localsportsclub.view.activity.ActivityViewModel
+import seepick.localsportsclub.view.common.showErrorDialog
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
+import seepick.localsportsclub.view.preferences.PreferencesViewModel
 import seepick.localsportsclub.view.usage.UsageStorage
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.ComponentEvent
@@ -48,97 +50,103 @@ object LocalSportsClub {
         )
         val log = logger {}
         log.info { "Starting up application for environment: ${Environment.current.name}" }
-        application {
-            KoinApplication(application = {
-                modules(allModules(config))
-            }) {
-                val keyboard: GlobalKeyboard = koinInject()
-                val applicationLifecycle: ApplicationLifecycle = koinInject()
-                applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
-                val singlesService: SinglesService = koinInject()
-                val mainWindowState: MainWindowState = koinInject()
-                val windowPref = singlesService.readWindowPref() ?: WindowPref.default
-                mainWindowState.update(windowPref.width, windowPref.height)
-                Window(
-                    title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
-                    state = rememberWindowState(
-                        width = windowPref.width.dp, height = windowPref.height.dp,
-                        position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
-                    ),
-                    onKeyEvent = { keyboard.process(it); false },
-                    onCloseRequest = {
-                        applicationLifecycle.onExit() // when the window close button is clicked
-                        exitApplication()
-                    },
-                ) {
-                    window.addComponentListener(object : java.awt.event.ComponentAdapter() {
-                        override fun componentResized(e: ComponentEvent) {
-                            mainWindowState.update(window.width, window.height)
-                        }
-                    })
-                    val syncer = koinInject<Syncer>()
-                    val dataStorage = koinInject<DataStorage>()
-                    val usageStorage = koinInject<UsageStorage>()
-                    val bookingService = koinInject<BookingService>()
-                    val syncerListeners = listOf(dataStorage, usageStorage)
-                    syncerListeners.forEach {
-                        syncer.registerListener(it)
-                        bookingService.registerListener(it)
-                    }
-
-                    val dataStorageListeners = listOf(
-                        koinViewModel<SyncerViewModel>(),
-                        koinViewModel<ActivityViewModel>(),
-                        koinViewModel<FreetrainingViewModel>(),
-                        koinViewModel<VenueViewModel>(),
-                    )
-                    dataStorageListeners.forEach {
-                        dataStorage.registerListener(it)
-                    }
-
-                    val applicationLifecycleListeners = listOf(
-                        usageStorage,
-                        koinViewModel<ActivityViewModel>(),
-                        koinViewModel<FreetrainingViewModel>(),
-                        koinViewModel<VenueViewModel>(),
-                        koinViewModel<NotesViewModel>(),
-                        object : ApplicationLifecycleListener {
-                            override fun onExit() {
-                                singlesService.updateWindowPref(
-                                    WindowPref(
-                                        width = window.width,
-                                        height = window.height,
-                                        posX = window.x,
-                                        posY = window.y,
-                                    )
-                                )
-                            }
+        try {
+            application {
+                KoinApplication(application = {
+                    modules(allModules(config))
+                }) {
+                    val keyboard: GlobalKeyboard = koinInject()
+                    val applicationLifecycle: ApplicationLifecycle = koinInject()
+                    applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
+                    val singlesService: SinglesService = koinInject()
+                    val mainWindowState: MainWindowState = koinInject()
+                    val windowPref = singlesService.readWindowPref() ?: WindowPref.default
+                    mainWindowState.update(windowPref.width, windowPref.height)
+                    Window(
+                        title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
+                        state = rememberWindowState(
+                            width = windowPref.width.dp, height = windowPref.height.dp,
+                            position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
+                        ),
+                        onKeyEvent = { keyboard.process(it); false },
+                        onCloseRequest = {
+                            applicationLifecycle.onExit() // when the window close button is clicked
+                            exitApplication()
                         },
-                    )
-                    applicationLifecycleListeners.forEach {
-                        applicationLifecycle.registerListener(it)
-                    }
-
-                    window.addWindowListener(object : WindowAdapter() {
-                        // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
-                        override fun windowOpened(e: WindowEvent?) {
-                            applicationLifecycle.onStartUp()
+                    ) {
+                        window.addComponentListener(object : java.awt.event.ComponentAdapter() {
+                            override fun componentResized(e: ComponentEvent) {
+                                mainWindowState.update(window.width, window.height)
+                            }
+                        })
+                        val syncer = koinInject<Syncer>()
+                        val dataStorage = koinInject<DataStorage>()
+                        val usageStorage = koinInject<UsageStorage>()
+                        val bookingService = koinInject<BookingService>()
+                        val syncerListeners = listOf(dataStorage, usageStorage)
+                        syncerListeners.forEach {
+                            syncer.registerListener(it)
+                            bookingService.registerListener(it)
                         }
-                    })
 
-                    val mainViewModel = koinViewModel<MainViewModel>()
-                    keyboard.registerListener(mainViewModel)
+                        val dataStorageListeners = listOf(
+                            koinViewModel<SyncerViewModel>(),
+                            koinViewModel<ActivityViewModel>(),
+                            koinViewModel<FreetrainingViewModel>(),
+                            koinViewModel<VenueViewModel>(),
+                        )
+                        dataStorageListeners.forEach {
+                            dataStorage.registerListener(it)
+                        }
 
-                    LscTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colors.background,
-                        ) {
-                            MainView()
+                        val applicationLifecycleListeners = listOf(
+                            usageStorage,
+                            koinViewModel<ActivityViewModel>(),
+                            koinViewModel<FreetrainingViewModel>(),
+                            koinViewModel<VenueViewModel>(),
+                            koinViewModel<NotesViewModel>(),
+                            koinViewModel<PreferencesViewModel>(),
+                            object : ApplicationLifecycleListener {
+                                override fun onExit() {
+                                    singlesService.updateWindowPref(
+                                        WindowPref(
+                                            width = window.width,
+                                            height = window.height,
+                                            posX = window.x,
+                                            posY = window.y,
+                                        )
+                                    )
+                                }
+                            },
+                        )
+                        applicationLifecycleListeners.forEach {
+                            applicationLifecycle.registerListener(it)
+                        }
+
+                        window.addWindowListener(object : WindowAdapter() {
+                            // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
+                            override fun windowOpened(e: WindowEvent?) {
+                                applicationLifecycle.onStartUp()
+                            }
+                        })
+
+                        val mainViewModel = koinViewModel<MainViewModel>()
+                        keyboard.registerListener(mainViewModel)
+
+                        LscTheme {
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colors.background,
+                            ) {
+                                MainView()
+                            }
                         }
                     }
                 }
             }
+        } catch (e: Exception) {
+            log.error(e) { "Startup Error!" }
+            showErrorDialog("Startup Error", "Failed to start up the application. Shutting down.", e)
         }
     }
 }

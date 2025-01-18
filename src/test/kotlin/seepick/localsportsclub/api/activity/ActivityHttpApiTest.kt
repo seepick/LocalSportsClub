@@ -6,13 +6,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import seepick.localsportsclub.StaticClock
-import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.NoopResponseStorage
 import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.StatsDistrictJson
 import seepick.localsportsclub.api.StatsJson
 import seepick.localsportsclub.api.buildMockClient
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

@@ -67,7 +67,7 @@ object ActivitiesParser {
         return divs.map { div ->
             FreetrainingInfo(
                 id = div.attr("data-appointment-id").toInt(),
-                name = div.select("div.title a.title").text().trim(),
+                name = cleanActivityFreetrainingName(div.select("div.title a.title").text()),
                 category = div.select("div.title p").text().trim(),
                 venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
             )
@@ -85,13 +85,23 @@ object ActivitiesParser {
         ) { "IDs expected to be identical but weren't!" }
         return ActivityInfo(
             id = dataLayer.id.toInt(),
-            name = dataLayer.name.trim(),
+            name = cleanActivityFreetrainingName(dataLayer.name),
             venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
             dateTimeRange = dateTimeRange,
             category = dataLayer.category.trim(),
             spotsLeft = dataLayer.spots_left.toInt(),
         )
     }
+}
+
+fun cleanActivityFreetrainingName(input: String): String {
+    var htmlInput = input
+    var oldHtmlInput: String
+    do {
+        oldHtmlInput = htmlInput
+        htmlInput = Jsoup.parse(oldHtmlInput).text()
+    } while (oldHtmlInput != htmlInput)
+    return htmlInput.trim()
 }
 
 private fun convertFromToDateTime(date: LocalDate, times: TimeRange): DateTimeRange =
@@ -139,7 +149,7 @@ object ActivityParser {
             val json = buttonBook.attr("data-book-success")
             val data = serializerLenient.decodeFromString<ActivityBookDataJson>(json)
             ActivityDetails(
-                name = data.`class`.name.trim(),
+                name = cleanActivityFreetrainingName(data.`class`.name),
                 dateTimeRange = dateRange,
                 venueName = data.venue.name.trim(),
                 category = data.`class`.category.trim(),
@@ -150,7 +160,7 @@ object ActivityParser {
             val json = buttonCancel.attr("data-book-cancel")
             val data = serializerLenient.decodeFromString<ActivityCancelDataJson>(json)
             ActivityDetails(
-                name = data.`class`.name.trim(),
+                name = cleanActivityFreetrainingName(data.`class`.name),
                 dateTimeRange = dateRange,
                 venueName = data.venue.name.trim(),
                 category = data.`class`.category.trim(),
@@ -167,7 +177,7 @@ object ActivityParser {
 
         return FreetrainingDetails(
             id = div.attr("data-appointment-id").toInt(),
-            name = div.select("div.general h3").first()!!.text().trim(),
+            name = cleanActivityFreetrainingName(div.select("div.general h3").first()!!.text()),
             date = div.select("p.smm-class-details__datetime").text().let { DateParser.parseDate(it, year) },
             category = div.select("span.disciplines").parents().first()!!.text().trim(),
             venueSlug = parseSlugFromGoogleMapUrls(div.select("div.usc-google-map").attr("data-static-map-urls")),

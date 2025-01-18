@@ -10,6 +10,7 @@ enum class Screen(val label: String) {
     Freetrainings(label = "Freetrainings"),
     Venues(label = "Venues"),
     Notes(label = "Notes"),
+    Preferefences(label = "Preferefences"),
 }
 
 @Composable

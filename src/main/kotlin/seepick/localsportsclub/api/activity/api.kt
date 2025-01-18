@@ -8,15 +8,15 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.Url
-import seepick.localsportsclub.api.City
 import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.PlanType
 import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.service.ApiException
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.PlanType
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

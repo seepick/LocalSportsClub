@@ -15,8 +15,14 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
+import seepick.localsportsclub.api.Credentials
+import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.CitiesCountries
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Preferences
+import seepick.localsportsclub.service.model.allCities
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).next()
@@ -80,6 +86,37 @@ fun Arb.Companion.singlesDbo() = arbitrary {
         notes = string().next(),
         lastSync = localDateTime().orNull().next(),
         windowPref = null,
-        home = null,
+        preferences = preferences().next(),
+    )
+}
+
+fun Arb.Companion.preferences() = arbitrary {
+    Preferences(
+        uscCredentials = credentials().orNull().next(),
+        city = CitiesCountries.allCities.random(),
+        home = location().orNull().next(),
+        gcal = gcal().next(),
+    )
+}
+
+fun Arb.Companion.gcal() = arbitrary {
+    if (boolean().next()) {
+        Gcal.GcalDisabled
+    } else {
+        Gcal.GcalEnabled(calendarId = string().next())
+    }
+}
+
+fun Arb.Companion.location() = arbitrary {
+    Location(
+        latitude = double(min = -90.0, max = 90.0).next(),
+        longitude = double(min = -180.0, max = 180.0).next(),
+    )
+}
+
+fun Arb.Companion.credentials() = arbitrary {
+    Credentials(
+        username = string().next(),
+        password = string().next(),
     )
 }

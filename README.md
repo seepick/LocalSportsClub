@@ -9,11 +9,6 @@ Communistic Custom Client for Urban Sports Club.
 
 # TODOs
 
-## Pre-Release
-
-* 1: data cleaner tool: change EMS health studio: category from Fitness to EMS
-    * also: Activity: "Elite HIIT &amp;amp;amp;amp;amp;amp; Strength"
-
 ## Release v1
 
 * prefs: home city (complete list of options)
@@ -28,6 +23,8 @@ Communistic Custom Client for Urban Sports Club.
 * design website + link to it in app
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * bigger PR: tell multiple friends, ask for feedback
+* contact someone: is it legal what i'm doing?
+* biggest PR: print stickers, put next to offical QR codes (ask venue before)
 
 ## Release v2
 

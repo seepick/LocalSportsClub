@@ -1,6 +1,7 @@
 package seepick.localsportsclub.tools
 
 import org.jetbrains.exposed.sql.transactions.transaction
+import seepick.localsportsclub.api.activity.cleanActivityFreetrainingName
 import seepick.localsportsclub.api.venue.cleanVenueInfo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
@@ -31,11 +32,19 @@ object DataCleaner {
             }
         }
 
-//        cleanActivityNames()
+        cleanActivityNames()
 //        cleanVenueAddresses()
 //        cleanTexts()
 //        linkMissingVenues()
+//        changeVenues()
         println("Done ✅")
+    }
+
+    private fun changeVenues() {
+        listOf("ems-health-studio", "ems-health-studio-groepslessen").forEach { slug ->
+            val venue = venueRepo.selectBySlug(slug)!!
+            venueRepo.update(venue.copy(facilities = "EMS"))
+        }
     }
 
     private val activityRepo: ActivityRepo = ExposedActivityRepo
@@ -92,15 +101,19 @@ object DataCleaner {
 
 
     private fun cleanActivityNames() = transaction {
-        activityRepo.selectAll().filter {
-            it.name.startsWith(" ") || it.name.endsWith(" ")
-        }.also { println("Fixing ${it.size} activities") }.forEach {
-            activityRepo.update(it.copy(name = it.name.trim()))
+        activityRepo.selectAll().forEach {
+            val cleaned = cleanActivityFreetrainingName(it.name)
+            if (it.name != cleaned) {
+                println("[${it.name}] => [$cleaned]")
+                activityRepo.update(it.copy(name = cleaned))
+            }
         }
-        freetrainingRepo.selectAll().filter {
-            it.name.startsWith(" ") || it.name.endsWith(" ")
-        }.also { println("Fixing ${it.size} freetrainings") }.forEach {
-            freetrainingRepo.update(it.copy(name = it.name.trim()))
+        freetrainingRepo.selectAll().forEach {
+            val cleaned = cleanActivityFreetrainingName(it.name)
+            if (it.name != cleaned) {
+                println("[${it.name}] => [$cleaned]")
+                freetrainingRepo.update(it.copy(name = cleaned))
+            }
         }
     }
 

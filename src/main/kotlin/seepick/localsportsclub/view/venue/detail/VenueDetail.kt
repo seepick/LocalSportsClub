@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -91,16 +92,18 @@ fun VenueDetail(
                     }
                 }
 
-                RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-                if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
-                    DropDownTextField(
-                        label = "Linked Venues",
-                        items = venue.linkedVenues,
-                        onItemSelected = { onVenueSelected(it!!) },
-                        itemFormatter = { it?.name ?: "" },
-                        selectedItem = null as Venue?,
-                        textSize = WidthOrFill.Width(200.dp),
-                    )
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
+                    if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
+                        DropDownTextField(
+                            label = "Select Linked Venue",
+                            items = venue.linkedVenues,
+                            onItemSelected = { onVenueSelected(it!!) },
+                            itemFormatter = { it?.name ?: "" },
+                            selectedItem = null as Venue?,
+                            textSize = WidthOrFill.FillWidth,
+                        )
+                    }
                 }
             }
         }
@@ -180,24 +183,27 @@ private fun calcTableHeights(
 ): Pair<Dp, Dp> {
     val maxActivityRows = 20
     val maxFreetrainingRows = 5
-    val activitiesTableRows = calcRows(
+    val activitiesCalcRows = calcRows(
         reducedVSpace,
         4,
         maxActivityRows,
         SimpleActivitiesTable_rowEstimatedHeight,
         windowHeight
     )
-    val freetrainingsTableRows = calcRows(
+    val freetrainingsCalcRows = calcRows(
         reducedVSpace,
         2,
         maxFreetrainingRows,
         SimpleFreetrainingsTable_rowEstimatedHeight,
         windowHeight
     )
+    val activityLeftovers = if (activitiesCount < activitiesCalcRows) activitiesCalcRows - activitiesCount else 0
+    val freetrainingLeftovers =
+        if (freetrainingsCount < freetrainingsCalcRows) freetrainingsCalcRows - freetrainingsCount else 0
     return SimpleActivitiesTable_rowEstimatedHeight.dp * min(
-        activitiesTableRows, activitiesCount
+        activitiesCalcRows + freetrainingLeftovers, activitiesCount
     ) to SimpleFreetrainingsTable_rowEstimatedHeight.dp * min(
-        freetrainingsTableRows, freetrainingsCount
+        freetrainingsCalcRows + activityLeftovers, freetrainingsCount
     )
 }
 

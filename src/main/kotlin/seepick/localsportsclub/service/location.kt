@@ -10,7 +10,12 @@ import kotlin.math.sin
 data class Location(
     val latitude: Double, // somewhere around 50 north
     val longitude: Double, // somewhere around 4 east
-)
+) {
+    init {
+        require(latitude in -90.0..90.0) { "Invalid latitude: $latitude" }
+        require(longitude in -180.0..180.0) { "Invalid longitude: $longitude" }
+    }
+}
 
 fun round(d: Double, floatingPoints: Int): Double {
     val x = 10.0.pow(floatingPoints.toDouble())
