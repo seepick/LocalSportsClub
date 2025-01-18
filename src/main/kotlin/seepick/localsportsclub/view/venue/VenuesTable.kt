@@ -71,9 +71,10 @@ fun VenuesTable(
         items = viewModel.items,
         customTableItemBgColorEnabled = true,
         onItemClicked = viewModel::onVenueSelected,
-        onHeaderClicked = viewModel.sorting::onHeaderClicked,
+        onHeaderClicked = viewModel.sorting::onSortColumn,
         columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
+        sortDirection = viewModel.sorting.sortDirection,
         selectedItem = selectedVenue,
     )
 }

@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
@@ -47,6 +48,7 @@ fun SimpleActivitiesTable(
             ),
             onItemClicked = onActivityClicked,
             sortColumn = null,
+            sortDirection = SortDirection.Asc, // doesnt matter
         )
     }
 }

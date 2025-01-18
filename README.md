@@ -11,7 +11,6 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Pre-Release
 
-* 4: support sorting asc/desc
 * 3: after sync, display report what happened ++ big WARNING if new noshow was detected!
     * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
 * 2: use space for activities/freetraining sub-table ONLY up to rows (if only 1 row, use only that space, but NOT more)

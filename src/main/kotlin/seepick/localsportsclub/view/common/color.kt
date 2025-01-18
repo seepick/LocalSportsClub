@@ -1,5 +1,8 @@
 package seepick.localsportsclub.view.common
 
+import androidx.compose.foundation.background
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import seepick.localsportsclub.Lsc
@@ -46,3 +49,14 @@ private fun Color.adjustHSB(): Color {
 // maybe simple use AWT's Color to do this
 fun Color.darker(): Color = copy(alpha = alpha, red = red - 0.2f, green = green - 0.2f, blue = blue - 0.2f)
 fun Color.brighter(): Color = copy(alpha = alpha, red = red + 0.2f, green = green + 0.2f, blue = blue + 0.2f)
+
+sealed interface ColorOrBrush {
+    data class ColorOr(val color: Color) : ColorOrBrush
+    data class BrushOr(val brush: Brush) : ColorOrBrush
+}
+
+fun Modifier.background(colorOrBrush: ColorOrBrush): Modifier =
+    when (colorOrBrush) {
+        is ColorOrBrush.BrushOr -> background(colorOrBrush.brush)
+        is ColorOrBrush.ColorOr -> background(colorOrBrush.color)
+    }

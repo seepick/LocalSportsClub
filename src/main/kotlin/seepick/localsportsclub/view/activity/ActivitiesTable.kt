@@ -60,9 +60,10 @@ fun ActivitiesTable(
         items = viewModel.items,
         customTableItemBgColorEnabled = true,
         onItemClicked = viewModel::onActivitySelected,
-        onHeaderClicked = viewModel.sorting::onHeaderClicked,
+        onHeaderClicked = viewModel.sorting::onSortColumn,
         columns = viewModel.tableColumns,
         sortColumn = viewModel.sorting.sortColumn,
+        sortDirection = viewModel.sorting.sortDirection,
         selectedItem = selectedActivity,
     )
 }

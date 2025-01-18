@@ -26,6 +26,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.rowBgColor
 
 interface TableItemBgColor {
@@ -41,6 +42,7 @@ fun <T> Table(
     onItemClicked: ((T) -> Unit)?,
     onHeaderClicked: (TableColumn<T>) -> Unit = {},
     sortColumn: TableColumn<T>?,
+    sortDirection: SortDirection,
     headerEnabled: Boolean = true,
     customTableItemBgColorEnabled: Boolean = false,
     itemsLabel: String? = null,
@@ -67,6 +69,7 @@ fun <T> Table(
                                 size = col.size,
                                 isSortEnabled = col.sortingEnabled,
                                 isSortActive = col == sortColumn,
+                                sortDirection = sortDirection,
                                 onClick = { onHeaderClicked(col) },
                             )
                         }

@@ -1,7 +1,6 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -16,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +24,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.view.common.ColorOrBrush
 import seepick.localsportsclub.view.common.WidthOrWeight
+import seepick.localsportsclub.view.common.background
+import seepick.localsportsclub.view.common.brighter
+import seepick.localsportsclub.view.common.darker
 
 data class TableColumn<T>(
     val headerLabel: String? = null,
@@ -70,15 +75,33 @@ sealed interface CellRenderer<T> {
     data class CustomRenderer<T>(val invoke: @Composable RowScope.(T, TableColumn<T>) -> Unit) : CellRenderer<T>
 }
 
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun RowScope.TableHeader(
-    text: String, size: WidthOrWeight, isSortEnabled: Boolean, isSortActive: Boolean, onClick: () -> Unit
+    text: String,
+    size: WidthOrWeight,
+    isSortEnabled: Boolean,
+    isSortActive: Boolean,
+    sortDirection: SortDirection,
+    onClick: () -> Unit,
 ) {
     var isHovered by remember { mutableStateOf(false) }
-    val bgColor = if (isSortActive) Lsc.colors.itemSelectedBg
-    else if (isHovered && isSortEnabled) Lsc.colors.itemHoverBg
-    else MaterialTheme.colors.surface
+    val background: ColorOrBrush = if (isSortActive) {
+        val gradient1 = if (isHovered) Lsc.colors.primaryBrighter.brighter() else Lsc.colors.primary.brighter()
+        val gradient2 = if (isHovered) Lsc.colors.primaryBrighter else Lsc.colors.primary
+        val gradient3 = if (isHovered) Lsc.colors.primaryBrighter.darker() else Lsc.colors.primary.darker()
+        ColorOrBrush.BrushOr(
+            Brush.verticalGradient(
+                if (sortDirection == SortDirection.Asc) listOf(gradient1, gradient2, gradient3)
+                else listOf(gradient3, gradient2, gradient1)
+            )
+        )
+    } else if (isHovered && isSortEnabled) {
+        ColorOrBrush.ColorOr(Lsc.colors.itemHoverBg)
+    } else {
+        ColorOrBrush.ColorOr(MaterialTheme.colors.surface)
+    }
     TableCell(text = text,
         size = size,
         fontWeight = FontWeight.Bold,
@@ -86,10 +109,10 @@ fun RowScope.TableHeader(
         modifier = Modifier
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-            .background(bgColor)
+            .background(background)
             .padding(top = 5.dp, bottom = 5.dp) // after bg color!
             .let {
-                if (isSortActive || !isSortEnabled) it else {
+                if (!isSortEnabled) it else {
                     it.onClick { onClick() }
                 }
             })
