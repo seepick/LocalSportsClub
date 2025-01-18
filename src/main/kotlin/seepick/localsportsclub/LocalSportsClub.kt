@@ -27,6 +27,7 @@ import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
 import seepick.localsportsclub.view.usage.UsageStorage
 import seepick.localsportsclub.view.venue.VenueViewModel
+import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
@@ -55,7 +56,9 @@ object LocalSportsClub {
                 val applicationLifecycle: ApplicationLifecycle = koinInject()
                 applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
                 val singlesService: SinglesService = koinInject()
+                val mainWindowState: MainWindowState = koinInject()
                 val windowPref = singlesService.readWindowPref() ?: WindowPref.default
+                mainWindowState.update(windowPref.width, windowPref.height)
                 Window(
                     title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
                     state = rememberWindowState(
@@ -68,6 +71,11 @@ object LocalSportsClub {
                         exitApplication()
                     },
                 ) {
+                    window.addComponentListener(object : java.awt.event.ComponentAdapter() {
+                        override fun componentResized(e: ComponentEvent) {
+                            mainWindowState.update(window.width, window.height)
+                        }
+                    })
                     val syncer = koinInject<Syncer>()
                     val dataStorage = koinInject<DataStorage>()
                     val usageStorage = koinInject<UsageStorage>()

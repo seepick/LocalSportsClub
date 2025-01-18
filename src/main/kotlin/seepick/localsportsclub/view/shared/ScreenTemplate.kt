@@ -51,6 +51,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             onActivityClicked = viewModel::onActivitySelected,
                             onVenueSelected = viewModel::onVenueSelected,
                             onFreetrainingClicked = viewModel::onFreetrainingSelected,
+                            reducedVSpace = selectedSubEntity != null,
                             modifier = Modifier.weight(1.0f),
                         )
                     }

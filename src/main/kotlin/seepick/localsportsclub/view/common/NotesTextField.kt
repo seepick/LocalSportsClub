@@ -11,13 +11,14 @@ fun NotesTextField(
     notes: String,
     setter: (String) -> Unit,
     enabled: Boolean = true,
+    modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
         label = { Text("Notes") },
-        maxLines = 4,
+//        maxLines = 4,
         value = notes,
         enabled = enabled,
         onValueChange = setter,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     )
 }

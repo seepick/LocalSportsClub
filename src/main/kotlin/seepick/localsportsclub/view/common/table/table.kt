@@ -102,8 +102,7 @@ fun <T> Table(
                             }
 
                             is CellRenderer.TextRenderer -> {
-                                TableCell(
-                                    text = col.renderer.extractor(item).toString(),
+                                TableCell(text = col.renderer.extractor(item).toString(),
                                     size = col.size,
                                     textAlign = col.renderer.textAlign,
                                     modifier = Modifier.let { m1 ->
@@ -114,8 +113,7 @@ fun <T> Table(
                                             m2.padding(end = 8.dp)
                                         } else m2
                                         m3
-                                    }
-                                )
+                                    })
                             }
                         }
                     }
@@ -123,7 +121,10 @@ fun <T> Table(
             }
         }
         VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight(),
+            adapter = rememberScrollbarAdapter(
                 scrollState = tableScrollState
             )
         )

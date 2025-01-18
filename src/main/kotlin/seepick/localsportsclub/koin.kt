@@ -26,6 +26,7 @@ fun rootModule(config: AppConfig): Module = module {
     single { config.usc } bind UscConfig::class
     singleOf(::GlobalKeyboard)
     singleOf(::ApplicationLifecycle)
+    singleOf(::MainWindowState)
     // or use includeModules() ;)
 }
 

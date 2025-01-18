@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -15,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
+import seepick.localsportsclub.MainWindowState
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
@@ -35,9 +38,13 @@ import seepick.localsportsclub.view.common.UrlText
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.common.WidthOrFill
 import seepick.localsportsclub.view.shared.SimpleActivitiesTable
+import seepick.localsportsclub.view.shared.SimpleActivitiesTable_rowEstimatedHeight
 import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable
+import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable_rowEstimatedHeight
 import seepick.localsportsclub.view.venue.VenueImage
 import java.net.URLEncoder
+import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 fun VenueDetail(
@@ -51,7 +58,9 @@ fun VenueDetail(
     onVenueSelected: (Venue) -> Unit,
     onFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
+    reducedVSpace: Boolean,
     uscConfig: UscConfig = koinInject(),
+    mainWindowState: MainWindowState = koinInject(),
 ) {
     val uriHandler = LocalUriHandler.current
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
@@ -83,17 +92,17 @@ fun VenueDetail(
                 }
 
                 RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
+                if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
+                    DropDownTextField(
+                        label = "Linked Venues",
+                        items = venue.linkedVenues,
+                        onItemSelected = { onVenueSelected(it!!) },
+                        itemFormatter = { it?.name ?: "" },
+                        selectedItem = null as Venue?,
+                        textSize = WidthOrFill.Width(200.dp),
+                    )
+                }
             }
-        }
-        if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
-            DropDownTextField(
-                label = "Linked Venues",
-                items = venue.linkedVenues,
-                onItemSelected = { onVenueSelected(it!!) },
-                itemFormatter = { it?.name ?: "" },
-                selectedItem = null as Venue?,
-                textSize = WidthOrFill.Width(200.dp),
-            )
         }
         Tooltip(venue.description) {
             Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -133,23 +142,67 @@ fun VenueDetail(
             )
         }
         val (notes, notesSetter) = venueEdit.notes
-        NotesTextField(notes = notes, setter = notesSetter)
+        NotesTextField(
+            notes = notes, setter = notesSetter, modifier = Modifier.heightIn(min = 500.dp).weight(1f)
+        )
         Button(
             onClick = onUpdateVenue,
             enabled = !venueEdit.isClean(),
         ) { Text("Update") }
-
+        val heights = calcTableHeights(
+            reducedVSpace = reducedVSpace,
+            windowHeight = mainWindowState.height,
+            activitiesCount = venue.activities.size,
+            freetrainingsCount = venue.freetrainings.size,
+        )
         SimpleActivitiesTable(
             activities = venue.activities,
             selectedActivity = activity,
-            onActivityClicked = onActivityClicked,
-            modifier = Modifier.weight(0.5f),
+            onActivitySelected = onActivityClicked,
+            modifier = Modifier.fillMaxWidth(),
+            height = heights.first,
         )
         SimpleFreetrainingsTable(
             freetrainings = venue.freetrainings,
             selectedFreetraining = freetraining,
-            onFreetrainingClicked = onFreetrainingClicked,
-            modifier = Modifier.weight(0.5f),
+            onFreetrainingSelected = onFreetrainingClicked,
+            modifier = Modifier.fillMaxWidth(),
+            height = heights.second,
         )
     }
+}
+
+private fun calcTableHeights(
+    reducedVSpace: Boolean,
+    windowHeight: Int,
+    activitiesCount: Int,
+    freetrainingsCount: Int
+): Pair<Dp, Dp> {
+    val maxActivityRows = 20
+    val maxFreetrainingRows = 5
+    val activitiesTableRows = calcRows(
+        reducedVSpace,
+        4,
+        maxActivityRows,
+        SimpleActivitiesTable_rowEstimatedHeight,
+        windowHeight
+    )
+    val freetrainingsTableRows = calcRows(
+        reducedVSpace,
+        2,
+        maxFreetrainingRows,
+        SimpleFreetrainingsTable_rowEstimatedHeight,
+        windowHeight
+    )
+    return SimpleActivitiesTable_rowEstimatedHeight.dp * min(
+        activitiesTableRows, activitiesCount
+    ) to SimpleFreetrainingsTable_rowEstimatedHeight.dp * min(
+        freetrainingsTableRows, freetrainingsCount
+    )
+}
+
+private fun calcRows(reducedVSpace: Boolean, min: Int, max: Int, rowEstimatedHeight: Int, windowHeight: Int): Int {
+    val gap = 850 + (if (reducedVSpace) 150 else 0)
+    val calced = (windowHeight - gap) / rowEstimatedHeight
+    return min(max, max(min, calced))
 }
