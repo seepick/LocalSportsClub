@@ -10,7 +10,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
-val appVersion = project.properties["lsc.version"]?.toString() ?: "1.0.0"
+val appVersion = project.properties["lsc_version"]?.toString() ?: "1.0.0"
 
 group = "com.github.seepick.localsportsclub"
 version = appVersion
@@ -118,8 +118,8 @@ configure<ProcessResources>("processResources") {
         filter<ReplaceTokens>(
             "tokens" to mapOf(
                 "version" to appVersion,
-                "gcalClientId" to (project.properties["lsc.gcalClientId"] ?: "!MISSING!"),
-                "gcalClientSecret" to (project.properties["lsc.gcalClientSecret"] ?: "!MISSING!"),
+                "gcalClientId" to (project.properties["lsc_gcalClientId"] ?: "!MISSING!"),
+                "gcalClientSecret" to (project.properties["lsc_gcalClientSecret"] ?: "!MISSING!"),
             ),
         )
     }
