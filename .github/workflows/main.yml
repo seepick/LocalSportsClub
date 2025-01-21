@@ -2,6 +2,8 @@ name: Run Gradle on every push
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   gradle:

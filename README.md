@@ -15,6 +15,7 @@ Communistic Custom Client for Urban Sports Club.
 * inject build variables for lsc.properties file
 * design website + link to it in app
 
+* custom mounted DMG icon
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * bigger PR: tell multiple friends, ask for feedback
 * contact someone: is it legal what i'm doing?

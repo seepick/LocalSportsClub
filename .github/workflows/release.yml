@@ -6,33 +6,10 @@ on:
       - '*'
 
 jobs:
-  gradle:
-    # todo run 3 times: win, macos, linux
-    runs-on: macos-latest
+  prepare-release:
+    # runs-on: ubuntu-latest
+    name: Creating the release first
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Execute Gradle build
-        run: ./gradlew packageDistributionForCurrentOS -Plsc.version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
-
-      #      - name: Release # https://github.com/softprops/action-gh-release
-      #        uses: softprops/action-gh-release@v2
-      #        with:
-      #          draft: false
-      #          name: Release ${{ github.ref_name }}
-      #          prerelease: false
-      #          fail_on_unmatched_files: true
-      #          make_latest: true
-      #          files: |
-      #            build/compose/binaries/main/app
-
       - name: Create Release # https://github.com/marketplace/actions/create-tag-release
         id: create_release
         uses: actions/create-release@latest
@@ -44,14 +21,50 @@ jobs:
           body: No changelog provided
           draft: false
           prerelease: false
+    outputs:
+      upload-url: ${{ steps.create_release.outputs.upload_url }}
 
-      - name: Upload Release Asset
+  build-and-upload:
+    runs-on: [ macos-latest, windows-latest ]
+    needs: prepare-release
+    name: Building and uploading compose artifact
+    steps:
+      - run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Execute Gradle build
+        run: ./gradlew packageDistributionForCurrentOS -Plsc.version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+      - name: List files in the repository
+        run: |
+          dir ${{ github.workspace }}/build
+      - name: Upload Release Asset for Windows
+        if: runner.os == 'Windows'
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.prepare-release.outputs.upload-url }}
+          # /Users/runner/work/LocalSportsClub/LocalSportsClub/build/compose/binaries/main/dmg/LocalSportsClub-1.0.2.dmg
+          asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
+          asset_name: LocalSportsClub.dmg
+          asset_content_type: application/x-apple-diskimage
+
+      - name: Upload Release Asset for MacOS
+        if: runner.os == 'MacOS'
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare-release.outputs.upload-url }}
           # /Users/runner/work/LocalSportsClub/LocalSportsClub/build/compose/binaries/main/dmg/LocalSportsClub-1.0.2.dmg
           asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
           asset_name: LocalSportsClub.dmg
