@@ -53,7 +53,7 @@ jobs:
           asset_content_type: application/vnd.microsoft.portable-executable
 
       - name: Upload Release Asset for MacOS
-        if: runner.os == 'MacOS' # TODO which name is correct?
+        if: runner.os == 'macOS'
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
