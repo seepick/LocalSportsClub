@@ -20,7 +20,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Gradle build
-        run: ./gradlew package -Plsc.version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+        run: ./gradlew packageDistributionForCurrentOS -Plsc.version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
 
       #      - name: Release # https://github.com/softprops/action-gh-release
       #        uses: softprops/action-gh-release@v2
@@ -37,7 +37,7 @@ jobs:
         id: create_release
         uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -51,7 +51,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          # /Users/runner/work/LocalSportsClub/LocalSportsClub/build/compose/binaries/main/dmg/LocalSportsClub-1.0.2.dmg
           asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
           asset_name: LocalSportsClub.dmg
           asset_content_type: application/x-apple-diskimage
