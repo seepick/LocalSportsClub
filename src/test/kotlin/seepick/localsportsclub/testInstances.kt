@@ -27,17 +27,6 @@ fun Arb.Companion.city() = arbitrary {
     )
 }
 
-// TODO delete me (?)
-fun Arb.Companion.usageConfig() = arbitrary {
-    val maxBookingsPerPeriod = int(min = 6, max = 20).next()
-    val maxBookingsForDay = int(min = 2, max = 5).next()
-//    UsageLimits(
-//        maxBookingsPerVenueForMonth = int(min = 1, max = maxBookingsPerPeriod).next(),
-//        maxBookingsForDay = maxBookingsForDay,
-//        maxBookingsPerVenueForDay = int(min = 1, max = maxBookingsForDay).next(),
-//    )
-}
-
 fun Arb.Companion.url() = arbitrary {
     Url(
         "https://${

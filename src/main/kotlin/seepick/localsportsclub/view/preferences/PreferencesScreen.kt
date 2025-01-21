@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.PasswordField
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.WidthOrFill
 
@@ -41,9 +42,11 @@ private val col1width = 170.dp
 private fun PreferencesItem(
     label: String, content: @Composable () -> Unit
 ) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = label, fontSize = 18.sp, modifier = Modifier.width(col1width).align(Alignment.Top)
+            text = label,
+            fontSize = 18.sp,
+            modifier = Modifier.width(col1width).align(Alignment.Top),
         )
         content()
     }
@@ -71,10 +74,9 @@ fun PreferencesScreen(
                 },
             )
             Spacer(Modifier.width(10.dp))
-            TextField(
-                value = viewModel.entity.uscPassword,
-                label = { Text("Password") }, // TODO render password ***
-                onValueChange = { viewModel.entity.uscPassword = it },
+            PasswordField(
+                password = viewModel.entity.uscPassword,
+                onChange = { viewModel.entity.uscPassword = it }
             )
             Spacer(Modifier.width(10.dp))
             Button(

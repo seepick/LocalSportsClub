@@ -19,7 +19,7 @@ fun allModules(config: AppConfig) = listOf(
     serviceModule(config),
     gcalModule(config),
     syncModule(config),
-    viewModule(config),
+    viewModule(),
 )
 
 fun rootModule(config: AppConfig): Module = module {

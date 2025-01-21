@@ -58,7 +58,7 @@ interface LscColors {
 
     val surface: Color
 
-    // outlines inputfields, labels, bg textfields
+    // outlines inputfields, labels, bg textfields, disabled buttons; snackbar bg
     val onSurface: Color
 
     val error: Color
