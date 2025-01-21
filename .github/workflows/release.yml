@@ -25,12 +25,15 @@ jobs:
       upload-url: ${{ steps.create_release.outputs.upload_url }}
 
   build-and-upload:
-    runs-on: [ macos-latest, windows-latest ]
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     needs: prepare-release
     name: Building and uploading compose artifact
     steps:
       - name: Log Info
-        run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
+        run: echo "This job is now running on a ${{ runner.os }} / ${{ matrix.os }}; ref is ${{ github.ref }} and ref_name is ${{ github.ref_name }}"
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Setup JDK
