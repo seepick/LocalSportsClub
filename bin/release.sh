@@ -6,7 +6,7 @@ then
 fi
 
 VERSION_FILE=./version.txt
-OLD_APP_VERSION=$(($(cat $VERSION_FILE) + 1))
+OLD_APP_VERSION=$(cat $VERSION_FILE)
 echo "Current version is: $OLD_APP_VERSION"
 read -p "Enter release version: " APP_VERSION
 
