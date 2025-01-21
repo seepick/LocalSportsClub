@@ -23,6 +23,8 @@ fun VenueImage(imageFileName: String?) {
         remember(imageFile) { readImageBitmapFromFile(imageFile) }
     }
     Image(
-        BitmapPainter(image), null, contentScale = ContentScale.Fit,
+        painter = BitmapPainter(image),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
     )
 }

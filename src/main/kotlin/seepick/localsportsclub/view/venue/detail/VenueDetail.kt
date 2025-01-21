@@ -1,6 +1,6 @@
 package seepick.localsportsclub.view.venue.detail
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -67,7 +67,9 @@ fun VenueDetail(
     Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         Row {
-            VenueImage(venue.imageFileName)
+            Box(modifier = Modifier.width(200.dp)) {
+                VenueImage(venue.imageFileName)
+            }
             Spacer(Modifier.width(5.dp))
             Column {
                 if (venue.categories.isNotEmpty()) {
@@ -91,22 +93,10 @@ fun VenueDetail(
                         )
                     }
                 }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-                    if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
-                        DropDownTextField(
-                            label = "Select Linked Venue",
-                            items = venue.linkedVenues,
-                            onItemSelected = { onVenueSelected(it!!) },
-                            itemFormatter = { it?.name ?: "" },
-                            selectedItem = null as Venue?,
-                            textSize = WidthOrFill.FillWidth,
-                        )
-                    }
-                }
+                RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
             }
         }
+
         Tooltip(venue.description) {
             Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
@@ -152,6 +142,17 @@ fun VenueDetail(
             onClick = onUpdateVenue,
             enabled = !venueEdit.isClean(),
         ) { Text("Update") }
+        
+        if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
+            DropDownTextField(
+                label = "Select Linked Venue",
+                items = venue.linkedVenues,
+                onItemSelected = { onVenueSelected(it!!) },
+                itemFormatter = { it?.name ?: "" },
+                selectedItem = null as Venue?,
+                textSize = WidthOrFill.FillWidth,
+            )
+        }
         val heights = calcTableHeights(
             reducedVSpace = reducedVSpace,
             windowHeight = mainWindowState.height,
@@ -176,26 +177,15 @@ fun VenueDetail(
 }
 
 private fun calcTableHeights(
-    reducedVSpace: Boolean,
-    windowHeight: Int,
-    activitiesCount: Int,
-    freetrainingsCount: Int
+    reducedVSpace: Boolean, windowHeight: Int, activitiesCount: Int, freetrainingsCount: Int
 ): Pair<Dp, Dp> {
     val maxActivityRows = 20
     val maxFreetrainingRows = 5
     val activitiesCalcRows = calcRows(
-        reducedVSpace,
-        4,
-        maxActivityRows,
-        SimpleActivitiesTable_rowEstimatedHeight,
-        windowHeight
+        reducedVSpace, 4, maxActivityRows, SimpleActivitiesTable_rowEstimatedHeight, windowHeight
     )
     val freetrainingsCalcRows = calcRows(
-        reducedVSpace,
-        2,
-        maxFreetrainingRows,
-        SimpleFreetrainingsTable_rowEstimatedHeight,
-        windowHeight
+        reducedVSpace, 2, maxFreetrainingRows, SimpleFreetrainingsTable_rowEstimatedHeight, windowHeight
     )
     val activityLeftovers = if (activitiesCount < activitiesCalcRows) activitiesCalcRows - activitiesCount else 0
     val freetrainingLeftovers =

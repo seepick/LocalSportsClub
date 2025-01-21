@@ -78,6 +78,7 @@ class PreferencesViewModel(
                         }
                         if (singlesService.plan == null) {
                             singlesService.plan = membership.plan
+                            plan = membership.plan
                         }
                     }
                     snackbarService.show("✅ USC credentials are valid")

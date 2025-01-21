@@ -131,7 +131,7 @@ fun PreferencesScreen(
                 textSize = WidthOrFill.Width(250.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text("Plan: ${viewModel.plan?.label ?: "N/A"}")
+            Text("Plan: ${viewModel.plan?.label ?: "?"}")
         }
         PreferencesItem("Home Coordinates") {
             var latitudeString by remember { mutableStateOf(viewModel.entity.homeLatitude?.toString() ?: "") }

@@ -19,6 +19,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Release v2
 
+* description for critical alignment has \"
 * system test: book something which can't be booked (different limits); parse response and show proper message
 * make scrollbar thingy brighter in dark mode
 * after sync, display report what happened ++ big WARNING if new noshow was detected!
@@ -28,6 +29,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Backlog
 
+* display GCal name, once connected tested ok
+* GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
+    * { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
 * next to book/cancel button: checkbox for google calendar entry management
 * in preferences: disable auto version check
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
