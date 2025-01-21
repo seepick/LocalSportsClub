@@ -41,7 +41,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Gradle
-        run: ./gradlew packageDistributionForCurrentOS -Plsc_version=${{ github.ref_name }} -Plsc_gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc_gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+        run: ./gradlew packageDistributionForCurrentOS -Plsc_version="${{ github.ref_name }}" -Plsc_gcalClientId="${{ secrets.GCAL_CLIENT_ID }}" -Plsc_gcalClientSecret="${{ secrets.GCAL_CLIENT_SECRET }}"
 
       - name: Upload Release Asset for Windows
         if: runner.os == 'Windows'
