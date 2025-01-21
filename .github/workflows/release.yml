@@ -8,7 +8,7 @@ on:
 jobs:
   prepare-release:
     # runs-on: ubuntu-latest
-    name: Creating the release first
+    name: Creating GitHub Release
     steps:
       - name: Create Release # https://github.com/marketplace/actions/create-tag-release
         id: create_release
@@ -17,7 +17,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
           body: No changelog provided
           draft: false
           prerelease: false
@@ -29,20 +29,22 @@ jobs:
     needs: prepare-release
     name: Building and uploading compose artifact
     steps:
-      - run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Log Info
+        run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Execute Gradle build
+      - name: Execute Gradle
         run: ./gradlew packageDistributionForCurrentOS -Plsc_version=${{ github.ref_name }} -Plsc_gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc_gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
 
       - name: Upload Release Asset for Windows
         if: runner.os == 'Windows'
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +56,6 @@ jobs:
 
       - name: Upload Release Asset for MacOS
         if: runner.os == 'macOS'
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

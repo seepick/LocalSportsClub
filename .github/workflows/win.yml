@@ -22,7 +22,7 @@ jobs:
         run: dir ${{ github.workspace }}
       #        build/compose/binaries/main/exe/LocalSportsClub-${{ github.ref_name }}.exe
       - name: Execute Gradle build
-        run: ./gradlew packageDistributionForCurrentOS -Plsc_version=1.0.0 -Plsc_gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc_gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+        run: ./gradlew packageDistributionForCurrentOS -Plsc_version="1.0.0" -Plsc_gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc_gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
       - run: dir ${{ github.workspace }}\build
       - run: dir ${{ github.workspace }}\build\compose
       - run: dir ${{ github.workspace }}\build\compose\binaries
