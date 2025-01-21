@@ -21,9 +21,9 @@ import seepick.localsportsclub.view.shared.RatingColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue.imageFileName },
-    TableColumn("Name", WidthOrWeight.Weight(0.5f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
-    TableColumn("Venue", WidthOrWeight.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", WidthOrWeight.Width(150.dp), CellRenderer.TextRenderer { it.category }),
+    TableColumn("Name", WidthOrWeight.Weight(0.6f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
+    TableColumn("Venue", WidthOrWeight.Weight(0.4f), CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date",
         WidthOrWeight.Width(100.dp),

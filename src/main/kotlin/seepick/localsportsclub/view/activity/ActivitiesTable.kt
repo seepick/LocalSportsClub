@@ -25,12 +25,12 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue.imageFileName },
     TableColumn(
         "Name",
-        WidthOrWeight.Weight(0.5f),
+        WidthOrWeight.Weight(0.6f),
         CellRenderer.TextRenderer(extractor = { if (it.teacher == null) it.name else "${it.name} /${it.teacher}" },
             sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
-    TableColumn("Venue", WidthOrWeight.Weight(0.5f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", WidthOrWeight.Width(150.dp), CellRenderer.TextRenderer { it.category }),
+    TableColumn("Venue", WidthOrWeight.Weight(0.4f), CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date", WidthOrWeight.Width(170.dp), CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },

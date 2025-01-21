@@ -37,7 +37,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
 //                val tableScrollState = rememberLazyListState()
                 Column(
 //                    state = tableScrollState,
-                    modifier = Modifier.width(700.dp).fillMaxHeight(1.0f)
+                    modifier = Modifier.width(500.dp).fillMaxHeight(1.0f)
                 ) {
 //                    item {
                     if (selectedVenue != null) {
