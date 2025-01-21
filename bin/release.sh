@@ -6,7 +6,8 @@ then
 fi
 
 VERSION_FILE=./version.txt
-echo "Current version is $VERSION_FILE"
+OLD_APP_VERSION=$(($(cat $VERSION_FILE) + 1))
+echo "Current version is: $OLD_APP_VERSION"
 read -p "Enter release version: " APP_VERSION
 
 git_status_verify () {
