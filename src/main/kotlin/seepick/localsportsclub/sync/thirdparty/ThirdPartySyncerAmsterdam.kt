@@ -9,7 +9,7 @@ import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
 
-class ThirdPartySyncer(
+class ThirdPartySyncerAmsterdam(
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
     private val dispatcher: SyncerListenerDispatcher,

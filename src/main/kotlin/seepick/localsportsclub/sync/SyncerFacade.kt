@@ -8,7 +8,8 @@ import seepick.localsportsclub.api.PlanProvider
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncer
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -18,7 +19,7 @@ class SyncerFacade(
     private val freetrainingSyncer: FreetrainingSyncer,
     private val scheduleSyncer: ScheduleSyncer,
     private val checkinSyncer: CheckinSyncer,
-    private val thirdPartySyncer: ThirdPartySyncer,
+    private val thirdPartySyncerAmsterdam: ThirdPartySyncerAmsterdam,
     private val cleanupPostSync: CleanupPostSync,
     private val dispatcher: SyncerListenerDispatcher,
     private val singlesService: SinglesService,
@@ -75,7 +76,9 @@ class SyncerFacade(
                 scheduleSyncer.sync(session, city)
                 checkinSyncer.sync(session, city)
                 if (isFullSync) {
-                    thirdPartySyncer.sync(days)
+                    if (city == City.Amsterdam) {
+                        thirdPartySyncerAmsterdam.sync(days)
+                    }
                     cleanupPostSync.cleanup()
                 }
                 singlesService.lastSync

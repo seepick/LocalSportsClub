@@ -21,8 +21,8 @@ data class City(
     override val label: String,
 ) : HasLabel {
     companion object {
-        val Amsterdam = City(1144, "Amsterdam")
         val all: List<City> by lazy { CitiesCountries.allCountries.flatMap { it.cities } }
+        val Amsterdam by lazy { byLabel("Amsterdam") }
         fun byId(cityId: Int) = all.firstOrNull { it.id == cityId } ?: error("City not found by ID $cityId")
         fun byLabel(label: String) = all.firstOrNull { it.label == label } ?: error("City not found by label [$label]")
     }

@@ -9,7 +9,7 @@ import seepick.localsportsclub.SyncMode
 import seepick.localsportsclub.sync.thirdparty.DeNieuweYogaSchoolFetcher
 import seepick.localsportsclub.sync.thirdparty.EversportsFetcher
 import seepick.localsportsclub.sync.thirdparty.MovementsYogaFetcher
-import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncer
+import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 
 private val log = logger {}
 
@@ -32,7 +32,7 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::MovementsYogaFetcher)
             singleOf(::EversportsFetcher)
             singleOf(::DeNieuweYogaSchoolFetcher)
-            singleOf(::ThirdPartySyncer)
+            singleOf(::ThirdPartySyncerAmsterdam)
             singleOf(::CleanupPostSync)
             singleOf(::SyncerFacade) bind Syncer::class
 

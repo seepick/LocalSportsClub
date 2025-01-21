@@ -11,8 +11,6 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Release v1
 
-* make third party info syncer city-dependent
-* online version checker
 * auto-build/release script (incl. github); FULLY automated (build4k?!)
 * inject build variables for lsc.properties file
 * design website + link to it in app

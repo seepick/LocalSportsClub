@@ -16,7 +16,7 @@ fun allModules(config: AppConfig) = listOf(
     rootModule(config),
     persistenceModule(config),
     apiModule(config),
-    serviceModule(),
+    serviceModule(config),
     gcalModule(config),
     syncModule(config),
     viewModule(config),

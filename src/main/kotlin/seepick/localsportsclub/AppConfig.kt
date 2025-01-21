@@ -9,6 +9,7 @@ data class AppConfig(
     val usc: UscConfig = UscConfig(),
     val logFileEnabled: Boolean = false,
     val gcal: GcalMode,
+    val versionCheckEnabled: Boolean = true,
 ) {
     companion object {
         val development = AppConfig(
@@ -22,6 +23,7 @@ data class AppConfig(
             gcal = GcalMode.Real,
 //            gcal = GcalMode.Noop,
 
+            versionCheckEnabled = true,
             database = DatabaseMode.Exposed,
             logFileEnabled = true,
         )
