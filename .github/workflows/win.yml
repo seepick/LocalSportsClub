@@ -21,6 +21,6 @@ jobs:
       - name: List files in the repository
         run: dir ${{ github.workspace }}
       - name: Execute Gradle build
-        run: gradlew.bat packageDistributionForCurrentOS -Plsc.version=1.0.0 -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+        run: ${{ github.workspace }}\gradlew.bat packageDistributionForCurrentOS -Plsc.version=1.0.0 -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
       - name: List files in the repository
         run: dir ${{ github.workspace }}\build
