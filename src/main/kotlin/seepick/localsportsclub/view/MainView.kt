@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -40,10 +42,20 @@ class SnackbarService : ViewModel() {
         this.snackbarHostState = snackbarHostState
     }
 
-    fun show(message: String) {
+    fun show(
+        message: String,
+        actionLabel: String? = null,
+        duration: SnackbarDuration = SnackbarDuration.Short,
+        onResult: (SnackbarResult) -> Unit = {},
+    ) {
         executeViewTask("Showing snackbar failed") {
             log.debug { "showing snackbar [$message]" }
-            snackbarHostState.showSnackbar(message)
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                duration = duration,
+            )
+            onResult(result)
         }
     }
 }
@@ -62,7 +74,7 @@ fun MainView(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
-                // TODO align center and shrink width of snackbar
+                // TODO align center and shrink width of snackbar; also change bg color
                 // modifier = Modifier.width(500.dp).align(Alignment.CenterHorizontally)
             )
         }

@@ -25,6 +25,7 @@ fun viewModule(config: AppConfig) = module {
     viewModelOf(::NotesViewModel)
     viewModelOf(::SyncerViewModel)
     viewModelOf(::PreferencesViewModel)
+    viewModelOf(::VersionNotifier)
     singleOf(::UsageStorage)
     singleOf(::SnackbarService)
 }

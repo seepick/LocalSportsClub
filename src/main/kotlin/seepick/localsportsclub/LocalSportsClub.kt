@@ -22,6 +22,7 @@ import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.SyncerViewModel
+import seepick.localsportsclub.view.VersionNotifier
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.common.showErrorDialog
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
@@ -101,6 +102,7 @@ object LocalSportsClub {
 
                         val applicationLifecycleListeners = listOf(
                             usageStorage,
+                            koinInject<VersionNotifier>(),
                             koinViewModel<MainViewModel>(),
                             koinViewModel<ActivityViewModel>(),
                             koinViewModel<FreetrainingViewModel>(),

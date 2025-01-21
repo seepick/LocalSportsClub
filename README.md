@@ -11,11 +11,9 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Release v1
 
-* auto-build/release script (incl. github); FULLY automated (build4k?!)
-* inject build variables for lsc.properties file
 * design website + link to it in app
-
 * custom mounted DMG icon
+
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * bigger PR: tell multiple friends, ask for feedback
 * contact someone: is it legal what i'm doing?
@@ -32,6 +30,8 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Backlog
 
+* next to book/cancel button: checkbox for google calendar entry management
+* in preferences: disable auto version check
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
 * feedback about sync progress while running (indicate current state, maybe even deterministic progress)
 * make long venue texts "somehow" selectable; A) selectable text (toolitp?!) or B) click => copy clipboard
