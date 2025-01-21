@@ -38,7 +38,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Gradle build
-        run: ./gradlew packageDistributionForCurrentOS -Plsc_version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+        run: ./gradlew packageDistributionForCurrentOS -Plsc_version=${{ github.ref_name }} -Plsc_gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc_gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
 
       - name: Upload Release Asset for Windows
         if: runner.os == 'Windows'
@@ -60,7 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.prepare-release.outputs.upload-url }}
-          # /Users/runner/work/LocalSportsClub/LocalSportsClub/build/compose/binaries/main/dmg/LocalSportsClub-1.0.2.dmg
           asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
           asset_name: LocalSportsClub.dmg
           asset_content_type: application/x-apple-diskimage
