@@ -8,6 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import seepick.localsportsclub.StaticClock
+import seepick.localsportsclub.city
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
@@ -17,6 +18,7 @@ import seepick.localsportsclub.persistence.freetrainingDbo
 import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
@@ -38,6 +40,7 @@ class UsageStorageTest : DescribeSpec() {
     private val year = 2025
     private lateinit var activityRepo: InMemoryActivityRepo
     private lateinit var freetrainingRepo: InMemoryFreetrainingRepo
+    private val anyCity = Arb.city().next()
 
     override suspend fun beforeEach(testCase: TestCase) {
         activityRepo = InMemoryActivityRepo()
@@ -45,16 +48,13 @@ class UsageStorageTest : DescribeSpec() {
     }
 
     private fun usage(
-        today: String = "1.5.",
-        periodFirstDay: Int? = null,
-        plan: Plan? = null
+        today: String = "1.5.", city: City? = anyCity, periodFirstDay: Int? = null, plan: Plan? = null
     ) = UsageStorage(
         clock = StaticClock(today.parseDateWithFixedTime()),
         activityRepo = activityRepo,
         freetrainingRepo = freetrainingRepo,
         singlesService = DummySinglesService(
-            plan = plan,
-            preferences = Preferences.empty.copy(periodFirstDay = periodFirstDay)
+            plan = plan, preferences = Preferences.empty.copy(periodFirstDay = periodFirstDay, city = city)
         )
     )
 
@@ -187,8 +187,11 @@ class UsageStorageTest : DescribeSpec() {
         describe("Percentages") {
             it("period") {
                 fun percentagePeriodShouldBe(today: Int, expected: Double) {
-                    usage(today = "$today.12.", periodFirstDay = 1)
-                        .percentagePeriod.shouldBeBetween(expected, expected, 0.001)
+                    usage(today = "$today.12.", periodFirstDay = 1).percentagePeriod.shouldBeBetween(
+                        expected,
+                        expected,
+                        0.001
+                    )
                 }
                 percentagePeriodShouldBe(1, 0.0)
                 percentagePeriodShouldBe(2, 0.032)
@@ -197,13 +200,11 @@ class UsageStorageTest : DescribeSpec() {
             }
             it("check-in") {
                 suspend fun percentageCheckedinShouldBe(countCheckins: Int, expected: Double) {
-                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium)
-                        .also { usage ->
-                            repeat(countCheckins) {
-                                usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingState.Checkedin) })
-                            }
+                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium).also { usage ->
+                        repeat(countCheckins) {
+                            usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingState.Checkedin) })
                         }
-                        .percentageCheckedinShouldBe(expected)
+                    }.percentageCheckedinShouldBe(expected)
                 }
                 percentageCheckedinShouldBe(0, 0.0)
                 percentageCheckedinShouldBe(1, 0.1)
@@ -212,13 +213,11 @@ class UsageStorageTest : DescribeSpec() {
             }
             it("booked") {
                 suspend fun percentageBookedShouldBe(countCheckins: Int, expected: Double) {
-                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium)
-                        .also { usage ->
-                            repeat(countCheckins) {
-                                usage.onActivityAdded(activity("3.12.") { copy(state = ActivityState.Booked) })
-                            }
+                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium).also { usage ->
+                        repeat(countCheckins) {
+                            usage.onActivityAdded(activity("3.12.") { copy(state = ActivityState.Booked) })
                         }
-                        .percentageBookedShouldBe(expected)
+                    }.percentageBookedShouldBe(expected)
                 }
                 percentageBookedShouldBe(0, 0.0)
                 percentageBookedShouldBe(1, 0.1)

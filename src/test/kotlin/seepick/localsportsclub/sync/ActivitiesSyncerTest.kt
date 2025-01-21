@@ -34,7 +34,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val clock = StaticClock(todayNow)
     private val syncDaysAhead = 4
     private val anySession = Arb.phpSessionId().next()
-    private val anyCity = Arb.city().next()
+    private val city = Arb.city().next()
     private val anyPlan = Arb.enum<Plan>().next()
 
     override suspend fun beforeEach(testCase: TestCase) {
@@ -61,7 +61,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     init {
         describe("When full sync") {
             it("Given venue stored and activity fetched Then inserted and dispatched") {
-                val venue = Arb.venueDbo().next()
+                val venue = Arb.venueDbo().next().copy(cityId = city.id)
                 val activityInfo = Arb.activityInfo().next().copy(venueSlug = venue.slug)
                 venueRepo.stored[venue.id] = venue
                 coEvery {
@@ -73,7 +73,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
                     }
                 }
 
-                syncer().sync(anySession, anyPlan, anyCity, clock.today().createDaysUntil(syncDaysAhead))
+                syncer().sync(anySession, anyPlan, city, clock.today().createDaysUntil(syncDaysAhead))
 
                 activityRepo.stored.values.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id

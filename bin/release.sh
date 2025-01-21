@@ -6,7 +6,8 @@ then
 fi
 
 VERSION_FILE=./version.txt
-APP_VERSION=$(($(cat $VERSION_FILE) + 1))
+echo "Current version is $VERSION_FILE"
+read -p "Enter release version: " APP_VERSION
 
 git_status_verify () {
   git status
@@ -17,13 +18,12 @@ git_status_verify () {
 
 git_tag_and_push () {
   echo "Incrementing and tagging version number via GIT ..."
-  echo $APP_VERSION > $VERSION_FILE
+  echo "$APP_VERSION" > $VERSION_FILE
   git add .
-  TAG_NAME="v${APP_VERSION}"
   git commit -m "Increment version number to $APP_VERSION"
-  git tag -a $TAG_NAME -m "Tag new release version $APP_VERSION"
+  git tag -a $APP_VERSION -m "Tag new release version $APP_VERSION"
   git push
-  git push origin $TAG_NAME
+  git push origin $APP_VERSION
 }
 
 git_status_verify

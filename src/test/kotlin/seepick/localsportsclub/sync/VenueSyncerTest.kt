@@ -27,14 +27,11 @@ import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.service.model.Plan
-import seepick.localsportsclub.uscConfig
-
 
 class VenueSyncerTest : StringSpec() {
 
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
-    private val uscConfig = Arb.uscConfig().next()
     private val phpSessionId = Arb.phpSessionId().next()
     private val city = Arb.city().next()
     private val plan = Arb.enum<Plan>().next()
@@ -106,7 +103,7 @@ class VenueSyncerTest : StringSpec() {
             venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
         }
         "Given api returns 1 with linked and db has this 1 When sync Then link them" {
-            val yetExisting = venueRepo.insert(Arb.venueDbo().next())
+            val yetExisting = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id))
             coEvery { api.fetchVenues(any(), eq(VenuesFilter(city, plan))) } returns listOf(
                 remoteVenue
             )

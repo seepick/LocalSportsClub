@@ -10,8 +10,10 @@ plugins {
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
+val appVersion = project.properties["lsc.version"]?.toString() ?: "1.0.0"
+
 group = "com.github.seepick.localsportsclub"
-version = "1.0-SNAPSHOT"
+version = appVersion
 
 repositories {
     mavenCentral()
@@ -91,7 +93,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg) //, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LocalSportsClub"
-            packageVersion = "1.0"
+            packageVersion = appVersion
             modules(
                 "java.net.http",
                 "java.sql",
@@ -109,13 +111,14 @@ tasks.withType<Test>().configureEach { // to be able to run kotests
     useJUnitPlatform()
 }
 
+
 configure<ProcessResources>("processResources") {
     from("src/main/resources") {
         include("lsc.properties")
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         filter<ReplaceTokens>(
             "tokens" to mapOf(
-                "version" to (project.properties["lsc.version"] ?: "0"),
+                "version" to appVersion,
                 "gcalClientId" to (project.properties["lsc.gcalClientId"] ?: "!MISSING!"),
                 "gcalClientSecret" to (project.properties["lsc.gcalClientSecret"] ?: "!MISSING!"),
             ),

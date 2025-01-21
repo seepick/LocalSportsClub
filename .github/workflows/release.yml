@@ -1,0 +1,56 @@
+name: Create releases on tags
+
+on:
+  push:
+    tags:
+
+jobs:
+  gradle:
+    # todo run 3 times: win, macos, linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Execute Gradle build
+        run: ./gradlew package -Plsc.version=${{ github.ref_name }} -Plsc.gcalClientId=${{ secrets.GCAL_CLIENT_ID }} -Plsc.gcalClientSecret=${{ secrets.GCAL_CLIENT_SECRET }}
+
+      #      - name: Release # https://github.com/softprops/action-gh-release
+      #        uses: softprops/action-gh-release@v2
+      #        with:
+      #          draft: false
+      #          name: Release ${{ github.ref_name }}
+      #          prerelease: false
+      #          fail_on_unmatched_files: true
+      #          make_latest: true
+      #          files: |
+      #            build/compose/binaries/main/app
+
+      - name: Create Release # https://github.com/marketplace/actions/create-tag-release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: No changelog provided
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
+          asset_name: LocalSportsClub.dmg
+          asset_content_type: application/x-apple-diskimage
