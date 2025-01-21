@@ -7,8 +7,10 @@ on:
 
 jobs:
   gradle:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest #ubuntu-latest # TODO change back
     steps:
+      # FIXME DELETE ME
+      - run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
