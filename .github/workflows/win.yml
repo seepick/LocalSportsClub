@@ -6,7 +6,6 @@ on:
 jobs:
   build-and-upload:
     runs-on: windows-latest
-    needs: prepare-release
     name: Building and uploading compose artifact
     steps:
       - run: echo "This job is now running on a ${{ runner.os }} server. Ref is ${{ github.ref }} and RefName ${{ github.ref_name }}"
