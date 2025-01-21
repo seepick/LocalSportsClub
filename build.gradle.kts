@@ -91,7 +91,7 @@ compose.desktop {
         mainClass = "seepick.localsportsclub.LocalSportsClub"
         jvmArgs += listOf("-Dlsc.env=PROD", "-Xmx1G", "--add-exports", "java.desktop/com.apple.eawt=ALL-UNNAMED")
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg) //, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe)
             packageName = "LocalSportsClub"
             packageVersion = appVersion
             modules(
@@ -110,7 +110,6 @@ compose.desktop {
 tasks.withType<Test>().configureEach { // to be able to run kotests
     useJUnitPlatform()
 }
-
 
 configure<ProcessResources>("processResources") {
     from("src/main/resources") {
