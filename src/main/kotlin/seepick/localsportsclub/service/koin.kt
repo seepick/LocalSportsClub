@@ -12,7 +12,7 @@ fun serviceModule() = module {
     single { SystemClock } bind Clock::class
     single { httpClient } bind HttpClient::class
     singleOf(::DataStorage)
-    singleOf(::SinglesService)
+    singleOf(::SinglesServiceImpl) bind SinglesService::class
     singleOf(::BookingService)
     single {
         FileSystemImageStorage(

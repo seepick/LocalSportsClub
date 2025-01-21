@@ -8,8 +8,8 @@ fun StringValues.toFlatMap(): Map<String, String> =
     toMap().mapValues { it.value.single() }
 
 inline fun <reified T> readTestResponse(fileName: String, folder: String = "/test_lsc/response/"): T {
-    val json = readFromClasspath("$folder$fileName")
-    return if (T::class == String::class) json as T else jsonx.decodeFromString(json)
+    val fileContent = readFromClasspath("$folder$fileName")
+    return if (T::class == String::class) fileContent as T else jsonx.decodeFromString(fileContent)
 }
 
 val jsonx = Json {

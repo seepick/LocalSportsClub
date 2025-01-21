@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.MainWindowState
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxText
@@ -60,7 +60,7 @@ fun VenueDetail(
     onFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
     reducedVSpace: Boolean,
-    uscConfig: UscConfig = koinInject(),
+    configuredCity: City?,
     mainWindowState: MainWindowState = koinInject(),
 ) {
     val uriHandler = LocalUriHandler.current
@@ -110,7 +110,7 @@ fun VenueDetail(
         Tooltip(venue.description) {
             Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
-        if (venue.city != uscConfig.city) {
+        if (venue.city != configuredCity) {
             Spacer(Modifier.height(5.dp))
             LabeledText("City", venue.city.label)
         }

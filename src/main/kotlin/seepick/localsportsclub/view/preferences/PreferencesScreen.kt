@@ -1,13 +1,18 @@
 package seepick.localsportsclub.view.preferences
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,9 +30,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.WidthOrFill
 
 private val col1width = 170.dp
@@ -51,7 +56,7 @@ fun PreferencesScreen(
     val focusManager = LocalFocusManager.current
 
     Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
-        PreferencesItem("USC Credentials") {
+        PreferencesItem("Credentials") {
             TextField(
                 value = viewModel.entity.uscUsername,
                 label = { Text("Username") },
@@ -68,12 +73,42 @@ fun PreferencesScreen(
             Spacer(Modifier.width(10.dp))
             TextField(
                 value = viewModel.entity.uscPassword,
-                label = { Text("Password") },
+                label = { Text("Password") }, // TODO render password ***
                 onValueChange = { viewModel.entity.uscPassword = it },
             )
+            Spacer(Modifier.width(10.dp))
+            Button(
+                enabled = viewModel.entity.uscUsername.isNotEmpty() && !viewModel.isUscConnectingTesting && viewModel.entity.uscPassword.isNotEmpty(),
+                onClick = {
+                    viewModel.testUscConnection()
+                },
+            ) {
+                Text("Test Connection")
+            }
+            AnimatedVisibility(
+                visible = viewModel.isUscConnectingTesting, enter = fadeIn(), exit = fadeOut()
+            ) {
+                CircularProgressIndicator()
+            }
         }
-        PreferencesItem("USC Location") {
+        PreferencesItem("USC Info") {
+            Tooltip("First day of the month when the USC period start", offset = true) {
+                TextField(value = viewModel.entity.periodFirstDay?.toString() ?: "",
+                    label = { Text("Period") },
+                    modifier = Modifier.width(120.dp),
+                    onValueChange = {
+                        if (it.isEmpty()) {
+                            viewModel.entity.periodFirstDay = null
+                        } else {
+                            it.toIntOrNull()?.also {
+                                viewModel.entity.periodFirstDay = it
+                            }
+                        }
+                    })
+            }
+            Spacer(Modifier.width(10.dp))
             DropDownTextField(
+                label = "Country",
                 items = Country.all,
                 selectedItem = viewModel.entity.country,
                 itemFormatter = { it?.label ?: "" },
@@ -81,60 +116,71 @@ fun PreferencesScreen(
                     viewModel.entity.country = it
                     viewModel.entity.city = null
                 },
-                label = "Country",
-                textSize = WidthOrFill.Width(200.dp),
+                textSize = WidthOrFill.Width(180.dp),
             )
             Spacer(Modifier.width(10.dp))
             DropDownTextField(
+                label = "City",
                 items = viewModel.entity.country?.cities ?: emptyList(),
                 enabled = viewModel.entity.country != null,
                 itemFormatter = { it?.label ?: "" },
                 selectedItem = viewModel.entity.city,
                 onItemSelected = { viewModel.entity.city = it },
-                label = "City",
-                textSize = WidthOrFill.Width(200.dp),
-            )
-        }
-        PreferencesItem("Google Calendar") {
-            Switch(
-                checked = viewModel.entity.calendarEnabled, onCheckedChange = {
-                    viewModel.entity.calendarEnabled = it
-                }, colors = androidx.compose.material3.SwitchDefaults.colors(
-                    checkedTrackColor = Lsc.colors.primary,
-                    uncheckedTrackColor = Lsc.colors.primaryBrighter,
-                )
+                textSize = WidthOrFill.Width(250.dp),
             )
             Spacer(Modifier.width(10.dp))
-            TextField(
-                value = viewModel.entity.calendarId,
-                enabled = viewModel.entity.calendarEnabled,
-                label = { Text("Calendar ID") },
-                onValueChange = { viewModel.entity.calendarId = it },
-            )
+            Text("Plan: ${viewModel.plan?.label ?: "N/A"}")
         }
         PreferencesItem("Home Coordinates") {
             var latitudeString by remember { mutableStateOf(viewModel.entity.homeLatitude?.toString() ?: "") }
             var longitudeString by remember { mutableStateOf(viewModel.entity.homeLongitude?.toString() ?: "") }
             Spacer(Modifier.width(5.dp))
-            TextField(value = latitudeString,
+            TextField(label = { Text("Latitude") },
+                value = latitudeString,
                 maxLines = 1,
                 isError = latitudeString.isNotEmpty() && latitudeString.toDoubleOrNull() == null,
-                label = { Text("Latitude") },
-                modifier = Modifier.width(250.dp),
+                modifier = Modifier.width(200.dp),
                 onValueChange = {
                     latitudeString = it
                     viewModel.onLatitudeEntered(it)
                 })
             Spacer(Modifier.width(10.dp))
-            TextField(value = longitudeString,
+            TextField(label = { Text("Longitude") },
+                value = longitudeString,
                 maxLines = 1,
                 isError = longitudeString.isNotEmpty() && longitudeString.toDoubleOrNull() == null,
-                label = { Text("Longitude") },
-                modifier = Modifier.width(250.dp),
+                modifier = Modifier.width(200.dp),
                 onValueChange = {
                     longitudeString = it
                     viewModel.onLongitudeEntered(it)
                 })
+        }
+        PreferencesItem("Google Calendar") {
+            Switch(checked = viewModel.entity.calendarEnabled, onCheckedChange = {
+                viewModel.entity.calendarEnabled = it
+            })
+            Spacer(Modifier.width(10.dp))
+            TextField(
+                label = { Text("Calendar ID") },
+                value = viewModel.entity.calendarId,
+                enabled = viewModel.entity.calendarEnabled,
+                onValueChange = { viewModel.entity.calendarId = it },
+                modifier = Modifier.width(500.dp)
+            )
+            Spacer(Modifier.width(10.dp))
+            Button(
+                enabled = viewModel.entity.calendarEnabled && !viewModel.isGcalConnectingTesting && viewModel.entity.calendarId.isNotEmpty(),
+                onClick = {
+                    viewModel.testGcalConnection()
+                },
+            ) {
+                Text("Test Connection")
+            }
+            AnimatedVisibility(
+                visible = viewModel.isGcalConnectingTesting, enter = fadeIn(), exit = fadeOut()
+            ) {
+                CircularProgressIndicator()
+            }
         }
 
         if (viewModel.entity.isDirty()) {

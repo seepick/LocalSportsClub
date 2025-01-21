@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 
@@ -19,6 +20,7 @@ import seepick.localsportsclub.Lsc
 @Composable
 fun Tooltip(
     text: String?,
+    offset: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     if (text == null) {
@@ -41,9 +43,23 @@ fun Tooltip(
                 }
             },
             delayMillis = 600,
-            tooltipPlacement = TooltipPlacement.CursorPoint(alignment = Alignment.BottomEnd),
+            tooltipPlacement = TooltipPlacement.CursorPoint(
+                alignment = Alignment.BottomEnd,
+                offset = if (offset) DpOffset(3.dp, 3.dp) else DpOffset.Zero,
+            ),
         ) {
             content()
         }
+    }
+}
+
+@Composable
+fun ConditionalTooltip(condition: Boolean, tooltipText: String, content: @Composable () -> Unit) {
+    if (condition) {
+        Tooltip(tooltipText) {
+            content()
+        }
+    } else {
+        content()
     }
 }

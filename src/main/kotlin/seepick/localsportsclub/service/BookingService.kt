@@ -1,12 +1,14 @@
 package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.api.PhpSessionProvider
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
 import seepick.localsportsclub.gcal.GcalService
+import seepick.localsportsclub.gcal.readCalendarIdOrThrow
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -28,6 +30,8 @@ class BookingService(
     private val venueRepo: VenueRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val gcalService: GcalService,
+    private val phpSessionProvider: PhpSessionProvider,
+    private val singlesService: SinglesService
 ) {
     private val log = logger {}
 
@@ -38,34 +42,30 @@ class BookingService(
         listeners += listener
     }
 
-    suspend fun book(subEntity: SubEntity): BookingResult =
-        bookOrCancel(
-            subEntity = subEntity,
-            isBooking = true,
-            apiOperation = UscApi::book,
-            operationSucceeded = { it is BookingResult.BookingSuccess },
-        )
+    suspend fun book(subEntity: SubEntity): BookingResult = bookOrCancel(
+        subEntity = subEntity,
+        isBooking = true,
+        apiOperation = { uscApi.book(phpSessionProvider.provide(), it) },
+        operationSucceeded = { it is BookingResult.BookingSuccess },
+    )
 
-    suspend fun cancel(subEntity: SubEntity): CancelResult =
-        bookOrCancel(
-            subEntity = subEntity,
-            isBooking = false,
-            apiOperation = UscApi::cancel,
-            operationSucceeded = { it is CancelResult.CancelSuccess },
-        )
+    suspend fun cancel(subEntity: SubEntity): CancelResult = bookOrCancel(
+        subEntity = subEntity,
+        isBooking = false,
+        apiOperation = { uscApi.cancel(phpSessionProvider.provide(), it) },
+        operationSucceeded = { it is CancelResult.CancelSuccess },
+    )
 
     private val SubEntity.isBookable: Boolean
-        get() =
-            when (this) {
-                is SubEntity.ActivityEntity -> activity.state == ActivityState.Blank
-                is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Blank
-            }
+        get() = when (this) {
+            is SubEntity.ActivityEntity -> activity.state == ActivityState.Blank
+            is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Blank
+        }
     private val SubEntity.isCancellable: Boolean
-        get() =
-            when (this) {
-                is SubEntity.ActivityEntity -> activity.state == ActivityState.Booked
-                is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Scheduled
-            }
+        get() = when (this) {
+            is SubEntity.ActivityEntity -> activity.state == ActivityState.Booked
+            is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Scheduled
+        }
 
     private val ActivityDbo.isBookable: Boolean get() = state == ActivityState.Blank
     private val ActivityDbo.isCancellable: Boolean get() = state == ActivityState.Booked
@@ -109,8 +109,9 @@ class BookingService(
         if (isBooking) {
             createCalendarActivity(updatedActivityDbo)
         } else {
+            val calendarId = singlesService.preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
             gcalService.delete(
-                GcalDeletion(
+                calendarId = calendarId, GcalDeletion(
                     day = subEntity.activity.dateTimeRange.from.toLocalDate(),
                     activityOrFreetrainingId = subEntity.activity.id,
                     isActivity = true,
@@ -126,15 +127,16 @@ class BookingService(
 
     private fun createCalendarActivity(activityDbo: ActivityDbo) {
         val venue = venueRepo.selectById(activityDbo.venueId) ?: error("Venue not found for: $activityDbo")
-        gcalService.create(GcalEntry.GcalActivity(
-            activityId = activityDbo.id,
-            title = activityDbo.nameWithTeacherIfPresent,
-            dateTimeRange = DateTimeRange(from = activityDbo.from, to = activityDbo.to),
-            location = venue.location(),
-            notes = "[LSC] created${
-                venue.officialWebsite?.let { "\n$it" } ?: ""
-            }",
-        ))
+        gcalService.create(singlesService.readCalendarIdOrThrow(),
+            GcalEntry.GcalActivity(
+                activityId = activityDbo.id,
+                title = activityDbo.nameWithTeacherIfPresent,
+                dateTimeRange = DateTimeRange(from = activityDbo.from, to = activityDbo.to),
+                location = venue.location(),
+                notes = "[LSC] created${
+                    venue.officialWebsite?.let { "\n$it" } ?: ""
+                }",
+            ))
     }
 
     private fun bookOrCancelFreetraining(subEntity: SubEntity.FreetrainingEntity, isBooking: Boolean) {
@@ -146,7 +148,7 @@ class BookingService(
             createCalendarFreetraining(updatedFreetrainingDbo)
         } else {
             gcalService.delete(
-                GcalDeletion(
+                singlesService.readCalendarIdOrThrow(), GcalDeletion(
                     day = subEntity.freetraining.date,
                     activityOrFreetrainingId = subEntity.freetraining.id,
                     isActivity = false,
@@ -160,15 +162,16 @@ class BookingService(
 
     private fun createCalendarFreetraining(freetrainingDbo: FreetrainingDbo) {
         val venue = venueRepo.selectById(freetrainingDbo.venueId) ?: error("Venue not found for: $freetrainingDbo")
-        gcalService.create(GcalEntry.GcalFreetraining(
-            freetrainingId = freetrainingDbo.id,
-            title = freetrainingDbo.name,
-            date = freetrainingDbo.date,
-            location = venue.location(),
-            notes = "[LSC] created${
-                venue.officialWebsite?.let { "\n$it" } ?: ""
-            }",
-        ))
+        gcalService.create(singlesService.readCalendarIdOrThrow(),
+            GcalEntry.GcalFreetraining(
+                freetrainingId = freetrainingDbo.id,
+                title = freetrainingDbo.name,
+                date = freetrainingDbo.date,
+                location = venue.location(),
+                notes = "[LSC] created${
+                    venue.officialWebsite?.let { "\n$it" } ?: ""
+                }",
+            ))
     }
 
     fun markActivityFromNoshowToCheckedin(activity: Activity) {
@@ -181,3 +184,4 @@ class BookingService(
         }
     }
 }
+

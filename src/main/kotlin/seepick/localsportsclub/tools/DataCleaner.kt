@@ -13,6 +13,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.unescape
 
 object DataCleaner {
@@ -72,7 +73,7 @@ object DataCleaner {
 
     private fun cleanTexts() {
         val escapedSymbols = listOf("\\\"", "\\n")
-        venueRepo.selectAll().forEach { venue ->
+        venueRepo.selectAll(City.Amsterdam.id).forEach { venue ->
             val dirtyTexts = VenueDboText.entries.filter { textField ->
                 val value: String? = textField.getValue(venue)
                 (value != null && escapedSymbols.any { value.contains(it) })
@@ -89,7 +90,7 @@ object DataCleaner {
             }
         }
 
-        venueRepo.selectAll().forEach { venue ->
+        venueRepo.selectAll(City.Amsterdam.id).forEach { venue ->
             if (venue.importantInfo != null) {
                 val cleanedInfo = cleanVenueInfo(venue.importantInfo)
                 if (cleanedInfo != venue.importantInfo) {
@@ -101,14 +102,14 @@ object DataCleaner {
 
 
     private fun cleanActivityNames() = transaction {
-        activityRepo.selectAll().forEach {
+        activityRepo.selectAll(City.Amsterdam.id).forEach {
             val cleaned = cleanActivityFreetrainingName(it.name)
             if (it.name != cleaned) {
                 println("[${it.name}] => [$cleaned]")
                 activityRepo.update(it.copy(name = cleaned))
             }
         }
-        freetrainingRepo.selectAll().forEach {
+        freetrainingRepo.selectAll(City.Amsterdam.id).forEach {
             val cleaned = cleanActivityFreetrainingName(it.name)
             if (it.name != cleaned) {
                 println("[${it.name}] => [$cleaned]")
@@ -153,17 +154,17 @@ object DataCleaner {
                 )
             )
         }
-        venueRepo.selectAll().filter { it.street == "undefined" }.forEach {
+        venueRepo.selectAll(City.Amsterdam.id).filter { it.street == "undefined" }.forEach {
             venueRepo.update(it.copy(street = ""))
         }
-        venueRepo.selectAll().filter { it.addressLocality == "Amsterdam" }.forEach {
+        venueRepo.selectAll(City.Amsterdam.id).filter { it.addressLocality == "Amsterdam" }.forEach {
             venueRepo.update(it.copy(addressLocality = "Amsterdam, Netherlands"))
         }
     }
 
     private fun linkMissingVenues() {
         if (prodMode) error("This is NOT necessary for PROD anymore, as syncer was already fixed!")
-        val links = linkRepo.selectAll()
+        val links = linkRepo.selectAll(City.Amsterdam.id)
 //        val links = listOf(VenueIdLink(1, 2), VenueIdLink(1, 3)) // {1,3} missing
         val circles = mutableSetOf<MutableSet<Int>>()
         links.forEach { (id1, id2) ->

@@ -12,6 +12,8 @@ import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityCheckinEntry
 import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.checkin.CheckinsPage
+import seepick.localsportsclub.api.phpSessionId
+import seepick.localsportsclub.city
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
@@ -33,6 +35,9 @@ class CheckinSyncerTest : StringSpec() {
     private lateinit var testRepo: TestRepoFacade
     private val now = SystemClock.now()
     private val today = now.toLocalDate()
+    private val phpSessionId = Arb.phpSessionId().next()
+    private val city = Arb.city().next()
+
 
     override suspend fun beforeEach(testCase: TestCase) {
         uscApi = mockk()
@@ -61,22 +66,22 @@ class CheckinSyncerTest : StringSpec() {
 
     private fun mockCheckinsPage(pageNr: Int, date: LocalDate, activityId: Int): CheckinEntry {
         val entry = Arb.activityCheckinEntry().next().copy(activityId = activityId, date = date, isNoShow = false)
-        coEvery { uscApi.fetchCheckinsPage(pageNr) } returns CheckinsPage(listOf(entry))
+        coEvery { uscApi.fetchCheckinsPage(phpSessionId, pageNr) } returns CheckinsPage(listOf(entry))
         return entry
     }
 
     private fun mockCheckinsEmptyPage(pageNr: Int) {
-        coEvery { uscApi.fetchCheckinsPage(pageNr) } returns CheckinsPage.empty
+        coEvery { uscApi.fetchCheckinsPage(any(), pageNr) } returns CheckinsPage.empty
     }
 
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
             val activity = testRepo.insertActivity(state = ActivityState.Blank)
             val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id, isNoShow = false)
-            coEvery { uscApi.fetchCheckinsPage(1) } returns CheckinsPage(listOf(entry))
+            coEvery { uscApi.fetchCheckinsPage(phpSessionId, 1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 
-            syncer.sync()
+            syncer.sync(phpSessionId, city)
 
             val expected = activity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(activity.id) shouldBe expected
@@ -93,7 +98,7 @@ class CheckinSyncerTest : StringSpec() {
             mockCheckinsPage(3, today.minusDays(2), activity3.id)
             // no further mocking of pages as interrupted by pivot activity
 
-            syncer.sync()
+            syncer.sync(phpSessionId, city)
         }
         "Given checkin for locally non-existing activity Then refetch and rescue it" {
             val nonExistingActivityId = 42
@@ -102,6 +107,8 @@ class CheckinSyncerTest : StringSpec() {
             val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
             coEvery {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
+                    phpSessionId,
+                    city,
                     nonExistingActivityId,
                     checkinEntry.venueSlug,
                     any()
@@ -111,7 +118,7 @@ class CheckinSyncerTest : StringSpec() {
                 rescuedActivity
             }
 
-            syncer.sync()
+            syncer.sync(phpSessionId, city)
 
             val expected = rescuedActivity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(expected.id) shouldBe expected

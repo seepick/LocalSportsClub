@@ -39,7 +39,6 @@ fun UsageView(
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)
     val percentageBooked by usageStorage.percentageBooked.collectAsState(0.0)
     val year = clock.today().year
-    val usageConfig = uscConfig.usageConfig
     Column {
         Row {
             Text("Period: ")
@@ -59,7 +58,7 @@ fun UsageView(
                 withStyle(style = SpanStyle(color = colorBooked, fontWeight = FontWeight.Bold)) {
                     append(bookedCount.toString())
                 }
-                append(" / ${usageConfig.maxBookingsForPeriod}")
+                append(" / ${usageStorage.maxBookingsForPeriod}")
             })
         }
         UsageIndicator(

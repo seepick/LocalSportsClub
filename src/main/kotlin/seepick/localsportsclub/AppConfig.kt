@@ -1,18 +1,14 @@
 package seepick.localsportsclub
 
 import seepick.localsportsclub.api.UscConfig
-import seepick.localsportsclub.gcal.GcalConfig
-import seepick.localsportsclub.view.Screen
 
 data class AppConfig(
     val database: DatabaseMode,
     val api: ApiMode,
     val sync: SyncMode,
-    val firstScreen: Screen? = null,
     val usc: UscConfig = UscConfig(),
     val logFileEnabled: Boolean = false,
     val gcal: GcalMode,
-    val gcalConfig: GcalConfig = GcalConfig(),
 ) {
     companion object {
         val development = AppConfig(
@@ -28,7 +24,6 @@ data class AppConfig(
 
             database = DatabaseMode.Exposed,
             logFileEnabled = true,
-            firstScreen = Screen.Activities,
         )
         val production = AppConfig(
             database = DatabaseMode.Exposed,
@@ -57,15 +52,6 @@ enum class SyncMode {
 enum class GcalMode {
     Noop, Real
 }
-
-data class UsageConfig(
-    val periodConfiguredFirstDay: Int = 2,
-
-    val maxBookingsForPeriod: Int = 18,
-    val maxBookingsForDay: Int = 2,
-    val maxBookingsPerVenueForMonth: Int = 6, // it's per venue, altough a parther can have multiple venues (=locations)
-    val maxBookingsPerVenueForDay: Int = 1,
-)
 
 enum class UscLang(val urlCode: String) {
     English("en"),

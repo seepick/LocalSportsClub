@@ -15,14 +15,15 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
-import seepick.localsportsclub.api.Credentials
 import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.CitiesCountries
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
-import seepick.localsportsclub.service.model.allCities
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).next()
@@ -85,17 +86,29 @@ fun Arb.Companion.singlesDbo() = arbitrary {
     SinglesDbo(
         notes = string().next(),
         lastSync = localDateTime().orNull().next(),
-        windowPref = null,
+        windowPref = windowPref().orNull().next(),
+        plan = enum<Plan>().orNull().next(),
         preferences = preferences().next(),
+    )
+}
+
+
+fun Arb.Companion.windowPref() = arbitrary {
+    WindowPref(
+        width = int(min = 0).next(),
+        height = int(min = 0).next(),
+        posX = int(min = 0).next(),
+        posY = int(min = 0).next(),
     )
 }
 
 fun Arb.Companion.preferences() = arbitrary {
     Preferences(
         uscCredentials = credentials().orNull().next(),
-        city = CitiesCountries.allCities.random(),
+        city = City.all.random(),
         home = location().orNull().next(),
         gcal = gcal().next(),
+        periodFirstDay = int(min = 1, max = 28).orNull().next(),
     )
 }
 
@@ -103,7 +116,7 @@ fun Arb.Companion.gcal() = arbitrary {
     if (boolean().next()) {
         Gcal.GcalDisabled
     } else {
-        Gcal.GcalEnabled(calendarId = string().next())
+        Gcal.GcalEnabled(calendarId = string(maxSize = 64).next())
     }
 }
 
@@ -116,7 +129,7 @@ fun Arb.Companion.location() = arbitrary {
 
 fun Arb.Companion.credentials() = arbitrary {
     Credentials(
-        username = string().next(),
-        password = string().next(),
+        username = string(minSize = 3, maxSize = 64).next(),
+        password = string(minSize = 3, maxSize = 50).next(), // 128 max, but will be encrypted
     )
 }

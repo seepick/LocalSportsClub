@@ -6,18 +6,21 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityInfo
+import seepick.localsportsclub.api.phpSessionId
+import seepick.localsportsclub.city
 import seepick.localsportsclub.createDaysUntil
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.venueDbo
-import seepick.localsportsclub.uscConfig
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
@@ -30,7 +33,10 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = StaticClock(todayNow)
     private val syncDaysAhead = 4
-    private val noLastSyncDate = null
+    private val anySession = Arb.phpSessionId().next()
+    private val anyCity = Arb.city().next()
+    private val anyPlan = Arb.enum<Plan>().next()
+
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()
         venueSyncInserter = mockk()
@@ -44,13 +50,12 @@ class ActivitiesSyncerTest : DescribeSpec() {
         })
     }
 
-    private fun syncer(daysAhead: Int) = ActivitiesSyncer(
+    private fun syncer() = ActivitiesSyncer(
         api = api,
         activityRepo = activityRepo,
         venueRepo = venueRepo,
         dispatcher = syncerListenerDispatcher,
         venueSyncInserter = venueSyncInserter,
-        uscConfig = Arb.uscConfig().next().copy(syncDaysAhead = daysAhead),
     )
 
     init {
@@ -60,7 +65,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 val activityInfo = Arb.activityInfo().next().copy(venueSlug = venue.slug)
                 venueRepo.stored[venue.id] = venue
                 coEvery {
-                    api.fetchActivities(any())
+                    api.fetchActivities(any(), any())
                 } returnsMany (1..syncDaysAhead).map {
                     when (it) {
                         1 -> listOf(activityInfo)
@@ -68,7 +73,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
                     }
                 }
 
-                syncer(syncDaysAhead).sync(clock.today().createDaysUntil(syncDaysAhead))
+                syncer().sync(anySession, anyPlan, anyCity, clock.today().createDaysUntil(syncDaysAhead))
 
                 activityRepo.stored.values.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id

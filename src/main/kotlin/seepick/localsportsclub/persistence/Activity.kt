@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
@@ -84,24 +85,24 @@ object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
 }
 
 interface ActivityRepo {
-    fun selectAll(): List<ActivityDbo>
-    fun selectAllBooked(): List<ActivityDbo>
-    fun insert(activity: ActivityDbo)
-    fun update(activity: ActivityDbo)
+    fun selectAll(cityId: Int): List<ActivityDbo>
+    fun selectAllBooked(cityId: Int): List<ActivityDbo>
+    fun selectAllForVenueId(venueId: Int): List<ActivityDbo>
     fun selectById(id: Int): ActivityDbo?
     fun selectFutureMostDate(): LocalDate?
     fun selectNewestCheckedinDate(): LocalDate?
+    fun insert(activity: ActivityDbo)
+    fun update(activity: ActivityDbo)
     fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo>
-    fun selectAllForVenueId(venueId: Int): List<ActivityDbo>
 }
 
 class InMemoryActivityRepo : ActivityRepo {
 
     val stored = mutableMapOf<Int, ActivityDbo>()
 
-    override fun selectAll() = stored.values.toList()
+    override fun selectAll(cityId: Int) = stored.values.toList()
 
-    override fun selectAllBooked() = stored.filter { it.value.state == ActivityState.Booked }.values.toList()
+    override fun selectAllBooked(cityId: Int) = stored.filter { it.value.state == ActivityState.Booked }.values.toList()
 
     override fun selectAllForVenueId(venueId: Int) = stored.values.filter { it.venueId == venueId }
 
@@ -136,10 +137,21 @@ class InMemoryActivityRepo : ActivityRepo {
 object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
 
-    override fun selectAll(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).map {
-            ActivityDbo.fromRow(it)
-        }
+    override fun selectAll(cityId: Int): List<ActivityDbo> = transaction {
+        ActivitiesTable
+            .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
+            .selectAll().where { VenuesTable.cityId.eq(cityId) }.orderBy(ActivitiesTable.from).map {
+                ActivityDbo.fromRow(it)
+            }
+    }
+
+    override fun selectAllBooked(cityId: Int): List<ActivityDbo> = transaction {
+        ActivitiesTable
+            .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
+            .selectAll().where { (VenuesTable.cityId eq cityId) and (ActivitiesTable.state eq ActivityState.Booked) }
+            .orderBy(ActivitiesTable.from).map {
+                ActivityDbo.fromRow(it)
+            }
     }
 
     override fun selectById(id: Int) = transaction {
@@ -148,18 +160,10 @@ object ExposedActivityRepo : ActivityRepo {
         }.singleOrNull()
     }
 
-    override fun selectAllBooked(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from)
-            .where { ActivitiesTable.state eq ActivityState.Booked }.map {
-                ActivityDbo.fromRow(it)
-            }
-    }
-
     override fun selectAllForVenueId(venueId: Int): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from)
-            .where { ActivitiesTable.venueId eq venueId }.map {
-                ActivityDbo.fromRow(it)
-            }
+        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).where { ActivitiesTable.venueId eq venueId }.map {
+            ActivityDbo.fromRow(it)
+        }
     }
 
     override fun selectFutureMostDate(): LocalDate? = transaction {

@@ -15,6 +15,7 @@ import io.ktor.http.Url
 import io.ktor.http.setCookie
 import io.ktor.serialization.kotlinx.json.json
 import org.apache.http.ConnectionClosedException
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.serializerLenient
 import java.net.ConnectException
 import java.net.SocketException
@@ -28,8 +29,9 @@ val httpClient: HttpClient = HttpClient(Apache) {
     expectSuccess = false
 }
 
-val HttpResponse.phpSessionId: String
-    get() = setCookie().singleOrNull { it.name == "PHPSESSID" }?.value ?: error("PHPSESSID cookie is not set!")
+val HttpResponse.phpSessionId: PhpSessionId
+    get() = setCookie().singleOrNull { it.name == "PHPSESSID" }?.value?.let { PhpSessionId(it) }
+        ?: error("PHPSESSID cookie is not set!")
 
 suspend fun HttpResponse.requireStatusOk(message: suspend () -> String = { "" }) {
     if (status != HttpStatusCode.OK) {

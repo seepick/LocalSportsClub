@@ -10,21 +10,20 @@ import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.safeGet
 
 interface ScheduleApi {
-    suspend fun fetchScheduleRows(): List<ScheduleRow>
+    suspend fun fetchScheduleRows(session: PhpSessionId): List<ScheduleRow>
 }
 
 class ScheduleHttpApi(
     private val http: HttpClient,
-    private val phpSessionId: PhpSessionId,
     private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
 ) : ScheduleApi {
 
     private val baseUrl = uscConfig.baseUrl
 
-    override suspend fun fetchScheduleRows(): List<ScheduleRow> {
+    override suspend fun fetchScheduleRows(session: PhpSessionId): List<ScheduleRow> {
         val response = http.safeGet(Url("$baseUrl/profile/schedule")) {
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "Schedule")
         return ScheduleParser.parse(response.bodyAsText()).rows

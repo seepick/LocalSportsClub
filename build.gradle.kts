@@ -116,6 +116,8 @@ configure<ProcessResources>("processResources") {
         filter<ReplaceTokens>(
             "tokens" to mapOf(
                 "version" to (project.properties["lsc.version"] ?: "0"),
+                "gcalClientId" to (project.properties["lsc.gcalClientId"] ?: "!MISSING!"),
+                "gcalClientSecret" to (project.properties["lsc.gcalClientSecret"] ?: "!MISSING!"),
             ),
         )
     }

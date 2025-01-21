@@ -52,6 +52,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             onVenueSelected = viewModel::onVenueSelected,
                             onFreetrainingClicked = viewModel::onFreetrainingSelected,
                             reducedVSpace = selectedSubEntity != null,
+                            configuredCity = viewModel.configuredCity,
                             modifier = Modifier.weight(1.0f),
                         )
                     }
@@ -60,6 +61,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             subEntity = it,
                             onBook = viewModel::onBook,
                             onCancelBooking = viewModel::onCancelBooking,
+                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible,
                             isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             bookingDialog = viewModel.bookingDialog,
                             onCloseDialog = viewModel::onCloseBookingDialog,

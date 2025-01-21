@@ -15,7 +15,7 @@ class NotesViewModel(
         private set
 
     override fun onStartUp() {
-        notes = singlesService.readNotes()
+        notes = singlesService.notes
     }
 
     fun notesUpdated(value: String) {
@@ -23,6 +23,6 @@ class NotesViewModel(
     }
 
     override fun onExit() {
-        singlesService.updateNotes(notes)
+        singlesService.notes = notes
     }
 }

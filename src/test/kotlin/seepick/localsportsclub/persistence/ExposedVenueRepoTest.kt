@@ -19,13 +19,17 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class ExposedVenueRepoTest : DescribeSpec() {
 
     private val repo = ExposedVenueRepo
+    private val anyCityId = 19
+    private val cityId = 40
+    private val cityId1 = 41
+    private val cityId2 = 42
 
     init {
         extension(DbListener())
 
         describe("When select all") {
             it("Then return empty") {
-                repo.selectAll().shouldBeEmpty()
+                repo.selectAll(anyCityId).shouldBeEmpty()
             }
         }
         describe("When insert") {
@@ -51,8 +55,12 @@ class ExposedVenueRepoTest : DescribeSpec() {
         }
         describe("When insert and select all") {
             it("Then returned") {
-                val venue = repo.insert(Arb.venueDbo().next())
-                repo.selectAll().shouldBeSingleton().first() shouldBe venue
+                val venue = repo.insert(Arb.venueDbo().next().copy(cityId = cityId))
+                repo.selectAll(cityId).shouldBeSingleton().first() shouldBe venue
+            }
+            it("different city Then empty") {
+                repo.insert(Arb.venueDbo().next().copy(cityId = cityId1))
+                repo.selectAll(cityId2).shouldBeEmpty()
             }
         }
         describe("When update") {
@@ -65,7 +73,8 @@ class ExposedVenueRepoTest : DescribeSpec() {
                 val venue = repo.insert(
                     Arb.venueDbo().next().copy(
                         notes = "notes1",
-                        rating = 1
+                        rating = 1,
+                        cityId = cityId,
                     )
                 )
 
@@ -76,7 +85,7 @@ class ExposedVenueRepoTest : DescribeSpec() {
                     )
                 )
 
-                repo.selectAll().first().should {
+                repo.selectAll(cityId).first().should {
                     it.notes shouldBe "notes2"
                     it.rating shouldBe 2
                 }

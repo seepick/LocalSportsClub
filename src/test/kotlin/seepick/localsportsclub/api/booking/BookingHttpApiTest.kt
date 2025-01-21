@@ -21,7 +21,6 @@ class BookingHttpApiTest : DescribeSpec() {
     private fun api(httpClient: HttpClient): BookingApi = BookingHttpApi(
         http = httpClient,
         uscConfig = uscConfig,
-        phpSessionId = phpSessionId,
         responseStorage = NoopResponseStorage,
     )
 
@@ -42,7 +41,7 @@ class BookingHttpApiTest : DescribeSpec() {
                         phpSessionId = phpSessionId,
                         responsePayload = rootJson
                     )
-                ).book(activityId)
+                ).book(phpSessionId, activityId)
 
                 response shouldBe BookingResult.BookingSuccess
             }
@@ -60,7 +59,7 @@ class BookingHttpApiTest : DescribeSpec() {
                         phpSessionId = phpSessionId,
                         responsePayload = rootJson
                     )
-                ).book(activityId)
+                ).book(phpSessionId, activityId)
 
                 response shouldBe BookingResult.BookingFail(errorMessage)
             }
@@ -81,7 +80,7 @@ class BookingHttpApiTest : DescribeSpec() {
                         phpSessionId = phpSessionId,
                         responsePayload = rootJson
                     )
-                ).cancel(activityId)
+                ).cancel(phpSessionId, activityId)
 
                 response shouldBe CancelResult.CancelSuccess
             }
@@ -99,7 +98,7 @@ class BookingHttpApiTest : DescribeSpec() {
                         phpSessionId = phpSessionId,
                         responsePayload = rootJson
                     )
-                ).cancel(activityId)
+                ).cancel(phpSessionId, activityId)
 
                 response shouldBe CancelResult.CancelFail(errorMessage)
             }

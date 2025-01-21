@@ -52,23 +52,23 @@ private suspend fun executeTask(
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
 ) {
-    log.debug { "Executing background task..." }
+    log.debug { "Executing task..." }
     doBefore()
     try {
         doTask()
     } catch (e: Throwable) {
         when (e) {
             is Exception, is NoClassDefFoundError -> {
-                log.error(e) { "Background task failed!" }
+                log.error(e) { "Executing task failed!" }
                 showErrorDialog(
-                    title = "Background Task Failed!",
+                    title = "Executing Task Failed!",
                     message = errorMessage,
                     exception = e,
                 )
             }
 
             else -> {
-                log.error(e) { "Unhandled error thrown during background task! ($errorMessage)" }
+                log.error(e) { "Unhandled error thrown during task! ($errorMessage)" }
                 throw e
             }
         }

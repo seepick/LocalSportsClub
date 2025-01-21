@@ -175,6 +175,12 @@
             <column name="USC_CREDENTIAL_PASSWORD" type="varchar(128)">
                 <constraints nullable="true"/>
             </column>
+            <column name="USC_PLAN" type="varchar(8)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="USC_PERIOD_FIRST_DAY" type="integer">
+                <constraints nullable="true"/>
+            </column>
         </addColumn>
     </changeSet>
 

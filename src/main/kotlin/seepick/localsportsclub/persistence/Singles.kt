@@ -7,12 +7,13 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import seepick.localsportsclub.api.Credentials
-import seepick.localsportsclub.api.Encrypter
+import seepick.localsportsclub.service.Encrypter
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 import java.time.LocalDateTime
 
@@ -20,22 +21,28 @@ object SinglesTable : Table("SINGLES") {
     val notes = text("NOTES")
     val lastSync = datetime("LAST_SYNC").nullable()
     val windowPref = varchar("WINDOW_PREF", 128).nullable()
+    val plan = varchar("USC_PLAN", 8).nullable()
 
     // Preferences
-    val homeLatitude = double("HOME_LATITUDE").nullable()
-    val homeLongitude = double("HOME_LONGITUDE").nullable()
-    val googleCalendarId = varchar("GOOGLE_CALENDAR_ID", 64).nullable()
-    val uscCityId = integer("USC_CITY_ID").nullable()
     val uscCredentialUsername = varchar("USC_CREDENTIAL_USERNAME", 64).nullable()
     val uscCredentialPassword = varchar("USC_CREDENTIAL_PASSWORD", 128).nullable()
+    val uscCityId = integer("USC_CITY_ID").nullable()
+    val uscPeriodFirstDay = integer("USC_PERIOD_FIRST_DAY").nullable()
+    val googleCalendarId = varchar("GOOGLE_CALENDAR_ID", 64).nullable()
+    val homeLatitude = double("HOME_LATITUDE").nullable()
+    val homeLongitude = double("HOME_LONGITUDE").nullable()
 }
 
 data class SinglesDbo(
     val notes: String,
     val lastSync: LocalDateTime?,
     val windowPref: WindowPref?,
+    val plan: Plan?,
     val preferences: Preferences,
-)
+) {
+    override fun toString() =
+        "SinglesDbo[notes, lastSync=$lastSync, plan=$plan, windowPref=$windowPref, preferences=$preferences]"
+}
 
 interface SinglesRepo {
     fun select(): SinglesDbo?
@@ -68,6 +75,7 @@ object ExposedSinglesRepo : SinglesRepo {
             SinglesDbo(
                 notes = row[SinglesTable.notes],
                 lastSync = row[SinglesTable.lastSync],
+                plan = row[SinglesTable.plan]?.let { Plan.byApiString(it) },
                 windowPref = WindowPref.readFromSqlString(row[SinglesTable.windowPref]),
                 preferences = Preferences(
                     uscCredentials = row[SinglesTable.uscCredentialUsername]?.let {
@@ -76,6 +84,7 @@ object ExposedSinglesRepo : SinglesRepo {
                             password = Encrypter.decrypt(row[SinglesTable.uscCredentialPassword]!!),
                         )
                     },
+                    periodFirstDay = row[SinglesTable.uscPeriodFirstDay],
                     city = row[SinglesTable.uscCityId]?.let { City.byId(it) },
                     gcal = row[SinglesTable.googleCalendarId]?.let {
                         Gcal.GcalEnabled(it)
@@ -98,10 +107,12 @@ object ExposedSinglesRepo : SinglesRepo {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
             it[windowPref] = singles.windowPref?.toSqlString()
+            it[plan] = singles.plan?.apiString
             it[homeLatitude] = singles.preferences.home?.latitude
             it[homeLongitude] = singles.preferences.home?.longitude
             it[googleCalendarId] = singles.preferences.gcal.maybeCalendarId
             it[uscCityId] = singles.preferences.city?.id
+            it[uscPeriodFirstDay] = singles.preferences.periodFirstDay
             it[uscCredentialUsername] = singles.preferences.uscCredentials?.username
             it[uscCredentialPassword] = singles.preferences.uscCredentials?.password?.let {
                 Encrypter.encrypt(it)
@@ -115,11 +126,13 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.update {
             it[notes] = singles.notes
             it[lastSync] = singles.lastSync
+            it[plan] = singles.plan?.apiString
             it[windowPref] = singles.windowPref?.toSqlString()
             it[homeLatitude] = singles.preferences.home?.latitude
             it[homeLongitude] = singles.preferences.home?.longitude
             it[googleCalendarId] = singles.preferences.gcal.maybeCalendarId
             it[uscCityId] = singles.preferences.city?.id
+            it[uscPeriodFirstDay] = singles.preferences.periodFirstDay
             it[uscCredentialUsername] = singles.preferences.uscCredentials?.username
             it[uscCredentialPassword] = singles.preferences.uscCredentials?.password?.let {
                 Encrypter.encrypt(it)

@@ -18,10 +18,11 @@ class TestRepoFacade(
         state: ActivityState = Arb.enum<ActivityState>().next(),
         from: LocalDateTime = Arb.localDateTime().next(),
         createVenue: Boolean = false,
+        cityId: Int? = null,
     ): ActivityDbo {
         val venueId = if (createVenue) {
             require(venueRepo != null)
-            venueRepo.insert(Arb.venueDbo().next()).id
+            venueRepo.insert(Arb.venueDbo().next().let { if (cityId == null) it else it.copy(cityId = cityId) }).id
         } else null
 
         val activity = Arb.activityDbo().next()

@@ -2,6 +2,7 @@ package seepick.localsportsclub.tools.migration
 
 import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.persistence.ExposedVenueRepo
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.tools.connectToDatabase
 import java.io.File
 
@@ -12,7 +13,7 @@ object MigrationApp {
     @JvmStatic
     fun main(args: Array<String>) {
         connectToDatabase(isProd = false)
-        val venues = ExposedVenueRepo.selectAll().sortedBy { it.name }
+        val venues = ExposedVenueRepo.selectAll(City.Amsterdam.id).sortedBy { it.name }
         transaction {
             val onefitPartners = OnefitPartners.decode(onefitExportFile)
             val matches = MigrationMatcher.match(onefitPartners, venues)
@@ -20,5 +21,4 @@ object MigrationApp {
         }
         println("Done ✅")
     }
-
 }

@@ -1,7 +1,10 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -14,7 +17,7 @@ object VenueLinksTable : Table("PUBLIC.VENUE_LINKS") {
 }
 
 interface VenueLinksRepo {
-    fun selectAll(): List<VenueIdLink>
+    fun selectAll(cityId: Int): List<VenueIdLink>
     fun insert(venueIdLink: VenueIdLink)
 }
 
@@ -38,19 +41,33 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
 
     private val log = logger {}
 
-    override fun selectAll(): List<VenueIdLink> = transaction {
-        VenueLinksTable.selectAll().map {
-            VenueIdLink(
-                it[VenueLinksTable.venue1Id].value,
-                it[VenueLinksTable.venue2Id].value,
+    override fun selectAll(cityId: Int): List<VenueIdLink> = transaction {
+        log.debug { "selectAll(cityId=$cityId)" }
+//        addLogger(StdOutSqlLogger)
+        val venue1Alias = VenuesTable.alias("v1")
+        val venue2Alias = VenuesTable.alias("v2")
+        VenueLinksTable
+            .join(
+                venue1Alias, JoinType.LEFT, onColumn = VenueLinksTable.venue1Id,
+                otherColumn = venue1Alias[VenuesTable.id]
             )
-        }
+            .join(
+                venue2Alias, JoinType.LEFT, onColumn = VenueLinksTable.venue2Id,
+                otherColumn = venue2Alias[VenuesTable.id]
+            )
+            .selectAll()
+            .where {
+                (venue1Alias[VenuesTable.cityId] eq cityId) and (venue2Alias[VenuesTable.cityId] eq cityId)
+            }
+            .map {
+                VenueIdLink(
+                    it[VenueLinksTable.venue1Id].value,
+                    it[VenueLinksTable.venue2Id].value,
+                )
+            }
     }
 
     override fun insert(venueIdLink: VenueIdLink): Unit = transaction {
-        if (selectAll().toSet().contains(venueIdLink)) {
-            error("Duplicate venue link: $venueIdLink")
-        }
         VenueLinksTable.insert {
             it[venue1Id] = venueIdLink.id1
             it[venue2Id] = venueIdLink.id2
@@ -60,7 +77,7 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
 
 class InMemoryVenueLinksRepo : VenueLinksRepo {
     val stored = mutableSetOf<VenueIdLink>()
-    override fun selectAll(): List<VenueIdLink> =
+    override fun selectAll(cityId: Int): List<VenueIdLink> =
         stored.toList()
 
     override fun insert(venueIdLink: VenueIdLink) {

@@ -13,17 +13,22 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.jsoup.Jsoup
+import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.phpSessionId
 import seepick.localsportsclub.service.requireStatusOk
 
-class LoginApi(
+interface LoginApi {
+    suspend fun login(credentials: Credentials): LoginResult
+}
+
+class LoginHttpApi(
     private val http: HttpClient,
     private val baseUrl: Url,
-) {
+) : LoginApi {
 
     private val log = logger {}
 
-    suspend fun login(credentials: Credentials): LoginResult {
+    override suspend fun login(credentials: Credentials): LoginResult {
         log.info { "logging in as: ${credentials.username}" }
         val home = loadHome()
         return submitLogin(
@@ -34,15 +39,16 @@ class LoginApi(
                 secret = home.loginSecret,
             )
         ).also {
-            if (it is LoginResult.Success) {
-                log.info { "Successfully logged in ✅👍🏻" }
+            when (it) {
+                is LoginResult.Failure -> log.info { "Failed ro log in." }
+                is LoginResult.Success -> log.info { "Successfully logged in ✅👍🏻" }
             }
         }
     }
 
     private data class HomeResponse(
         val loginSecret: Pair<String, String>,
-        val phpSessionId: String,
+        val phpSessionId: PhpSessionId,
     )
 
     private suspend fun loadHome(): HomeResponse {
@@ -61,7 +67,7 @@ class LoginApi(
     private data class LoginRequest(
         val email: String,
         val password: String,
-        val phpSessionId: String,
+        val phpSessionId: PhpSessionId,
         val secret: Pair<String, String>,
     )
 
@@ -74,7 +80,7 @@ class LoginApi(
                 append(login.secret.first, login.secret.second)
             }
         ) {
-            cookie("PHPSESSID", login.phpSessionId)
+            cookie("PHPSESSID", login.phpSessionId.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
         }
         response.requireStatusOk()
@@ -94,7 +100,7 @@ class LoginApi(
 }
 
 sealed interface LoginResult {
-    data class Success(val phpSessionId: String) : LoginResult
+    data class Success(val phpSessionId: PhpSessionId) : LoginResult
     data class Failure(val message: String) : LoginResult
 }
 

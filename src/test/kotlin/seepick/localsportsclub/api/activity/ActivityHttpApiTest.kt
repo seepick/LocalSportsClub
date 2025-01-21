@@ -12,7 +12,7 @@ import seepick.localsportsclub.api.StatsDistrictJson
 import seepick.localsportsclub.api.StatsJson
 import seepick.localsportsclub.api.buildMockClient
 import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.PlanType
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.uscConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -23,7 +23,7 @@ class ActivityHttpApiTest : StringSpec() {
     private val clock = StaticClock()
     private val filter = ActivitiesFilter(
         city = City.Amsterdam,
-        plan = PlanType.Medium,
+        plan = Plan.Medium,
         date = LocalDate.of(2024, 12, 1),
     )
 
@@ -36,13 +36,12 @@ class ActivityHttpApiTest : StringSpec() {
                 buildMockClient(expectedUrl = expectedUrl, phpSessionId = phpSessionId, responsePayload = rootJson)
             val api = ActivityHttpApi(
                 http = http,
-                phpSessionId = phpSessionId,
                 uscConfig = uscConfig,
                 clock = clock,
                 responseStorage = NoopResponseStorage
             )
 
-            val response = api.fetchPages(filter, ServiceType.Courses)
+            val response = api.fetchPages(phpSessionId, filter, ServiceType.Courses)
 
             response.shouldBeSingleton().first() shouldBe rootJson.data
         }

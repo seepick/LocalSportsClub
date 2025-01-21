@@ -16,7 +16,7 @@ fun viewModule(config: AppConfig) = module {
     viewModel {
         MainViewModel(
             syncer = get(),
-            firstScreen = config.firstScreen,
+            singlesService = get(),
         )
     }
     viewModelOf(::VenueViewModel)
@@ -26,4 +26,5 @@ fun viewModule(config: AppConfig) = module {
     viewModelOf(::SyncerViewModel)
     viewModelOf(::PreferencesViewModel)
     singleOf(::UsageStorage)
+    singleOf(::SnackbarService)
 }

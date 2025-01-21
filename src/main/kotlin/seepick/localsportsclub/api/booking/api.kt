@@ -17,24 +17,23 @@ import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.safePost
 
 interface BookingApi {
-    suspend fun book(activityOrFreetrainingId: Int): BookingResult
-    suspend fun cancel(activityOrFreetrainingId: Int): CancelResult
+    suspend fun book(session: PhpSessionId, activityOrFreetrainingId: Int): BookingResult
+    suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult
 }
 
 class BookingHttpApi(
     private val http: HttpClient,
     uscConfig: UscConfig,
-    private val phpSessionId: PhpSessionId,
     private val responseStorage: ResponseStorage,
 ) : BookingApi {
 
     private val log = logger {}
     private val baseUrl = uscConfig.baseUrl
 
-    override suspend fun book(activityOrFreetrainingId: Int): BookingResult {
+    override suspend fun book(session: PhpSessionId, activityOrFreetrainingId: Int): BookingResult {
         log.info { "About to book activityOrFreetrainingId: $activityOrFreetrainingId" }
         val response = http.safePost(Url("$baseUrl/search/book/$activityOrFreetrainingId")) {
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
             header("x-requested-with", "XMLHttpRequest")
         }
         responseStorage.store(response, "Booking-$activityOrFreetrainingId")
@@ -58,10 +57,10 @@ class BookingHttpApi(
         }
     }
 
-    override suspend fun cancel(activityOrFreetrainingId: Int): CancelResult {
+    override suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult {
         log.info { "About to cancel booking for activityOrFreetrainingId: $activityOrFreetrainingId" }
         val response = http.safePost(Url("$baseUrl/search/cancel/$activityOrFreetrainingId")) {
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
             header("x-requested-with", "XMLHttpRequest")
         }
         responseStorage.store(response, "Cancel-$activityOrFreetrainingId")

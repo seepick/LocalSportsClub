@@ -18,10 +18,12 @@ import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
@@ -79,6 +81,7 @@ sealed interface SubEntity : HasVenue {
 abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val dataStorage: DataStorage,
     private val bookingService: BookingService,
+    private val singlesService: SinglesService,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -94,6 +97,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     abstract val selectedVenue: StateFlow<Venue?>
     val venueEdit = VenueEditModel()
     abstract val showLinkedVenues: Boolean
+
+    var configuredCity: City? by mutableStateOf(null)
 
     private val _selectedSubEntity = MutableStateFlow<SubEntity?>(null)
     val selectedSubEntity = _selectedSubEntity.asStateFlow()
@@ -111,6 +116,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     var isBookingOrCancelInProgress by mutableStateOf(false)
         private set
+    var isBookOrCancelPossible by mutableStateOf(false)
+        private set
     var bookingDialog: BookingDialog? by mutableStateOf(null)
         private set
 
@@ -119,6 +126,11 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     override fun onStartUp() {
         log.info { "Filling initial data for: ${this::class.simpleName}" }
+
+        val preferences = singlesService.preferences
+        isBookOrCancelPossible = preferences.uscCredentials != null
+        configuredCity = preferences.city
+
         _allItems.addAll(dataStorage.selectAllItems())
         sorting // trigger lazy
         searching.reset()

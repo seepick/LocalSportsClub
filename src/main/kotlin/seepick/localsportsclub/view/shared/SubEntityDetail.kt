@@ -19,6 +19,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
@@ -34,6 +35,7 @@ fun SubEntityDetail(
     clock: Clock = koinInject(),
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
+    isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
     bookingDialog: BookingDialog?,
     onCloseDialog: () -> Unit,
@@ -89,14 +91,22 @@ fun SubEntityDetail(
         }
         if (subEntity.date >= clock.today()) {
             Row {
-                Button(onClick = {
-                    if (isBooked) {
-                        onCancelBooking(subEntity)
-                    } else {
-                        onBook(subEntity)
+                ConditionalTooltip(
+                    !isBookOrCancelPossible,
+                    "Please enter your USC credentials in the preferences first."
+                ) {
+                    Button(
+                        onClick = {
+                            if (isBooked) {
+                                onCancelBooking(subEntity)
+                            } else {
+                                onBook(subEntity)
+                            }
+                        },
+                        enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress
+                    ) {
+                        Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                     }
-                }, enabled = !isBookingOrCancelInProgress) {
-                    Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                 }
                 AnimatedVisibility(
                     visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()

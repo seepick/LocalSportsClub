@@ -4,13 +4,13 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.date.Clock
 
-class CleanupSyncer(
+class CleanupPostSync(
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val clock: Clock,
     private val dispatcher: SyncerListenerDispatcher,
 ) {
-    fun sync() {
+    fun cleanup() {
         val today = clock.today()
 
         val activities = activityRepo.deleteBlanksBefore(today)

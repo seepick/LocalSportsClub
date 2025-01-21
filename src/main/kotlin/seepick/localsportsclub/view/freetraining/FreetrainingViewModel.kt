@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.freetraining
 import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Freetraining
@@ -14,14 +15,15 @@ class FreetrainingViewModel(
     private val dataStorage: DataStorage,
     bookingService: BookingService,
     uscConfig: UscConfig,
-) : ScreenViewModel<Freetraining, FreetrainingSearch>(dataStorage, bookingService) {
+    singlesService: SinglesService,
+) : ScreenViewModel<Freetraining, FreetrainingSearch>(dataStorage, bookingService, singlesService) {
 
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }
     override val selectedVenue = selectedVenueBySelectedSubEntity
     override val showLinkedVenues = false
     override val initialSortColumn = tableColumns.single { it.headerLabel == "Date" }
-    
+
     val syncDates: List<LocalDate>
 
     init {

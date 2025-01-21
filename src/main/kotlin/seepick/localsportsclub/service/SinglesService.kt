@@ -3,33 +3,51 @@ package seepick.localsportsclub.service
 import seepick.localsportsclub.persistence.SinglesDbo
 import seepick.localsportsclub.persistence.SinglesRepo
 import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 import java.time.LocalDateTime
 
-class SinglesService(
+interface SinglesService {
+    var notes: String
+    var lastSync: LocalDateTime?
+    var windowPref: WindowPref?
+    var plan: Plan?
+    var preferences: Preferences
+}
+
+class SinglesServiceImpl(
     private val singlesRepo: SinglesRepo,
-) {
+) : SinglesService {
     private var cache: SinglesDbo? = null
 
-    fun readNotes() = cachedOrSelect().notes
-    fun updateNotes(notes: String) {
-        update { copy(notes = notes) }
-    }
+    override var notes
+        get() = cachedOrSelect().notes
+        set(value) {
+            update { copy(notes = value) }
+        }
+    override var lastSync: LocalDateTime?
+        get() = cachedOrSelect().lastSync
+        set(value) {
+            update { copy(lastSync = value) }
+        }
 
-    fun readLastSync() = cachedOrSelect().lastSync
-    fun updateLastSync(lastSync: LocalDateTime) {
-        update { copy(lastSync = lastSync) }
-    }
+    override var windowPref: WindowPref?
+        get() = cachedOrSelect().windowPref
+        set(value) {
+            update { copy(windowPref = value) }
+        }
 
-    fun readWindowPref() = cachedOrSelect().windowPref
-    fun updateWindowPref(windowPref: WindowPref) {
-        update { copy(windowPref = windowPref) }
-    }
+    override var plan: Plan?
+        get() = cachedOrSelect().plan
+        set(value) {
+            update { copy(plan = value) }
+        }
 
-    fun readPreferences() = cachedOrSelect().preferences
-    fun updatePreferences(preferences: Preferences) {
-        update { copy(preferences = preferences) }
-    }
+    override var preferences: Preferences
+        get() = cachedOrSelect().preferences
+        set(value) {
+            update { copy(preferences = value) }
+        }
 
     private fun update(withDbo: SinglesDbo.() -> SinglesDbo) {
         val dbo = cachedOrSelect()
@@ -44,9 +62,11 @@ class SinglesService(
                 SinglesDbo(
                     notes = "",
                     lastSync = null,
+                    plan = null,
                     windowPref = null,
                     preferences = Preferences(
                         uscCredentials = null,
+                        periodFirstDay = null,
                         city = null,
                         home = null,
                         gcal = Gcal.GcalDisabled,

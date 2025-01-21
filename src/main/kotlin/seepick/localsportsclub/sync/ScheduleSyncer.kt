@@ -1,12 +1,14 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.EntityType
 import seepick.localsportsclub.service.model.FreetrainingState
 
@@ -19,15 +21,15 @@ class ScheduleSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync() {
+    suspend fun sync(session: PhpSessionId, city: City) {
         log.debug { "Syncing scheduled activities." }
-        val scheduleRows = uscApi.fetchScheduleRows()
+        val scheduleRows = uscApi.fetchScheduleRows(session)
         val scheduleActivities = scheduleRows.filter { it.entityType == EntityType.Activity }
             .associateBy { it.activityOrFreetrainingId }
         val scheduleFreetrainings = scheduleRows.filter { it.entityType == EntityType.Freetraining }
             .associateBy { it.activityOrFreetrainingId }
-        val localBookedActivities = activityRepo.selectAllBooked().associateBy { it.id }
-        val localScheduledFreetrainings = freetrainingRepo.selectAllScheduled().associateBy { it.id }
+        val localBookedActivities = activityRepo.selectAllBooked(city.id).associateBy { it.id }
+        val localScheduledFreetrainings = freetrainingRepo.selectAllScheduled(city.id).associateBy { it.id }
 
         val activitiesYes = scheduleActivities.minus(localBookedActivities.keys)
         val activitiesNo = localBookedActivities.minus(scheduleActivities.keys)
@@ -37,6 +39,8 @@ class ScheduleSyncer(
         updateAndDispatchActivities(activitiesYes.values.toList(), toBeBooked = true) { schedule ->
             activityRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
+                    session,
+                    city,
                     schedule.activityOrFreetrainingId,
                     schedule.venueSlug,
                     "[SYNC] refetch due to missing from booked activity"
@@ -48,6 +52,8 @@ class ScheduleSyncer(
         updateAndDispatchFreetrainings(freetrainingsYes.values.toList(), toBeScheduled = true) { schedule ->
             freetrainingRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchFreetraining(
+                    session,
+                    city,
                     schedule.activityOrFreetrainingId,
                     schedule.venueSlug,
                     "[SYNC] refetch due to missing from scheduled freetraining"

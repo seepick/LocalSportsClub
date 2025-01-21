@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
@@ -22,30 +22,34 @@ class UsageStorage(
     clock: Clock,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
-    uscConfig: UscConfig,
+    private val singlesService: SinglesService,
 ) : SyncerListener, ApplicationLifecycleListener {
 
-    private val config = uscConfig.usageConfig
+    val maxBookingsForPeriod by lazy {
+        singlesService.plan?.usageInfo?.maxCheckins ?: 1
+    }
+    private val periodConfiguredFirstDay by lazy {
+        singlesService.preferences.periodFirstDay ?: 1
+    }
 
     private val bookedActivityIds = MutableStateFlow(emptySet<Int>())
     private val scheduledFreetrainingIds = MutableStateFlow(emptySet<Int>())
     private val checkedinActivityIds = MutableStateFlow(emptySet<Int>())
     private val checkedinFreetrainingIds = MutableStateFlow(emptySet<Int>())
 
-    val bookedCount: Flow<Int> =
-        combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
-            activityIds.size + freetrainingIds.size
-        }
+    val bookedCount: Flow<Int> = combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
+        activityIds.size + freetrainingIds.size
+    }
     val checkedinCount: Flow<Int> =
         combine(checkedinActivityIds, checkedinFreetrainingIds) { activityIds, freetrainingIds ->
             activityIds.size + freetrainingIds.size
         }
 
-    val percentageCheckedin = checkedinCount.map {
-        it / config.maxBookingsForPeriod.toDouble()
+    val percentageCheckedin: Flow<Double> = checkedinCount.map {
+        it / maxBookingsForPeriod.toDouble()
     }
-    val percentageBooked = bookedCount.map {
-        it / config.maxBookingsForPeriod.toDouble()
+    val percentageBooked: Flow<Double> = bookedCount.map {
+        it / maxBookingsForPeriod.toDouble()
     }
 
     // visible for testing
@@ -56,7 +60,7 @@ class UsageStorage(
 
     init {
         val today = clock.today()
-        val periodPivot = today.withDayOfMonth(config.periodConfiguredFirstDay)
+        val periodPivot = today.withDayOfMonth(periodConfiguredFirstDay)
         periodFirstDay = if (periodPivot <= today) periodPivot else periodPivot.minusMonths(1)
         periodLastDay = if (periodPivot <= today) periodPivot.plusMonths(1).minusDays(1) else periodPivot.minusDays(1)
         periodRange = periodFirstDay..periodLastDay
@@ -67,8 +71,10 @@ class UsageStorage(
     }
 
     override fun onStartUp() {
-        activityRepo.selectAll().forEach(::processActivity)
-        freetrainingRepo.selectAll().forEach(::processFreetraining)
+        singlesService.preferences.city?.id?.let { cityId ->
+            activityRepo.selectAll(cityId).forEach(::processActivity)
+            freetrainingRepo.selectAll(cityId).forEach(::processFreetraining)
+        }
     }
 
     override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {

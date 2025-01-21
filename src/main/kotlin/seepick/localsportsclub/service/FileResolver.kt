@@ -37,7 +37,6 @@ private fun File.createIfNeededOrFail() = apply {
 }
 
 enum class FileEntry(val directory: DirectoryEntry?, val fileName: String) {
-    Login(null, "login.json"),
     GcalCredentials(DirectoryEntry.Gcal, "credentials.json"),
 }
 

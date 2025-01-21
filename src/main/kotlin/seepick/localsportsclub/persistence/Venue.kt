@@ -37,12 +37,12 @@ data class VenueDbo(
     companion object; // for extensions
 
     override fun toString() =
-        "VenueDbo[id=$id, slug=$slug, name=$name, imageFileName=$imageFileName, " + "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted]"
+        "VenueDbo[id=$id, slug=$slug, name=$name, cityId=$cityId, imageFileName=$imageFileName, " + "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted]"
 }
 
 interface VenueRepo {
     /** Doesn't do any filtering, not even the deleted ones. */
-    fun selectAll(): List<VenueDbo>
+    fun selectAll(cityId: Int): List<VenueDbo>
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
     fun selectById(id: Int): VenueDbo?
@@ -78,8 +78,8 @@ object ExposedVenueRepo : VenueRepo {
 
     private val log = logger {}
 
-    override fun selectAll(): List<VenueDbo> = transaction {
-        VenuesTable.selectAll().map {
+    override fun selectAll(cityId: Int): List<VenueDbo> = transaction {
+        VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
             VenueDbo.fromRow(it)
         }
     }
@@ -180,7 +180,8 @@ class InMemoryVenueRepo : VenueRepo {
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 
-    override fun selectAll(): List<VenueDbo> = stored.values.toList().sortedBy { it.id }
+    override fun selectAll(cityId: Int): List<VenueDbo> =
+        stored.values.filter { it.cityId == cityId }.toList().sortedBy { it.id }
 
     override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
 

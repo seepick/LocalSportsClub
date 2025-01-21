@@ -25,11 +25,16 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
     private val yesterdayDate = todayDate.minusDays(1)
     private fun venue() = Arb.venueDbo().next()
     private fun freetraining() = Arb.freetrainingDbo().next()
+    private val anyCityId = 19
+    private val cityId = 20
+    private val cityId1 = 21
+    private val cityId2 = 22
 
     private fun insertTrainingAndVenue(
-        withTraining: FreetrainingDbo.() -> FreetrainingDbo = { this }
+        cityId: Int = anyCityId,
+        withTraining: FreetrainingDbo.() -> FreetrainingDbo = { this },
     ): FreetrainingDbo {
-        val venue = venueRepo.insert(venue())
+        val venue = venueRepo.insert(venue().copy(cityId = cityId))
         val training = freetraining().copy(venueId = venue.id).let(withTraining)
         freetrainingRepo.insert(training)
         return training
@@ -40,22 +45,49 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
 
         describe("selectAll") {
             it("Given nothing Then is empty") {
-                freetrainingRepo.selectAll().shouldBeEmpty()
+                freetrainingRepo.selectAll(anyCityId).shouldBeEmpty()
             }
             it("Given one Then return it") {
-                val training = insertTrainingAndVenue()
+                val training = insertTrainingAndVenue(cityId = cityId)
 
-                freetrainingRepo.selectAll().shouldBeSingleton().first() shouldBe training
+                freetrainingRepo.selectAll(cityId).shouldBeSingleton().first() shouldBe training
+            }
+            it("When different city Then empty") {
+                insertTrainingAndVenue(cityId = cityId1)
+
+                freetrainingRepo.selectAll(cityId2).shouldBeEmpty()
+            }
+        }
+        describe("selectAllScheduled") {
+            it("Given non-matching Then empty") {
+                insertTrainingAndVenue(cityId = cityId) { copy(state = FreetrainingState.Blank) }
+
+                freetrainingRepo.selectAllScheduled(cityId).shouldBeEmpty()
+            }
+            it("Given matching Then return it") {
+                insertTrainingAndVenue(cityId = cityId) { copy(state = FreetrainingState.Scheduled) }
+
+                freetrainingRepo.selectAllScheduled(cityId).shouldBeSingleton()
+            }
+            it("When different city Then empty") {
+                insertTrainingAndVenue(cityId = cityId) { copy(state = FreetrainingState.Scheduled) }
+
+                freetrainingRepo.selectAllScheduled(cityId2).shouldBeEmpty()
             }
         }
         describe("selectFutureMostDate") {
-            it("Given none Return null") {
-                freetrainingRepo.selectFutureMostDate().shouldBeNull()
+            it("Given none Then return null") {
+                freetrainingRepo.selectFutureMostDate(anyCityId).shouldBeNull()
             }
-            it("Given some Return newest date") {
-                insertTrainingAndVenue { copy(date = todayDate) }
+            it("Given some Then return newest date") {
+                insertTrainingAndVenue(cityId) { copy(date = todayDate) }
 
-                freetrainingRepo.selectFutureMostDate() shouldBe todayDate
+                freetrainingRepo.selectFutureMostDate(cityId) shouldBe todayDate
+            }
+            it("When different city Then empty") {
+                insertTrainingAndVenue(cityId1) { copy(date = todayDate) }
+
+                freetrainingRepo.selectFutureMostDate(cityId2).shouldBeNull()
             }
         }
         describe("insert") {
@@ -72,30 +104,35 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
 
                 freetrainingRepo.insert(training)
 
-                freetrainingRepo.selectAll().shouldBeSingleton().first() shouldBe training
+                freetrainingRepo.selectAll(venue.cityId).shouldBeSingleton().first() shouldBe training
             }
         }
         describe("deleteNonCheckedinBefore") {
             it("Given old checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, state = FreetrainingState.Checkedin) }
+                insertTrainingAndVenue(cityId = cityId) {
+                    copy(
+                        date = yesterdayDate,
+                        state = FreetrainingState.Checkedin
+                    )
+                }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
-                freetrainingRepo.selectAll().shouldBeSingleton()
+                freetrainingRepo.selectAll(cityId).shouldBeSingleton()
             }
             it("Given old non-checkedin Then delete") {
-                insertTrainingAndVenue { copy(date = yesterdayDate, state = FreetrainingState.Blank) }
+                insertTrainingAndVenue(cityId = cityId) { copy(date = yesterdayDate, state = FreetrainingState.Blank) }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
-                freetrainingRepo.selectAll().shouldBeEmpty()
+                freetrainingRepo.selectAll(cityId).shouldBeEmpty()
             }
             it("Given newer non-checkedin Then keep") {
-                insertTrainingAndVenue { copy(date = todayDate, state = FreetrainingState.Blank) }
+                insertTrainingAndVenue(cityId = cityId) { copy(date = todayDate, state = FreetrainingState.Blank) }
 
                 freetrainingRepo.deleteNonCheckedinBefore(todayDate)
 
-                freetrainingRepo.selectAll().shouldBeSingleton()
+                freetrainingRepo.selectAll(cityId).shouldBeSingleton()
             }
         }
     }

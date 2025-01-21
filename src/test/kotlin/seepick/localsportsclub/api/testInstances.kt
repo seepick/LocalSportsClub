@@ -82,3 +82,7 @@ fun Arb.Companion.freetrainingCheckinEntry() = arbitrary {
         date = localDate().next(),
     )
 }
+
+fun Arb.Companion.phpSessionId() = arbitrary {
+    PhpSessionId(value = string().next())
+}

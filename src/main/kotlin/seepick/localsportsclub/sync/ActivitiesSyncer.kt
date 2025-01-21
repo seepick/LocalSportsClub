@@ -1,8 +1,8 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.ActivityInfo
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -11,7 +11,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.PlanType
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 class ActivitiesSyncer(
@@ -20,52 +20,68 @@ class ActivitiesSyncer(
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
-    uscConfig: UscConfig,
 ) {
     private val log = logger {}
-    private val city: City = uscConfig.city
-    private val plan: PlanType = uscConfig.plan
 
-    suspend fun sync(days: List<LocalDate>) {
+    suspend fun sync(session: PhpSessionId, plan: Plan, city: City, days: List<LocalDate>) {
         log.info { "Syncing activities for: $days" }
-        val allStoredActivities = activityRepo.selectAll()
-        val venuesBySlug = venueRepo.selectAll().associateBy { it.slug }.toMutableMap()
+        val allStoredActivities = activityRepo.selectAll(city.id)
+        val venuesBySlug = venueRepo.selectAll(city.id).associateBy { it.slug }.toMutableMap()
         days.forEach { day ->
-            syncForDay(day, allStoredActivities.filter { it.from.toLocalDate() == day }, venuesBySlug)
+            syncForDay(
+                session,
+                plan,
+                city,
+                day,
+                allStoredActivities.filter { it.from.toLocalDate() == day },
+                venuesBySlug
+            )
         }
     }
 
     private suspend fun syncForDay(
+        session: PhpSessionId,
+        plan: Plan,
+        city: City,
         day: LocalDate,
         stored: List<ActivityDbo>,
         venuesBySlug: MutableMap<String, VenueDbo>
     ) {
         log.debug { "Sync for day: $day" }
         val remoteActivities =
-            api.fetchActivities(ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
+            api.fetchActivities(session, ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
         val storedActivities = stored.associateBy { it.id }
 
         val missingActivities = remoteActivities.minus(storedActivities.keys)
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
         val dbos = missingActivities.values.map { activity ->
-            syncMissingActivity(activity, venuesBySlug)
+            syncMissingActivity(session, city, activity, venuesBySlug)
         }
         dispatcher.dispatchOnActivityDbosAdded(dbos)
     }
 
     private suspend fun syncMissingActivity(
+        session: PhpSessionId,
+        city: City,
         activity: ActivityInfo,
         venuesBySlug: MutableMap<String, VenueDbo>
     ): ActivityDbo {
-        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(activity, venuesBySlug)
+        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(session, city, activity, venuesBySlug)
         val dbo = activity.toDbo(venueId)
         activityRepo.insert(dbo)
         return dbo
     }
 
-    private suspend fun rescueVenue(activity: ActivityInfo, venuesBySlug: MutableMap<String, VenueDbo>): Int {
+    private suspend fun rescueVenue(
+        session: PhpSessionId,
+        city: City,
+        activity: ActivityInfo,
+        venuesBySlug: MutableMap<String, VenueDbo>
+    ): Int {
         log.debug { "Trying to rescue venue for missing: $activity" }
         venueSyncInserter.fetchInsertAndDispatch(
+            session,
+            city,
             listOf(activity.venueSlug),
             "[SYNC] fetched through activity ${activity.name}"
         )

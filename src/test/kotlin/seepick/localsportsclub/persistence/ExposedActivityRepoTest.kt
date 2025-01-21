@@ -30,7 +30,10 @@ class ExposedActivityRepoTest : DescribeSpec() {
     private val todayDate = todayTime.toLocalDate()
     private val yesterdayTime = todayTime.minusDays(1)
     private lateinit var testRepo: TestRepoFacade
-
+    private val anyCityId = 19
+    private val cityId = 20
+    private val cityId1 = 21
+    private val cityId2 = 22
     private fun venue() = Arb.venueDbo().next()
     private fun activity() = Arb.activityDbo().next()
 
@@ -43,7 +46,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
 
         describe("When select all") {
             it("Then return empty") {
-                activityRepo.selectAll().shouldBeEmpty()
+                activityRepo.selectAll(cityId).shouldBeEmpty()
             }
         }
         describe("When select future most date") {
@@ -139,7 +142,37 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 val venue = venueRepo.insert(venue())
                 val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
-                activityRepo.selectAll().shouldBeSingleton().first() shouldBe activity
+                activityRepo.selectAll(venue.cityId).shouldBeSingleton().first() shouldBe activity
+            }
+            it("for different city Then empty") {
+                val venue = venueRepo.insert(venue().copy(cityId = cityId1))
+                val activity = activity().copy(venueId = venue.id)
+                activityRepo.insert(activity)
+
+                activityRepo.selectAll(cityId2).shouldBeEmpty()
+            }
+        }
+        describe("When select all booked") {
+            it("Given non-booked activity Then empty") {
+                val venue = venueRepo.insert(venue().copy(cityId = cityId))
+                val activity = activity().copy(venueId = venue.id, state = ActivityState.Blank)
+                activityRepo.insert(activity)
+
+                activityRepo.selectAllBooked(cityId).shouldBeEmpty()
+            }
+            it("Given booked activity Then return it") {
+                val venue = venueRepo.insert(venue().copy(cityId = cityId))
+                val activity = activity().copy(venueId = venue.id, state = ActivityState.Booked)
+                activityRepo.insert(activity)
+
+                activityRepo.selectAllBooked(cityId).shouldBeSingleton().first() shouldBe activity
+            }
+            it("Given booked activity for different city Then empty") {
+                val venue = venueRepo.insert(venue().copy(cityId = cityId1))
+                val activity = activity().copy(venueId = venue.id, state = ActivityState.Booked)
+                activityRepo.insert(activity)
+
+                activityRepo.selectAllBooked(cityId2).shouldBeEmpty()
             }
         }
         describe("When update") {
@@ -162,7 +195,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 )
                 activityRepo.update(updateActivity)
 
-                activityRepo.selectAll().shouldBeSingleton()
+                activityRepo.selectAll(venue1.cityId).shouldBeSingleton()
                     .first() shouldBe updateActivity.copy(venueId = activity.venueId)
             }
             it("Given no activity Then fail") {
@@ -173,45 +206,52 @@ class ExposedActivityRepoTest : DescribeSpec() {
         }
         describe("When delete non-booked and non-checkedin before") {
             it("Given older but was checkedin Then keep") {
-                testRepo.insertActivity(state = ActivityState.Checkedin, from = yesterdayTime, createVenue = true)
+                testRepo.insertActivity(
+                    state = ActivityState.Checkedin, from = yesterdayTime,
+                    createVenue = true, cityId = cityId
+                )
 
                 val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
-                activityRepo.selectAll().shouldBeSingleton()
                 deleted.shouldBeEmpty()
+                activityRepo.selectAll(cityId).shouldBeSingleton()
             }
             it("Given older but is booked Then keep") {
-                testRepo.insertActivity(state = ActivityState.Booked, from = yesterdayTime, createVenue = true)
+                testRepo.insertActivity(
+                    state = ActivityState.Booked, from = yesterdayTime,
+                    createVenue = true, cityId = cityId
+                )
 
                 val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
-                activityRepo.selectAll().shouldBeSingleton()
                 deleted.shouldBeEmpty()
+                activityRepo.selectAll(cityId).shouldBeSingleton()
             }
             it("Given same date Then keep") {
-                createActivityForDeletion(todayTime)
+                createActivityForDeletion(todayTime, cityId = cityId)
 
                 val deleted = activityRepo.deleteBlanksBefore(todayDate)
-                deleted.shouldBeEmpty()
 
-                activityRepo.selectAll().shouldBeSingleton()
+                deleted.shouldBeEmpty()
+                activityRepo.selectAll(cityId).shouldBeSingleton()
             }
             it("Given older date Then delete") {
-                val activity = createActivityForDeletion(yesterdayTime)
+                val activity = createActivityForDeletion(yesterdayTime, cityId = cityId)
 
                 val deleted = activityRepo.deleteBlanksBefore(todayDate)
 
-                activityRepo.selectAll().shouldBeEmpty()
+                activityRepo.selectAll(cityId).shouldBeEmpty()
                 deleted shouldBeEqual listOf(activity)
             }
         }
     }
 
-    private fun createActivityForDeletion(date: LocalDateTime) =
+    private fun createActivityForDeletion(date: LocalDateTime, cityId: Int = anyCityId) =
         testRepo.insertActivity(
             state = ActivityState.Blank,
             from = date,
-            createVenue = true
+            createVenue = true,
+            cityId = cityId,
         )
 }
 

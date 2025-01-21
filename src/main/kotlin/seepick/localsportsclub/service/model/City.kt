@@ -8,7 +8,11 @@ data class Country(
 ) : HasLabel {
     companion object {
         val all: List<Country> by lazy { CitiesCountries.allCountries }
-        fun byCityId(cityId: Int): Country = all.single { it.cities.any { it.id == cityId } }
+        fun byCityId(cityId: Int): Country =
+            all.firstOrNull { it.cities.any { it.id == cityId } } ?: error("Country not found by city ID $cityId")
+
+        fun byLabel(label: String): Country =
+            all.firstOrNull { it.label == label } ?: error("Country not found by label [$label]")
     }
 }
 
@@ -17,24 +21,9 @@ data class City(
     override val label: String,
 ) : HasLabel {
     companion object {
-        val all: List<City> by lazy { CitiesCountries.allCities }
         val Amsterdam = City(1144, "Amsterdam")
-        fun byId(cityId: Int) = CitiesCountries.cityById(cityId)
+        val all: List<City> by lazy { CitiesCountries.allCountries.flatMap { it.cities } }
+        fun byId(cityId: Int) = all.firstOrNull { it.id == cityId } ?: error("City not found by ID $cityId")
+        fun byLabel(label: String) = all.firstOrNull { it.label == label } ?: error("City not found by label [$label]")
     }
 }
-
-//enum class City(val id: Int, val label: String) {
-//    Amsterdam(1144, "Amsterdam"),
-//    Breda(1158, "Breda"),
-//    Haarlem(1146, "Haarlem"),
-//    ;
-//
-//    companion object {
-//        private val cityById by lazy {
-//            entries.associateBy { it.id }
-//        }
-//
-//        fun byId(cityId: Int): City =
-//            cityById[cityId] ?: error("Invalid city ID: $cityId")
-//    }
-//}

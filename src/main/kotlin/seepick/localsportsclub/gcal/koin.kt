@@ -9,9 +9,7 @@ fun gcalModule(config: AppConfig) = module {
     single {
         when (config.gcal) {
             GcalMode.Noop -> NoopGcalService
-            GcalMode.Real -> RealGcalService(
-                calendarId = config.gcalConfig.calendarId,
-            )
+            GcalMode.Real -> PrefsEnabledGcalService(get())
         }
     } bind GcalService::class
 }

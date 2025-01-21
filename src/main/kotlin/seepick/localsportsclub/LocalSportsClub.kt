@@ -60,10 +60,10 @@ object LocalSportsClub {
                     applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
                     val singlesService: SinglesService = koinInject()
                     val mainWindowState: MainWindowState = koinInject()
-                    val windowPref = singlesService.readWindowPref() ?: WindowPref.default
+                    val windowPref = singlesService.windowPref ?: WindowPref.default
                     mainWindowState.update(windowPref.width, windowPref.height)
                     Window(
-                        title = "LocalSportsClub${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
+                        title = "LocalSportsClub v${AppPropertiesProvider.provide().version} ${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
                         state = rememberWindowState(
                             width = windowPref.width.dp, height = windowPref.height.dp,
                             position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
@@ -101,6 +101,7 @@ object LocalSportsClub {
 
                         val applicationLifecycleListeners = listOf(
                             usageStorage,
+                            koinViewModel<MainViewModel>(),
                             koinViewModel<ActivityViewModel>(),
                             koinViewModel<FreetrainingViewModel>(),
                             koinViewModel<VenueViewModel>(),
@@ -108,13 +109,11 @@ object LocalSportsClub {
                             koinViewModel<PreferencesViewModel>(),
                             object : ApplicationLifecycleListener {
                                 override fun onExit() {
-                                    singlesService.updateWindowPref(
-                                        WindowPref(
-                                            width = window.width,
-                                            height = window.height,
-                                            posX = window.x,
-                                            posY = window.y,
-                                        )
+                                    singlesService.windowPref = WindowPref(
+                                        width = window.width,
+                                        height = window.height,
+                                        posX = window.x,
+                                        posY = window.y,
                                     )
                                 }
                             },

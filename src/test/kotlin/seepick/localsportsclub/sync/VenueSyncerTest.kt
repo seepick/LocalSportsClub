@@ -8,13 +8,16 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.api.UscApi
+import seepick.localsportsclub.api.phpSessionId
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.api.venueDetails
 import seepick.localsportsclub.api.venueInfo
+import seepick.localsportsclub.city
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.persistence.DbListener
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
@@ -23,6 +26,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.uscConfig
 
 
@@ -31,6 +35,9 @@ class VenueSyncerTest : StringSpec() {
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
     private val uscConfig = Arb.uscConfig().next()
+    private val phpSessionId = Arb.phpSessionId().next()
+    private val city = Arb.city().next()
+    private val plan = Arb.enum<Plan>().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
     private lateinit var venueRepo: InMemoryVenueRepo
@@ -62,9 +69,7 @@ class VenueSyncerTest : StringSpec() {
                 NoopDownloader,
                 imageStorage,
                 syncerListenerDispatcher,
-                uscConfig
             ),
-            uscConfig = uscConfig,
         )
     }
 
@@ -74,12 +79,12 @@ class VenueSyncerTest : StringSpec() {
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
-                api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan)))
+                api.fetchVenues(any(), eq(VenuesFilter(city, plan)))
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
-            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
+            coEvery { api.fetchVenueDetail(any(), eq(remoteVenue.slug)) } returns
                     remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
 
-            syncer.sync()
+            syncer.sync(phpSessionId, plan, city)
 
             venueRepo.stored.should {
                 val stored = it.values.shouldBeSingleton().first()
@@ -93,20 +98,22 @@ class VenueSyncerTest : StringSpec() {
             }
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
-            coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns emptyList()
-            venueRepo.insert(Arb.venueDbo().next().copy(cityId = uscConfig.city.id, isDeleted = false))
+            coEvery { api.fetchVenues(any(), eq(VenuesFilter(city, plan))) } returns emptyList()
+            venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
 
-            syncer.sync()
+            syncer.sync(phpSessionId, plan, city)
 
             venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
         }
         "Given api returns 1 with linked and db has this 1 When sync Then link them" {
             val yetExisting = venueRepo.insert(Arb.venueDbo().next())
-            coEvery { api.fetchVenues(eq(VenuesFilter(uscConfig.city, uscConfig.plan))) } returns listOf(remoteVenue)
-            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails
+            coEvery { api.fetchVenues(any(), eq(VenuesFilter(city, plan))) } returns listOf(
+                remoteVenue
+            )
+            coEvery { api.fetchVenueDetail(any(), eq(remoteVenue.slug)) } returns remoteDetails
                 .copy(linkedVenueSlugs = listOf(yetExisting.slug))
 
-            syncer.sync()
+            syncer.sync(phpSessionId, plan, city)
 
             venueLinksRepo.stored.also {
                 it.shouldHaveSize(1)

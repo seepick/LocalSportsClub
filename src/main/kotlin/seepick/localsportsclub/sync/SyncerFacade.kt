@@ -3,6 +3,8 @@ package seepick.localsportsclub.sync
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
+import seepick.localsportsclub.api.PhpSessionProvider
+import seepick.localsportsclub.api.PlanProvider
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
@@ -17,11 +19,13 @@ class SyncerFacade(
     private val scheduleSyncer: ScheduleSyncer,
     private val checkinSyncer: CheckinSyncer,
     private val thirdPartySyncer: ThirdPartySyncer,
-    private val cleanupSyncer: CleanupSyncer,
+    private val cleanupPostSync: CleanupPostSync,
     private val dispatcher: SyncerListenerDispatcher,
     private val singlesService: SinglesService,
     private val clock: Clock,
     private val uscConfig: UscConfig,
+    private val phpSessionProvider: PhpSessionProvider,
+    private val planProvider: PlanProvider,
 ) : Syncer {
 
     private val log = logger {}
@@ -53,23 +57,28 @@ class SyncerFacade(
     override suspend fun sync() {
         log.debug { "Syncing ..." }
         val now = clock.now()
-        val lastSync = singlesService.readLastSync()
+        val lastSync = singlesService.lastSync
+        val city = singlesService.preferences.city ?: error("No city defined!")
         val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
+
+        val session = phpSessionProvider.provide()
+        val plan = planProvider.provide(session)
+
         transaction {
             runBlocking {
                 val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
                 if (isFullSync) {
-                    venueSyncer.sync()
-                    activitiesSyncer.sync(days)
-                    freetrainingSyncer.sync(days)
+                    venueSyncer.sync(session, plan, city)
+                    activitiesSyncer.sync(session, plan, city, days)
+                    freetrainingSyncer.sync(session, plan, city, days)
                 }
-                scheduleSyncer.sync()
-                checkinSyncer.sync()
+                scheduleSyncer.sync(session, city)
+                checkinSyncer.sync(session, city)
                 if (isFullSync) {
                     thirdPartySyncer.sync(days)
-                    cleanupSyncer.sync()
+                    cleanupPostSync.cleanup()
                 }
-                singlesService.updateLastSync(now)
+                singlesService.lastSync
             }
         }
     }

@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.activity
 import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -14,7 +15,8 @@ class ActivityViewModel(
     private val dataStorage: DataStorage,
     bookingService: BookingService,
     uscConfig: UscConfig,
-) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService) {
+    singlesService: SinglesService,
+) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService, singlesService) {
 
     override val tableColumns = activitiesTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeActivity }

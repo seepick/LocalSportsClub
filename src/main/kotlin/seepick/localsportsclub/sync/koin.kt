@@ -33,7 +33,7 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::EversportsFetcher)
             singleOf(::DeNieuweYogaSchoolFetcher)
             singleOf(::ThirdPartySyncer)
-            singleOf(::CleanupSyncer)
+            singleOf(::CleanupPostSync)
             singleOf(::SyncerFacade) bind Syncer::class
 
         }

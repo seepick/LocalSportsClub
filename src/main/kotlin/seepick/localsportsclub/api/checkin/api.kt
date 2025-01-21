@@ -12,12 +12,11 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.safeGet
 
 interface CheckinApi {
-    suspend fun fetchPage(pageNr: Int): CheckinsPage
+    suspend fun fetchPage(session: PhpSessionId, pageNr: Int): CheckinsPage
 }
 
 class CheckinHttpApi(
     private val http: HttpClient,
-    private val phpSessionId: PhpSessionId,
     private val responseStorage: ResponseStorage,
     private val clock: Clock,
     uscConfig: UscConfig,
@@ -25,10 +24,10 @@ class CheckinHttpApi(
 
     private val baseUrl = uscConfig.baseUrl
 
-    override suspend fun fetchPage(pageNr: Int): CheckinsPage {
+    override suspend fun fetchPage(session: PhpSessionId, pageNr: Int): CheckinsPage {
         val response = http.safeGet(Url("$baseUrl/profile/check-ins")) {
             parameter("page", pageNr)
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "Checkin-$pageNr")
         return CheckinsParser.parse(response.bodyAsText(), clock.today())

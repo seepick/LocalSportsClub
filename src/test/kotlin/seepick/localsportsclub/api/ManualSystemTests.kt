@@ -9,22 +9,24 @@ import seepick.localsportsclub.api.activity.ActivityHttpApi
 import seepick.localsportsclub.api.activity.ServiceType
 import seepick.localsportsclub.api.booking.BookingHttpApi
 import seepick.localsportsclub.api.checkin.CheckinHttpApi
+import seepick.localsportsclub.api.plan.MembershipHttpApi
 import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.persistence.ExposedSinglesRepo
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.PlanType
+import seepick.localsportsclub.service.model.Credentials
+import seepick.localsportsclub.service.model.Plan
+import seepick.localsportsclub.tools.connectToDatabase
 import java.time.LocalDate
 
 object ManualSystemTests {
 
     private val log = logger {}
     private val uscConfig = UscConfig(
-        city = City.Amsterdam,
-        plan = PlanType.Large,
         storeResponses = false,
     )
     private val responseStorage = ResponseStorageImpl()
@@ -38,32 +40,38 @@ object ManualSystemTests {
 //            testFreetrainingDetails()
 //            testCheckins()
 //            testVenues()
-            testVenue()
+//            testVenue()
 //            testActivities()
 //            testSchedule()
 //            testBook(84737975)
+            testPlanType()
         }
     }
 
-    private fun activityApi() = ActivityHttpApi(httpClient, phpSessionId, responseStorage, uscConfig, SystemClock)
-    private fun checkinApi() = CheckinHttpApi(httpClient, phpSessionId, responseStorage, SystemClock, uscConfig)
-    private fun venueApi() = VenueHttpApi(httpClient, phpSessionId, responseStorage, uscConfig)
-    private fun bookingApi() = BookingHttpApi(httpClient, uscConfig, phpSessionId, responseStorage)
+    private fun activityApi() = ActivityHttpApi(httpClient, responseStorage, uscConfig, SystemClock)
+    private fun checkinApi() = CheckinHttpApi(httpClient, responseStorage, SystemClock, uscConfig)
+    private fun venueApi() = VenueHttpApi(httpClient, responseStorage, uscConfig)
+    private fun bookingApi() = BookingHttpApi(httpClient, uscConfig, responseStorage)
+
+    private suspend fun testPlanType() {
+        val plan = MembershipHttpApi(httpClient, responseStorage, uscConfig).fetch(phpSessionId)
+        println("plan = $plan")
+    }
 
     private suspend fun testBook(activityId: Int) {
-        val result = bookingApi().cancel(84937551)
+        val result = bookingApi().cancel(phpSessionId, 84937551)
         //.book(activityId)
         println(result)
     }
 
     private suspend fun testFreetrainingDetails() {
         val freetrainingId = 83664090
-        val result = activityApi().fetchFreetrainingDetails(freetrainingId)
+        val result = activityApi().fetchFreetrainingDetails(phpSessionId, freetrainingId)
         println(result)
     }
 
     private suspend fun testCheckins() {
-        val response = checkinApi().fetchPage(1)
+        val response = checkinApi().fetchPage(phpSessionId, 1)
         println("received ${response.entries.size} checkins")
         response.entries.forEach { entry ->
             println(entry)
@@ -72,7 +80,7 @@ object ManualSystemTests {
 
     private suspend fun testVenue() {
         val slug = "amsterdam-noord"
-        val details = venueApi().fetchDetails(slug)
+        val details = venueApi().fetchDetails(phpSessionId, slug)
         println("details.title=${details.title}")
 //        println("details.websiteUrl=${details.websiteUrl}")
         println("details.linkedVenueSlugs=${details.linkedVenueSlugs}")
@@ -80,8 +88,9 @@ object ManualSystemTests {
 
     private suspend fun testVenues() {
         val pages = venueApi().fetchPages(
+            phpSessionId,
             VenuesFilter(
-                city = City.Amsterdam, plan = PlanType.Large
+                city = City.Amsterdam, plan = Plan.Large
             )
         )
         pages.flatMap { VenueParser.parseHtmlContent(it.content) }.sortedBy { it.slug }
@@ -91,7 +100,8 @@ object ManualSystemTests {
     private suspend fun testActivities() {
         val today = LocalDate.now()
         val pages = activityApi().fetchPages(
-            filter = ActivitiesFilter(city = City.Amsterdam, plan = PlanType.Large, date = today),
+            phpSessionId,
+            filter = ActivitiesFilter(city = City.Amsterdam, plan = Plan.Large, date = today),
             serviceType = ServiceType.Courses,
         )
         println("Received ${pages.size} pages of activities.")
@@ -104,7 +114,7 @@ object ManualSystemTests {
     }
 
     private suspend fun testSchedule() {
-        val ids = ScheduleHttpApi(httpClient, phpSessionId, responseStorage, uscConfig).fetchScheduleRows()
+        val ids = ScheduleHttpApi(httpClient, responseStorage, uscConfig).fetchScheduleRows(phpSessionId)
         println("Got ${ids.size} activity IDs back: $ids")
     }
 
@@ -119,12 +129,12 @@ object ManualSystemTests {
         val credentials = if (syspropUsername != null && syspropPassword != null) {
             Credentials(syspropUsername, syspropPassword)
         } else {
-            Credentials.load()
+            connectToDatabase(isProd = false)
+            ExposedSinglesRepo.select()?.preferences?.uscCredentials ?: error("No credentials stored in DB")
         }
-        return LoginApi(httpClient, uscConfig.baseUrl).login(credentials)
-            .shouldBeInstanceOf<LoginResult.Success>().phpSessionId.let {
+        return LoginHttpApi(httpClient, uscConfig.baseUrl).login(credentials)
+            .shouldBeInstanceOf<LoginResult.Success>().phpSessionId.also {
                 println("New PHP session ID is: $it")
-                PhpSessionId(it)
             }
     }
 

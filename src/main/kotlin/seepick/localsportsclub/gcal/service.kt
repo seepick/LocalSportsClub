@@ -6,6 +6,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.DateTime
 import com.google.api.client.util.store.FileDataStoreFactory
@@ -14,11 +15,15 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.retry
+import java.io.Reader
+import java.io.StringReader
 import java.net.SocketException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,23 +33,42 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.TimeZone
 
+fun SinglesService.readCalendarIdOrThrow() =
+    preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
 
 interface GcalService {
-    fun create(entry: GcalEntry)
-
-    /** @return true if successfully deleted, false if not found/existing. */
-    fun delete(deletion: GcalDeletion): Boolean
+    fun create(calendarId: String, entry: GcalEntry)
+    fun delete(calendarId: String, deletion: GcalDeletion)
 }
+
+class PrefsEnabledGcalService(
+    private val singlesService: SinglesService,
+) : GcalService {
+
+    private val delegate by lazy {
+        val calendarId = singlesService.preferences.gcal.maybeCalendarId
+        if (calendarId == null) NoopGcalService
+        else RealGcalService()
+    }
+
+    override fun create(calendarId: String, entry: GcalEntry) {
+        delegate.create(calendarId, entry)
+    }
+
+    override fun delete(calendarId: String, deletion: GcalDeletion) {
+        delegate.delete(calendarId, deletion)
+    }
+}
+
 
 object NoopGcalService : GcalService {
     private val log = logger {}
-    override fun create(entry: GcalEntry) {
-        log.warn { "Not creating: $entry" }
+    override fun create(calendarId: String, entry: GcalEntry) {
+        log.debug { "Not creating: $entry" }
     }
 
-    override fun delete(deletion: GcalDeletion): Boolean {
-        log.warn { "Not deleting: $deletion" }
-        return true
+    override fun delete(calendarId: String, deletion: GcalDeletion) {
+        log.debug { "Not deleting: $deletion" }
     }
 }
 
@@ -84,34 +108,63 @@ sealed interface GcalEntry {
     }
 }
 
-class RealGcalService(
-    private val calendarId: String,
-) : GcalService {
+object GcalCredentials {
+    private val log = logger {}
+    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GcalCredentials)
+
+    fun reader(): Reader = if (credentialsJsonFile.exists()) {
+        log.debug { "Reading GCal credentials from local file." }
+        credentialsJsonFile.inputStream().reader()
+    } else {
+        val appProperties = AppPropertiesProvider.provide()
+        StringReader(buildJson(clientId = appProperties.gcalClientId, clientSecret = appProperties.gcalClientSecret))
+    }
+
+    private fun buildJson(clientId: String, clientSecret: String) = """
+        {
+          "installed": {
+            "client_id": "$clientId",
+            "project_id": "localsportsclub",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_secret": "$clientSecret",
+            "redirect_uris": [
+              "http://localhost"
+            ]
+          }
+        }
+    """.trimIndent()
+}
+
+class RealGcalService : GcalService {
     private val log = logger {}
     private val applicationName = "LocalSportsClub"
-    private val scopes = CalendarScopes.all()
+    private val scopes = setOf(CalendarScopes.CALENDAR, CalendarScopes.CALENDAR_EVENTS)
     private val datastoreDir = FileResolver.resolve(DirectoryEntry.Gcal)
-    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GcalCredentials)
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
     private val timeZone = TimeZone.getDefault().id
     private val zoneId = ZoneId.systemDefault()
+
     private val credentials: Credential by lazy {
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, credentialsJsonFile.inputStream().reader())
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, GcalCredentials.reader())
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
             .setDataStoreFactory(FileDataStoreFactory(datastoreDir)).setAccessType("offline").build()
         val receiver = LocalServerReceiver.Builder().setPort(8888).build()
         AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }
+
     private val calendar: Calendar by lazy {
         log.info { "Connecting to google calendar..." }
         Calendar.Builder(httpTransport, jsonFactory, credentials).setApplicationName(applicationName).build()
     }
 
     companion object {
-        private fun GcalService.createDummy() {
+        private fun GcalService.createDummy(calendarId: String) {
             val start = LocalDateTime.now().plusHours(2).withMinute(0).withSecond(0).withNano(0)
             create(
+                calendarId,
                 GcalEntry.GcalActivity(
                     activityId = 1337,
                     title = "from LSC",
@@ -125,8 +178,9 @@ class RealGcalService(
             )
         }
 
-        private fun GcalService.deleteDummy() {
+        private fun GcalService.deleteDummy(calendarId: String) {
             delete(
+                calendarId,
                 GcalDeletion(
                     day = LocalDate.now(),
                     activityOrFreetrainingId = 1337,
@@ -137,16 +191,35 @@ class RealGcalService(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            RealGcalService("bpdgd31mckn8niqcjpkju8197c@group.calendar.google.com")
-//                .createDummy()
-                .deleteDummy()
+            val calendarId = args[0]
+            RealGcalService()
+                .testConnection(calendarId)
+//                .createDummy("wrong")
+//                .deleteDummy(calendarId)
         }
 
         private const val PROP_IS_ACTIVITY = "isActivity"
         private const val PROP_ENTITY_ID = "activityOrFreetrainingId"
     }
 
-    override fun create(entry: GcalEntry) {
+    fun testConnection(calendarId: String): GcalConnectionTest {
+        log.debug { "Testing connection to calendar: $calendarId" }
+        return try {
+            calendar.calendars().get(calendarId).execute()
+            log.debug { "GCal connection test succeeded." }
+            GcalConnectionTest.Success
+        } catch (e: GoogleJsonResponseException) {
+            if (e.details.code == 404) {
+                log.debug { "GCal connection test failed: ${e.details}" }
+                GcalConnectionTest.Fail
+            } else {
+                throw e
+            }
+        }
+    }
+    // if TokenResponseException thrown (bad token) => delete stored credentials file
+
+    override fun create(calendarId: String, entry: GcalEntry) {
         log.info { "Creating google calendar entry: $entry" }
         val created = retry(maxAttempts = 3, listOf(SocketException::class.java)) {
             calendar.events().insert(calendarId, entry.toEvent()).execute()
@@ -155,7 +228,7 @@ class RealGcalService(
         log.debug { "Successfully created entry at: ${created.htmlLink}" }
     }
 
-    override fun delete(deletion: GcalDeletion): Boolean {
+    override fun delete(calendarId: String, deletion: GcalDeletion) {
         log.info { "Deleting: $deletion" }
         val events = calendar.events().list(calendarId)
             .setSingleEvents(true)
@@ -167,14 +240,13 @@ class RealGcalService(
                     e.getPrivateExtendedProperty(PROP_ENTITY_ID)?.toInt() == deletion.activityOrFreetrainingId
         }
         if (found == null) {
-            log.info { "Not going to delete calendar event, not found..." }
-            return false
+            log.warn { "Not going to delete calendar event, not found: $deletion" }
+            return
         }
         retry(maxAttempts = 3, listOf(SocketException::class.java)) {
             calendar.events().delete(calendarId, found.id).execute()
         }
         log.debug { "Successfully deleted calendar event." }
-        return true
     }
 
     private fun Event.getPrivateExtendedProperty(key: String): String? =
@@ -231,4 +303,9 @@ class RealGcalService(
 
     private fun LocalDateTime.toGoogleDateTime() = DateTime(atZone(zoneId).toEpochSecond() * 1_000)
 
+}
+
+sealed interface GcalConnectionTest {
+    data object Success : GcalConnectionTest
+    data object Fail : GcalConnectionTest
 }

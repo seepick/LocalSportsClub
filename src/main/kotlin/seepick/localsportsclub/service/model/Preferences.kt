@@ -1,6 +1,5 @@
 package seepick.localsportsclub.service.model
 
-import seepick.localsportsclub.api.Credentials
 import seepick.localsportsclub.service.Location
 
 data class Preferences(
@@ -8,7 +7,12 @@ data class Preferences(
     val city: City?,
     val gcal: Gcal,
     val home: Location?,
-)
+    val periodFirstDay: Int?,
+) {
+    companion object {
+        val empty = Preferences(null, null, Gcal.GcalDisabled, null, null)
+    }
+}
 
 sealed interface Gcal {
     val maybeCalendarId: String?

@@ -11,16 +11,12 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Release v1
 
-* prefs: home city (complete list of options)
-    * filter activity/freetraining/venues (info stored in DB?!)
-    * make third party info syncer city-dependent
-* prefs: USC creds
-* prefs: gcal feature on/off (calendar ID; use Switch compose component)
-* sync membership plan (infer limits)
-* display version number
+* make third party info syncer city-dependent
 * online version checker
 * auto-build/release script (incl. github); FULLY automated (build4k?!)
+* inject build variables for lsc.properties file
 * design website + link to it in app
+
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * bigger PR: tell multiple friends, ask for feedback
 * contact someone: is it legal what i'm doing?
@@ -28,6 +24,7 @@ Communistic Custom Client for Urban Sports Club.
 
 ## Release v2
 
+* system test: book something which can't be booked (different limits); parse response and show proper message
 * make scrollbar thingy brighter in dark mode
 * after sync, display report what happened ++ big WARNING if new noshow was detected!
     * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)

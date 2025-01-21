@@ -14,22 +14,21 @@ import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.fetchPageable
 import seepick.localsportsclub.service.ApiException
 import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.PlanType
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.safeGet
 
 data class VenuesFilter(
     val city: City,
-    val plan: PlanType,
+    val plan: Plan,
 )
 
 interface VenueApi {
-    suspend fun fetchPages(filter: VenuesFilter): List<VenuesDataJson>
-    suspend fun fetchDetails(slug: String): VenueDetails
+    suspend fun fetchPages(session: PhpSessionId, filter: VenuesFilter): List<VenuesDataJson>
+    suspend fun fetchDetails(session: PhpSessionId, slug: String): VenueDetails
 }
 
 class VenueHttpApi(
     private val http: HttpClient,
-    private val phpSessionId: PhpSessionId,
     private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
 ) : VenueApi {
@@ -37,14 +36,14 @@ class VenueHttpApi(
 
     private val log = logger {}
 
-    override suspend fun fetchPages(filter: VenuesFilter): List<VenuesDataJson> =
-        fetchPageable { fetchPage(filter, it) }
+    override suspend fun fetchPages(session: PhpSessionId, filter: VenuesFilter): List<VenuesDataJson> =
+        fetchPageable { fetchPage(session, filter, it) }
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
-    private suspend fun fetchPage(filter: VenuesFilter, page: Int): VenuesDataJson {
+    private suspend fun fetchPage(session: PhpSessionId, filter: VenuesFilter, page: Int): VenuesDataJson {
         log.debug { "Fetching venue page $page" }
         val response = http.safeGet(Url("$baseUrl/venues")) {
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
             parameter("city_id", filter.city.id)
             parameter("plan_type", filter.plan.id)
@@ -58,10 +57,10 @@ class VenueHttpApi(
         return json.data
     }
 
-    override suspend fun fetchDetails(slug: String): VenueDetails {
+    override suspend fun fetchDetails(session: PhpSessionId, slug: String): VenueDetails {
         log.debug { "Fetching details for: [$slug]" }
         val response = http.safeGet(Url("$baseUrl/venues/$slug")) {
-            cookie("PHPSESSID", phpSessionId.value)
+            cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "VenueDetails-$slug")
         return VenueDetailsParser.parse(response.bodyAsText())

@@ -2,8 +2,8 @@ package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
@@ -13,7 +13,7 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.PlanType
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 
@@ -21,18 +21,15 @@ class VenueSyncer(
     private val api: UscApi,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
-    uscConfig: UscConfig,
 ) {
     private val log = logger {}
-    private val city: City = uscConfig.city
-    private val plan: PlanType = uscConfig.plan
 
-    suspend fun sync() {
+    suspend fun sync(session: PhpSessionId, plan: Plan, city: City) {
         log.info { "Syncing venues ..." }
-        val remoteVenuesBySlug = api.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
+        val remoteVenuesBySlug = api.fetchVenues(session, VenuesFilter(city, plan)).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenuesBySlug =
-            venueRepo.selectAll().filter { it.cityId == city.id && !it.isDeleted }.associateBy { it.slug }
+            venueRepo.selectAll(city.id).filter { !it.isDeleted }.associateBy { it.slug }
 
         val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
         // this also means that the "hidden linked ones" will be deleted
@@ -42,7 +39,7 @@ class VenueSyncer(
         }
 
         val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
-        venueSyncInserter.fetchInsertAndDispatch(missingVenues.keys.toList())
+        venueSyncInserter.fetchInsertAndDispatch(session, city, missingVenues.keys.toList())
     }
 }
 
@@ -60,6 +57,8 @@ class VenueSlugLink(
 
 interface VenueSyncInserter {
     suspend fun fetchInsertAndDispatch(
+        session: PhpSessionId,
+        city: City,
         venueSlugs: List<String>,
         prefilledNotes: String = "",
     )
@@ -72,12 +71,12 @@ class VenueSyncInserterImpl(
     private val downloader: Downloader,
     private val imageStorage: ImageStorage,
     private val dispatcher: SyncerListenerDispatcher,
-    uscConfig: UscConfig,
 ) : VenueSyncInserter {
     private val log = logger {}
-    private val city = uscConfig.city
 
     override suspend fun fetchInsertAndDispatch(
+        session: PhpSessionId,
+        city: City,
         venueSlugs: List<String>,
         prefilledNotes: String,
     ) {
@@ -85,13 +84,15 @@ class VenueSyncInserterImpl(
         val newDbos = mutableListOf<VenueDbo>()
         val newLinks = mutableSetOf<VenueSlugLink>()
         fetchAllInsertDispatch(
+            session,
+            city,
             venueSlugs,
             prefilledNotes,
             newDbos = newDbos,
             newLinks = newLinks,
         )
         log.trace { "Inserting links: $newLinks" }
-        val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
+        val existingVenues = venueRepo.selectAll(city.id).associate { it.slug to it.id }
         newLinks.map { newLink ->
             VenueIdLink(
                 existingVenues[newLink.slug1] ?: error("Venue1 not found by slug for link: $newLink"),
@@ -103,6 +104,8 @@ class VenueSyncInserterImpl(
     }
 
     private suspend fun fetchAllInsertDispatch(
+        session: PhpSessionId,
+        city: City,
         venueSlugs: List<String>,
         prefilledNotes: String = "",
         newDbos: MutableList<VenueDbo>,
@@ -110,24 +113,28 @@ class VenueSyncInserterImpl(
     ) {
         log.trace { "fetchAllInsertDispatch(venueSlugs=$venueSlugs, newLinks=$newLinks)" }
         newDbos += workParallel(5, venueSlugs) { slug ->
-            fetchDetailsDownloadImage(slug, newLinks).copy(notes = prefilledNotes)
+            fetchDetailsDownloadImage(session, city, slug, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
-        linkVenues(newDbos, newLinks)
+        linkVenues(session, city, newDbos, newLinks)
     }
 
     private suspend fun linkVenues(
+        session: PhpSessionId,
+        city: City,
         newDbos: MutableList<VenueDbo>,
         newLinks: MutableSet<VenueSlugLink>,
     ) {
-        val existingVenues = venueRepo.selectAll().associate { it.slug to it.id }
+        val existingVenues = venueRepo.selectAll(city.id).associate { it.slug to it.id }
         val newLinkSlugs = newLinks.map { it.slug1 }.plus(newLinks.map { it.slug2 }).distinct()
         val missingVenuesBySlug = newLinkSlugs - existingVenues.keys
         log.trace { "linkVenues ... missingVenuesBySlug=$missingVenuesBySlug" }
         if (missingVenuesBySlug.isNotEmpty()) {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
             fetchAllInsertDispatch(
+                session,
+                city,
                 missingVenuesBySlug,
                 prefilledNotes = "[SYNC] refetch due to missing venue link",
                 newDbos,
@@ -137,10 +144,12 @@ class VenueSyncInserterImpl(
     }
 
     private suspend fun fetchDetailsDownloadImage(
+        session: PhpSessionId,
+        city: City,
         slug: String,
         venueSlugLinks: MutableSet<VenueSlugLink>
     ): VenueDbo {
-        val details = api.fetchVenueDetail(slug)
+        val details = api.fetchVenueDetail(session, slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }

@@ -66,57 +66,60 @@ class DataStorage(
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
-        val venues = venueRepo.selectAll().map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
-            .associateBy { it.id }
-        venueLinksRepo.selectAll().forEach { (id1, id2) ->
-            val venue1 = venues[id1] ?: error("Linking venue1 not found by ID: $id1")
-            val venue2 = venues[id2] ?: error("Linking venue2 not found by ID: $id2")
-            venue1.linkedVenues += venue2
-            venue2.linkedVenues += venue1
-        }
-        venues.toMutableMap()
+        singlesService.preferences.city?.id?.let { cityId ->
+            val venues =
+                venueRepo.selectAll(cityId).map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
+                    .associateBy { it.id }
+            venueLinksRepo.selectAll(cityId).forEach { (id1, id2) ->
+                val venue1 = venues[id1] ?: error("Linking venue1 not found by ID: $id1")
+                val venue2 = venues[id2] ?: error("Linking venue2 not found by ID: $id2")
+                venue1.linkedVenues += venue2
+                venue2.linkedVenues += venue1
+            }
+            venues.toMutableMap()
+        } ?: mutableMapOf()
+
     }
 
     val venuesCategories: List<String> by lazy {
-        venuesById.values.asSequence()
-            .flatMap { it.categories }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+        venuesById.values.asSequence().flatMap { it.categories }.distinct().filter { it.isNotEmpty() }.sorted().toList()
     }
 
     val activitiesCategories: List<String> by lazy {
-        allActivitiesByVenueId.values.asSequence()
-            .flatten().map { it.category }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+        allActivitiesByVenueId.values.asSequence().flatten().map { it.category }.distinct().filter { it.isNotEmpty() }
+            .sorted().toList()
     }
 
     val freetrainingsCategories: List<String> by lazy {
-        allFreetrainingsByVenueId.values.asSequence()
-            .flatten().map { it.category }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+        allFreetrainingsByVenueId.values.asSequence().flatten().map { it.category }.distinct()
+            .filter { it.isNotEmpty() }.sorted().toList()
     }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
-        val today = clock.today()
-        activityRepo.selectAll()
-            .filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
-            .sortedByDescending { it.from }
-            .map { activityDbo ->
-                val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
-                activityDbo.toActivity(venueForActivity).also {
-                    venueForActivity.activities += it
-                }
-            }.groupByTo(mutableMapOf()) { it.venue.id }
+        singlesService.preferences.city?.id?.let { cityId ->
+            val today = clock.today()
+            activityRepo.selectAll(cityId).filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
+                .sortedByDescending { it.from }.map { activityDbo ->
+                    val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
+                    activityDbo.toActivity(venueForActivity).also {
+                        venueForActivity.activities += it
+                    }
+                }.groupByTo(mutableMapOf()) { it.venue.id }
+        } ?: mutableMapOf()
     }
 
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
-        val today = clock.today()
-        freetrainingRepo.selectAll()
-            .filter { it.state != FreetrainingState.Blank || it.date >= today }
-            .sortedByDescending { it.date }
-            .map { freetrainingDbo ->
-                val venueForFreetraining =
-                    venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
-                freetrainingDbo.toFreetraining(venueForFreetraining).also {
-                    venueForFreetraining.freetrainings += it
-                }
-            }.groupByTo(mutableMapOf()) { it.venue.id }
+        singlesService.preferences.city?.id?.let { cityId ->
+            val today = clock.today()
+            freetrainingRepo.selectAll(cityId).filter { it.state != FreetrainingState.Blank || it.date >= today }
+                .sortedByDescending { it.date }.map { freetrainingDbo ->
+                    val venueForFreetraining =
+                        venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
+                    freetrainingDbo.toFreetraining(venueForFreetraining).also {
+                        venueForFreetraining.freetrainings += it
+                    }
+                }.groupByTo(mutableMapOf()) { it.venue.id }
+        } ?: mutableMapOf()
     }
 
     fun registerListener(listener: DataStorageListener) {
@@ -124,8 +127,7 @@ class DataStorage(
         listeners += listener
     }
 
-    fun selectVisibleVenues(): List<Venue> =
-        venuesById.values.toList()
+    fun selectVisibleVenues(): List<Venue> = venuesById.values.toList()
 
     fun selectVisibleActivities(): List<Activity> {
         val now = clock.now()
@@ -146,16 +148,18 @@ class DataStorage(
             venuesById[venue.id] = venue
             venue
         }
-        val links = venueLinksRepo.selectAll()
-        venues.forEach { venue ->
-            links.filter { (id1, id2) ->
-                id1 == venue.id || id2 == venue.id
-            }.forEach { (id1, id2) ->
-                val venue1 = venuesById[id1] ?: error("Linking venue1 not found by ID: $id1")
-                val venue2 = venuesById[id2] ?: error("Linking venue2 not found by ID: $id2")
-                if (!venue1.linkedVenues.contains(venue2) && !venue2.linkedVenues.contains(venue1)) {
-                    venue1.linkedVenues += venue2
-                    venue2.linkedVenues += venue1
+        singlesService.preferences.city?.id?.also { cityId ->
+            val links = venueLinksRepo.selectAll(cityId)
+            venues.forEach { venue ->
+                links.filter { (id1, id2) ->
+                    id1 == venue.id || id2 == venue.id
+                }.forEach { (id1, id2) ->
+                    val venue1 = venuesById[id1] ?: error("Linking venue1 not found by ID: $id1")
+                    val venue2 = venuesById[id2] ?: error("Linking venue2 not found by ID: $id2")
+                    if (!venue1.linkedVenues.contains(venue2) && !venue2.linkedVenues.contains(venue1)) {
+                        venue1.linkedVenues += venue2
+                        venue2.linkedVenues += venue1
+                    }
                 }
             }
         }
@@ -193,9 +197,7 @@ class DataStorage(
                 ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
             }
         } ?: log.warn {
-            "Couldn't find activity in data storage. " +
-                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
-                    "Activity: $activityDbo"
+            "Couldn't find activity in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Activity: $activityDbo"
         }
     }
 
@@ -205,9 +207,7 @@ class DataStorage(
                 FreetrainingFieldUpdate.State -> freetraining.state = freetrainingDbo.state
             }
         } ?: log.warn {
-            "Couldn't find freetraining in data storage. " +
-                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
-                    "Freetraining: $freetrainingDbo"
+            "Couldn't find freetraining in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Freetraining: $freetrainingDbo"
         }
     }
 
@@ -285,7 +285,7 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
     )
 
     if (location == null) return null to null
-    val home = readPreferences().home ?: return location to null
+    val home = preferences.home ?: return location to null
     return location to round(distance(home, location), 2)
 }
 
@@ -341,7 +341,7 @@ fun VenueDbo.toVenue(
     name = name,
     slug = slug,
     categories = facilities.split(",").filter { it.isNotEmpty() },
-    city = CitiesCountries.cityById(cityId),
+    city = City.byId(cityId),
     rating = Rating.byValue(rating),
     notes = notes,
     description = description,

@@ -1,6 +1,7 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.activity.ActivityApi
 import seepick.localsportsclub.api.activity.ActivityDetails
 import seepick.localsportsclub.api.activity.FreetrainingDetails
@@ -12,12 +13,22 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.Month
 
 interface DataSyncRescuer {
-    suspend fun fetchInsertAndDispatchActivity(activityId: Int, venueSlug: String, prefilledNotes: String): ActivityDbo
+    suspend fun fetchInsertAndDispatchActivity(
+        session: PhpSessionId,
+        city: City,
+        activityId: Int,
+        venueSlug: String,
+        prefilledNotes: String
+    ): ActivityDbo
+
     suspend fun fetchInsertAndDispatchFreetraining(
+        session: PhpSessionId,
+        city: City,
         freetrainingId: Int,
         venueSlug: String,
         prefilledNotes: String
@@ -36,15 +47,17 @@ class DataSyncRescuerImpl(
     private val log = logger {}
 
     override suspend fun fetchInsertAndDispatchActivity(
+        session: PhpSessionId,
+        city: City,
         activityId: Int,
         venueSlug: String,
         prefilledNotes: String,
     ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity with ID $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
-        val activityDetails = activityApi.fetchDetails(activityId).let(::adjustDate)
+        val activityDetails = activityApi.fetchDetails(session, activityId).let(::adjustDate)
 
-        val venue = ensureVenue(venueSlug, prefilledNotes)
+        val venue = ensureVenue(session, city, venueSlug, prefilledNotes)
         val dbo = activityDetails.toActivityDbo(activityId, venue.id)
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))
@@ -69,22 +82,29 @@ class DataSyncRescuerImpl(
         state = ActivityState.Blank,
     )
 
-    private suspend fun ensureVenue(venueSlug: String, prefilledNotes: String): VenueDbo =
+    private suspend fun ensureVenue(
+        session: PhpSessionId,
+        city: City,
+        venueSlug: String,
+        prefilledNotes: String
+    ): VenueDbo =
         venueRepo.selectBySlug(venueSlug) ?: suspend {
-            venueSyncInserter.fetchInsertAndDispatch(listOf(venueSlug), prefilledNotes)
+            venueSyncInserter.fetchInsertAndDispatch(session, city, listOf(venueSlug), prefilledNotes)
             venueRepo.selectBySlug(venueSlug)
                 ?: error("Terribly failed rescuing venue: [$venueSlug]")
         }()
 
     override suspend fun fetchInsertAndDispatchFreetraining(
+        session: PhpSessionId,
+        city: City,
         freetrainingId: Int,
         venueSlug: String,
         prefilledNotes: String
     ): FreetrainingDbo {
         log.debug { "Trying to rescue locally non-existing freetraining $freetrainingId for venue [$venueSlug]" }
         require(freetrainingRepo.selectById(freetrainingId) == null)
-        val freetrainingDetail = activityApi.fetchFreetrainingDetails(freetrainingId).let(::adjustDate)
-        val venue = ensureVenue(venueSlug, prefilledNotes)
+        val freetrainingDetail = activityApi.fetchFreetrainingDetails(session, freetrainingId).let(::adjustDate)
+        val venue = ensureVenue(session, city, venueSlug, prefilledNotes)
         val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId = freetrainingId, venueId = venue.id)
         freetrainingRepo.insert(dbo)
         dispatcher.dispatchOnFreetrainingDbosAdded(listOf(dbo))

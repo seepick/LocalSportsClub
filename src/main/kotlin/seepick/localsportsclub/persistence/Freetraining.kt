@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
@@ -65,10 +66,10 @@ object FreetrainingsTable : IntIdTable("PUBLIC.FREETRAININGS", "ID") {
 }
 
 interface FreetrainingRepo {
-    fun selectAll(): List<FreetrainingDbo>
+    fun selectAll(cityId: Int): List<FreetrainingDbo>
+    fun selectAllScheduled(cityId: Int): List<FreetrainingDbo>
+    fun selectFutureMostDate(cityId: Int): LocalDate?
     fun selectById(freetrainingId: Int): FreetrainingDbo?
-    fun selectAllScheduled(): List<FreetrainingDbo>
-    fun selectFutureMostDate(): LocalDate?
     fun insert(dbo: FreetrainingDbo)
     fun update(dbo: FreetrainingDbo)
     fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo>
@@ -77,12 +78,10 @@ interface FreetrainingRepo {
 class InMemoryFreetrainingRepo : FreetrainingRepo {
     val stored = mutableMapOf<Int, FreetrainingDbo>()
 
-    override fun selectAll() = stored.values.toList()
-
+    override fun selectAll(cityId: Int) = stored.values.toList()
+    override fun selectAllScheduled(cityId: Int) = stored.values.filter { it.isScheduled }
+    override fun selectFutureMostDate(cityId: Int): LocalDate? = stored.values.maxByOrNull { it.date }?.date
     override fun selectById(freetrainingId: Int): FreetrainingDbo? = stored[freetrainingId]
-    override fun selectAllScheduled() = stored.values.filter { it.isScheduled }
-
-    override fun selectFutureMostDate(): LocalDate? = stored.values.maxByOrNull { it.date }?.date
 
     override fun insert(dbo: FreetrainingDbo) {
         require(!stored.containsKey(dbo.id))
@@ -109,30 +108,40 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
 
     private val log = logger {}
 
-    override fun selectAll(): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().orderBy(FreetrainingsTable.date).map {
-            FreetrainingDbo.fromRow(it)
-        }
+    override fun selectAll(cityId: Int): List<FreetrainingDbo> = transaction {
+        FreetrainingsTable
+            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
+            .selectAll().where { VenuesTable.cityId eq cityId }.orderBy(FreetrainingsTable.date).map {
+                FreetrainingDbo.fromRow(it)
+            }
+    }
+
+    override fun selectAllScheduled(cityId: Int): List<FreetrainingDbo> = transaction {
+        FreetrainingsTable
+            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
+            .selectAll()
+            .where { (VenuesTable.cityId eq cityId) and (FreetrainingsTable.state eq FreetrainingState.Scheduled) }
+            .map {
+                FreetrainingDbo.fromRow(it)
+            }
+    }
+
+    override fun selectFutureMostDate(cityId: Int): LocalDate? = transaction {
+        FreetrainingsTable
+            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
+            .select(FreetrainingsTable.date)
+            .where { VenuesTable.cityId eq cityId }
+            .orderBy(FreetrainingsTable.date, SortOrder.DESC).limit(1)
+            .toList().let {
+                if (it.isEmpty()) null
+                else it.first()[FreetrainingsTable.date]
+            }
     }
 
     override fun selectById(freetrainingId: Int): FreetrainingDbo? = transaction {
         FreetrainingsTable.selectAll().where { FreetrainingsTable.id.eq(freetrainingId) }.map {
             FreetrainingDbo.fromRow(it)
         }.singleOrNull()
-    }
-
-    override fun selectAllScheduled(): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().where { FreetrainingsTable.state eq FreetrainingState.Scheduled }.map {
-            FreetrainingDbo.fromRow(it)
-        }
-    }
-
-    override fun selectFutureMostDate(): LocalDate? = transaction {
-        FreetrainingsTable.select(FreetrainingsTable.date).orderBy(FreetrainingsTable.date, SortOrder.DESC).limit(1)
-            .toList().let {
-                if (it.isEmpty()) null
-                else it.first()[FreetrainingsTable.date]
-            }
     }
 
     override fun insert(dbo: FreetrainingDbo): Unit = transaction {
