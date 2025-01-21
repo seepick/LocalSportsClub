@@ -28,7 +28,7 @@ git_tag_and_push () {
 }
 
 git_status_verify
-./gradlew check -Plsc.version="$VERSION" || exit 1
+./gradlew check -Plsc.version="$APP_VERSION" || exit 1
 git_tag_and_push
 echo "Successfully created release $APP_VERSION ✅"
 
