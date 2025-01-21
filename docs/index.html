@@ -1,19 +1,52 @@
-<html>
+<html lang="en">
 <head>
     <title>LocalSportsClub</title>
+    <style>
+        body {
+            background: black;
+        }
+
+        * {
+            color: white;
+            font-family: "Goudy Bookletter 1911", sans-serif;
+        }
+
+        #root {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        #title {
+            font-size: 1.4em;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: lightgray;
+        }
+
+        #logo {
+            padding-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>LocalSportsClub</h1>
-<p>A better UrbanSportsClub client from the people for the people.</p>
-<p>IMAGE SCREENSHOT/ (youtube) video</p>
-<p>Download latest versions:</p>
-<ul>
-    <li><a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.dmg">Download for
-        macOS</a> latest version
-    </li>
-    <li><a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.exe">Download for
-        Windows</a> latest version
-    </li>
-</ul>
+<div id="root">
+    <div class="centered"><img id="logo" src="logo.png" alt="logo"/></div>
+    <div id="title" class="centered"><b>LocalSportsClub</b> - An unofficial UrbanSportsClub client
+    </div>
+    <div><a href="screenshot-big.png" title="View bigger screenshot"><img src="screenshot-small.png" alt="screenshot"/></a>
+    </div>
+    <div class="centered">Download:
+        <a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.dmg">macOS</a>,
+        <a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.exe">Windows</a>
+    </div>
+</div>
 </body>
 </html>
