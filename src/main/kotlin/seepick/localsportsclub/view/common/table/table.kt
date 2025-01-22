@@ -61,20 +61,7 @@ fun <T> Table(
             }.then(columnModifier),
         ) {
             if (headerEnabled) {
-                stickyHeader {
-                    Row {
-                        columns.forEach { col ->
-                            TableHeader(
-                                text = col.headerLabel ?: error("Missing header label for: $col"),
-                                size = col.size,
-                                isSortEnabled = col.sortingEnabled,
-                                isSortActive = col == sortColumn,
-                                sortDirection = sortDirection,
-                                onClick = { onHeaderClicked(col) },
-                            )
-                        }
-                    }
-                }
+                renderTableHeader(columns, sortColumn, sortDirection, onHeaderClicked)
             }
             itemsIndexed(items) { index, item ->
                 var isHovered by remember { mutableStateOf(false) }
@@ -102,7 +89,8 @@ fun <T> Table(
                             }
 
                             is CellRenderer.TextRenderer -> {
-                                TableCell(text = col.renderer.extractor(item).toString(),
+                                TableCell(
+                                    text = col.renderer.extractor(item).toString(),
                                     size = col.size,
                                     textAlign = col.renderer.textAlign,
                                     modifier = Modifier.let { m1 ->

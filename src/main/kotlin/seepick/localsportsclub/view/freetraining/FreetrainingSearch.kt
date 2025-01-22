@@ -15,7 +15,7 @@ class FreetrainingSearch(
         it.venue.isHidden
     }
     val name = newStringSearchOption(
-        "Freetraining/Venue Name", initiallyEnabled = true,
+        "Freetraining/Venue", initiallyEnabled = true,
         extractors = listOf({ it.name }, { it.venue.name })
     )
     val date = newDateSearchOption("Date", initialDate = searchDates.first()) { it.date }

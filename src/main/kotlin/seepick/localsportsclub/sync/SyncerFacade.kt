@@ -68,6 +68,7 @@ class SyncerFacade(
         transaction {
             runBlocking {
                 val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
+                log.debug { "isFullSync=$isFullSync, lastSync=$lastSync, days=$days" }
                 if (isFullSync) {
                     venueSyncer.sync(session, plan, city)
                     activitiesSyncer.sync(session, plan, city, days)
@@ -81,7 +82,7 @@ class SyncerFacade(
                     }
                     cleanupPostSync.cleanup()
                 }
-                singlesService.lastSync
+                singlesService.lastSync = now
             }
         }
     }

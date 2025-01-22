@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 class EversportsParserTest : StringSpec() {
     init {
         "When parse hotflowyoga html Then return" {
-            val events = EversportsParser.parse(readTestResponse("/thirdparty/hotflowyoga.html"))
+            val events = EversportsParser.parse(readTestResponse("/thirdparty/eversports.hotflowyoga.html"))
 
             events.shouldHaveSize(74)
             val from = LocalDateTime.of(2025, 1, 12, 9, 0)
@@ -24,7 +24,7 @@ class EversportsParserTest : StringSpec() {
             )
         }
         "When parse movementamsterdam html Then return" {
-            val events = EversportsParser.parse(readTestResponse("/thirdparty/movementamsterdam.html"))
+            val events = EversportsParser.parse(readTestResponse("/thirdparty/eversports.movementamsterdam.html"))
 
             events.shouldHaveSize(19)
             val from = LocalDateTime.of(2025, 1, 13, 8, 30)
@@ -36,6 +36,12 @@ class EversportsParserTest : StringSpec() {
                     to = from.plusMinutes(60),
                 ),
             )
+        }
+        "When parse movementamsterdam html 2 Then return" {
+            val events = EversportsParser.parse(readTestResponse("/thirdparty/eversports.movementamsterdam2.html"))
+
+            val teachers = events.map { it.teacher }.distinct().toSet()
+            teachers shouldBe setOf("Chris", "Nelson", "Jim", "Stas", "Mayke", "Farid")
         }
     }
 }

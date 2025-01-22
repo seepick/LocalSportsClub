@@ -12,6 +12,23 @@ import seepick.localsportsclub.view.common.ModifierWith
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.venue.VenueImage
 
+data class TableColumn<T>(
+    val headerLabel: String? = null,
+    val size: WidthOrWeight,
+    val renderer: CellRenderer<T>,
+    val sortingEnabled: Boolean = true,
+    var sortValueExtractor: ((T) -> Any?)? = null,
+) {
+    init {
+        if (sortValueExtractor == null) {
+            when (renderer) {
+                is CellRenderer.CustomRenderer -> if (sortingEnabled) error("No sort value extractor defined and not a TextRenderer!")
+                is CellRenderer.TextRenderer -> sortValueExtractor = renderer.sortExtractor
+            }
+        }
+    }
+}
+
 fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> {
     return TableColumn(
         "Image", WidthOrWeight.Width(70.dp),

@@ -20,7 +20,7 @@ import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Plan
-import seepick.localsportsclub.tools.connectToDatabase
+import seepick.localsportsclub.tools.cliConnectToDatabase
 import java.time.LocalDate
 
 object ManualSystemTests {
@@ -129,7 +129,7 @@ object ManualSystemTests {
         val credentials = if (syspropUsername != null && syspropPassword != null) {
             Credentials(syspropUsername, syspropPassword)
         } else {
-            connectToDatabase(isProd = false)
+            cliConnectToDatabase(isProd = false)
             ExposedSinglesRepo.select()?.preferences?.uscCredentials ?: error("No credentials stored in DB")
         }
         return LoginHttpApi(httpClient, uscConfig.baseUrl).login(credentials)

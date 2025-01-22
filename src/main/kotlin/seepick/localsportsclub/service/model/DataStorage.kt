@@ -286,7 +286,7 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
 
     if (location == null) return null to null
     val home = preferences.home ?: return location to null
-    return location to round(distance(home, location), 2)
+    return location to round(distance(home, location), 1)
 }
 
 fun ActivityDbo.toActivity(venue: Venue) = Activity(

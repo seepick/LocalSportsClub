@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -90,6 +91,7 @@ fun VenueDetail(
                         Text(
                             text = " ${distance}km away",
                             fontSize = 10.sp,
+                            modifier = Modifier.padding(bottom = 3.dp)
                         )
                     }
                 }
@@ -142,7 +144,7 @@ fun VenueDetail(
             onClick = onUpdateVenue,
             enabled = !venueEdit.isClean(),
         ) { Text("Update") }
-        
+
         if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
             DropDownTextField(
                 label = "Select Linked Venue",

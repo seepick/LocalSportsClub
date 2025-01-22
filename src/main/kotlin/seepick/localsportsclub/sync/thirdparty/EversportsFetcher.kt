@@ -60,8 +60,10 @@ class EversportsFetcher(
                     EversportsFetcher(httpClient, NoopResponseStorage, SystemClock)
                         .fetch(
                             EversportsFetchRequestImpl(
-                                HotFlowYogaStudio.Jordaan.eversportsId,
-                                "hotflowyoga-jordaan"
+                                eversportsId = "J3pkIl",
+                                slug = "movement-amsterdam",
+//                                HotFlowYogaStudio.Jordaan.eversportsId,
+//                                "hotflowyoga-jordaan"
                             )
                         )
                 println("events.size=${events.size}")
@@ -125,15 +127,21 @@ object EversportsParser {
             } else {
                 val date = DateParser.parseMachineDate(firstDiv.attr("data-day"))
                 ul.select("li").mapNotNull { li ->
-                    val teacher = li.select("div.ellipsis").last()!!.text().trim()
-                    if (teacher == "Cancelled") {
-                        null
+                    val lastEllipsis = li.select("div.ellipsis").last()!!
+                    if (lastEllipsis.children().size == 0) {
+                        // contains no sub-html nodes, thus it must be the teacher (and not the price/level/spots info node)
+                        val teacher = lastEllipsis.text().trim()
+                        if (teacher == "Cancelled") {
+                            null
+                        } else {
+                            ThirdEvent(
+                                title = li.select("div.session-name").text().trim(),
+                                teacher = teacher,
+                                dateTimeRange = parseTime(date, li.select("div.session-time").text().trim()),
+                            )
+                        }
                     } else {
-                        ThirdEvent(
-                            title = li.select("div.session-name").text().trim(),
-                            teacher = teacher,
-                            dateTimeRange = parseTime(date, li.select("div.session-time").text().trim()),
-                        )
+                        null
                     }
                 }
             }

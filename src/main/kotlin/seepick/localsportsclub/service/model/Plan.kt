@@ -8,14 +8,14 @@ enum class Plan(
 ) {
     Small(
         1, "S", "Essential", UsageInfo(
-            maxCheckins = 4,
+            maxCheckinsInPeriod = 4,
             maxOnlineCheckins = 4,
             maxPlusCheckins = 0,
         )
     ),
     Medium(
         2, "M", "Classic", UsageInfo(
-            maxCheckins = 10,
+            maxCheckinsInPeriod = 10,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 0,
         )
@@ -25,8 +25,7 @@ enum class Plan(
         "L",
         "Premium",
         UsageInfo(
-// Premium OneFit
-            maxCheckins = 14,
+            maxCheckinsInPeriod = 14,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 4,
             // 2 per day
@@ -34,7 +33,7 @@ enum class Plan(
     ),
     ExtraLarge(
         6, "XL", "Max", UsageInfo(
-            maxCheckins = 18,
+            maxCheckinsInPeriod = 18,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 8,
         )
@@ -47,7 +46,7 @@ enum class Plan(
 }
 
 data class UsageInfo(
-    val maxCheckins: Int, // max monthly, real-life
+    val maxCheckinsInPeriod: Int, // max monthly, real-life
     val maxOnlineCheckins: Int, // max monthly, internet videostream
     val maxPlusCheckins: Int,
 )

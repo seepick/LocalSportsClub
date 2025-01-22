@@ -26,7 +26,7 @@ class UsageStorage(
 ) : SyncerListener, ApplicationLifecycleListener {
 
     val maxBookingsForPeriod by lazy {
-        singlesService.plan?.usageInfo?.maxCheckins ?: 1
+        singlesService.plan?.usageInfo?.maxCheckinsInPeriod ?: 1
     }
     private val periodConfiguredFirstDay by lazy {
         singlesService.preferences.periodFirstDay ?: 1

@@ -16,30 +16,20 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.unescape
 
-object DataCleaner {
 
-    private const val prodMode = true
+object DataCleaner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        connectToDatabase(isProd = prodMode)
-        if (prodMode) {
-            println("You are about to apply changes to PRODUCTION. Are you sure?")
-            print("[y|N]>> ")
-            val read = readln()
-            if (read != "y") {
-                println("Aborted...")
-                return
-            }
-        }
-
-        cleanActivityNames()
+        cliConnectToDatabase(isProd = false)
+//        cleanActivityNames()
 //        cleanVenueAddresses()
 //        cleanTexts()
 //        linkMissingVenues()
 //        changeVenues()
         println("Done ✅")
     }
+
 
     private fun changeVenues() {
         listOf("ems-health-studio", "ems-health-studio-groepslessen").forEach { slug ->
@@ -163,7 +153,6 @@ object DataCleaner {
     }
 
     private fun linkMissingVenues() {
-        if (prodMode) error("This is NOT necessary for PROD anymore, as syncer was already fixed!")
         val links = linkRepo.selectAll(City.Amsterdam.id)
 //        val links = listOf(VenueIdLink(1, 2), VenueIdLink(1, 3)) // {1,3} missing
         val circles = mutableSetOf<MutableSet<Int>>()
