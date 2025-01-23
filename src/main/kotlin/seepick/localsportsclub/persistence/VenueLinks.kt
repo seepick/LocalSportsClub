@@ -1,7 +1,6 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.alias
@@ -40,9 +39,8 @@ data class VenueIdLink(
 object ExposedVenueLinksRepo : VenueLinksRepo {
 
     private val log = logger {}
-    var db: Database? = null // TODO delete me
 
-    override fun selectAll(cityId: Int): List<VenueIdLink> = transaction(db) {
+    override fun selectAll(cityId: Int): List<VenueIdLink> = transaction {
         log.debug { "selectAll(cityId=$cityId)" }
         val venue1Alias = VenuesTable.alias("v1")
         val venue2Alias = VenuesTable.alias("v2")
@@ -66,7 +64,7 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
         }
     }
 
-    override fun insert(venueIdLink: VenueIdLink): Unit = transaction(db) {
+    override fun insert(venueIdLink: VenueIdLink): Unit = transaction {
         log.debug { "insert($venueIdLink)" }
         val (id1, id2) = if (venueIdLink.id1 < venueIdLink.id2) venueIdLink.id1 to venueIdLink.id2 else venueIdLink.id2 to venueIdLink.id1
         VenueLinksTable.insert {
@@ -83,5 +81,4 @@ class InMemoryVenueLinksRepo : VenueLinksRepo {
     override fun insert(venueIdLink: VenueIdLink) {
         stored += venueIdLink
     }
-
 }

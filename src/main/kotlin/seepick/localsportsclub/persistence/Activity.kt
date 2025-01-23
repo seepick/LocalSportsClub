@@ -2,7 +2,6 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
@@ -71,19 +70,6 @@ data class ActivityDbo(
             teacher = row[ActivitiesTable.teacher],
             spotsLeft = row[ActivitiesTable.spotsLeft],
         )
-
-        fun fromRowOld(row: ResultRow) = ActivityDbo(
-            // TODO delete me
-            id = row[ActivitiesTableOld.id].value,
-            venueId = row[ActivitiesTableOld.venueId].value,
-            name = row[ActivitiesTableOld.name],
-            category = row[ActivitiesTableOld.category],
-            from = row[ActivitiesTableOld.from].withNano(0),
-            to = row[ActivitiesTableOld.to].withNano(0),
-            state = row[ActivitiesTableOld.state],
-            teacher = row[ActivitiesTableOld.teacher],
-            spotsLeft = row[ActivitiesTableOld.spotsLeft],
-        )
     }
 }
 
@@ -93,18 +79,6 @@ object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
     val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
     val from = datetime("FROM_DATETIME")
     val to = datetime("TO_DATETIME")
-    val spotsLeft = integer("SPOTS_LEFT")
-    val teacher = varchar("TEACHER", 64).nullable()
-    val state = enumerationByName<ActivityState>("STATE", 32)
-}
-
-// TODO delete me
-object ActivitiesTableOld : IntIdTable("ACTIVITIES", "ID") {
-    val name = varchar("NAME", 256) // sync list
-    val category = varchar("CATEGORY", 64) // sync list
-    val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
-    val from = datetime("FROM")
-    val to = datetime("TO")
     val spotsLeft = integer("SPOTS_LEFT")
     val teacher = varchar("TEACHER", 64).nullable()
     val state = enumerationByName<ActivityState>("STATE", 32)
@@ -162,9 +136,8 @@ class InMemoryActivityRepo : ActivityRepo {
 
 object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
-    var db: Database? = null // TODO delete me
 
-    override fun selectAll(cityId: Int): List<ActivityDbo> = transaction(db) {
+    override fun selectAll(cityId: Int): List<ActivityDbo> = transaction {
         ActivitiesTable
             .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
             .selectAll().where { VenuesTable.cityId.eq(cityId) }.orderBy(ActivitiesTable.from).map {
@@ -209,7 +182,7 @@ object ExposedActivityRepo : ActivityRepo {
             }
     }
 
-    override fun insert(activity: ActivityDbo): Unit = transaction(db) {
+    override fun insert(activity: ActivityDbo): Unit = transaction {
         log.debug { "Insert: $activity" }
         ActivitiesTable.insert {
             activity.prepareInsert(it)

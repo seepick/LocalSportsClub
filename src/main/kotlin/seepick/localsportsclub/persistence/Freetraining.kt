@@ -2,7 +2,6 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
@@ -108,9 +107,8 @@ class InMemoryFreetrainingRepo : FreetrainingRepo {
 object ExposedFreetrainingRepo : FreetrainingRepo {
 
     private val log = logger {}
-    var db: Database? = null // TODO delete me
 
-    override fun selectAll(cityId: Int): List<FreetrainingDbo> = transaction(db) {
+    override fun selectAll(cityId: Int): List<FreetrainingDbo> = transaction {
         FreetrainingsTable
             .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
             .selectAll().where { VenuesTable.cityId eq cityId }.orderBy(FreetrainingsTable.date).map {
@@ -146,7 +144,7 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
         }.singleOrNull()
     }
 
-    override fun insert(dbo: FreetrainingDbo): Unit = transaction(db) {
+    override fun insert(dbo: FreetrainingDbo): Unit = transaction {
         log.debug { "Insert: $dbo" }
         FreetrainingsTable.insert {
             dbo.prepareInsert(it)

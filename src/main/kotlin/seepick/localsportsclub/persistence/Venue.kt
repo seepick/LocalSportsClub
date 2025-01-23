@@ -2,7 +2,6 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
@@ -74,11 +73,9 @@ object VenuesTable : IntIdTable("VENUES", "ID") {
 
 object ExposedVenueRepo : VenueRepo {
 
-    var db: Database? = null // TODO delete me
-
     private val log = logger {}
 
-    override fun selectAll(cityId: Int): List<VenueDbo> = transaction(db) {
+    override fun selectAll(cityId: Int): List<VenueDbo> = transaction {
         VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
             VenueDbo.fromRow(it)
         }
@@ -96,7 +93,7 @@ object ExposedVenueRepo : VenueRepo {
         }.singleOrNull()
     }
 
-    override fun insert(venue: VenueDbo): VenueDbo = transaction(db) {
+    override fun insert(venue: VenueDbo): VenueDbo = transaction {
         log.debug { "Inserting $venue" }
         val nextId =
             VenuesTable.select(VenuesTable.id).orderBy(VenuesTable.id, order = SortOrder.DESC).limit(1).toList()

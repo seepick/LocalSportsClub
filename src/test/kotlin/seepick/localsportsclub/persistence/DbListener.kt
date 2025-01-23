@@ -1,6 +1,5 @@
 package seepick.localsportsclub.persistence
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
@@ -9,30 +8,30 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.Connection
+import java.sql.DriverManager
 
 class DbListener : BeforeEachListener, AfterEachListener {
 
-    private val log = KotlinLogging.logger {}
     private lateinit var db: Database
 
-    override suspend fun beforeEach(testCase: TestCase) {
-        db = Database.connect(buildTestJdbcUrl("LSC-test").also {
-            log.debug { "Connecting to: [$it]" }
-        }, setupConnection = ::enableSqliteForeignKeySupport)
+    // see: https://github.com/JetBrains/Exposed/issues/726
+    private lateinit var keepAliveConnection: Connection
 
-        transaction {
-//            exec("PRAGMA foreign_keys", transform = {
-//                println("foreign keys are: [${it.getInt(1)}]")
-//            })
-            println("creating tables")
+    override suspend fun beforeEach(testCase: TestCase) {
+        val jdbcUrl = testJdbcInmemoryUrl()
+        db = Database.connect(jdbcUrl, setupConnection = ::enableSqliteForeignKeySupport)
+        keepAliveConnection = DriverManager.getConnection(jdbcUrl)
+        transaction(db) {
             SchemaUtils.create(*allTables)
         }
     }
 
     override suspend fun afterEach(testCase: TestCase, result: TestResult) {
         TransactionManager.closeAndUnregister(db)
+        keepAliveConnection.close()
     }
 }
 
-fun buildTestJdbcUrl(namePrefix: String): String =
-    "jdbc:sqlite:${System.getProperty("java.io.tmpdir")}$namePrefix-${System.currentTimeMillis()}"
+fun testJdbcInmemoryUrl(): String =
+    "jdbc:sqlite:file:test?mode=memory&cache=shared"

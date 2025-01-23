@@ -6,13 +6,15 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.Database
+import java.sql.DriverManager
 
 class LiquibaseMigratorTest : StringSpec() {
     init {
         "When migrate Then load and save works" {
-            val jdbcUrl = buildTestJdbcUrl("LSC-liquibase_migrator_test")
+            val jdbcUrl = testJdbcInmemoryUrl()
+            val keepAliveConnection = DriverManager.getConnection(jdbcUrl)
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
-            Database.connect(jdbcUrl)
+            Database.connect(jdbcUrl, setupConnection = ::enableSqliteForeignKeySupport)
 
             val raw1 = Arb.venueDbo().next()
             val venue1 = ExposedVenueRepo.insert(raw1)
@@ -31,6 +33,7 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedSinglesRepo.select()
             ExposedSinglesRepo.insert(Arb.singlesDbo().next())
             ExposedSinglesRepo.update(Arb.singlesDbo().next())
+            keepAliveConnection.close()
         }
     }
 }
