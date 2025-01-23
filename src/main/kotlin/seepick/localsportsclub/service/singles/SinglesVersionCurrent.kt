@@ -4,6 +4,8 @@ import kotlinx.serialization.Serializable
 import seepick.localsportsclub.service.LocalDateTimeSerializer
 import java.time.LocalDateTime
 
+// not yet deployed to PROD (running v1). still ok to do changes in the current version.
+
 // do NOT add/edit/delete anything here; requires manual migration!
 @Serializable
 data class SinglesVersionCurrent(

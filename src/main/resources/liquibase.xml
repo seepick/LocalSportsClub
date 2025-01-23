@@ -6,10 +6,6 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="owner" failOnError="true">
         <comment>setting up initial schema</comment>
-
-        <!--        <createSequence sequenceName="SEQ_VENUES_ID" dataType="int"-->
-        <!--                        startValue="1" incrementBy="1" cycle="false"/>-->
-
         <createTable tableName="VENUES">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
@@ -148,6 +144,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <!-- !already deployed! -->
     </changeSet>
 
     <!-- create new changeset here -->

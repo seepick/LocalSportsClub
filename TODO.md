@@ -2,12 +2,12 @@
 
 ## External
 
+* contact a few people "do you use, or know someone USC? i need beta testers"
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * contact someone: is it ok what i'm doing?
 
 ## Next
 
-* use same icon for both web links (the arrow button into "USC Site" button)
 * GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
     * { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
 * next to book/cancel button: checkbox for google calendar entry management
@@ -15,13 +15,15 @@
 
 ## Backlog
 
-* use compose's snackbar for: book/schedule, cancel, sync)
+* horizontal scroll for SearchPane
 * description for critical alignment has \"
 * when sync for other city; store separate last sync
 * in preferences: disable auto version check
 
 ## Ideas
 
+* limit Usage view to max width (if used > limit; wrong plan config)
+* support plan Onefit other than premium (best guess?!)
 * activities table: shorten Date column ("23.1. 18:00")
 * ad usage: display how many reservations max
 * system test: book something which can't be booked (different limits); parse response and show proper message
@@ -73,3 +75,4 @@
     * Buttons: https://developer.android.com/develop/ui/compose/components/button
 * Forms: https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
 * Text(style = MaterialTheme.typography.subtitle1)
+* Icons = https://fonts.google.com/icons

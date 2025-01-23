@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 import kotlin.reflect.full.isSuperclassOf
@@ -89,3 +90,5 @@ private suspend fun <T> doRetrySuspend(
     }
 
 fun String.unescape(): String = replace("\\\"", "\"").replace("\\n", "\n")
+
+fun String.firstUpper() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }

@@ -1,6 +1,7 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.delay
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
@@ -36,6 +37,7 @@ object NoopSyncer : Syncer {
 
     override suspend fun sync() {
         log.info { "Noop syncer not doing anything." }
+        delay(500)
     }
 }
 

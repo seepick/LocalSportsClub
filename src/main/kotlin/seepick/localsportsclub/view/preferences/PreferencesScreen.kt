@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -59,7 +60,10 @@ fun PreferencesScreen(
     val focusManager = LocalFocusManager.current
     var periodFirstDayString by remember { mutableStateOf(viewModel.entity.periodFirstDay?.toString() ?: "") }
 
-    Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(30.dp),
+        modifier = Modifier.padding(15.dp),
+    ) {
         PreferencesItem("Credentials") {
             TextField(
                 value = viewModel.entity.uscUsername,
@@ -75,10 +79,7 @@ fun PreferencesScreen(
                 },
             )
             Spacer(Modifier.width(10.dp))
-            PasswordField(
-                password = viewModel.entity.uscPassword,
-                onChange = { viewModel.entity.uscPassword = it }
-            )
+            PasswordField(password = viewModel.entity.uscPassword, onChange = { viewModel.entity.uscPassword = it })
             Spacer(Modifier.width(10.dp))
             Button(
                 enabled = viewModel.entity.uscUsername.isNotEmpty() && !viewModel.isUscConnectingTesting && viewModel.entity.uscPassword.isNotEmpty(),

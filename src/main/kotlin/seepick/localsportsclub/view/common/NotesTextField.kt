@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
@@ -11,14 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun NotesTextField(
+fun ColumnScope.NotesTextField(
     notes: String,
     setter: (String) -> Unit,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val state = rememberScrollState()
-    Box {
+    Box(Modifier.weight(1.0f, true)) {
         OutlinedTextField(
             label = { Text("Notes") },
             value = notes,

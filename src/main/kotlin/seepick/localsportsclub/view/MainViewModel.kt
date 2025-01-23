@@ -14,6 +14,7 @@ import seepick.localsportsclub.view.common.executeBackgroundTask
 class MainViewModel(
     private val syncer: Syncer,
     private val singlesService: SinglesService,
+    private val snackbarService: SnackbarService,
 ) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -34,15 +35,16 @@ class MainViewModel(
         executeBackgroundTask(
             "Synchronisation of data failed!",
             doBefore = {
-                log.info { "startSync()" }
+                log.info { "sync START" }
                 isSyncing = true
             },
             doFinally = {
-                log.info { "startSync() DONE" }
+                log.info { "sync DONE" }
                 isSyncing = false
             }
         ) {
             syncer.sync()
+            snackbarService.show("Finished synchronizing data ✅")
         }
     }
 

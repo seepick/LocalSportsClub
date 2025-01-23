@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.ImageBitmap
 
 object LscIcons {
@@ -13,9 +14,15 @@ object LscIcons {
     val Wishlists = WishlistFull to WishlistOutline
 
     const val checkedin = "📝"
-    const val booked = "✅" // or scheduled (for freetrainings)
+    const val booked = "☑️" // or scheduled (for freetrainings)
     const val noshow = "❌"
     const val hidden = "🙈"
+
+    val activities = Icons.Default.SportsGymnastics
+    val freetrainings = Icons.Default.FitnessCenter
+    val venues = Icons.Default.HolidayVillage
+    val notes = Icons.Default.Description
+    val preferences = Icons.Default.Settings
 }
 
 val Icons.Lsc get() = LscIcons

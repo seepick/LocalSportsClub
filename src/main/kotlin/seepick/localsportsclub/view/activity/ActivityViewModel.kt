@@ -7,6 +7,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import java.time.LocalDate
 
@@ -16,7 +17,8 @@ class ActivityViewModel(
     bookingService: BookingService,
     uscConfig: UscConfig,
     singlesService: SinglesService,
-) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService, singlesService) {
+    snackbarService: SnackbarService,
+) : ScreenViewModel<Activity, ActivitySearch>(dataStorage, bookingService, singlesService, snackbarService) {
 
     override val tableColumns = activitiesTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeActivity }

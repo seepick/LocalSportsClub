@@ -6,9 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.api.LoginApi
 import seepick.localsportsclub.api.LoginResult
-import seepick.localsportsclub.api.plan.MembershipApi
+import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
 import seepick.localsportsclub.service.model.Plan
@@ -18,9 +17,8 @@ import seepick.localsportsclub.view.common.executeBackgroundTask
 
 class PreferencesViewModel(
     private val singlesService: SinglesService,
-    private val loginApi: LoginApi,
+    private val uscApi: UscApi,
     private val snackbarService: SnackbarService,
-    private val membershipApi: MembershipApi,
 ) : ViewModel(), ApplicationLifecycleListener {
 
     private val gcalService = RealGcalService()
@@ -66,12 +64,12 @@ class PreferencesViewModel(
             doBefore = { isUscConnectingTesting = true },
             doFinally = { isUscConnectingTesting = false }) {
             log.info { "Testing USC connection ..." }
-            when (val result = loginApi.login(entity.buildCredentials()!!)) {
+            when (val result = uscApi.login(entity.buildCredentials()!!)) {
                 is LoginResult.Failure -> snackbarService.show("❌ ${result.message}")
                 is LoginResult.Success -> {
                     if (entity.country == null && entity.city == null || singlesService.plan == null) {
                         log.debug { "Fetching additional membership data for pre-fillin." }
-                        val membership = membershipApi.fetch(result.phpSessionId)
+                        val membership = uscApi.fetchMembership(result.phpSessionId)
                         if (entity.country == null && entity.city == null) {
                             entity.country = membership.country
                             entity.city = membership.city

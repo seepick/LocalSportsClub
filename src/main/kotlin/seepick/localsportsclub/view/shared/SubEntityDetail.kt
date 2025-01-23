@@ -5,10 +5,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
@@ -16,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.firstUpper
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
@@ -37,22 +36,8 @@ fun SubEntityDetail(
     onCancelBooking: (SubEntity) -> Unit,
     isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
-    bookingDialog: BookingDialog?,
-    onCloseDialog: () -> Unit,
     onActivityNoshowToCheckedin: (Activity) -> Unit,
 ) {
-    if (bookingDialog != null) {
-        AlertDialog(title = { Text(bookingDialog.title) },
-            text = { Text(bookingDialog.message) },
-            onDismissRequest = onCloseDialog,
-            backgroundColor = MaterialTheme.colors.background,
-            confirmButton = {
-                Button(onClick = onCloseDialog) {
-                    Text("Close")
-                }
-            })
-    }
-
     val year = clock.today().year
     val (isBooked, isCheckedin, isNoshow) = when (subEntity) {
         is SubEntity.ActivityEntity -> {
@@ -72,23 +57,30 @@ fun SubEntityDetail(
         }
     }
 
+
     Column(modifier = modifier) {
         TitleText(subEntity.name)
         Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        val addition = if (subEntity is SubEntity.ActivityEntity) {
-            subEntity.activity.teacher?.let { " with $it" } ?: ""
-        } else ""
-        Text("${subEntity.category}$addition", maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(
+            text = buildString {
+                if (isBooked) {
+                    append("${Icons.Lsc.booked} ${subEntity.bookedLabel.firstUpper()} ")
+                }
+                if (isCheckedin) {
+                    "${Icons.Lsc.checkedin} checked-in "
+                }
+                if (isNoshow) {
+                    Text("${Icons.Lsc.noshow} no-show")
+                }
+                append(subEntity.category)
+                if (subEntity is SubEntity.ActivityEntity) {
+                    subEntity.activity.teacher?.also { append(" with $it") }
+                }
+            },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
 
-        if (isBooked) {
-            Text("${Icons.Lsc.booked} Is ${subEntity.bookedLabel}")
-        }
-        if (isCheckedin) {
-            Text("${Icons.Lsc.checkedin} Was checked-in")
-        }
-        if (isNoshow) {
-            Text("${Icons.Lsc.noshow} No show")
-        }
         if (subEntity.date >= clock.today()) {
             Row {
                 ConditionalTooltip(

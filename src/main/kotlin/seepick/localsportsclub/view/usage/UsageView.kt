@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyShortPrint
 
@@ -32,7 +31,6 @@ private val colorCheckedin = Color(0xFF4861DE)
 fun UsageView(
     usageStorage: UsageStorage = koinInject(),
     clock: Clock = koinInject(),
-    uscConfig: UscConfig = koinInject(),
 ) {
     if (!usageStorage.isUsageVisible) {
         return

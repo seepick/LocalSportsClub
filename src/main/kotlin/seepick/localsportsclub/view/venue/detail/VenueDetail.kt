@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.onClick
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxText
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LabeledText
+import seepick.localsportsclub.view.common.LinkTonalButton
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
@@ -48,7 +51,7 @@ import java.net.URLEncoder
 import kotlin.math.max
 import kotlin.math.min
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun VenueDetail(
     venue: Venue,
@@ -120,12 +123,14 @@ fun VenueDetail(
             CheckboxText("Hidden ${LscIcons.hidden}", venueEdit.isHidden)
         }
         Row {
-            Tooltip(venue.uscWebsite) {
+            Tooltip(venue.uscWebsite, offset = true) {
                 Button(
                     onClick = { uriHandler.openUri(venue.uscWebsite) },
                     modifier = Modifier.height(56.dp),
                 ) {
-                    Text("USC Site")
+                    LinkTonalButton(venue.uscWebsite)
+                    Spacer(Modifier.width(5.dp))
+                    Text("USC", modifier = Modifier.onClick { uriHandler.openUri(venue.uscWebsite) })
                 }
             }
             Spacer(Modifier.width(8.dp))

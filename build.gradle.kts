@@ -34,7 +34,8 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.0") // when "Module with the Main dispatcher is missing"
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("net.coobird:thumbnailator:0.4.20") // resize images
-//    implementation("androidx.compose.material:material-icons-extended:1.7.1") // will break compose?!?
+    // NO, as this will break compose (?!). enable, then "inline" the code by copy'n'paste into DuplicateIcons.kt
+//    implementation("androidx.compose.material:material-icons-extended:1.7.6")
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
     listOf("compose", "compose-viewmodel").forEach {

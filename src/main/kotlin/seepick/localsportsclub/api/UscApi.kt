@@ -14,6 +14,8 @@ import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.api.checkin.CheckinApi
 import seepick.localsportsclub.api.checkin.CheckinsPage
+import seepick.localsportsclub.api.plan.Membership
+import seepick.localsportsclub.api.plan.MembershipApi
 import seepick.localsportsclub.api.schedule.ScheduleApi
 import seepick.localsportsclub.api.schedule.ScheduleRow
 import seepick.localsportsclub.api.venue.VenueApi
@@ -21,7 +23,10 @@ import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.service.model.Credentials
+import seepick.localsportsclub.service.model.Plan
 
 interface UscApi {
     suspend fun login(credentials: Credentials): LoginResult
@@ -33,6 +38,7 @@ interface UscApi {
     suspend fun fetchCheckinsPage(session: PhpSessionId, pageNr: Int): CheckinsPage
     suspend fun book(session: PhpSessionId, activityOrFreetrainingId: Int): BookingResult
     suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult
+    suspend fun fetchMembership(session: PhpSessionId): Membership
 }
 
 class MockUscApi : UscApi {
@@ -91,17 +97,29 @@ class MockUscApi : UscApi {
         return CheckinsPage.empty
     }
 
+    private var bookAlternator = true
     override suspend fun book(session: PhpSessionId, activityOrFreetrainingId: Int): BookingResult {
         log.info { "Mock booking: $activityOrFreetrainingId" }
         delay(1_000)
-        return BookingResult.BookingSuccess
-//        return BookingResult.BookingFail("nope")
+        bookAlternator = !bookAlternator
+        return if (bookAlternator) BookingResult.BookingSuccess
+        else BookingResult.BookingFail("nope")
     }
 
     override suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult {
         log.info { "Mock cancel booking: $activityOrFreetrainingId" }
         delay(1_000)
-        return CancelResult.CancelSuccess
+        bookAlternator = !bookAlternator
+        return if (bookAlternator) CancelResult.CancelSuccess
+        else CancelResult.CancelFail("nope")
+    }
+
+    override suspend fun fetchMembership(session: PhpSessionId): Membership {
+        return Membership(
+            plan = Plan.UscPlan.Large,
+            country = Country.byLabel("Netherlands"),
+            city = City.Amsterdam,
+        )
     }
 }
 
@@ -112,6 +130,7 @@ class UscApiAdapter(
     private val scheduleApi: ScheduleApi,
     private val checkinApi: CheckinApi,
     private val bookingApi: BookingApi,
+    private val membershipApi: MembershipApi,
 ) : UscApi {
 
     override suspend fun login(credentials: Credentials): LoginResult =
@@ -146,4 +165,7 @@ class UscApiAdapter(
 
     override suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult =
         bookingApi.cancel(session, activityOrFreetrainingId)
+
+    override suspend fun fetchMembership(session: PhpSessionId): Membership =
+        membershipApi.fetch(session)
 }

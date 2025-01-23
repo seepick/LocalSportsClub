@@ -30,6 +30,7 @@ fun apiModule(config: AppConfig) = module {
     if (config.api == ApiMode.Mock) {
         log.debug { "Wiring mocked USC API." }
         singleOf(::MockUscApi) bind UscApi::class
+        single { MockPhpSessionProvider } bind PhpSessionProvider::class
 
     } else if (config.api == ApiMode.RealHttp) {
         single { if (config.usc.storeResponses) ResponseStorageImpl() else NoopResponseStorage } bind ResponseStorage::class
@@ -41,7 +42,7 @@ fun apiModule(config: AppConfig) = module {
         singleOf(::BookingHttpApi) bind BookingApi::class
         singleOf(::MembershipHttpApi) bind MembershipApi::class
         singleOf(::UscApiAdapter) bind UscApi::class
-        singleOf(::PhpSessionProvider)
+        singleOf(::PhpSessionProviderImpl) bind PhpSessionProvider::class
         singleOf(::PlanProvider)
     }
 }

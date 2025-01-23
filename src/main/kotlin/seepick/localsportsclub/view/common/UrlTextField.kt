@@ -79,7 +79,6 @@ fun UrlTextField(
     onChange: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    val uriHandler = LocalUriHandler.current
     TextField(
         value = url ?: "",
         modifier = modifier,
@@ -91,18 +90,30 @@ fun UrlTextField(
         textStyle = TextStyle(fontSize = 10.sp),
         enabled = enabled && onChange != null,
         leadingIcon = {
-            FilledTonalButton(
-                onClick = { uriHandler.openUri(url!!) },
-                enabled = enabled && !url.isNullOrEmpty(),
-                modifier = Modifier.width(30.dp).height(30.dp)
-                    .pointerHoverIcon(PointerIcon.Hand),
-                contentPadding = PaddingValues.Absolute(),
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                    contentDescription = null,
-                )
-            }
+            LinkTonalButton(url, enabled = enabled, useHandIcon = true)
         },
     )
+}
+
+@Composable
+fun LinkTonalButton(
+    url: String?,
+    enabled: Boolean = true,
+    useHandIcon: Boolean = false,
+) {
+    val uriHandler = LocalUriHandler.current
+    val ultimatelyEnabled = enabled && !url.isNullOrEmpty()
+    FilledTonalButton(
+        onClick = { uriHandler.openUri(url!!) },
+        enabled = ultimatelyEnabled,
+        modifier = Modifier.width(30.dp).height(30.dp).let {
+            if (useHandIcon && ultimatelyEnabled) it.pointerHoverIcon(PointerIcon.Hand) else it
+        },
+        contentPadding = PaddingValues.Absolute(),
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+        )
+    }
 }

@@ -4,10 +4,18 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.service.singles.SinglesService
 
-class PhpSessionProvider(
+interface PhpSessionProvider {
+    fun provide(): PhpSessionId
+}
+
+object MockPhpSessionProvider : PhpSessionProvider {
+    override fun provide(): PhpSessionId = PhpSessionId("mock")
+}
+
+class PhpSessionProviderImpl(
     private val singlesService: SinglesService,
     private val loginApi: LoginApi,
-) {
+) : PhpSessionProvider {
     private val log = logger {}
 
     private val cached: PhpSessionId by lazy {
@@ -20,5 +28,5 @@ class PhpSessionProvider(
         }
     }
 
-    fun provide(): PhpSessionId = cached
+    override fun provide(): PhpSessionId = cached
 }

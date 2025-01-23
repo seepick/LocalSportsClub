@@ -106,3 +106,174 @@ val Icons.Filled.VisibilityOff: ImageVector
     }
 
 private var _visibilityOff: ImageVector? = null
+
+
+public val Icons.Filled.Description: ImageVector
+    get() {
+        if (_description != null) {
+            return _description!!
+        }
+        _description = materialIcon(name = "Filled.Description") {
+            materialPath {
+                moveTo(14.0f, 2.0f)
+                lineTo(6.0f, 2.0f)
+                curveToRelative(-1.1f, 0.0f, -1.99f, 0.9f, -1.99f, 2.0f)
+                lineTo(4.0f, 20.0f)
+                curveToRelative(0.0f, 1.1f, 0.89f, 2.0f, 1.99f, 2.0f)
+                lineTo(18.0f, 22.0f)
+                curveToRelative(1.1f, 0.0f, 2.0f, -0.9f, 2.0f, -2.0f)
+                lineTo(20.0f, 8.0f)
+                lineToRelative(-6.0f, -6.0f)
+                close()
+                moveTo(16.0f, 18.0f)
+                lineTo(8.0f, 18.0f)
+                verticalLineToRelative(-2.0f)
+                horizontalLineToRelative(8.0f)
+                verticalLineToRelative(2.0f)
+                close()
+                moveTo(16.0f, 14.0f)
+                lineTo(8.0f, 14.0f)
+                verticalLineToRelative(-2.0f)
+                horizontalLineToRelative(8.0f)
+                verticalLineToRelative(2.0f)
+                close()
+                moveTo(13.0f, 9.0f)
+                lineTo(13.0f, 3.5f)
+                lineTo(18.5f, 9.0f)
+                lineTo(13.0f, 9.0f)
+                close()
+            }
+        }
+        return _description!!
+    }
+
+private var _description: ImageVector? = null
+
+
+public val Icons.Filled.SportsGymnastics: ImageVector
+    get() {
+        if (_sportsGymnastics != null) {
+            return _sportsGymnastics!!
+        }
+        _sportsGymnastics = materialIcon(name = "Filled.SportsGymnastics") {
+            materialPath {
+                moveTo(4.0f, 6.0f)
+                curveToRelative(0.0f, -1.1f, 0.9f, -2.0f, 2.0f, -2.0f)
+                reflectiveCurveToRelative(2.0f, 0.9f, 2.0f, 2.0f)
+                reflectiveCurveTo(7.1f, 8.0f, 6.0f, 8.0f)
+                reflectiveCurveTo(4.0f, 7.1f, 4.0f, 6.0f)
+                close()
+                moveTo(1.0f, 9.0f)
+                horizontalLineToRelative(6.0f)
+                lineToRelative(7.0f, -5.0f)
+                lineToRelative(1.31f, 1.52f)
+                lineTo(11.14f, 8.5f)
+                horizontalLineTo(14.0f)
+                lineTo(21.8f, 4.0f)
+                lineTo(23.0f, 5.4f)
+                lineTo(14.5f, 12.0f)
+                lineTo(14.0f, 22.0f)
+                horizontalLineToRelative(-2.0f)
+                lineToRelative(-0.5f, -10.0f)
+                lineTo(8.0f, 11.0f)
+                horizontalLineTo(1.0f)
+                verticalLineTo(9.0f)
+                close()
+            }
+        }
+        return _sportsGymnastics!!
+    }
+
+private var _sportsGymnastics: ImageVector? = null
+
+
+public val Icons.Filled.FitnessCenter: ImageVector
+    get() {
+        if (_fitnessCenter != null) {
+            return _fitnessCenter!!
+        }
+        _fitnessCenter = materialIcon(name = "Filled.FitnessCenter") {
+            materialPath {
+                moveTo(20.57f, 14.86f)
+                lineTo(22.0f, 13.43f)
+                lineTo(20.57f, 12.0f)
+                lineTo(17.0f, 15.57f)
+                lineTo(8.43f, 7.0f)
+                lineTo(12.0f, 3.43f)
+                lineTo(10.57f, 2.0f)
+                lineTo(9.14f, 3.43f)
+                lineTo(7.71f, 2.0f)
+                lineTo(5.57f, 4.14f)
+                lineTo(4.14f, 2.71f)
+                lineTo(2.71f, 4.14f)
+                lineToRelative(1.43f, 1.43f)
+                lineTo(2.0f, 7.71f)
+                lineToRelative(1.43f, 1.43f)
+                lineTo(2.0f, 10.57f)
+                lineTo(3.43f, 12.0f)
+                lineTo(7.0f, 8.43f)
+                lineTo(15.57f, 17.0f)
+                lineTo(12.0f, 20.57f)
+                lineTo(13.43f, 22.0f)
+                lineToRelative(1.43f, -1.43f)
+                lineTo(16.29f, 22.0f)
+                lineToRelative(2.14f, -2.14f)
+                lineToRelative(1.43f, 1.43f)
+                lineToRelative(1.43f, -1.43f)
+                lineToRelative(-1.43f, -1.43f)
+                lineTo(22.0f, 16.29f)
+                close()
+            }
+        }
+        return _fitnessCenter!!
+    }
+
+private var _fitnessCenter: ImageVector? = null
+
+
+public val Icons.Filled.HolidayVillage: ImageVector
+    get() {
+        if (_holidayVillage != null) {
+            return _holidayVillage!!
+        }
+        _holidayVillage = materialIcon(name = "Filled.HolidayVillage") {
+            materialPath {
+                moveTo(18.0f, 20.0f)
+                verticalLineTo(8.35f)
+                lineTo(13.65f, 4.0f)
+                horizontalLineToRelative(-2.83f)
+                lineTo(16.0f, 9.18f)
+                verticalLineTo(20.0f)
+                horizontalLineTo(18.0f)
+                close()
+                moveTo(22.0f, 20.0f)
+                verticalLineTo(6.69f)
+                lineTo(19.31f, 4.0f)
+                horizontalLineToRelative(-2.83f)
+                lineTo(20.0f, 7.52f)
+                verticalLineTo(20.0f)
+                horizontalLineTo(22.0f)
+                close()
+                moveTo(8.0f, 4.0f)
+                lineToRelative(-6.0f, 6.0f)
+                verticalLineToRelative(10.0f)
+                horizontalLineToRelative(5.0f)
+                verticalLineToRelative(-5.0f)
+                horizontalLineToRelative(2.0f)
+                verticalLineToRelative(5.0f)
+                horizontalLineToRelative(5.0f)
+                verticalLineTo(10.0f)
+                lineTo(8.0f, 4.0f)
+                close()
+                moveTo(9.0f, 13.0f)
+                horizontalLineTo(7.0f)
+                verticalLineToRelative(-2.0f)
+                horizontalLineToRelative(2.0f)
+                verticalLineTo(13.0f)
+                close()
+            }
+        }
+        return _holidayVillage!!
+    }
+
+private var _holidayVillage: ImageVector? = null
