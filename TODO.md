@@ -7,22 +7,17 @@
 
 ## Next
 
-* fetch data from user account main page. onefit premium. period start date.
-* handle when no internet connection startup version check.
+* use same icon for both web links (the arrow button into "USC Site" button)
+* GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
+    * { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
+* next to book/cancel button: checkbox for google calendar entry management
+* display GCal name, once connected tested ok
 
 ## Backlog
 
 * use compose's snackbar for: book/schedule, cancel, sync)
-* use same icon for both web links (the arrow button into "USC Site" button)
 * description for critical alignment has \"
-* maybe period restart day can be fetched via API (it is shown in app...)
 * when sync for other city; store separate last sync
-* how to use in memory for SQLite?! "jdbc:sqlite:" or "jdbc:sqlite::memory:" wont work!
-* display GCal name, once connected tested ok
-* make scrollbar thingy brighter in dark mode
-* GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
-    * { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
-* next to book/cancel button: checkbox for google calendar entry management
 * in preferences: disable auto version check
 
 ## Ideas
@@ -41,6 +36,7 @@
 
 ### Later
 
+* maybe period restart day can be fetched via API (it is shown in app...)
 * also sync for activities/freetrainings which plan applies
 * how about plus checkins?
 * feedback about sync progress while running (indicate current state, maybe even deterministic progress)

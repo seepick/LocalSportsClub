@@ -1,11 +1,9 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,6 +25,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.rowBgColor
 
 interface TableItemBgColor {
@@ -108,14 +107,7 @@ fun <T> Table(
                 }
             }
         }
-        VerticalScrollbar(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .fillMaxHeight(),
-            adapter = rememberScrollbarAdapter(
-                scrollState = tableScrollState
-            )
-        )
+        LscVScroll(rememberScrollbarAdapter(tableScrollState))
         if (itemsLabel != null) {
             Text(
                 text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
@@ -125,3 +117,4 @@ fun <T> Table(
         }
     }
 }
+

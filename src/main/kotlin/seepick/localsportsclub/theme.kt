@@ -63,6 +63,9 @@ interface LscColors {
 
     val error: Color
     val onError: Color
+
+    val scrollbarHover: Color get() = onBackground.copy(alpha = 0.6f)
+    val scrollbarUnhover: Color get() = onBackground.copy(alpha = 0.3f)
 }
 
 private val colorUnset = Color.Red

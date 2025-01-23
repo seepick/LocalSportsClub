@@ -1,12 +1,10 @@
 package seepick.localsportsclub.view.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,6 +29,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.search.SelectSearchOption
+import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.rowBgColor
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -74,11 +73,7 @@ fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
                         )
                     }
                 }
-                VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
-                        scrollState = tableScrollState
-                    )
-                )
+                LscVScroll(rememberScrollbarAdapter(tableScrollState))
             }
         }
     }

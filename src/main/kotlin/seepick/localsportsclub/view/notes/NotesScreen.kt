@@ -1,6 +1,5 @@
 package seepick.localsportsclub.view.notes
 
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,9 +9,9 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.view.common.LscVScroll
 
 @Composable
 fun NotesScreen(
@@ -31,14 +30,7 @@ fun NotesScreen(
                     .fillMaxWidth(1f)
                     .verticalScroll(state)
             )
-            VerticalScrollbar(
-                adapter = rememberScrollbarAdapter(
-                    scrollState = state
-                ),
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-            )
+            LscVScroll(rememberScrollbarAdapter(state))
         }
     }
 }
