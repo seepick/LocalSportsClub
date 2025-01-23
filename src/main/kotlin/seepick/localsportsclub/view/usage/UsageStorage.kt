@@ -1,5 +1,8 @@
 package seepick.localsportsclub.view.usage
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -24,6 +27,9 @@ class UsageStorage(
     private val freetrainingRepo: FreetrainingRepo,
     private val singlesService: SinglesService,
 ) : SyncerListener, ApplicationLifecycleListener {
+
+    var isUsageVisible by mutableStateOf(false)
+        private set
 
     val maxBookingsForPeriod by lazy {
         singlesService.plan?.usageInfo?.maxCheckinsInPeriod ?: 1
@@ -71,6 +77,8 @@ class UsageStorage(
     }
 
     override fun onStartUp() {
+        isUsageVisible = singlesService.plan != null && singlesService.preferences.periodFirstDay != null
+        
         singlesService.preferences.city?.id?.let { cityId ->
             activityRepo.selectAll(cityId).forEach(::processActivity)
             freetrainingRepo.selectAll(cityId).forEach(::processFreetraining)

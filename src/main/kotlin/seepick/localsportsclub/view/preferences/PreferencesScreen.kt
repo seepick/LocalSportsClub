@@ -57,6 +57,7 @@ fun PreferencesScreen(
     viewModel: PreferencesViewModel = koinViewModel()
 ) {
     val focusManager = LocalFocusManager.current
+    var periodFirstDayString by remember { mutableStateOf(viewModel.entity.periodFirstDay?.toString() ?: "") }
 
     Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
         PreferencesItem("Credentials") {
@@ -94,16 +95,26 @@ fun PreferencesScreen(
             }
         }
         PreferencesItem("USC Info") {
-            Tooltip("First day of the month when the USC period start", offset = true) {
-                TextField(value = viewModel.entity.periodFirstDay?.toString() ?: "",
+            Tooltip("The day of the month when the check-in period starts (between 1 and 28)", offset = true) {
+                TextField(value = periodFirstDayString,
                     label = { Text("Period") },
                     modifier = Modifier.width(120.dp),
+                    isError = if (periodFirstDayString.isEmpty()) {
+                        false
+                    } else if (periodFirstDayString.toIntOrNull() == null) {
+                        true
+                    } else {
+                        periodFirstDayString.toInt() !in 1..28
+                    },
                     onValueChange = {
+                        periodFirstDayString = it
                         if (it.isEmpty()) {
                             viewModel.entity.periodFirstDay = null
                         } else {
                             it.toIntOrNull()?.also {
-                                viewModel.entity.periodFirstDay = it
+                                if (it in 1..28) {
+                                    viewModel.entity.periodFirstDay = it
+                                }
                             }
                         }
                     })

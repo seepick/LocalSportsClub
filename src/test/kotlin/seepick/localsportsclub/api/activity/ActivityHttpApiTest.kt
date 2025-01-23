@@ -23,7 +23,7 @@ class ActivityHttpApiTest : StringSpec() {
     private val clock = StaticClock()
     private val filter = ActivitiesFilter(
         city = City.Amsterdam,
-        plan = Plan.Medium,
+        plan = Plan.UscPlan.Medium,
         date = LocalDate.of(2024, 12, 1),
     )
 

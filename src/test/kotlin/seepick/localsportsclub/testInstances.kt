@@ -6,12 +6,14 @@ import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
 import io.ktor.http.Url
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Plan
 
 fun Arb.Companion.uscConfig() = arbitrary {
     UscConfig(
@@ -25,6 +27,14 @@ fun Arb.Companion.city() = arbitrary {
         id = int().next(),
         label = string().next(),
     )
+}
+
+fun Arb.Companion.plan(): Arb<Plan> = arbitrary {
+    if (boolean().next()) {
+        enum<Plan.UscPlan>().next()
+    } else {
+        enum<Plan.OnefitPlan>().next()
+    }
 }
 
 fun Arb.Companion.url() = arbitrary {

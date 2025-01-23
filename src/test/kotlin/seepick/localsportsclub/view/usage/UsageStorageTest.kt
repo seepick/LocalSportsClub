@@ -200,7 +200,7 @@ class UsageStorageTest : DescribeSpec() {
             }
             it("check-in") {
                 suspend fun percentageCheckedinShouldBe(countCheckins: Int, expected: Double) {
-                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium).also { usage ->
+                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.UscPlan.Medium).also { usage ->
                         repeat(countCheckins) {
                             usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingState.Checkedin) })
                         }
@@ -213,7 +213,7 @@ class UsageStorageTest : DescribeSpec() {
             }
             it("booked") {
                 suspend fun percentageBookedShouldBe(countCheckins: Int, expected: Double) {
-                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.Medium).also { usage ->
+                    usage(today = "1.12.", periodFirstDay = 1, plan = Plan.UscPlan.Medium).also { usage ->
                         repeat(countCheckins) {
                             usage.onActivityAdded(activity("3.12.") { copy(state = ActivityState.Booked) })
                         }

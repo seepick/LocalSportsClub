@@ -1,29 +1,60 @@
 package seepick.localsportsclub.api.plan
 
 import kotlinx.serialization.Serializable
-import org.jsoup.Jsoup
-import seepick.localsportsclub.serializerLenient
+import kotlinx.serialization.json.Json
+import seepick.localsportsclub.service.jsoupBody
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.service.model.Plan
 
+
 object MembershipParser {
     fun parse(string: String): Membership {
-        val json = Jsoup.parse(string).select("select#city_id").attr("data-datalayer")
-        val member = serializerLenient.decodeFromString<MemberJson>(json)
+        val body = jsoupBody(string)
+        val membershipDiv = body.select("div[data-scroll=membership]").toList().first()
+        val membershipJsonString = membershipDiv.select("a[class=form-link]").toList()
+            .first().attr("data-datalayer")
+        val membershipJson = Json.decodeFromString<MemberJson>(membershipJsonString)
+        val plan = if (membershipJson.membership_plan == "Premium OneFit") {
+            Plan.OnefitPlan.Premium
+        } else {
+            Plan.UscPlan.byApiString(membershipJson.user.membership_plan)
+        }
         return Membership(
-            plan = Plan.byApiString(member.user.membership_plan),
-            city = City.byLabel(member.city),
-            country = Country.byLabel(member.country),
+            plan = plan,
+            city = City.byLabel(membershipJson.user.membership_city),
+            country = Country.byLabel(membershipJson.user.membership_country),
         )
     }
 }
 
+
+/*
+{
+  "event": "membership_update_started",
+  "user": {
+    "id": "asdf",
+    "login_status": "logged-in",
+    "membership_city": "Amsterdam",
+    "membership_country": "Netherlands",
+    "membership_status": "active",
+    "membership_plan": "L",
+    "membership_b2b_type": "b2c",
+    "membership_contract_duration": "monthly",
+    "company_name": null
+  },
+  "type": "membership_plan",
+  "membership_plan": "Premium OneFit",
+  "membership_duration": "monthly"
+}
+ */
+
 @Serializable
 data class MemberJson(
     val event: String,
-    val city: String,
-    val country: String,
+    val type: String,
+    val membership_plan: String,
+    val membership_duration: String,
     val user: MemberUserJson,
 )
 

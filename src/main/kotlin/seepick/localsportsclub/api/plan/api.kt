@@ -1,6 +1,6 @@
 package seepick.localsportsclub.api.plan
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.request.cookie
 import io.ktor.client.statement.bodyAsText
@@ -23,15 +23,15 @@ class MembershipHttpApi(
     uscConfig: UscConfig,
 ) : MembershipApi {
 
-    private val log = KotlinLogging.logger {}
+    private val log = logger {}
     private val baseUrl = uscConfig.baseUrl
 
     override suspend fun fetch(session: PhpSessionId): Membership {
         log.debug { "fetch()" }
-        val response = http.safeGet(Url("$baseUrl/activities")) {
+        val response = http.safeGet(Url("$baseUrl/profile/membership")) {
             cookie("PHPSESSID", session.value)
         }
-        responseStorage.store(response, "Activities4Plantype")
+        responseStorage.store(response, "Membership")
         return MembershipParser.parse(response.bodyAsText())
     }
 }

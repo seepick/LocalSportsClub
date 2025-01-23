@@ -5,11 +5,12 @@
 * user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
 * contact someone: is it ok what i'm doing?
 
-## Release v1
+## Next
 
-* !! "Premium OneFit" has 18 total check-ins per month; not same as "Premium" which has 14
+* fetch data from user account main page. onefit premium. period start date.
+* handle when no internet connection startup version check.
 
-## Release v2
+## Backlog
 
 * use compose's snackbar for: book/schedule, cancel, sync)
 * use same icon for both web links (the arrow button into "USC Site" button)
@@ -24,7 +25,7 @@
 * next to book/cancel button: checkbox for google calendar entry management
 * in preferences: disable auto version check
 
-## Backlog
+## Ideas
 
 * activities table: shorten Date column ("23.1. 18:00")
 * ad usage: display how many reservations max
@@ -40,6 +41,8 @@
 
 ### Later
 
+* also sync for activities/freetrainings which plan applies
+* how about plus checkins?
 * feedback about sync progress while running (indicate current state, maybe even deterministic progress)
 * spots left: make updateable (see SubEntityDetail view)
 * notes with rich format text-editor (bold, italic, colors, fontsize)

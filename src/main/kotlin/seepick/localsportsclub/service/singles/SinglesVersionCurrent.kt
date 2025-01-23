@@ -14,6 +14,45 @@ data class SinglesVersionCurrent(
     val windowHeight: Int?,
     val windowPosX: Int?,
     val windowPosY: Int?,
+    var planInternalId: String?,
+    val prefUscCredUsername: String?,
+    val prefUscCredPassword: String?,
+    val prefCityId: Int?,
+    val prefGoogleCalendarId: String?,
+    val prefHomeLat: Double?,
+    val prefHomeLong: Double?,
+    val prefPeriodFirstDay: Int?,
+) {
+    companion object {
+        val VERSION = 2
+        val empty = SinglesVersionCurrent(
+            notes = null,
+            lastSync = null,
+            windowWidth = null,
+            windowHeight = null,
+            windowPosX = null,
+            windowPosY = null,
+            planInternalId = null,
+            prefUscCredUsername = null,
+            prefUscCredPassword = null,
+            prefCityId = null,
+            prefGoogleCalendarId = null,
+            prefHomeLat = null,
+            prefHomeLong = null,
+            prefPeriodFirstDay = null,
+        )
+    }
+}
+
+@Serializable
+data class SinglesVersionV1(
+    val notes: String?,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val lastSync: LocalDateTime?,
+    val windowWidth: Int?,
+    val windowHeight: Int?,
+    val windowPosX: Int?,
+    val windowPosY: Int?,
     var planApiString: String?,
     val prefUscCredUsername: String?,
     val prefUscCredPassword: String?,
@@ -25,7 +64,7 @@ data class SinglesVersionCurrent(
 ) {
     companion object {
         val VERSION = 1
-        val empty = SinglesVersionCurrent(
+        val empty = SinglesVersionV1(
             notes = null,
             lastSync = null,
             windowWidth = null,

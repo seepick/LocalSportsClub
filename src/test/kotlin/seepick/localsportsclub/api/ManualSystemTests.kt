@@ -45,7 +45,7 @@ object ManualSystemTests {
 //            testActivities()
 //            testSchedule()
 //            testBook(84737975)
-            testPlanType()
+            testMembership()
         }
     }
 
@@ -54,9 +54,9 @@ object ManualSystemTests {
     private fun venueApi() = VenueHttpApi(httpClient, responseStorage, uscConfig)
     private fun bookingApi() = BookingHttpApi(httpClient, uscConfig, responseStorage)
 
-    private suspend fun testPlanType() {
-        val plan = MembershipHttpApi(httpClient, responseStorage, uscConfig).fetch(phpSessionId)
-        println("plan = $plan")
+    private suspend fun testMembership() {
+        val membership = MembershipHttpApi(httpClient, responseStorage, uscConfig).fetch(phpSessionId)
+        println("received membership: $membership")
     }
 
     private suspend fun testBook(activityId: Int) {
@@ -91,7 +91,7 @@ object ManualSystemTests {
         val pages = venueApi().fetchPages(
             phpSessionId,
             VenuesFilter(
-                city = City.Amsterdam, plan = Plan.Large
+                city = City.Amsterdam, plan = Plan.OnefitPlan.Premium
             )
         )
         pages.flatMap { VenueParser.parseHtmlContent(it.content) }.sortedBy { it.slug }
@@ -102,7 +102,7 @@ object ManualSystemTests {
         val today = LocalDate.now()
         val pages = activityApi().fetchPages(
             phpSessionId,
-            filter = ActivitiesFilter(city = City.Amsterdam, plan = Plan.Large, date = today),
+            filter = ActivitiesFilter(city = City.Amsterdam, plan = Plan.OnefitPlan.Premium, date = today),
             serviceType = ServiceType.Courses,
         )
         println("Received ${pages.size} pages of activities.")

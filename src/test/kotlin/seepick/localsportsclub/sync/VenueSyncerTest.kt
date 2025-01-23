@@ -8,7 +8,6 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -25,8 +24,8 @@ import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
+import seepick.localsportsclub.plan
 import seepick.localsportsclub.service.MemorizableImageStorage
-import seepick.localsportsclub.service.model.Plan
 
 class VenueSyncerTest : StringSpec() {
 
@@ -34,7 +33,7 @@ class VenueSyncerTest : StringSpec() {
     private val remoteDetails = Arb.venueDetails().next()
     private val phpSessionId = Arb.phpSessionId().next()
     private val city = Arb.city().next()
-    private val plan = Arb.enum<Plan>().next()
+    private val plan = Arb.plan().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
     private lateinit var venueRepo: InMemoryVenueRepo

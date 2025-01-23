@@ -31,10 +31,13 @@ class SinglesServiceImplTest : StringSpec() {
     }
 
     init {
-        "When get something Then empty singles v1 stored" {
+        "When get something Then empty singles current version stored" {
             singlesService.notes
 
-            singlesRepo.stored shouldBe SinglesDbo(1, Json.encodeToString(SinglesVersionCurrent.empty))
+            singlesRepo.stored shouldBe SinglesDbo(
+                SinglesVersionCurrent.VERSION,
+                Json.encodeToString(SinglesVersionCurrent.empty)
+            )
         }
         "When set notes Then stored in repo" {
             singlesService.notes = notes

@@ -6,7 +6,6 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -20,7 +19,7 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.venueDbo
-import seepick.localsportsclub.service.model.Plan
+import seepick.localsportsclub.plan
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
@@ -35,7 +34,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val syncDaysAhead = 4
     private val anySession = Arb.phpSessionId().next()
     private val city = Arb.city().next()
-    private val anyPlan = Arb.enum<Plan>().next()
+    private val anyPlan = Arb.plan().next()
 
     override suspend fun beforeEach(testCase: TestCase) {
         api = mockk<UscApi>()

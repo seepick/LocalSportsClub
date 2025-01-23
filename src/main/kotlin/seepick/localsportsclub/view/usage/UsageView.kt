@@ -34,6 +34,10 @@ fun UsageView(
     clock: Clock = koinInject(),
     uscConfig: UscConfig = koinInject(),
 ) {
+    if (!usageStorage.isUsageVisible) {
+        return
+    }
+
     val checkedinCount by usageStorage.checkedinCount.collectAsState(0)
     val bookedCount by usageStorage.bookedCount.collectAsState(0)
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)

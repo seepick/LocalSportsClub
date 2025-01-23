@@ -14,6 +14,8 @@ data class Country(
         fun byLabel(label: String): Country =
             all.firstOrNull { it.label == label } ?: error("Country not found by label [$label]")
     }
+
+    override fun toString() = "City[label=$label, cities.size=${cities.size}]"
 }
 
 data class City(

@@ -10,8 +10,8 @@ import seepick.localsportsclub.service.model.Plan
 class MembershipParserTest : StringSpec() {
     init {
         "When parse Then return plan type" {
-            MembershipParser.parse(readTestResponse<String>("activities.html")) shouldBe Membership(
-                plan = Plan.Large,
+            MembershipParser.parse(readTestResponse<String>("membership.html")) shouldBe Membership(
+                plan = Plan.OnefitPlan.Premium,
                 country = Country.byLabel("Netherlands"),
                 city = City.byLabel("Amsterdam"),
             )

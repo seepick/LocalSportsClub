@@ -62,11 +62,11 @@ class SinglesServiceImpl(
         }
 
     override var plan: Plan?
-        get() = cachedOrSelect().planApiString?.let { Plan.byApiString(it) }
+        get() = cachedOrSelect().planInternalId?.let { Plan.byInternalId(it) }
         set(value) {
             update {
-                if (value == null) copy(planApiString = null)
-                else copy(planApiString = value.apiString)
+                if (value == null) copy(planInternalId = null)
+                else copy(planInternalId = value.internalId)
             }
         }
 
@@ -109,31 +109,41 @@ class SinglesServiceImpl(
     private fun update(withDbo: SinglesVersionCurrent.() -> SinglesVersionCurrent) {
         val dbo = cachedOrSelect()
         val updated = dbo.withDbo()
-        singlesRepo.update(
-            SinglesDbo(
-                version = SinglesVersionCurrent.VERSION,
-                json = Json.encodeToString(updated)
-            )
-        )
+        singlesRepo.updateSingles(updated)
         cache = updated
     }
 
-    private fun cachedOrSelect(): SinglesVersionCurrent =
-        cache ?: run {
-            val singles = singlesRepo.select()?.let {
-                // here in the future do migration: it.version
-                Json.decodeFromString(it.json)
-            } ?: run {
-                val dbo =
-                    SinglesDbo(
-                        version = SinglesVersionCurrent.VERSION,
-                        json = Json.encodeToString(SinglesVersionCurrent.empty)
-                    )
-                singlesRepo.insert(dbo)
-                SinglesVersionCurrent.empty
-            }
-            singles.also {
-                cache = it
-            }
+    private fun cachedOrSelect(): SinglesVersionCurrent {
+        if (cache != null) return cache!!
+
+        val stored = singlesRepo.select()
+        if (stored == null) {
+            cache = SinglesVersionCurrent.empty
+            singlesRepo.insert(
+                SinglesDbo(
+                    version = SinglesVersionCurrent.VERSION,
+                    json = Json.encodeToString(cache!!)
+                )
+            )
+            return cache!!
         }
+
+        cache = if (stored.version == SinglesVersionCurrent.VERSION) {
+            Json.decodeFromString(stored.json)
+        } else {
+            val migrated = SinglesMigrator.migrate(stored)
+            singlesRepo.updateSingles(migrated)
+            migrated
+        }
+        return cache!!
+    }
+
+    private fun SinglesRepo.updateSingles(singles: SinglesVersionCurrent) {
+        update(
+            SinglesDbo(
+                version = SinglesVersionCurrent.VERSION,
+                json = Json.encodeToString(singles)
+            )
+        )
+    }
 }
