@@ -3,10 +3,10 @@ package seepick.localsportsclub.view.freetraining
 import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.BookingService
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Freetraining
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import java.time.LocalDate
 

@@ -18,7 +18,6 @@ import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.BookingService
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.findIndexFor
@@ -30,6 +29,7 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.common.executeBackgroundTask
 import seepick.localsportsclub.view.common.executeViewTask
 import seepick.localsportsclub.view.common.table.TableColumn

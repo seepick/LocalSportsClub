@@ -19,9 +19,9 @@ import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.retry
+import seepick.localsportsclub.service.singles.SinglesService
 import java.io.Reader
 import java.io.StringReader
 import java.net.SocketException

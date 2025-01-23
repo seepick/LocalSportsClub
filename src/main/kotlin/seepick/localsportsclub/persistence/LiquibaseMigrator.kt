@@ -16,11 +16,15 @@ object LiquibaseMigrator {
     fun migrate(config: LiquibaseConfig) {
         log.info { "Migrating database..." }
         val connection = DriverManager.getConnection(config.jdbcUrl, config.username, config.password)
-        val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(connection))
-        val updateCommand = CommandScope(*UpdateCommandStep.COMMAND_NAME)
-        updateCommand.addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database);
-        updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, CHANGELOG_CLASSPATH);
-        updateCommand.execute()
+        try {
+            val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(connection))
+            val updateCommand = CommandScope(*UpdateCommandStep.COMMAND_NAME)
+            updateCommand.addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database);
+            updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, CHANGELOG_CLASSPATH);
+            updateCommand.execute()
+        } finally {
+            connection.close()
+        }
 
         log.info { "Migrating database done ✅" }
     }

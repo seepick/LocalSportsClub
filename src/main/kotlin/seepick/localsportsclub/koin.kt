@@ -14,7 +14,7 @@ import seepick.localsportsclub.view.viewModule
 
 fun allModules(config: AppConfig) = listOf(
     rootModule(config),
-    persistenceModule(config),
+    persistenceModule(config.database),
     apiModule(config),
     serviceModule(config),
     gcalModule(config),

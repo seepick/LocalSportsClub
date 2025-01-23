@@ -7,16 +7,16 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.sqlite.SQLiteException
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.someOther
@@ -109,9 +109,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 val activity = activity()
                 shouldThrow<ExposedSQLException> {
                     activityRepo.insert(activity)
-                }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>().message.shouldContain("FK_ACTIVITIES_VENUE_ID")
-                }
+                }.cause.shouldNotBeNull().shouldBeInstanceOf<SQLiteException>().message.shouldContain("FOREIGN KEY")
             }
             it("Given venue Then saved successfully") {
                 val venue = venueRepo.insert(venue())
@@ -132,9 +130,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
 
                 shouldThrow<ExposedSQLException> {
                     activityRepo.insert(activity2)
-                }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>().message shouldContain "Unique index or primary key violation"
-                }
+                }.cause.shouldNotBeNull().shouldBeInstanceOf<SQLiteException>().message shouldContain "ACTIVITIES.ID"
             }
         }
         describe("When insert and select all") {
@@ -254,4 +250,3 @@ class ExposedActivityRepoTest : DescribeSpec() {
             cityId = cityId,
         )
 }
-

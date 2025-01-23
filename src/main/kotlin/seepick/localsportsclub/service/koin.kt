@@ -8,6 +8,8 @@ import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.service.singles.SinglesServiceImpl
 
 fun serviceModule(config: AppConfig) = module {
     single { SystemClock } bind Clock::class

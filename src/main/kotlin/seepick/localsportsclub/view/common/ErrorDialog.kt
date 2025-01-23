@@ -23,11 +23,10 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
 fun showErrorDialog(
-    title: String,
     message: String,
     exception: Throwable?,
 ) {
-    ErrorDialog(title, message, exception).isVisible = true
+    ErrorDialog("Error", message, exception).isVisible = true
 }
 
 private class ErrorDialog(

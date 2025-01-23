@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.Database
 class LiquibaseMigratorTest : StringSpec() {
     init {
         "When migrate Then load and save works" {
-            val jdbcUrl = buildTestJdbcUrl("liquitest")
+            val jdbcUrl = buildTestJdbcUrl("LSC-liquibase_migrator_test")
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
             Database.connect(jdbcUrl)
 

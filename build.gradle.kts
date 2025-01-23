@@ -45,7 +45,8 @@ dependencies {
     listOf("core", "dao", "jdbc", "java-time").forEach {
         implementation("org.jetbrains.exposed:exposed-$it:0.56.0")
     }
-    implementation("com.h2database:h2:2.3.232")
+    implementation("org.xerial:sqlite-jdbc:3.48.0.0")
+    implementation("com.h2database:h2:2.3.232") // TODO delete me
     implementation("org.liquibase:liquibase-core:4.30.0")
     implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
 

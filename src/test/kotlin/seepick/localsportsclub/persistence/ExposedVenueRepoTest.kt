@@ -4,17 +4,17 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.sqlite.SQLiteException
 
 class ExposedVenueRepoTest : DescribeSpec() {
 
@@ -47,10 +47,7 @@ class ExposedVenueRepoTest : DescribeSpec() {
                 repo.insert(Arb.venueDbo().next().copy(slug = "duplicate"))
                 shouldThrow<ExposedSQLException> {
                     repo.insert(Arb.venueDbo().next().copy(slug = "duplicate"))
-                }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>()
-                        .message shouldContain "VENUES_SLUG_UNIQUE_INDEX"
-                }
+                }.cause.shouldNotBeNull().shouldBeInstanceOf<SQLiteException>().message shouldContain "VENUES.SLUG"
             }
         }
         describe("When insert and select all") {

@@ -1,24 +1,14 @@
 package seepick.localsportsclub.persistence
 
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DatabaseConfig
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.DatabaseMode
-import seepick.localsportsclub.service.DirectoryEntry
-import seepick.localsportsclub.service.FileResolver
 
-private val log = logger {}
-
-fun persistenceModule(config: AppConfig) = module {
-    if (config.database == DatabaseMode.Exposed) {
-        connectToDatabase()
-    }
-    when (config.database) {
+fun persistenceModule(databaseMode: DatabaseMode) = module {
+    when (databaseMode) {
         DatabaseMode.Exposed -> {
+            connectToDatabaseAndMigrate()
             single { ExposedVenueRepo } bind VenueRepo::class
             single { ExposedVenueLinksRepo } bind VenueLinksRepo::class
             single { ExposedActivityRepo } bind ActivityRepo::class
@@ -36,12 +26,3 @@ fun persistenceModule(config: AppConfig) = module {
     }
 }
 
-private fun connectToDatabase() {
-    val dbDir = FileResolver.resolve(DirectoryEntry.Database)
-    val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}/h2"
-    log.info { "Connecting to database: $jdbcUrl" }
-    LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
-    Database.connect(jdbcUrl, databaseConfig = DatabaseConfig {
-//        useNestedTransactions = true
-    })
-}

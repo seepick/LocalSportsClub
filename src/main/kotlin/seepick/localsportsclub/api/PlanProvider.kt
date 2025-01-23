@@ -2,8 +2,8 @@ package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import seepick.localsportsclub.api.plan.MembershipApi
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.model.Plan
+import seepick.localsportsclub.service.singles.SinglesService
 
 class PlanProvider(
     private val singlesService: SinglesService,

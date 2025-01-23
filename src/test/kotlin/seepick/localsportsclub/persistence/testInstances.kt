@@ -22,7 +22,6 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 
 fun Arb.Companion.venueDbo() = arbitrary {
@@ -84,14 +83,10 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
 
 fun Arb.Companion.singlesDbo() = arbitrary {
     SinglesDbo(
-        notes = string().next(),
-        lastSync = localDateTime().orNull().next(),
-        windowPref = windowPref().orNull().next(),
-        plan = enum<Plan>().orNull().next(),
-        preferences = preferences().next(),
+        version = int().next(),
+        json = string().next(),
     )
 }
-
 
 fun Arb.Companion.windowPref() = arbitrary {
     WindowPref(

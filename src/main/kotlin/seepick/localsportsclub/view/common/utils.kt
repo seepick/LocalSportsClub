@@ -61,7 +61,6 @@ private suspend fun executeTask(
             is Exception, is NoClassDefFoundError -> {
                 log.error(e) { "Executing task failed!" }
                 showErrorDialog(
-                    title = "Executing Task Failed!",
                     message = errorMessage,
                     exception = e,
                 )

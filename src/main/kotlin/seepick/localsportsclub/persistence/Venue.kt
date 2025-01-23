@@ -2,10 +2,10 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Sequence
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.nextIntVal
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -49,7 +49,7 @@ interface VenueRepo {
     fun selectBySlug(slug: String): VenueDbo?
 }
 
-object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
+object VenuesTable : IntIdTable("VENUES", "ID") {
     val name = varchar("NAME", 256) // sync details
     val slug = varchar("SLUG", 64).uniqueIndex("VENUES_SLUG_UNIQUE_INDEX") // sync details
     val facilities = text("FACILITIES") // sync details; aka disciplines; comma separated list
@@ -74,11 +74,11 @@ object VenuesTable : IntIdTable("PUBLIC.VENUES", "ID") {
 
 object ExposedVenueRepo : VenueRepo {
 
-    val idSequence = Sequence("SEQ_VENUES_ID")
+    var db: Database? = null // TODO delete me
 
     private val log = logger {}
 
-    override fun selectAll(cityId: Int): List<VenueDbo> = transaction {
+    override fun selectAll(cityId: Int): List<VenueDbo> = transaction(db) {
         VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
             VenueDbo.fromRow(it)
         }
@@ -96,11 +96,15 @@ object ExposedVenueRepo : VenueRepo {
         }.singleOrNull()
     }
 
-    override fun insert(venue: VenueDbo): VenueDbo = transaction {
+    override fun insert(venue: VenueDbo): VenueDbo = transaction(db) {
         log.debug { "Inserting $venue" }
-        val nextSeq = idSequence.nextIntVal()
-        val nextId = VenuesTable.insertAndGetId {
-            it[id] = nextSeq
+        val nextId =
+            VenuesTable.select(VenuesTable.id).orderBy(VenuesTable.id, order = SortOrder.DESC).limit(1).toList()
+                .firstOrNull()?.let {
+                    it[VenuesTable.id].value + 1
+                } ?: 1
+        VenuesTable.insert {
+            it[id] = nextId
             it[name] = venue.name
             it[slug] = venue.slug
             it[notes] = venue.notes
@@ -121,7 +125,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isWishlisted] = venue.isWishlisted
             it[isHidden] = venue.isHidden
             it[isDeleted] = venue.isDeleted
-        }.value
+        }
         log.trace { "New venue ID=$nextId" }
         venue.copy(id = nextId)
     }

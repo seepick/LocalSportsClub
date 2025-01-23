@@ -19,6 +19,7 @@ import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener

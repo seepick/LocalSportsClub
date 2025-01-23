@@ -6,9 +6,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import seepick.localsportsclub.api.PhpSessionProvider
 import seepick.localsportsclub.api.PlanProvider
 import seepick.localsportsclub.api.UscConfig
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 import java.time.LocalDate
 import java.time.LocalDateTime

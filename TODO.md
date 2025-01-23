@@ -1,21 +1,22 @@
 # TODO
 
+## External
+
+* user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
+* contact someone: is it ok what i'm doing?
+
 ## Release v1
 
-* !! BUGFIX !! movement amsterdam; teacher sync; strange text!
 * !! "Premium OneFit" has 18 total check-ins per month; not same as "Premium" which has 14
-* when sync for other city; store separate last sync
-* maybe period restart day can be fetched via API (it is shown in app...)
-* redo Singles: store 2 columns, one version nr, other serialized JSON string (migrate versions manually)
-* description for critical alignment has \"
-* use same icon for both web links (the arrow button into "USC Site" button)
-* use compose's snackbar for: book/schedule, cancel, sync)
-  --
-* user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
-* contact someone: is it legal what i'm doing?
 
 ## Release v2
 
+* use compose's snackbar for: book/schedule, cancel, sync)
+* use same icon for both web links (the arrow button into "USC Site" button)
+* description for critical alignment has \"
+* maybe period restart day can be fetched via API (it is shown in app...)
+* when sync for other city; store separate last sync
+* how to use in memory for SQLite?! "jdbc:sqlite:" or "jdbc:sqlite::memory:" wont work!
 * display GCal name, once connected tested ok
 * make scrollbar thingy brighter in dark mode
 * GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
@@ -58,7 +59,13 @@
 * (switch to ZonedDate?)
 * maybe use 'net.ricecode:string-similarity:1.0.0'
 
-# Compose help:
+# Info
+
+## Exposed
+
+* add: `addLogger(StdOutSqlLogger)` in transaction block
+
+## Compose
 
 * Official: https://developer.android.com/compose
 * Components: https://developer.android.com/develop/ui/compose/components

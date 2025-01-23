@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.service.SinglesService
+import seepick.localsportsclub.service.singles.SinglesService
 
 class NotesViewModel(
     private val singlesService: SinglesService,
@@ -15,7 +15,7 @@ class NotesViewModel(
         private set
 
     override fun onStartUp() {
-        notes = singlesService.notes
+        notes = singlesService.notes ?: ""
     }
 
     fun notesUpdated(value: String) {

@@ -9,8 +9,8 @@ private val log = logger {}
 object FileResolver {
 
     private val homeDirectory = File(System.getProperty("user.home"))
-    private val appDirectoryProd = File(homeDirectory, ".lsc")
-    private val appDirectoryDev = File(homeDirectory, ".lsc-dev")
+    val appDirectoryProd = File(homeDirectory, ".lsc")
+    val appDirectoryDev = File(homeDirectory, ".lsc-dev")
     private val appDirectory =
         when (Environment.current) {
             Environment.Production -> appDirectoryProd

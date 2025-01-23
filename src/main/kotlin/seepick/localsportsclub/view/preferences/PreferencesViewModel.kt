@@ -11,8 +11,8 @@ import seepick.localsportsclub.api.LoginResult
 import seepick.localsportsclub.api.plan.MembershipApi
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.model.Plan
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.common.executeBackgroundTask
 

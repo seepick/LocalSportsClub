@@ -1,5 +1,6 @@
 package seepick.localsportsclub.persistence
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
@@ -11,13 +12,20 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class DbListener : BeforeEachListener, AfterEachListener {
 
+    private val log = KotlinLogging.logger {}
     private lateinit var db: Database
 
     override suspend fun beforeEach(testCase: TestCase) {
-        db = Database.connect(buildTestJdbcUrl("test"))
+        db = Database.connect(buildTestJdbcUrl("LSC-test").also {
+            log.debug { "Connecting to: [$it]" }
+        }, setupConnection = ::enableSqliteForeignKeySupport)
+
         transaction {
+//            exec("PRAGMA foreign_keys", transform = {
+//                println("foreign keys are: [${it.getInt(1)}]")
+//            })
+            println("creating tables")
             SchemaUtils.create(*allTables)
-            SchemaUtils.createSequence(ExposedVenueRepo.idSequence)
         }
     }
 
@@ -27,4 +35,4 @@ class DbListener : BeforeEachListener, AfterEachListener {
 }
 
 fun buildTestJdbcUrl(namePrefix: String): String =
-    "jdbc:h2:mem:$namePrefix-${System.currentTimeMillis()};DB_CLOSE_DELAY=-1"
+    "jdbc:sqlite:${System.getProperty("java.io.tmpdir")}$namePrefix-${System.currentTimeMillis()}"

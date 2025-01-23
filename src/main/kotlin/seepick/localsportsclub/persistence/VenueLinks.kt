@@ -1,6 +1,7 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.alias
@@ -10,7 +11,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 // a.k.a. "other locations"
-object VenueLinksTable : Table("PUBLIC.VENUE_LINKS") {
+object VenueLinksTable : Table("VENUE_LINKS") {
     val venue1Id = reference("VENUE1_ID", VenuesTable)
     val venue2Id = reference("VENUE2_ID", VenuesTable)
     override val primaryKey = PrimaryKey(venue1Id, venue2Id, name = "PK_VENUE_LINKS")
@@ -39,10 +40,10 @@ data class VenueIdLink(
 object ExposedVenueLinksRepo : VenueLinksRepo {
 
     private val log = logger {}
+    var db: Database? = null // TODO delete me
 
-    override fun selectAll(cityId: Int): List<VenueIdLink> = transaction {
+    override fun selectAll(cityId: Int): List<VenueIdLink> = transaction(db) {
         log.debug { "selectAll(cityId=$cityId)" }
-//        addLogger(StdOutSqlLogger)
         val venue1Alias = VenuesTable.alias("v1")
         val venue2Alias = VenuesTable.alias("v2")
         VenueLinksTable.join(
@@ -65,7 +66,8 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
         }
     }
 
-    override fun insert(venueIdLink: VenueIdLink): Unit = transaction {
+    override fun insert(venueIdLink: VenueIdLink): Unit = transaction(db) {
+        log.debug { "insert($venueIdLink)" }
         val (id1, id2) = if (venueIdLink.id1 < venueIdLink.id2) venueIdLink.id1 to venueIdLink.id2 else venueIdLink.id2 to venueIdLink.id1
         VenueLinksTable.insert {
             it[venue1Id] = id1

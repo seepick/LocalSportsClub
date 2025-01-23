@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
@@ -70,10 +71,35 @@ data class ActivityDbo(
             teacher = row[ActivitiesTable.teacher],
             spotsLeft = row[ActivitiesTable.spotsLeft],
         )
+
+        fun fromRowOld(row: ResultRow) = ActivityDbo(
+            // TODO delete me
+            id = row[ActivitiesTableOld.id].value,
+            venueId = row[ActivitiesTableOld.venueId].value,
+            name = row[ActivitiesTableOld.name],
+            category = row[ActivitiesTableOld.category],
+            from = row[ActivitiesTableOld.from].withNano(0),
+            to = row[ActivitiesTableOld.to].withNano(0),
+            state = row[ActivitiesTableOld.state],
+            teacher = row[ActivitiesTableOld.teacher],
+            spotsLeft = row[ActivitiesTableOld.spotsLeft],
+        )
     }
 }
 
-object ActivitiesTable : IntIdTable("PUBLIC.ACTIVITIES", "ID") {
+object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
+    val name = varchar("NAME", 256) // sync list
+    val category = varchar("CATEGORY", 64) // sync list
+    val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
+    val from = datetime("FROM_DATETIME")
+    val to = datetime("TO_DATETIME")
+    val spotsLeft = integer("SPOTS_LEFT")
+    val teacher = varchar("TEACHER", 64).nullable()
+    val state = enumerationByName<ActivityState>("STATE", 32)
+}
+
+// TODO delete me
+object ActivitiesTableOld : IntIdTable("ACTIVITIES", "ID") {
     val name = varchar("NAME", 256) // sync list
     val category = varchar("CATEGORY", 64) // sync list
     val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
@@ -136,8 +162,9 @@ class InMemoryActivityRepo : ActivityRepo {
 
 object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
+    var db: Database? = null // TODO delete me
 
-    override fun selectAll(cityId: Int): List<ActivityDbo> = transaction {
+    override fun selectAll(cityId: Int): List<ActivityDbo> = transaction(db) {
         ActivitiesTable
             .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
             .selectAll().where { VenuesTable.cityId.eq(cityId) }.orderBy(ActivitiesTable.from).map {
@@ -182,6 +209,20 @@ object ExposedActivityRepo : ActivityRepo {
             }
     }
 
+    override fun insert(activity: ActivityDbo): Unit = transaction(db) {
+        log.debug { "Insert: $activity" }
+        ActivitiesTable.insert {
+            activity.prepareInsert(it)
+        }
+    }
+
+    override fun update(activity: ActivityDbo): Unit = transaction {
+        val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
+            activity.prepareUpdate(it)
+        }
+        if (updated != 1) error("Expected 1 to be updated by ID ${activity.id}, but was: $updated")
+    }
+
     override fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo> = transaction {
         val thresholdDateTime = LocalDateTime.of(threshold, LocalTime.of(0, 0))
 
@@ -195,20 +236,6 @@ object ExposedActivityRepo : ActivityRepo {
 
         log.info { "Deleted ${deletedActivities.size} old activities before $threshold." }
         deletedActivities
-    }
-
-    override fun insert(activity: ActivityDbo): Unit = transaction {
-        log.debug { "Insert: $activity" }
-        ActivitiesTable.insert {
-            activity.prepareInsert(it)
-        }
-    }
-
-    override fun update(activity: ActivityDbo): Unit = transaction {
-        val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
-            activity.prepareUpdate(it)
-        }
-        if (updated != 1) error("Expected 1 to be updated by ID ${activity.id}, but was: $updated")
     }
 
 }

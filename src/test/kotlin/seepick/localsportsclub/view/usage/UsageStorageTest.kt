@@ -15,20 +15,20 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.freetrainingDbo
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class DummySinglesService(
-    override var notes: String = "",
+    override var notes: String? = "",
     override var lastSync: LocalDateTime? = null,
     override var windowPref: WindowPref? = null,
     override var plan: Plan? = null,

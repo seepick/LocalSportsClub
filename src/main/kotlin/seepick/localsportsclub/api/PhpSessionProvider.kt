@@ -2,7 +2,7 @@ package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
-import seepick.localsportsclub.service.SinglesService
+import seepick.localsportsclub.service.singles.SinglesService
 
 class PhpSessionProvider(
     private val singlesService: SinglesService,

@@ -13,7 +13,7 @@ object BugfixDataCleaner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        cliConnectToDatabase(isProd = true)
+        cliConnectToDatabase(isProd = false)
         runBlocking {
             fixMovementAmsterdamTeacher()
         }

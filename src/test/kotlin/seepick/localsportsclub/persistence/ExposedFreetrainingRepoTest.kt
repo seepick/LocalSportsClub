@@ -5,14 +5,14 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.sqlite.SQLiteException
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.FreetrainingState
 
@@ -94,9 +94,7 @@ class ExposedFreetrainingRepoTest : DescribeSpec() {
             it("Given no venue Then fail") {
                 shouldThrow<ExposedSQLException> {
                     freetrainingRepo.insert(freetraining())
-                }.shouldHaveCause { cause ->
-                    cause.shouldBeInstanceOf<JdbcSQLIntegrityConstraintViolationException>().message.shouldContain("FK_FREETRAININGS_VENUE_ID")
-                }
+                }.cause.shouldNotBeNull().shouldBeInstanceOf<SQLiteException>().message.shouldContain("FOREIGN KEY")
             }
             it("Given venue Then succeed") {
                 val venue = venueRepo.insert(venue())

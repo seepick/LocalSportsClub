@@ -2,9 +2,9 @@ package seepick.localsportsclub.view.venue
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import seepick.localsportsclub.service.BookingService
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SelectedItemType
 import seepick.localsportsclub.view.shared.VenueSelected

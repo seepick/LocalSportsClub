@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
-import seepick.localsportsclub.service.SinglesService
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.common.executeBackgroundTask
 

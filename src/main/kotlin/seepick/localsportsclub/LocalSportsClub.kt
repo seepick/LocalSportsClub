@@ -15,9 +15,9 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.BookingService
-import seepick.localsportsclub.service.SinglesService
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.DataStorage
+import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
@@ -147,7 +147,7 @@ object LocalSportsClub {
             }
         } catch (e: Exception) {
             log.error(e) { "Startup Error!" }
-            showErrorDialog("Startup Error", "Failed to start up the application. Shutting down.", e)
+            showErrorDialog("Failed to start up the application. Shutting down.", e)
         }
     }
 }

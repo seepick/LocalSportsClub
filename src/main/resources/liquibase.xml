@@ -7,8 +7,8 @@
     <changeSet id="1" author="owner" failOnError="true">
         <comment>setting up initial schema</comment>
 
-        <createSequence sequenceName="SEQ_VENUES_ID" dataType="int"
-                        startValue="1" incrementBy="1" ordered="true" cycle="false"/>
+        <!--        <createSequence sequenceName="SEQ_VENUES_ID" dataType="int"-->
+        <!--                        startValue="1" incrementBy="1" cycle="false"/>-->
 
         <createTable tableName="VENUES">
             <column name="ID" type="integer">
@@ -18,7 +18,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="SLUG" type="varchar(64)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="VENUES_SLUG_UNIQUE_INDEX"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="VENUES_SLUG_UNIQUE_CONSTRAINT"/>
             </column>
             <column name="NOTES" type="longvarchar">
                 <constraints nullable="false"/>
@@ -99,10 +99,10 @@
             <column name="CATEGORY" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="FROM" type="datetime">
+            <column name="FROM_DATETIME" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="TO" type="datetime">
+            <column name="TO_DATETIME" type="datetime">
                 <constraints nullable="false"/>
             </column>
             <column name="SPOTS_LEFT" type="integer">
@@ -141,48 +141,15 @@
         </createTable>
 
         <createTable tableName="SINGLES">
-            <column name="NOTES" type="longvarchar">
+            <column name="VERSION" type="integer">
                 <constraints nullable="false"/>
             </column>
-            <column name="LAST_SYNC" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="WINDOW_PREF" type="varchar(128)">
-                <constraints nullable="true"/>
+            <column name="JSON" type="longvarchar">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="owner" failOnError="true">
-        <comment>add home location</comment>
-        <addColumn tableName="SINGLES">
-            <column name="HOME_LATITUDE" type="double">
-                <constraints nullable="true"/>
-            </column>
-            <column name="HOME_LONGITUDE" type="double">
-                <constraints nullable="true"/>
-            </column>
-            <column name="GOOGLE_CALENDAR_ID" type="varchar(64)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="USC_CITY_ID" type="integer">
-                <constraints nullable="true"/>
-            </column>
-            <column name="USC_CREDENTIAL_USERNAME" type="varchar(64)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="USC_CREDENTIAL_PASSWORD" type="varchar(128)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="USC_PLAN" type="varchar(8)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="USC_PERIOD_FIRST_DAY" type="integer">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
-    <!-- create new changeset! -->
+    <!-- create new changeset here -->
 
 </databaseChangeLog>

@@ -29,7 +29,7 @@ class ApplicationLifecycle {
             listeners.forEach(ApplicationLifecycleListener::onExit)
         } catch (e: Exception) {
             log.error(e) { "Error during exiting." }
-            showErrorDialog("Exit error!", "An exception occured during exiting the application.", e)
+            showErrorDialog("Failed to exit the application.", e)
         }
     }
 
