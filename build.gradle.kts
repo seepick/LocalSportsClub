@@ -27,7 +27,7 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
     implementation(compose.components.resources)
-    implementation(compose.material3) // TODO delete me
+    implementation(compose.material3)
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0") // enforce version for Exposed NoSuchMethodError
 //    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")

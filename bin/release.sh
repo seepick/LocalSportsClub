@@ -21,7 +21,7 @@ git_tag_and_push () {
   echo "Incrementing and tagging version number via GIT ..."
   echo "$APP_VERSION" > $VERSION_FILE
   git add . || exit 1
-  git commit -m "Increment version number to $APP_VERSION" || exit 1
+  git commit -m "Preparing release $APP_VERSION" || exit 1
   git tag -a $APP_VERSION -m "Tag new release version $APP_VERSION" || exit 1
   git push || exit 1
   git push origin $APP_VERSION || exit 1

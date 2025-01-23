@@ -4,7 +4,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.onClick
 import androidx.compose.material.Text
@@ -64,7 +63,7 @@ fun ClickableText(
         overflow = TextOverflow.Ellipsis,
         color = color,
         modifier = Modifier
-            .padding(top = 3.dp, bottom = 3.dp)
+//            .padding(top = 3.dp, bottom = 3.dp)
             .onClick(onClick = onClick)
             .pointerHoverIcon(PointerIcon.Hand)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }

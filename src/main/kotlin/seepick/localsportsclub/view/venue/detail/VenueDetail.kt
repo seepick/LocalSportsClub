@@ -1,26 +1,26 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.MainWindowState
 import seepick.localsportsclub.service.model.Activity
@@ -48,6 +48,7 @@ import java.net.URLEncoder
 import kotlin.math.max
 import kotlin.math.min
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VenueDetail(
     venue: Venue,
@@ -76,7 +77,8 @@ fun VenueDetail(
                 if (venue.categories.isNotEmpty()) {
                     Text(venue.categories.joinToString(", "))
                 }
-                Row(verticalAlignment = Alignment.Bottom) {
+                FlowRow(verticalArrangement = Arrangement.Bottom) {
+//                Row(verticalAlignment = Alignment.Bottom) {
                     Tooltip("Open Google Maps") {
                         UrlText(
                             url = "https://www.google.com/maps/search/?api=1&query=${
@@ -89,9 +91,7 @@ fun VenueDetail(
                     }
                     venue.distanceInKm?.also { distance ->
                         Text(
-                            text = " ${distance}km away",
-                            fontSize = 10.sp,
-                            modifier = Modifier.padding(bottom = 3.dp)
+                            text = " $distance km away",
                         )
                     }
                 }

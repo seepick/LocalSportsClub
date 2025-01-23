@@ -7,24 +7,30 @@ enum class Plan(
     val usageInfo: UsageInfo,
 ) {
     Small(
-        1, "S", "Essential", UsageInfo(
+        id = 1,
+        apiString = "S",
+        label = "Essential",
+        usageInfo = UsageInfo(
             maxCheckinsInPeriod = 4,
             maxOnlineCheckins = 4,
             maxPlusCheckins = 0,
         )
     ),
     Medium(
-        2, "M", "Classic", UsageInfo(
+        id = 2,
+        apiString = "M",
+        label = "Classic",
+        usageInfo = UsageInfo(
             maxCheckinsInPeriod = 10,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 0,
         )
     ),
     Large(
-        3,
-        "L",
-        "Premium",
-        UsageInfo(
+        id = 3,
+        apiString = "L",
+        label = "Premium",
+        usageInfo = UsageInfo(
             maxCheckinsInPeriod = 14,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 4,
@@ -32,7 +38,10 @@ enum class Plan(
         )
     ),
     ExtraLarge(
-        6, "XL", "Max", UsageInfo(
+        id = 6,
+        apiString = "XL",
+        label = "Max",
+        usageInfo = UsageInfo(
             maxCheckinsInPeriod = 18,
             maxOnlineCheckins = 8,
             maxPlusCheckins = 8,

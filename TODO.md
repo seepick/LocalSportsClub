@@ -26,6 +26,7 @@
 
 ## Backlog
 
+* activities table: shorten Date column ("23.1. 18:00")
 * ad usage: display how many reservations max
 * system test: book something which can't be booked (different limits); parse response and show proper message
 * after sync, display report what happened ++ big WARNING if new noshow was detected!
