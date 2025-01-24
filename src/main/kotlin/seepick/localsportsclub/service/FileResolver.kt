@@ -37,7 +37,8 @@ private fun File.createIfNeededOrFail() = apply {
 }
 
 enum class FileEntry(val directory: DirectoryEntry?, val fileName: String) {
-    GcalCredentials(DirectoryEntry.Gcal, "credentials.json"),
+    GoogleCredentials(DirectoryEntry.Gcal, "credentials.json"),
+    GoogleCredentialsCache(DirectoryEntry.Gcal, "StoredCredential"),
 }
 
 enum class DirectoryEntry(val directoryName: String) {

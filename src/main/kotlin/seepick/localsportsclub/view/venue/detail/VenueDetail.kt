@@ -29,7 +29,7 @@ import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.view.common.CheckboxText
+import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.LinkTonalButton
@@ -69,7 +69,12 @@ fun VenueDetail(
     mainWindowState: MainWindowState = koinInject(),
 ) {
     val uriHandler = LocalUriHandler.current
-    Column(Modifier.fillMaxWidth(1.0f).then(modifier)) {
+    Column(
+        Modifier
+            .fillMaxWidth(1.0f)
+            .then(modifier),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         Row {
             Box(modifier = Modifier.width(200.dp)) {
@@ -118,9 +123,9 @@ fun VenueDetail(
             LabeledText("Times", it)
         }
         Row {
-            CheckboxText("Favorited", venueEdit.isFavorited, Icons.Lsc.Favorites)
-            CheckboxText("Wishlisted", venueEdit.isWishlisted, Icons.Lsc.Wishlists)
-            CheckboxText("Hidden ${LscIcons.hidden}", venueEdit.isHidden)
+            CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.Favorites)
+            CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.Wishlists)
+            CheckboxTexted("Hidden ${LscIcons.hidden}", venueEdit.isHidden, modifier = Modifier.height(30.dp))
         }
         Row {
             Tooltip(venue.uscWebsite, offset = true) {

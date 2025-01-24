@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.shared
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Button
@@ -10,22 +11,22 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.firstUpper
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 
-data class BookingDialog(
-    val title: String,
-    val message: String,
-)
 
 @Composable
 fun SubEntityDetail(
@@ -37,6 +38,8 @@ fun SubEntityDetail(
     isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
     onActivityNoshowToCheckedin: (Activity) -> Unit,
+    isGcalEnabled: Boolean,
+    shouldGcalBeManaged: MutableState<Boolean>,
 ) {
     val year = clock.today().year
     val (isBooked, isCheckedin, isNoshow) = when (subEntity) {
@@ -82,7 +85,10 @@ fun SubEntityDetail(
         )
 
         if (subEntity.date >= clock.today()) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
                 ConditionalTooltip(
                     !isBookOrCancelPossible,
                     "Please enter your USC credentials in the preferences first."
@@ -99,6 +105,13 @@ fun SubEntityDetail(
                     ) {
                         Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                     }
+                }
+                if (isGcalEnabled) {
+                    CheckboxTexted(
+                        label = "Manage Calendar",
+                        checked = shouldGcalBeManaged,
+                        enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress,
+                    )
                 }
                 AnimatedVisibility(
                     visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()

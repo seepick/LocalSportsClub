@@ -60,7 +60,6 @@ class PrefsEnabledGcalService(
     }
 }
 
-
 object NoopGcalService : GcalService {
     private val log = logger {}
     override fun create(calendarId: String, entry: GcalEntry) {
@@ -110,13 +109,17 @@ sealed interface GcalEntry {
 
 object GcalCredentials {
     private val log = logger {}
-    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GcalCredentials)
+    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GoogleCredentials)
 
     fun reader(): Reader = if (credentialsJsonFile.exists()) {
         log.debug { "Reading GCal credentials from local file." }
         credentialsJsonFile.inputStream().reader()
     } else {
         val appProperties = AppPropertiesProvider.provide()
+        val errorMessageSuffix =
+            "must not be empty! Define either as property via build or create file at ${credentialsJsonFile.absolutePath}"
+        require(appProperties.gcalClientId.isNotEmpty()) { "Google Calendar ID $errorMessageSuffix" }
+        require(appProperties.gcalClientSecret.isNotEmpty()) { "Google Calendar Secret $errorMessageSuffix" }
         StringReader(buildJson(clientId = appProperties.gcalClientId, clientSecret = appProperties.gcalClientSecret))
     }
 

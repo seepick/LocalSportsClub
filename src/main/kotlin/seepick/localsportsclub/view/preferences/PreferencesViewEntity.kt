@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.preferences
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,7 +14,7 @@ import seepick.localsportsclub.service.model.Preferences
 class PreferencesViewEntity {
     var uscUsername: String by mutableStateOf("")
     var uscPassword: String by mutableStateOf("")
-    var periodFirstDay: Int? by mutableStateOf(null)
+    val periodFirstDay: MutableState<Int?> = mutableStateOf(null)
     var country: Country? by mutableStateOf(null)
     var city: City? by mutableStateOf(null)
     var calendarEnabled: Boolean by mutableStateOf(false)
@@ -27,7 +28,7 @@ class PreferencesViewEntity {
         this.prefs = prefs
         uscUsername = prefs.uscCredentials?.username ?: ""
         uscPassword = prefs.uscCredentials?.password ?: ""
-        periodFirstDay = prefs.periodFirstDay
+        periodFirstDay.value = prefs.periodFirstDay
         country = prefs.city?.let { Country.byCityId(it.id) }
         city = prefs.city
         calendarEnabled = prefs.gcal is Gcal.GcalEnabled
@@ -41,14 +42,14 @@ class PreferencesViewEntity {
                 prefs.gcal != buildGcal() ||
                 prefs.uscCredentials != buildCredentials() ||
                 prefs.home != buildHomeLocation() ||
-                prefs.periodFirstDay != periodFirstDay
+                prefs.periodFirstDay != periodFirstDay.value
 
     fun buildPreferences() = Preferences(
         uscCredentials = buildCredentials(),
         city = city,
         gcal = buildGcal(),
         home = buildHomeLocation(),
-        periodFirstDay = periodFirstDay,
+        periodFirstDay = periodFirstDay.value,
     )
 
     private fun buildGcal() =

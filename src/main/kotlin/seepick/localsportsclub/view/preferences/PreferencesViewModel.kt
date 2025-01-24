@@ -10,6 +10,8 @@ import seepick.localsportsclub.api.LoginResult
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
+import seepick.localsportsclub.service.FileEntry
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
@@ -39,24 +41,12 @@ class PreferencesViewModel(
         singlesService.preferences = entity.buildPreferences()
     }
 
-    fun onLatitudeEntered(string: String) {
-        if (string.isEmpty()) {
-            entity.homeLatitude = null
-        } else {
-            string.toDoubleOrNull()?.also {
-                entity.homeLatitude = it
-            }
-        }
+    fun onLatitudeChanged(value: Double?) {
+        entity.homeLatitude = value
     }
 
-    fun onLongitudeEntered(string: String) {
-        if (string.isEmpty()) {
-            entity.homeLongitude = null
-        } else {
-            string.toDoubleOrNull()?.also {
-                entity.homeLongitude = it
-            }
-        }
+    fun onLongitudeChanged(value: Double?) {
+        entity.homeLongitude = value
     }
 
     fun testUscConnection() {
@@ -94,6 +84,15 @@ class PreferencesViewModel(
                 GcalConnectionTest.Fail -> snackbarService.show("❌ GCal connection failed")
                 GcalConnectionTest.Success -> snackbarService.show("✅ GCal connection succeeded")
             }
+        }
+    }
+
+    fun resetTokenCache() {
+        val file = FileResolver.resolve(FileEntry.GoogleCredentialsCache)
+        if (file.exists()) {
+            log.debug { "About to delete google cache at: ${file.absolutePath}" }
+            file.delete()
+            snackbarService.show("Google token cache for login deleted.")
         }
     }
 }

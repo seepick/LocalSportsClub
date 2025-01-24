@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service.singles
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.SinglesDbo
@@ -26,6 +27,7 @@ class SinglesServiceImpl(
     private val singlesRepo: SinglesRepo,
 ) : SinglesService {
 
+    private val log = logger {}
     private var cache: SinglesVersionCurrent? = null
 
     override var notes
@@ -135,6 +137,7 @@ class SinglesServiceImpl(
             singlesRepo.updateSingles(migrated)
             migrated
         }
+        log.debug { "Loading stored: $cache" }
         return cache!!
     }
 

@@ -27,12 +27,12 @@ import seepick.localsportsclub.view.shared.SubEntity
 
 class BookingService(
     private val uscApi: UscApi,
-    private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
+    private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val gcalService: GcalService,
+    private val singlesService: SinglesService,
     private val phpSessionProvider: PhpSessionProvider,
-    private val singlesService: SinglesService
 ) {
     private val log = logger {}
 
@@ -43,16 +43,18 @@ class BookingService(
         listeners += listener
     }
 
-    suspend fun book(subEntity: SubEntity): BookingResult = bookOrCancel(
+    suspend fun book(subEntity: SubEntity, manageGcal: Boolean): BookingResult = bookOrCancel(
         subEntity = subEntity,
         isBooking = true,
+        manageGcal = manageGcal,
         apiOperation = { uscApi.book(phpSessionProvider.provide(), it) },
         operationSucceeded = { it is BookingResult.BookingSuccess },
     )
 
-    suspend fun cancel(subEntity: SubEntity): CancelResult = bookOrCancel(
+    suspend fun cancel(subEntity: SubEntity, manageGcal: Boolean): CancelResult = bookOrCancel(
         subEntity = subEntity,
         isBooking = false,
+        manageGcal = manageGcal,
         apiOperation = { uscApi.cancel(phpSessionProvider.provide(), it) },
         operationSucceeded = { it is CancelResult.CancelSuccess },
     )
@@ -81,43 +83,46 @@ class BookingService(
     private suspend fun <T> bookOrCancel(
         subEntity: SubEntity,
         isBooking: Boolean,
+        manageGcal: Boolean,
         apiOperation: suspend UscApi.(Int) -> T,
         operationSucceeded: (T) -> Boolean,
     ): T {
-        log.debug { "book=$isBooking => $subEntity" }
+        log.debug { "book=$isBooking (gcal=$manageGcal) => $subEntity" }
         require(if (isBooking) subEntity.isBookable else subEntity.isCancellable)
         log.info { "${if (isBooking) "Booking" else "Cancel"} started for: $subEntity" }
         val result = uscApi.apiOperation(subEntity.id)
         if (operationSucceeded(result)) {
             when (subEntity) {
                 is SubEntity.ActivityEntity -> {
-                    bookOrCancelActivity(subEntity, isBooking)
+                    bookOrCancelActivity(subEntity, isBooking, manageGcal)
                 }
 
                 is SubEntity.FreetrainingEntity -> {
-                    bookOrCancelFreetraining(subEntity, isBooking)
+                    bookOrCancelFreetraining(subEntity, isBooking, manageGcal)
                 }
             }
         }
         return result
     }
 
-    private fun bookOrCancelActivity(subEntity: SubEntity.ActivityEntity, isBooking: Boolean) {
+    private fun bookOrCancelActivity(subEntity: SubEntity.ActivityEntity, isBooking: Boolean, manageGcal: Boolean) {
         val activityDbo = activityRepo.selectById(subEntity.id)!!
         require(if (isBooking) activityDbo.isBookable else activityDbo.isCancellable)
         val updatedActivityDbo = activityDbo.copy(state = ActivityDbo.bookingState(isBooking))
         activityRepo.update(updatedActivityDbo)
-        if (isBooking) {
-            createCalendarActivity(updatedActivityDbo)
-        } else {
-            val calendarId = singlesService.preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
-            gcalService.delete(
-                calendarId = calendarId, GcalDeletion(
-                    day = subEntity.activity.dateTimeRange.from.toLocalDate(),
-                    activityOrFreetrainingId = subEntity.activity.id,
-                    isActivity = true,
+        if (manageGcal) {
+            if (isBooking) {
+                createCalendarActivity(updatedActivityDbo)
+            } else {
+                val calendarId = singlesService.preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
+                gcalService.delete(
+                    calendarId = calendarId, GcalDeletion(
+                        day = subEntity.activity.dateTimeRange.from.toLocalDate(),
+                        activityOrFreetrainingId = subEntity.activity.id,
+                        isActivity = true,
+                    )
                 )
-            )
+            }
         }
         listeners.forEach {
             it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State)
@@ -140,21 +145,27 @@ class BookingService(
             ))
     }
 
-    private fun bookOrCancelFreetraining(subEntity: SubEntity.FreetrainingEntity, isBooking: Boolean) {
+    private fun bookOrCancelFreetraining(
+        subEntity: SubEntity.FreetrainingEntity,
+        isBooking: Boolean,
+        manageGcal: Boolean
+    ) {
         val freetrainingDbo = freetrainingRepo.selectById(subEntity.id)!!
         require(if (isBooking) freetrainingDbo.isSchedulable else freetrainingDbo.isCancellable)
         val updatedFreetrainingDbo = freetrainingDbo.copy(state = FreetrainingDbo.bookingState(isBooking))
         freetrainingRepo.update(updatedFreetrainingDbo)
-        if (isBooking) {
-            createCalendarFreetraining(updatedFreetrainingDbo)
-        } else {
-            gcalService.delete(
-                singlesService.readCalendarIdOrThrow(), GcalDeletion(
-                    day = subEntity.freetraining.date,
-                    activityOrFreetrainingId = subEntity.freetraining.id,
-                    isActivity = false,
+        if (manageGcal) {
+            if (isBooking) {
+                createCalendarFreetraining(updatedFreetrainingDbo)
+            } else {
+                gcalService.delete(
+                    singlesService.readCalendarIdOrThrow(), GcalDeletion(
+                        day = subEntity.freetraining.date,
+                        activityOrFreetrainingId = subEntity.freetraining.id,
+                        isActivity = false,
+                    )
                 )
-            )
+            }
         }
         listeners.forEach {
             it.onFreetrainingDboUpdated(updatedFreetrainingDbo, FreetrainingFieldUpdate.State)
@@ -185,4 +196,3 @@ class BookingService(
         }
     }
 }
-

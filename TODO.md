@@ -8,10 +8,8 @@
 
 ## Next
 
-* GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
-    * { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
-* next to book/cancel button: checkbox for google calendar entry management
-* display GCal name, once connected tested ok
+* tab row bg color light theme
+* hover circle checkbox light theme
 
 ## Backlog
 
@@ -20,8 +18,12 @@
 * when sync for other city; store separate last sync
 * in preferences: disable auto version check
 
-## Ideas
+## Later
 
+* if show JErrorDialog, then add in text: "conside send report to: see.pick.mail@gmail"
+    * plus: add in stack trace also the last few entries of the application log file
+* UI tests
+* make preferences plan a dropdown, with an option "custom" to custom define the usage limits
 * limit Usage view to max width (if used > limit; wrong plan config)
 * support plan Onefit other than premium (best guess?!)
 * activities table: shorten Date column ("23.1. 18:00")
@@ -36,7 +38,7 @@
 * make long venue texts "somehow" selectable; A) selectable text (toolitp?!) or B) click => copy clipboard
 * ... no-show for freetraining possible?? try it yourself ;)
 
-### Later
+### Later Later
 
 * maybe period restart day can be fetched via API (it is shown in app...)
 * also sync for activities/freetrainings which plan applies
@@ -60,6 +62,7 @@
 * investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
 * (switch to ZonedDate?)
 * maybe use 'net.ricecode:string-similarity:1.0.0'
+* display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
 
 # Info
 
@@ -69,6 +72,7 @@
 
 ## Compose
 
+* material guide: https://m3.material.io/
 * Official: https://developer.android.com/compose
 * Components: https://developer.android.com/develop/ui/compose/components
     * User Input: https://developer.android.com/develop/ui/compose/text/user-input

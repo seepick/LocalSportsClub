@@ -64,6 +64,8 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             isBookOrCancelPossible = viewModel.isBookOrCancelPossible,
                             isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             onActivityNoshowToCheckedin = viewModel::onActivityNoshowToCheckedin,
+                            isGcalEnabled = viewModel.isGcalEnabled,
+                            shouldGcalBeManaged = viewModel.shouldGcalBeManaged,
                         )
                     }
                 }

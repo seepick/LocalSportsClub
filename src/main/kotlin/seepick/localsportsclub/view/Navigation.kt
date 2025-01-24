@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Tab
@@ -22,7 +23,6 @@ enum class Screen(
     Preferefences(label = "Preferefences", icon = Lsc.icons.preferences);
 }
 
-
 @Composable
 fun NavigationScreen(
     selectedScreen: Screen,
@@ -36,21 +36,12 @@ fun NavigationScreen(
             Tab(text = { Text(screen.label) },
                 selected = selectedScreen == screen,
                 onClick = { selectScreen(screen) },
+                selectedContentColor = Lsc.colors.onPrimary,
+                modifier = Modifier.background(Lsc.colors.primary),
                 icon = {
                     Icon(imageVector = screen.icon, contentDescription = null)
                 }
             )
         }
     }
-
-//    Row {
-//        Screen.entries.forEach { screen ->
-//            Button(
-//                enabled = selectedScreen != screen,
-//                onClick = { selectScreen(screen) },
-//            ) {
-//                Text(text = screen.label)
-//            }
-//        }
-//    }
 }

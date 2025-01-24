@@ -26,6 +26,7 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
+import seepick.localsportsclub.service.model.Gcal
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
@@ -120,6 +121,9 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         private set
     var isBookOrCancelPossible by mutableStateOf(false)
         private set
+    var isGcalEnabled by mutableStateOf(false)
+        private set
+    val shouldGcalBeManaged = mutableStateOf(true)
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -129,6 +133,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
         val preferences = singlesService.preferences
         isBookOrCancelPossible = preferences.uscCredentials != null
+        isGcalEnabled = preferences.gcal is Gcal.GcalEnabled
         configuredCity = preferences.city
 
         _allItems.addAll(dataStorage.selectAllItems())
@@ -233,7 +238,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     private fun <T> bookOrCancel(
         subEntity: SubEntity,
-        bookingOperation: suspend BookingService.(SubEntity) -> T,
+        bookingOperation: suspend BookingService.(SubEntity, Boolean) -> T,
         resultHandler: (T) -> String,
     ) {
         executeBackgroundTask(
@@ -245,7 +250,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
                 isBookingOrCancelInProgress = false
             },
         ) {
-            val result = bookingService.bookingOperation(subEntity)
+            val result = bookingService.bookingOperation(subEntity, shouldGcalBeManaged.value)
             snackbarService.show(resultHandler(result))
         }
     }

@@ -43,7 +43,7 @@ interface LscColors {
 
     val background: Color
 
-    // custom: for alternating row color in lists/tables
+    // custom: for alternating row color in lists/tables; background color for area next to tab rows
     val backgroundVariant: Color
 
     // regular text button (not for button text)
@@ -56,9 +56,10 @@ interface LscColors {
     val secondaryVariant: Color
     val onSecondary: Color
 
+    // buttons bg, table header, tick in checkboxes
     val surface: Color
 
-    // outlines inputfields, labels, bg textfields, disabled buttons; snackbar bg
+    // borders/bg inputfields, borders table, labels, disabled buttons, outline checkboxes, snackbar bg
     val onSurface: Color
 
     val error: Color
@@ -66,6 +67,9 @@ interface LscColors {
 
     val scrollbarHover: Color get() = onBackground.copy(alpha = 0.6f)
     val scrollbarUnhover: Color get() = onBackground.copy(alpha = 0.3f)
+
+    // for CheckboxTexted hover bg color
+    val hoverIndicator: Color get() = onBackground // alpha will be calculated internally
 }
 
 private val colorUnset = Color.Red
@@ -110,18 +114,18 @@ object LightLscColors : LscColors {
 }
 
 object Lsc {
-    val isDarkTheme = currentSystemTheme == SystemTheme.DARK
+    val isDarkTheme2 = currentSystemTheme == SystemTheme.DARK
+    val isDarkTheme = false
     val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
     val icons = LscIcons
 }
 
-// access via: MaterialTheme.colors.primary
+// access via: Lsc.colors.primary (standard way: MaterialTheme.colors.primary)
 @Composable
 fun LscTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    require(darkTheme == Lsc.isDarkTheme)
     val colors = Colors(
         primary = Lsc.colors.primary,
         primaryVariant = Lsc.colors.primaryVariant,
