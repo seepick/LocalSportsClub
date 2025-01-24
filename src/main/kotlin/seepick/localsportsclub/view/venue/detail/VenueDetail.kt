@@ -70,10 +70,7 @@ fun VenueDetail(
 ) {
     val uriHandler = LocalUriHandler.current
     Column(
-        Modifier
-            .fillMaxWidth(1.0f)
-            .then(modifier),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        Modifier.fillMaxWidth(1.0f).then(modifier),
     ) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         Row {
@@ -127,6 +124,7 @@ fun VenueDetail(
             CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.Wishlists)
             CheckboxTexted("Hidden ${LscIcons.hidden}", venueEdit.isHidden, modifier = Modifier.height(30.dp))
         }
+        Spacer(Modifier.height(2.dp))
         Row {
             Tooltip(venue.uscWebsite, offset = true) {
                 Button(

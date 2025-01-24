@@ -44,6 +44,9 @@ data class SinglesVersionCurrent(
             prefPeriodFirstDay = null,
         )
     }
+
+    override fun toString() =
+        "SinglesVersionCurrent[lastSync=$lastSync,planInternalId=$planInternalId,prefCityId=$prefCityId]"
 }
 
 @Serializable
@@ -83,4 +86,6 @@ data class SinglesVersionV1(
             prefPeriodFirstDay = null,
         )
     }
+
+    override fun toString() = "SinglesVersionV1[lastSync=$lastSync,planApiString=$planApiString,prefCityId=$prefCityId]"
 }

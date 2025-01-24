@@ -1,9 +1,12 @@
 package seepick.localsportsclub.view.shared
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -35,7 +38,10 @@ fun SimpleActivitiesTable(
         Text("No activities.")
     } else {
         val currentYear = clock.today().year
-        Text("Activities:")
+        Row(verticalAlignment = Alignment.Bottom) {
+            Icon(Lsc.icons.activities, contentDescription = null)
+            Text("${activities.size} Activities:")
+        }
         Table(
             items = activities,
             headerEnabled = false,

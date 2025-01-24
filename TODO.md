@@ -1,29 +1,20 @@
 # TODO
 
-## External
-
-* contact a few people "do you use, or know someone USC? i need beta testers"
-* user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
-* contact someone: is it ok what i'm doing?
-
 ## Next
 
-* tab row bg color light theme
-* hover circle checkbox light theme
+* when sync for other city; store separate last sync
+* what happens if no internet connection at startup? suppress version check fail.
 
 ## Backlog
 
-* horizontal scroll for SearchPane
 * description for critical alignment has \"
-* when sync for other city; store separate last sync
-* in preferences: disable auto version check
+* info is "/" for Gym Noord, Hyrox
 
 ## Later
 
 * if show JErrorDialog, then add in text: "conside send report to: see.pick.mail@gmail"
     * plus: add in stack trace also the last few entries of the application log file
 * UI tests
-* make preferences plan a dropdown, with an option "custom" to custom define the usage limits
 * limit Usage view to max width (if used > limit; wrong plan config)
 * support plan Onefit other than premium (best guess?!)
 * activities table: shorten Date column ("23.1. 18:00")
@@ -40,6 +31,10 @@
 
 ### Later Later
 
+* when text has emoji, then its height is much bigger; e.g. see in activities/freetrainings table, when there is only 1
+  checked-in row
+    * SOLUTION: make emoji same height as text (annoated text, and change font size? or make two Text() composables,
+      separate for text/emoji?)
 * maybe period restart day can be fetched via API (it is shown in app...)
 * also sync for activities/freetrainings which plan applies
 * how about plus checkins?
@@ -63,6 +58,20 @@
 * (switch to ZonedDate?)
 * maybe use 'net.ricecode:string-similarity:1.0.0'
 * display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
+
+# External
+
+* user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
+* contact someone: is it ok what i'm doing?
+
+## Todos for others
+
+* NOPE: make preferences plan a dropdown, with an option "custom" to custom define the usage limits
+
+## Beta Testers
+
+* serieke
+* jasmin
 
 # Info
 

@@ -9,6 +9,7 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.shared.ScreenViewModel
+import seepick.localsportsclub.view.shared.SharedModel
 import java.time.LocalDate
 
 class FreetrainingViewModel(
@@ -18,8 +19,14 @@ class FreetrainingViewModel(
     uscConfig: UscConfig,
     singlesService: SinglesService,
     snackbarService: SnackbarService,
-) : ScreenViewModel<Freetraining, FreetrainingSearch>(dataStorage, bookingService, singlesService, snackbarService) {
-
+    sharedModel: SharedModel,
+) : ScreenViewModel<Freetraining, FreetrainingSearch>(
+    dataStorage,
+    bookingService,
+    singlesService,
+    snackbarService,
+    sharedModel
+) {
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }
     override val selectedVenue = selectedVenueBySelectedSubEntity

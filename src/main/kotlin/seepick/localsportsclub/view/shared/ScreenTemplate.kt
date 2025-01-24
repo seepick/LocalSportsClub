@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.venue.detail.VenueDetail
 

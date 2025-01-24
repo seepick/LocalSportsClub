@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
-import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
 
 enum class FreetrainingState {

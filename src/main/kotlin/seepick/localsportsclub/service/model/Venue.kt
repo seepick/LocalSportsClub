@@ -9,7 +9,6 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemBgColor
-import seepick.localsportsclub.view.shared.HasVenue
 import java.time.LocalDate
 
 class Venue(

@@ -19,7 +19,6 @@ import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.SortingDelegate
-import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.City
@@ -27,6 +26,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
@@ -37,54 +37,14 @@ import seepick.localsportsclub.view.common.executeViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
-import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
-
-interface HasVenue {
-    val venue: Venue
-}
-
-sealed interface SubEntity : HasVenue {
-    val maybeActivity: Activity?
-    val maybeFreetraining: Freetraining?
-    val id: Int
-    val name: String
-    fun dateFormatted(year: Int): String
-    val category: String
-    val date: LocalDate
-    val bookLabel: String
-    val bookedLabel: String
-
-    data class ActivityEntity(val activity: Activity) : SubEntity, HasVenue by activity {
-        override val maybeActivity = activity
-        override val maybeFreetraining = null
-        override val id = activity.id
-        override val name = activity.name
-        override fun dateFormatted(year: Int) = activity.dateTimeRange.prettyPrint(year)
-        override val category = activity.category
-        override val bookLabel = "Book"
-        override val bookedLabel = "booked"
-        override val date: LocalDate = activity.dateTimeRange.from.toLocalDate()
-    }
-
-    data class FreetrainingEntity(val freetraining: Freetraining) : SubEntity, HasVenue by freetraining {
-        override val maybeFreetraining = freetraining
-        override val maybeActivity = null
-        override fun dateFormatted(year: Int) = freetraining.date.prettyPrint(year)
-        override val id = freetraining.id
-        override val name = freetraining.name
-        override val category = freetraining.category
-        override val bookLabel = "Schedule"
-        override val bookedLabel = "scheduled"
-        override val date = freetraining.date
-    }
-}
 
 abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val dataStorage: DataStorage,
     private val bookingService: BookingService,
     private val singlesService: SinglesService,
     private val snackbarService: SnackbarService,
+    sharedModel: SharedModel,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -123,7 +83,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         private set
     var isGcalEnabled by mutableStateOf(false)
         private set
-    val shouldGcalBeManaged = mutableStateOf(true)
+    val shouldGcalBeManaged = sharedModel.shouldGcalBeManaged
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)

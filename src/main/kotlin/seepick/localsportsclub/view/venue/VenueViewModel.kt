@@ -8,6 +8,7 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SelectedItemType
+import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.shared.VenueSelected
 
 class VenueViewModel(
@@ -15,7 +16,8 @@ class VenueViewModel(
     bookingService: BookingService,
     singlesService: SinglesService,
     snackbarService: SnackbarService,
-) : ScreenViewModel<Venue, VenueSearch>(dataStorage, bookingService, singlesService, snackbarService) {
+    sharedModel: SharedModel,
+) : ScreenViewModel<Venue, VenueSearch>(dataStorage, bookingService, singlesService, snackbarService, sharedModel) {
 
     override val tableColumns = venuesTableColumns()
     override val selectedVenue = MutableStateFlow<Venue?>(null)

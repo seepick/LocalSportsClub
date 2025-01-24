@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
-import seepick.localsportsclub.view.shared.HasVenue
 
 enum class ActivityState {
     // CAVE: names are used for DB mapping!
