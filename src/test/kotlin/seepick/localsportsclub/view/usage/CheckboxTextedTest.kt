@@ -30,7 +30,7 @@ class CheckboxTextedTest {
 
         val textNode = compose.onNodeWithTag("text", useUnmergedTree = true)
         textNode.assertIsDisplayed()
-        textNode.assertTextEquals("label")
+        textNode.assertTextEquals("labelNOPE")
         textNode.performClick()
         checked.value shouldBe true
     }
