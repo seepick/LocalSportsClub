@@ -13,10 +13,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -25,8 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -34,44 +30,16 @@ import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.Snackbar2
 import seepick.localsportsclub.view.common.bottomBorder
-import seepick.localsportsclub.view.common.executeViewTask
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
 import seepick.localsportsclub.view.notes.NotesScreen
 import seepick.localsportsclub.view.preferences.PreferencesScreen
 import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
-class SnackbarService : ViewModel() {
-
-    private val log = logger {}
-    private lateinit var snackbarHostState: SnackbarHostState
-
-    fun initializeSnackbarHostState(snackbarHostState: SnackbarHostState) {
-        log.debug { "initializeSnackbarHostState" }
-        this.snackbarHostState = snackbarHostState
-    }
-
-    fun show(
-        message: String,
-        actionLabel: String? = null,
-        duration: SnackbarDuration = SnackbarDuration.Short,
-        onResult: (SnackbarResult) -> Unit = {},
-    ) {
-        executeViewTask("Showing snackbar failed") {
-            log.debug { "showing snackbar [$message]" }
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = actionLabel,
-                duration = duration,
-            )
-            onResult(result)
-        }
-    }
-}
-
 @Composable
 fun MainView(
-    viewModel: MainViewModel = koinViewModel(), snackbarService: SnackbarService = koinInject()
+    viewModel: MainViewModel = koinViewModel(),
+    snackbarService: SnackbarService = koinInject(),
 ) {
     val snackbarHostState = remember {
         SnackbarHostState().also {

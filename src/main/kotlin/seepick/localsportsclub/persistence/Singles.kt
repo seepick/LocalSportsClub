@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -69,28 +70,6 @@ object ExposedSinglesRepo : SinglesRepo {
             SinglesDbo(
                 version = row[SinglesTable.version],
                 json = row[SinglesTable.json],
-//                notes = row[SinglesTable.notes],
-//                lastSync = row[SinglesTable.lastSync],
-//                plan = row[SinglesTable.plan]?.let { Plan.byApiString(it) },
-//                windowPref = WindowPref.readFromSqlString(row[SinglesTable.windowPref]),
-//                preferences = Preferences(
-//                    uscCredentials = row[SinglesTable.uscCredentialUsername]?.let {
-//                        Credentials(
-//                            username = row[SinglesTable.uscCredentialUsername]!!,
-//                            password = Encrypter.decrypt(row[SinglesTable.uscCredentialPassword]!!),
-//                        )
-//                    },
-//                    periodFirstDay = row[SinglesTable.uscPeriodFirstDay],
-//                    city = row[SinglesTable.uscCityId]?.let { City.byId(it) },
-//                    gcal = row[SinglesTable.googleCalendarId]?.let {
-//                        Gcal.GcalEnabled(it)
-//                    } ?: Gcal.GcalDisabled,
-//                    home = row[SinglesTable.homeLongitude]?.let {
-//                        Location(
-//                            longitude = row[SinglesTable.homeLongitude]!!,
-//                            latitude = row[SinglesTable.homeLatitude]!!,
-//                        )
-//                    }
             )
         }
     }
@@ -101,17 +80,6 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.insert {
             it[version] = singles.version
             it[json] = singles.json
-//            it[windowPref] = singles.windowPref?.toSqlString()
-//            it[plan] = singles.plan?.apiString
-//            it[homeLatitude] = singles.preferences.home?.latitude
-//            it[homeLongitude] = singles.preferences.home?.longitude
-//            it[googleCalendarId] = singles.preferences.gcal.maybeCalendarId
-//            it[uscCityId] = singles.preferences.city?.id
-//            it[uscPeriodFirstDay] = singles.preferences.periodFirstDay
-//            it[uscCredentialUsername] = singles.preferences.uscCredentials?.username
-//            it[uscCredentialPassword] = singles.preferences.uscCredentials?.password?.let {
-//                Encrypter.encrypt(it)
-//            }
         }
     }
 
@@ -121,17 +89,10 @@ object ExposedSinglesRepo : SinglesRepo {
         SinglesTable.update {
             it[version] = singles.version
             it[json] = singles.json
-//            it[plan] = singles.plan?.apiString
-//            it[windowPref] = singles.windowPref?.toSqlString()
-//            it[homeLatitude] = singles.preferences.home?.latitude
-//            it[homeLongitude] = singles.preferences.home?.longitude
-//            it[googleCalendarId] = singles.preferences.gcal.maybeCalendarId
-//            it[uscCityId] = singles.preferences.city?.id
-//            it[uscPeriodFirstDay] = singles.preferences.periodFirstDay
-//            it[uscCredentialUsername] = singles.preferences.uscCredentials?.username
-//            it[uscCredentialPassword] = singles.preferences.uscCredentials?.password?.let {
-//                Encrypter.encrypt(it)
-//            }
         }
+    }
+
+    fun reset(): Unit = transaction {
+        SinglesTable.deleteAll()
     }
 }

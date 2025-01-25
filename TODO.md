@@ -2,16 +2,12 @@
 
 ## Next
 
-* add a few UI tests
-* limit Usage view to max width (if used > limit; wrong plan config)
-* activities table: shorten Date column ("23.1. 18:00")
 * system test: book something which can't be booked (different limits); parse response and show proper message
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 
 ## Backlog
 
-* java.awt.Desktop.getDesktop().setPreferencesHandler { }
 * ad usage: display how many reservations max
 * after sync, display report what happened ++ big WARNING if new noshow was detected!
     * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
@@ -20,6 +16,7 @@
 
 ## Later
 
+* sync the membership tag (minimum one only) for venue&activity
 * support plan Onefit other than premium (best guess?!)
 * ... no-show for freetraining possible?? try it yourself ;)
 * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month

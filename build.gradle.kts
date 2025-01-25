@@ -38,8 +38,9 @@ dependencies {
 //    implementation("androidx.compose.material:material-icons-extended:1.7.6")
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
+    val versionKoin = "4.0.2"
     listOf("compose", "compose-viewmodel").forEach {
-        implementation("io.insert-koin:koin-$it:4.0.0")
+        implementation("io.insert-koin:koin-$it:$versionKoin")
     }
 
     // PERSISTENCE
@@ -81,6 +82,7 @@ dependencies {
     testImplementation("org.junit.vintage:junit-vintage-engine:5.11.4") // to run JUnit4 with JUnit5
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("io.insert-koin:koin-test:$versionKoin")
     testImplementation("app.cash.turbine:turbine:1.2.0") // testing flows
 }
 

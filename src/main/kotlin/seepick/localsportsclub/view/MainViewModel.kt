@@ -49,8 +49,12 @@ class MainViewModel(
     }
 
     override fun onKeyboardChangeScreen(screenNr: Int) {
-        log.debug { "selecting screen nr: $screenNr" }
         val screen = Screen.entries.first { it.ordinal == (screenNr - 1) }
+        changeScreen(screen)
+    }
+
+    fun changeScreen(screen: Screen) {
+        log.debug { "selecting: $screen" }
         selectedScreen.value = screen
     }
 }

@@ -23,9 +23,11 @@ import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyShortPrint
 
+private val colorBg = Color(0xFF9B9B9B)
 private val colorPeriod = Color(0xFFFF9300)
 private val colorBooked = Color(0xFF48931C)
 private val colorCheckedin = Color(0xFF4861DE)
+private val colorError = Color.Red
 
 @Composable
 fun UsageView(
@@ -71,9 +73,6 @@ fun UsageView(
     }
 }
 
-
-private val colorBg = Color(0xFF9B9B9B)
-
 @Composable
 fun UsageIndicator(
     percentagePeriod: Double,
@@ -87,14 +86,28 @@ fun UsageIndicator(
         val checkedinWidth = (width * percentageCheckedin).toFloat()
         val bookedWidth = (width * percentageBooked).toFloat()
         drawRect(
-            color = colorPeriod, size = Size(periodWidth, height / 2)
+            topLeft = Offset.Zero,
+            color = colorPeriod,
+            size = Size(periodWidth, height / 2),
         )
-        drawRect(
-            topLeft = Offset(0.0f, height / 2), color = colorCheckedin, size = Size(checkedinWidth, height / 2)
-        )
-        drawRect(
-            topLeft = Offset(checkedinWidth, height / 2), color = colorBooked, size = Size(bookedWidth, height / 2)
-        )
+        if (percentageCheckedin + percentageBooked > 1.0) {
+            drawRect(
+                topLeft = Offset(0.0f, height / 2),
+                color = colorError,
+                size = Size(width, height / 2),
+            )
+        } else {
+            drawRect(
+                topLeft = Offset(0.0f, height / 2),
+                color = colorCheckedin,
+                size = Size(checkedinWidth, height / 2),
+            )
+            drawRect(
+                topLeft = Offset(checkedinWidth, height / 2),
+                color = colorBooked,
+                size = Size(bookedWidth, height / 2),
+            )
+        }
     }
 }
 

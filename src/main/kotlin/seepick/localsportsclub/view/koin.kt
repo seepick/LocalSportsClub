@@ -2,6 +2,7 @@ package seepick.localsportsclub.view
 
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
@@ -22,5 +23,5 @@ fun viewModule() = module {
     viewModelOf(::VersionNotifier)
     singleOf(::SharedModel)
     singleOf(::UsageStorage)
-    singleOf(::SnackbarService)
+    singleOf(::SnackbarServiceViewModel) bind SnackbarService::class
 }

@@ -198,7 +198,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     private fun <T> bookOrCancel(
         subEntity: SubEntity,
-        bookingOperation: suspend BookingService.(SubEntity, Boolean) -> T,
+        bookingOperation: suspend BookingService.(SubEntity, Boolean, Boolean) -> T,
         resultHandler: (T) -> String,
     ) {
         executeBackgroundTask(
@@ -210,7 +210,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
                 isBookingOrCancelInProgress = false
             },
         ) {
-            val result = bookingService.bookingOperation(subEntity, shouldGcalBeManaged.value)
+            val result = bookingService.bookingOperation(subEntity, isGcalEnabled, shouldGcalBeManaged.value)
             snackbarService.show(resultHandler(result))
         }
     }

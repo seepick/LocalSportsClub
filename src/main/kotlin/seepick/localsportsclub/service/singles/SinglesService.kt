@@ -128,7 +128,6 @@ class SinglesServiceImpl(
 
     private fun cachedOrSelect(): SinglesVersionCurrent {
         if (cache != null) return cache!!
-
         val stored = singlesRepo.select()
         if (stored == null) {
             cache = SinglesVersionCurrent.empty

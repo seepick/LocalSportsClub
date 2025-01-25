@@ -26,7 +26,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date",
-        WidthOrWeight.Width(100.dp),
+        WidthOrWeight.Width(80.dp),
         CellRenderer.TextRenderer(
             extractor = { it.date.prettyPrint(clock.today().year) },
             sortExtractor = { it.date },

@@ -17,7 +17,8 @@ data class AppConfig(
             api = ApiMode.Mock,
 
 //            sync = SyncMode.Real,
-            sync = SyncMode.Noop,
+//            sync = SyncMode.Noop,
+            sync = SyncMode.Delayed,
 //            sync = SyncMode.Dummy,
 
 //            gcal = GcalMode.Real,

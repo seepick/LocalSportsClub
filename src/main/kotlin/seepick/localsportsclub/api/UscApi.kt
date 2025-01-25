@@ -45,7 +45,7 @@ class MockUscApi : UscApi {
     private val log = logger {}
 
     override suspend fun login(credentials: Credentials): LoginResult =
-        LoginResult.Failure("Nope, just a mock")
+        LoginResult.Success(PhpSessionId("mockSessionId"))
 
     override suspend fun fetchVenues(session: PhpSessionId, filter: VenuesFilter): List<VenueInfo> {
         log.debug { "Mock returning empty venues list." }
@@ -103,7 +103,7 @@ class MockUscApi : UscApi {
         delay(1_000)
         bookAlternator = !bookAlternator
         return if (bookAlternator) BookingResult.BookingSuccess
-        else BookingResult.BookingFail("nope")
+        else BookingResult.BookingFail("Mock USC API says nope. But next time it will succeed.")
     }
 
     override suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult {
@@ -116,7 +116,7 @@ class MockUscApi : UscApi {
 
     override suspend fun fetchMembership(session: PhpSessionId): Membership {
         return Membership(
-            plan = Plan.UscPlan.Large,
+            plan = Plan.OnefitPlan.Premium,
             country = Country.byLabel("Netherlands"),
             city = City.Amsterdam,
         )

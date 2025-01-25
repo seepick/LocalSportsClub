@@ -54,6 +54,7 @@ fun ClickableText(
     text: String,
     notHoveredColor: Color = Lsc.colors.primary,
     onClick: () -> Unit,
+    testTag: String? = null,
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val color = if (!isHovered) notHoveredColor else Lsc.colors.primaryBrighter
@@ -68,8 +69,10 @@ fun ClickableText(
             .pointerHoverIcon(PointerIcon.Hand)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+            .applyTestTag(testTag)
     )
 }
+
 
 @Composable
 fun UrlTextField(

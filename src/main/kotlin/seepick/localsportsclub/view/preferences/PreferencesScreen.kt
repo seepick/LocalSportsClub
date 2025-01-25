@@ -42,21 +42,6 @@ import seepick.localsportsclub.view.common.WidthOrFill
 private val col1width = 180.dp
 
 @Composable
-private fun PreferencesItem(
-    label: String, content: @Composable () -> Unit
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = label,
-            fontSize = 18.sp,
-            modifier = Modifier.width(col1width).align(Alignment.Top),
-        )
-        content()
-    }
-}
-
-
-@Composable
 fun PreferencesScreen(
     viewModel: PreferencesViewModel = koinViewModel()
 ) {
@@ -90,6 +75,20 @@ fun PreferencesScreen(
         if (viewModel.entity.isDirty()) {
             Text("Restart the application for changes to take effect.")
         }
+    }
+}
+
+@Composable
+private fun PreferencesItem(
+    label: String, content: @Composable () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = label,
+            fontSize = 18.sp,
+            modifier = Modifier.width(col1width).align(Alignment.Top),
+        )
+        content()
     }
 }
 

@@ -21,6 +21,7 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
+import seepick.localsportsclub.view.Screen
 import seepick.localsportsclub.view.SyncerViewModel
 import seepick.localsportsclub.view.VersionNotifier
 import seepick.localsportsclub.view.activity.ActivityViewModel
@@ -59,6 +60,7 @@ object LocalSportsClub {
                     val keyboard: GlobalKeyboard = koinInject()
                     val applicationLifecycle: ApplicationLifecycle = koinInject()
                     applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
+
                     val singlesService: SinglesService = koinInject()
                     val mainWindowState: MainWindowState = koinInject()
                     val windowPref = singlesService.windowPref ?: WindowPref.default
@@ -80,6 +82,16 @@ object LocalSportsClub {
                                 mainWindowState.update(window.width, window.height)
                             }
                         })
+
+                        val mainViewModel = koinViewModel<MainViewModel>()
+                        val desktop = java.awt.Desktop.getDesktop()
+                        if (desktop.isSupported(java.awt.Desktop.Action.APP_PREFERENCES)) {
+                            log.debug { "Registering preferences handler" }
+                            desktop.setPreferencesHandler {
+                                mainViewModel.changeScreen(Screen.Preferefences)
+                            }
+                        }
+
                         val syncer = koinInject<Syncer>()
                         val dataStorage = koinInject<DataStorage>()
                         val usageStorage = koinInject<UsageStorage>()
@@ -131,7 +143,6 @@ object LocalSportsClub {
                             }
                         })
 
-                        val mainViewModel = koinViewModel<MainViewModel>()
                         keyboard.registerListener(mainViewModel)
 
                         LscTheme {

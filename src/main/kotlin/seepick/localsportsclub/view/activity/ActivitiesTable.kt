@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.date.prettyPrint
+import seepick.localsportsclub.service.date.prettyShorterPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.view.common.WidthOrWeight
@@ -26,14 +26,24 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         "Name",
         WidthOrWeight.Weight(0.6f),
-        CellRenderer.TextRenderer(extractor = { if (it.teacher == null) it.name else "${it.name} /${it.teacher}" },
+        CellRenderer.TextRenderer(extractor = { activity ->
+            buildString {
+                if (activity.state == ActivityState.Booked) {
+                    append("${Lsc.icons.booked} ")
+                }
+                append(activity.name)
+                if (activity.teacher != null) {
+                    append(" /${activity.teacher}")
+                }
+            }
+        },
             sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
     TableColumn("Venue", WidthOrWeight.Weight(0.4f), CellRenderer.TextRenderer { it.venue.name }),
     TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        "Date", WidthOrWeight.Width(170.dp), CellRenderer.TextRenderer(
-            extractor = { it.dateTimeRange.prettyPrint(clock.today().year) },
+        "Date", WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
+            extractor = { it.dateTimeRange.prettyShorterPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,
         )
@@ -42,9 +52,9 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },
-    TableColumn(Lsc.icons.booked, WidthOrWeight.Width(30.dp), CellRenderer.TextRenderer(textAlign = TextAlign.Center) {
-        if (it.state == ActivityState.Booked) Lsc.icons.booked else ""
-    }),
+//    TableColumn(Lsc.icons.booked, WidthOrWeight.Width(30.dp), CellRenderer.TextRenderer(textAlign = TextAlign.Center) {
+//        if (it.state == ActivityState.Booked) Lsc.icons.booked else ""
+//    }),
 )
 
 @Composable

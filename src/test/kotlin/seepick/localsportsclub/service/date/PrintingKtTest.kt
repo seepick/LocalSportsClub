@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class DateUtilsKtTest : DescribeSpec() {
+class PrintingKtTest : DescribeSpec() {
     init {
         describe("LocalDate.prettyPrint") {
             it("simple") {
@@ -46,6 +46,14 @@ class DateUtilsKtTest : DescribeSpec() {
                     from = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
                     to = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
                 ).prettyPrint(2002) shouldBe "Tue 2.1.01 04:05-04:06"
+            }
+        }
+        describe("DateTimeRange.prettyShorterPrint") {
+            it("Should format") {
+                DateTimeRange(
+                    from = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
+                    to = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
+                ).prettyShorterPrint(2001) shouldBe "2.1. 04:05"
             }
         }
     }
