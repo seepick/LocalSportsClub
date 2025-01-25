@@ -3,6 +3,7 @@ package seepick.localsportsclub.service.singles
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.SinglesDbo
+import seepick.localsportsclub.service.model.City
 
 object SinglesMigrator {
 
@@ -18,9 +19,13 @@ object SinglesMigrator {
 
     private fun migrateV1(v1: SinglesVersionV1) = SinglesVersionCurrent(
         planInternalId = null, // needs to be refetched
-
         notes = v1.notes,
-        lastSync = v1.lastSync,
+        lastSyncs = buildMap {
+            // supporting last-sync timestamp by configured city
+            if (v1.lastSync != null) {
+                put(City.Amsterdam.id, v1.lastSync)
+            }
+        },
         windowWidth = v1.windowWidth,
         windowHeight = v1.windowHeight,
         windowPosX = v1.windowPosX,

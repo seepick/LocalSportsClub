@@ -58,8 +58,8 @@ class SyncerFacade(
     override suspend fun sync() {
         log.debug { "Syncing ..." }
         val now = clock.now()
-        val lastSync = singlesService.lastSync
         val city = singlesService.preferences.city ?: error("No city defined!")
+        val lastSync = singlesService.getLastSyncFor(city)
         val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
 
         val session = phpSessionProvider.provide()
@@ -82,9 +82,8 @@ class SyncerFacade(
                     }
                     cleanupPostSync.cleanup()
                 }
-                singlesService.lastSync = now
+                singlesService.setLastSyncFor(city, now)
             }
         }
     }
-
 }

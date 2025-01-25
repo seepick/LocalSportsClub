@@ -4,14 +4,15 @@ import kotlinx.serialization.Serializable
 import seepick.localsportsclub.service.LocalDateTimeSerializer
 import java.time.LocalDateTime
 
+typealias CityId = Int
+
 // not yet deployed to PROD (running v1). still ok to do changes in the current version.
 
 // do NOT add/edit/delete anything here; requires manual migration!
 @Serializable
 data class SinglesVersionCurrent(
     val notes: String?,
-    @Serializable(with = LocalDateTimeSerializer::class)
-    val lastSync: LocalDateTime?,
+    val lastSyncs: Map<CityId, @Serializable(with = LocalDateTimeSerializer::class) LocalDateTime>,
     val windowWidth: Int?,
     val windowHeight: Int?,
     val windowPosX: Int?,
@@ -29,7 +30,7 @@ data class SinglesVersionCurrent(
         val VERSION = 2
         val empty = SinglesVersionCurrent(
             notes = null,
-            lastSync = null,
+            lastSyncs = emptyMap(),
             windowWidth = null,
             windowHeight = null,
             windowPosX = null,
@@ -46,7 +47,7 @@ data class SinglesVersionCurrent(
     }
 
     override fun toString() =
-        "SinglesVersionCurrent[lastSync=$lastSync,planInternalId=$planInternalId,prefCityId=$prefCityId]"
+        "SinglesVersionCurrent[lastSyncs=$lastSyncs,planInternalId=$planInternalId,prefCityId=$prefCityId,...]"
 }
 
 @Serializable

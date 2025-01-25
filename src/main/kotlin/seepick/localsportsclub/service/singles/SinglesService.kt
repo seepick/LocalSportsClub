@@ -17,7 +17,8 @@ import java.time.LocalDateTime
 
 interface SinglesService {
     var notes: String?
-    var lastSync: LocalDateTime?
+    fun getLastSyncFor(city: City): LocalDateTime?
+    fun setLastSyncFor(city: City, timestamp: LocalDateTime)
     var windowPref: WindowPref?
     var plan: Plan?
     var preferences: Preferences
@@ -35,11 +36,21 @@ class SinglesServiceImpl(
         set(value) {
             update { copy(notes = value) }
         }
-    override var lastSync: LocalDateTime?
-        get() = cachedOrSelect().lastSync
-        set(value) {
-            update { copy(lastSync = value) }
-        }
+
+    override fun getLastSyncFor(city: City): LocalDateTime? {
+        // FIXME
+        return null
+    }
+
+    override fun setLastSyncFor(city: City, timestamp: LocalDateTime) {
+// FIXME
+    }
+
+//    override var lastSync: LocalDateTime?
+//        get() = cachedOrSelect().lastSync
+//        set(value) {
+//            update { copy(lastSync = value) }
+//        }
 
     override var windowPref: WindowPref?
         get() {

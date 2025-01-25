@@ -21,6 +21,7 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
+import seepick.localsportsclub.service.singles.CityId
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import java.time.LocalDate
@@ -29,11 +30,18 @@ import java.time.LocalTime
 
 data class DummySinglesService(
     override var notes: String? = "",
-    override var lastSync: LocalDateTime? = null,
     override var windowPref: WindowPref? = null,
     override var plan: Plan? = null,
     override var preferences: Preferences = Preferences.empty
-) : SinglesService
+) : SinglesService {
+    val lastSyncs = mutableMapOf<CityId, LocalDateTime>()
+    override fun getLastSyncFor(city: City): LocalDateTime? =
+        lastSyncs[city.id]
+
+    override fun setLastSyncFor(city: City, timestamp: LocalDateTime) {
+        lastSyncs[city.id] = timestamp
+    }
+}
 
 class UsageStorageTest : DescribeSpec() {
 

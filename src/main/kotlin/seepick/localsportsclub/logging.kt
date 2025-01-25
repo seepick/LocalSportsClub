@@ -37,6 +37,24 @@ fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>
     }
 }
 
+fun readRecentLogEntries(linesToRead: Int = 30): String? {
+    val logsDir = FileResolver.resolve(DirectoryEntry.Logs)
+    val targetLogFile = File(logsDir, "app_logs.log")
+    if (!targetLogFile.exists()) return null
+
+    return buildString {
+        targetLogFile.bufferedReader().use {
+            val lines = it.readLines()
+            val linesCount = lines.count()
+            appendLine("LOG:")
+            lines.drop(if (linesCount > linesToRead) linesCount - linesToRead else 0)
+                .forEach {
+                    appendLine(it)
+                }
+        }
+    }
+}
+
 private fun buildFileAppender(
     context: LoggerContext,
     level: Level,
@@ -95,5 +113,4 @@ private class MyThresholdFilter(private val level: Level) : Filter<ILoggingEvent
         }
         return FilterReply.DENY
     }
-
 }
