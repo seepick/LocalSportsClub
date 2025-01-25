@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
@@ -30,6 +31,7 @@ fun CheckboxTexted(
     enabled: Boolean = true,
     images: Pair<ImageBitmap, ImageBitmap>? = null,
     modifier: Modifier = Modifier,
+    testTagText: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -52,6 +54,7 @@ fun CheckboxTexted(
         )
         Text(
             text = label,
+            modifier = if (testTagText != null) Modifier.testTag(testTagText) else Modifier,
         )
         if (images != null) {
             Image(

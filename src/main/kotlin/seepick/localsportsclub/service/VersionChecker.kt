@@ -36,10 +36,11 @@ class OnlineVersionChecker(
     private val versionFileUrl = Url("https://raw.githubusercontent.com/seepick/LocalSportsClub/main/version.txt")
 
     override suspend fun check(currentVersion: String): VersionResult {
-        log.debug { "Checking version for $currentVersion ..." }
         if (currentVersion == VersionResult.SNAPSHOT_VERSION) {
+            log.debug { "Current version is snapshot developer version; skip online check." }
             return VersionResult.UpToDate(currentVersion)
         }
+        log.debug { "Checking version for $currentVersion ..." }
         val onlineVersion = loadOnlineVersion()
         log.debug { "Online version is: $onlineVersion" }
         return if (onlineVersion != currentVersion) {

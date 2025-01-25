@@ -75,12 +75,13 @@ dependencies {
 
     // TEST
     testImplementation(compose.desktop.uiTestJUnit4)
-    listOf("runner-junit5", "assertions-core", "property").forEach {
+    listOf("runner-junit5-jvm", "assertions-core", "property").forEach {
         testImplementation("io.kotest:kotest-$it:5.9.1")
     }
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.11.4") // to run JUnit4 with JUnit5
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.13")
-    testImplementation("app.cash.turbine:turbine:1.2.0")
+    testImplementation("app.cash.turbine:turbine:1.2.0") // testing flows
 }
 
 //tasks.withType<KotlinCompile> {
@@ -110,6 +111,7 @@ compose.desktop {
 }
 
 tasks.withType<Test>().configureEach { // to be able to run kotests
+//    useJUnit()
     useJUnitPlatform()
 }
 

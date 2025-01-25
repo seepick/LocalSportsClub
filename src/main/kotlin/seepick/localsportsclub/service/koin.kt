@@ -17,7 +17,9 @@ fun serviceModule(config: AppConfig) = module {
     singleOf(::DataStorage)
     singleOf(::SinglesServiceImpl) bind SinglesService::class
     singleOf(::BookingService)
-    single { if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker } bind VersionChecker::class
+    single {
+        if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker
+    } bind VersionChecker::class
     single {
         FileSystemImageStorage(
             venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),

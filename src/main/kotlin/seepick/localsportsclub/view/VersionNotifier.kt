@@ -21,7 +21,7 @@ class VersionNotifier(
 
     override fun onStartUp() {
         val version = AppPropertiesProvider.provide().version
-        executeBackgroundTask("Unable to get version from the web.") {
+        executeBackgroundTask("Failed to get latest application version from the web.") {
             val result = versionChecker.check(version)
             when (result) {
                 is VersionResult.TooOld -> {

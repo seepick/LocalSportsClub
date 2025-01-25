@@ -3,34 +3,31 @@
 ## Next
 
 * when sync for other city; store separate last sync
-* what happens if no internet connection at startup? suppress version check fail.
 
 ## Backlog
 
-* description for critical alignment has \"
-* info is "/" for Gym Noord, Hyrox
+* if show JErrorDialog, then add in text: "conside send report to: see.pick.mail@gmail"
+    * plus: add in stack trace also the last few entries of the application log file
+* add a few UI tests
+* limit Usage view to max width (if used > limit; wrong plan config)
+* activities table: shorten Date column ("23.1. 18:00")
+* system test: book something which can't be booked (different limits); parse response and show proper message
+* tooltips for table headers (some are not self-explanatory)
+* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 
 ## Later
 
-* if show JErrorDialog, then add in text: "conside send report to: see.pick.mail@gmail"
-    * plus: add in stack trace also the last few entries of the application log file
-* UI tests
-* limit Usage view to max width (if used > limit; wrong plan config)
 * support plan Onefit other than premium (best guess?!)
-* activities table: shorten Date column ("23.1. 18:00")
 * ad usage: display how many reservations max
-* system test: book something which can't be booked (different limits); parse response and show proper message
 * after sync, display report what happened ++ big WARNING if new noshow was detected!
     * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
-* tooltips for table headers (some are not self-explanatory)
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
-* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
-* report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
 * make long venue texts "somehow" selectable; A) selectable text (toolitp?!) or B) click => copy clipboard
-* ... no-show for freetraining possible?? try it yourself ;)
 
 ### Later Later
 
+* ... no-show for freetraining possible?? try it yourself ;)
+* report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
 * when text has emoji, then its height is much bigger; e.g. see in activities/freetrainings table, when there is only 1
   checked-in row
     * SOLUTION: make emoji same height as text (annoated text, and change font size? or make two Text() composables,

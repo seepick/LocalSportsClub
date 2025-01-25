@@ -21,7 +21,7 @@ object DataCleaner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        cliConnectToDatabase(isProd = false)
+        cliConnectToDatabase(isProd = true)
 //        cleanActivityNames()
 //        cleanVenueAddresses()
 //        cleanTexts()
