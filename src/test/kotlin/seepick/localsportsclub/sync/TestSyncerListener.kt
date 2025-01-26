@@ -5,9 +5,12 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
 
 abstract class TestSyncerListener : SyncerListener {
-
     override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
         error("Unexpected call to onVenueDbosAdded!")
+    }
+
+    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
+        error("Unexpected call to onVenueDbosMarkedDeleted!")
     }
 
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {

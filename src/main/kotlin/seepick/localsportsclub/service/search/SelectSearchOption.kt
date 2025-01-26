@@ -3,6 +3,7 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import seepick.localsportsclub.view.common.VisualIndicator
 
 data class SearchSelect(
     val text: String,
@@ -19,7 +20,8 @@ class SelectSearchOption<T>(
     private val extractor: (T) -> List<String>,
     initiallyEnabled: Boolean = false,
     reset: () -> Unit,
-) : SearchOption<T>(label, reset, initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
+) : SearchOption<T>(label, reset, initiallyEnabled, visualIndicator) {
 
     var allSelects: List<SearchSelect> = mutableListOf(*allOptions.map { SearchSelect(it) }.toTypedArray())
         private set

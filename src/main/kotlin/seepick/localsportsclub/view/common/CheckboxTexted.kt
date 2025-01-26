@@ -14,8 +14,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -60,7 +58,6 @@ fun CheckboxTexted(
                 bitmap = if (checked.value) images.first else images.second,
                 contentDescription = null,
                 modifier = Modifier.height(30.dp).padding(start = 10.dp),
-                colorFilter = if (enabled) null else ColorFilter.tint(Color.White)
             )
         }
     }

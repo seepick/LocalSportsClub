@@ -2,12 +2,13 @@
 
 ## Next
 
-* in search panel, use icons (fav/wish/hidden/activity/freetrianing/checkins/booked)
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 
 ## Backlog
 
+* different icon for wishlisted
+* make date search field more compact
 * system test: book something which can't be bookedl parse response and show proper message
     * +6 reservations; +2 same day (visit limit); over checkin limit (end of period); over period limit (same venue per
       calendar month)

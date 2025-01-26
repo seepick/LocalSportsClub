@@ -8,8 +8,13 @@ import androidx.compose.ui.Modifier
 import seepick.localsportsclub.service.search.BooleanSearchOption
 import seepick.localsportsclub.view.common.applyTestTag
 
+
 @Composable
-fun <T> BooleanSearchField(searchOption: BooleanSearchOption<T>, labelTestTag: String? = null, checkboxTestTag: String? = null) {
+fun <T> BooleanSearchField(
+    searchOption: BooleanSearchOption<T>,
+    labelTestTag: String? = null,
+    checkboxTestTag: String? = null,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText(testTag = labelTestTag)
         if (searchOption.enabled) {

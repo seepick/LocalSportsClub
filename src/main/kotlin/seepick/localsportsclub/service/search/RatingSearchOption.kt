@@ -4,13 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.model.Rating
+import seepick.localsportsclub.view.common.VisualIndicator
 
 class RatingSearchOption<T>(
     label: String,
     private val extractor: (T) -> Rating,
     reset: () -> Unit,
     initiallyEnabled: Boolean = false,
-) : SearchOption<T>(label = label, reset = reset, initiallyEnabled = initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
+) : SearchOption<T>(
+    label = label,
+    reset = reset,
+    initiallyEnabled = initiallyEnabled,
+    visualIndicator = visualIndicator,
+) {
 
     var searchComparator: IntSearchComparator by mutableStateOf(IntSearchComparator.Equals)
         private set

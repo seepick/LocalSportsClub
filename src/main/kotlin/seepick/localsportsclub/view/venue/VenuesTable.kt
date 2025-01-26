@@ -38,7 +38,7 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     TableColumn(LscIcons.checkedinEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
     }),
-    TableColumn(LscIcons.bookedEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
+    TableColumn(LscIcons.reservedEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
     }),
     TableColumn(LscIcons.hiddenEmoji, WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Center) {

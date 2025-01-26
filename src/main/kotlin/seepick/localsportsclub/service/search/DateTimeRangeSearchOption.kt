@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -12,7 +13,8 @@ class DateTimeRangeSearchOption<T>(
     reset: () -> Unit,
     private val extractor: (T) -> DateTimeRange,
     initiallyEnabled: Boolean = false,
-) : SearchOption<T>(label, reset, initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
+) : SearchOption<T>(label, reset, initiallyEnabled, visualIndicator) {
 
     var searchDate: LocalDate? by mutableStateOf(null)
         private set

@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.service.search.StringSearchOption
 
 @Composable
-fun <T> StringSearchField(searchOption: StringSearchOption<T>) {
+fun <T> StringSearchField(
+    searchOption: StringSearchOption<T>,
+) {
     OutlinedTextField(
         value = searchOption.searchTerm,
         label = {

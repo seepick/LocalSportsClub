@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.Rating
+import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 
 abstract class AbstractSearch<T>(
@@ -18,6 +19,7 @@ abstract class AbstractSearch<T>(
     protected fun newStringSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractors: List<(T) -> String?>,
     ) =
         StringSearchOption(
@@ -25,6 +27,7 @@ abstract class AbstractSearch<T>(
             reset = ::reset,
             stringExtractors = extractors.toList(),
             initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -32,6 +35,7 @@ abstract class AbstractSearch<T>(
     protected fun newDateTimeRangeSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> DateTimeRange,
     ) =
         DateTimeRangeSearchOption(
@@ -39,6 +43,7 @@ abstract class AbstractSearch<T>(
             reset = ::reset,
             extractor = extractor,
             initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -47,6 +52,7 @@ abstract class AbstractSearch<T>(
         label: String,
         initialDate: LocalDate,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> LocalDate,
     ) =
         DateSearchOption(
@@ -55,7 +61,9 @@ abstract class AbstractSearch<T>(
             dateExtractor = extractor,
             initiallyEnabled = initiallyEnabled,
             initialDate = initialDate,
-        ).also {
+            visualIndicator = visualIndicator,
+
+            ).also {
             options += it
         }
 
@@ -63,6 +71,7 @@ abstract class AbstractSearch<T>(
         label: String,
         initialValue: Boolean = false,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Boolean,
     ) =
         BooleanSearchOption(
@@ -71,6 +80,7 @@ abstract class AbstractSearch<T>(
             extractor = extractor,
             initialValue = initialValue,
             initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -79,6 +89,7 @@ abstract class AbstractSearch<T>(
         label: String,
         initialValue: Int? = null,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Int,
     ) =
         IntSearchOption(
@@ -87,6 +98,7 @@ abstract class AbstractSearch<T>(
             extractor = extractor,
             initialValue = initialValue,
             initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -94,6 +106,7 @@ abstract class AbstractSearch<T>(
     protected fun newRatingSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Rating,
     ) =
         RatingSearchOption(
@@ -101,6 +114,7 @@ abstract class AbstractSearch<T>(
             reset = ::reset,
             extractor = extractor,
             initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -109,6 +123,7 @@ abstract class AbstractSearch<T>(
         label: String,
         initiallyEnabled: Boolean = false,
         allOptions: List<String>,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> List<String>,
     ) =
         SelectSearchOption(
@@ -117,6 +132,7 @@ abstract class AbstractSearch<T>(
             extractor = extractor,
             initiallyEnabled = initiallyEnabled,
             allOptions = allOptions,
+            visualIndicator = visualIndicator,
         ).also {
             options += it
         }
@@ -137,6 +153,7 @@ abstract class SearchOption<T>(
     val label: String,
     protected val reset: () -> Unit,
     initiallyEnabled: Boolean,
+    val visualIndicator: VisualIndicator,
 ) {
     private val log = logger {}
     protected val alwaysTruePredicate: (T) -> Boolean = { true }

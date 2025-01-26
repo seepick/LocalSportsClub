@@ -172,7 +172,7 @@ class Rating private constructor(val value: Int) : Comparable<Rating>, HasLabel 
         val entries = listOf(R0, R1, R2, R3, R4, R5)
     }
 
-    override val label = (0..<value).fold("") { acc, _ -> "${acc}⭐️" }
+    override val label = (0..<value).fold("") { acc, _ -> "${acc}${Lsc.icons.ratingEmoji}" }
     override operator fun compareTo(other: Rating): Int = value.compareTo(other.value)
 
     override fun toString(): String = "Rating$value"

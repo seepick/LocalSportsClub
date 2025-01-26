@@ -15,7 +15,16 @@ interface SnackbarService {
         duration: SnackbarDuration = SnackbarDuration.Short,
         actionLabel: String? = null,
         onResult: (SnackbarResult) -> Unit = {},
-    )
+    ) {
+        show(
+            SnackbarData2(
+                message = message,
+                actionLabel = actionLabel,
+                duration = duration,
+                type = type,
+            ), onResult
+        )
+    }
 
     fun show(
         data: SnackbarData2,
@@ -38,23 +47,6 @@ class SnackbarServiceViewModel : ViewModel(), SnackbarService {
     override fun initCallback(callback: suspend (SnackbarData2) -> SnackbarResult) {
         log.debug { "initCallback..." }
         this.callback = callback
-    }
-
-    override fun show(
-        message: String,
-        type: SnackbarType,
-        duration: SnackbarDuration,
-        actionLabel: String?,
-        onResult: (SnackbarResult) -> Unit,
-    ) {
-        show(
-            SnackbarData2(
-                message = message,
-                actionLabel = actionLabel,
-                duration = duration,
-                type = type,
-            ), onResult
-        )
     }
 
     override fun show(

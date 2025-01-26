@@ -58,6 +58,7 @@ class VenueSyncerTest : StringSpec() {
         syncer = VenueSyncer(
             api = api,
             venueRepo = venueRepo,
+            dispatcher = syncerListenerDispatcher,
             venueSyncInserter = VenueSyncInserterImpl(
                 api,
                 venueRepo,

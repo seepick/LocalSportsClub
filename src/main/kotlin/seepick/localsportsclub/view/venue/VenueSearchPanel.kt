@@ -5,6 +5,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.search.BooleanSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
 import seepick.localsportsclub.view.search.IntSearchField
+import seepick.localsportsclub.view.search.RatingSearchField
 import seepick.localsportsclub.view.search.SelectSearchField
 import seepick.localsportsclub.view.search.StringSearchField
 
@@ -14,12 +15,14 @@ fun VenueSearchPanel(
 ) {
     GenericSearchPanel {
         StringSearchField(viewModel.searching.name)
-        BooleanSearchField(viewModel.searching.wishlisted)
-        BooleanSearchField(viewModel.searching.favorited)
-        BooleanSearchField(viewModel.searching.hidden)
-        IntSearchField(viewModel.searching.checkins)
         IntSearchField(viewModel.searching.activities)
-        IntSearchField(viewModel.searching.bookings)
+        IntSearchField(viewModel.searching.reservations)
+        IntSearchField(viewModel.searching.checkins)
+
+        BooleanSearchField(viewModel.searching.hidden)
+        BooleanSearchField(viewModel.searching.favorited)
+        BooleanSearchField(viewModel.searching.wishlisted)
+        RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.category)
     }
 }

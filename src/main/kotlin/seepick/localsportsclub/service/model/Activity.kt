@@ -13,7 +13,7 @@ enum class ActivityState {
 
     fun iconStringAndSuffix() = when (this) {
         Blank -> ""
-        Booked -> "${LscIcons.bookedEmoji} "
+        Booked -> "${LscIcons.reservedEmoji} "
         Checkedin -> "${LscIcons.checkedinEmoji} "
         Noshow -> "${LscIcons.noshowEmoji} "
     }

@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.venue
 
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
@@ -7,23 +8,34 @@ import seepick.localsportsclub.service.search.AbstractSearch
 
 class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Venue>(resetItems) {
     val name = newStringSearchOption(
-        label = "Name",
-        extractors = listOf { it.name },
-        initiallyEnabled = true,
+        label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
-    val wishlisted = newBooleanSearchOption("Wishlisted", initialValue = true) { it.isWishlisted }
-    val favorited = newBooleanSearchOption("Favorited", initialValue = true) { it.isFavorited }
-    val hidden = newBooleanSearchOption("Hidden", initialValue = true) { it.isHidden }
-    val checkins = newIntSearchOption("Checkins") {
+    val wishlisted = newBooleanSearchOption(
+        "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
+    ) { it.isWishlisted }
+    val favorited = newBooleanSearchOption(
+        "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
+    ) { it.isFavorited }
+    val hidden = newBooleanSearchOption(
+        "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator
+    ) { it.isHidden }
+    val checkins = newIntSearchOption("Checkins", visualIndicator = Lsc.icons.checkedinIndicator) {
         it.activities.count { it.state == ActivityState.Checkedin } +
                 it.freetrainings.count { it.state == FreetrainingState.Checkedin }
     }
-    val activities = newIntSearchOption("Activities") { it.activities.size }
-    val bookings = newIntSearchOption("Bookings") {
+    val activities = newIntSearchOption(
+        "Activities", visualIndicator = Lsc.icons.activitiesIndicator
+    ) { it.activities.size }
+    val reservations = newIntSearchOption(
+        "Reservations", visualIndicator = Lsc.icons.reservedEmojiIndicator
+    ) {
         it.activities.count { it.state == ActivityState.Booked } +
                 it.freetrainings.count { it.state == FreetrainingState.Scheduled }
     }
-    val category = newSelectSearchOption("Category", allOptions = allCategories) {
-        it.categories
-    }
+    val rating = newRatingSearchOption(
+        "Rating", visualIndicator = Lsc.icons.ratingIndicator
+    ) { it.rating }
+    val category = newSelectSearchOption(
+        "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
+    ) { it.categories }
 }

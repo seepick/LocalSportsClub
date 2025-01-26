@@ -4,13 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.view.common.VisualIndicator
 
 class StringSearchOption<T>(
     label: String,
     private val stringExtractors: List<(T) -> String?>,
     initiallyEnabled: Boolean = false,
     reset: () -> Unit,
-) : SearchOption<T>(label, reset, initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator
+) : SearchOption<T>(label, reset, initiallyEnabled, visualIndicator) {
 
     private val log = logger {}
     var searchTerm by mutableStateOf("")

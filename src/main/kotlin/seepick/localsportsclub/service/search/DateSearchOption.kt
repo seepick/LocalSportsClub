@@ -3,6 +3,7 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 
 class DateSearchOption<T>(
@@ -11,7 +12,8 @@ class DateSearchOption<T>(
     private val dateExtractor: (T) -> LocalDate,
     initialDate: LocalDate,
     initiallyEnabled: Boolean = false,
-) : SearchOption<T>(label, reset, initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator
+) : SearchOption<T>(label, reset, initiallyEnabled, visualIndicator) {
 
     var searchDate: LocalDate by mutableStateOf(initialDate)
         private set

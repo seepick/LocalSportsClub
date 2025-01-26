@@ -16,10 +16,10 @@ fun FreetrainingSearchPanel(
     GenericSearchPanel {
         StringSearchField(viewModel.searching.name)
         DateSearchField(viewModel.searching.date, viewModel.syncDates)
-        SelectSearchField(viewModel.searching.category)
-        RatingSearchField(viewModel.searching.rating)
         BooleanSearchField(viewModel.searching.scheduled)
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
+        RatingSearchField(viewModel.searching.rating)
+        SelectSearchField(viewModel.searching.category)
     }
 }

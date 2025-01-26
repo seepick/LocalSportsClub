@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.view.common.HasLabel
+import seepick.localsportsclub.view.common.VisualIndicator
 
 enum class IntSearchComparator(
     val symbol: String,
@@ -23,7 +24,13 @@ class IntSearchOption<T>(
     reset: () -> Unit,
     initialValue: Int? = null,
     initiallyEnabled: Boolean = false,
-) : SearchOption<T>(label = label, reset = reset, initiallyEnabled = initiallyEnabled) {
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
+) : SearchOption<T>(
+    label = label,
+    reset = reset,
+    initiallyEnabled = initiallyEnabled,
+    visualIndicator = visualIndicator,
+) {
 
     var searchComparator: IntSearchComparator by mutableStateOf(IntSearchComparator.Equals)
         private set

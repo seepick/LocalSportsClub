@@ -29,7 +29,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         CellRenderer.TextRenderer(extractor = { activity ->
             buildString {
                 if (activity.state == ActivityState.Booked) {
-                    append("${Lsc.icons.bookedEmoji} ")
+                    append("${Lsc.icons.reservedEmoji} ")
                 }
                 append(activity.name)
                 if (activity.teacher != null) {

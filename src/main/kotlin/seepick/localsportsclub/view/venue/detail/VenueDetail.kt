@@ -120,8 +120,8 @@ fun VenueDetail(
             LabeledText("Times", it)
         }
         Row {
-            CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.Favorites)
-            CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.Wishlists)
+            CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.favorited2)
+            CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.wishlisted2)
             CheckboxTexted("Hidden ${LscIcons.hiddenEmoji}", venueEdit.isHidden, modifier = Modifier.height(30.dp))
         }
         Spacer(Modifier.height(2.dp))

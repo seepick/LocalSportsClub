@@ -41,10 +41,10 @@ fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> {
 }
 
 fun <T> tableColumnFavorited(isFavorited: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn("Fav", isFavorited, Icons.Lsc.Favorites)
+    iconImageColumn("Fav", isFavorited, Icons.Lsc.favorited2)
 
 fun <T> tableColumnWishlisted(isWishlisted: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn("Wsh", isWishlisted, Icons.Lsc.Wishlists)
+    iconImageColumn("Wsh", isWishlisted, Icons.Lsc.wishlisted2)
 
 private fun <T> iconImageColumn(
     header: String,

@@ -1,27 +1,23 @@
 package seepick.localsportsclub.view
 
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 
 class TestableSnackbarService : SnackbarService {
+
     val shownParams = mutableListOf<SnackbarParam>()
-    override fun initializeSnackbarHostState(snackbarHostState: SnackbarHostState) {
+
+    override fun initCallback(callback: suspend (SnackbarData2) -> SnackbarResult) {
     }
 
     override fun show(
-        message: String,
-        actionLabel: String?,
-        duration: SnackbarDuration,
+        data: SnackbarData2,
         onResult: (SnackbarResult) -> Unit
     ) {
-        shownParams += SnackbarParam(message, actionLabel, duration, onResult)
+        shownParams += SnackbarParam(data, onResult)
     }
 }
 
 data class SnackbarParam(
-    val message: String,
-    val actionLabel: String?,
-    val duration: SnackbarDuration,
+    val data: SnackbarData2,
     val onResult: (SnackbarResult) -> Unit,
 )
