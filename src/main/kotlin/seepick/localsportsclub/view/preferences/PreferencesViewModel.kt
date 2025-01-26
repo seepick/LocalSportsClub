@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.LoginResult
+import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
@@ -15,6 +16,7 @@ import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
+import seepick.localsportsclub.view.SnackbarType
 import seepick.localsportsclub.view.common.executeBackgroundTask
 
 class PreferencesViewModel(
@@ -55,22 +57,26 @@ class PreferencesViewModel(
             doFinally = { isUscConnectingTesting = false }) {
             log.info { "Testing USC connection ..." }
             when (val result = uscApi.login(entity.buildCredentials()!!)) {
-                is LoginResult.Failure -> snackbarService.show("❌ ${result.message}")
+                is LoginResult.Failure -> snackbarService.show(" ${result.message} 🔐❌", SnackbarType.Warn)
                 is LoginResult.Success -> {
-                    if (entity.country == null && entity.city == null || singlesService.plan == null) {
-                        log.debug { "Fetching additional membership data for pre-fillin." }
-                        val membership = uscApi.fetchMembership(result.phpSessionId)
-                        if (entity.country == null && entity.city == null) {
-                            entity.country = membership.country
-                            entity.city = membership.city
-                        }
-                        if (singlesService.plan == null) {
-                            singlesService.plan = membership.plan
-                            plan = membership.plan
-                        }
-                    }
-                    snackbarService.show("✅ USC credentials are valid")
+                    initialUscInfoOnLoginSuccess(result.phpSessionId)
+                    snackbarService.show("USC login was successful 🔐✅")
                 }
+            }
+        }
+    }
+
+    private suspend fun initialUscInfoOnLoginSuccess(phpSessionId: PhpSessionId) {
+        if (entity.country == null && entity.city == null || singlesService.plan == null) {
+            log.debug { "Fetching additional membership data for pre-fill-in." }
+            val membership = uscApi.fetchMembership(phpSessionId)
+            if (entity.country == null && entity.city == null) {
+                entity.country = membership.country
+                entity.city = membership.city
+            }
+            if (singlesService.plan == null) {
+                singlesService.plan = membership.plan
+                plan = membership.plan
             }
         }
     }
@@ -80,9 +86,13 @@ class PreferencesViewModel(
             doBefore = { isGcalConnectingTesting = true },
             doFinally = { isGcalConnectingTesting = false }) {
             log.info { "Testing GCal connection ..." }
-            when (gcalService.testConnection(entity.calendarId)) {
-                GcalConnectionTest.Fail -> snackbarService.show("❌ GCal connection failed")
-                GcalConnectionTest.Success -> snackbarService.show("✅ GCal connection succeeded")
+            when (val result = gcalService.testConnection(entity.calendarId)) {
+                is GcalConnectionTest.Fail -> snackbarService.show(
+                    "Google connection failed 📆❌\n${result.message}",
+                    SnackbarType.Warn
+                )
+
+                GcalConnectionTest.Success -> snackbarService.show("Google connection succeeded 📆✅")
             }
         }
     }
@@ -92,7 +102,9 @@ class PreferencesViewModel(
         if (file.exists()) {
             log.debug { "About to delete google cache at: ${file.absolutePath}" }
             file.delete()
-            snackbarService.show("Google token cache for login deleted.")
+            snackbarService.show("Google login token cache successfully deleted 🗑️✅")
+        } else {
+            snackbarService.show("Nothing to delete, token cache is already empty 🤷🏻‍♂️")
         }
     }
 }

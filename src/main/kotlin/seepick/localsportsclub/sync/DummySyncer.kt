@@ -28,15 +28,15 @@ class DummySyncer(
     private var freetrainingId = 1
 
     override suspend fun sync() {
-        if (true) {
-            throw Exception("foobar")
-        }
-        if (true) {
-            val venue = generateVenues().first()//.copy(slug = "foobar")
-            val inserted = venueRepo.insert(venue)
-            dispatcher.dispatchOnVenueDbosAdded(listOf(inserted))
-            return
-        }
+//        if (true) {
+//            throw Exception("foobar")
+//        }
+//        if (true) {
+//            val venue = generateVenues().first()//.copy(slug = "foobar")
+//            val inserted = venueRepo.insert(venue)
+//            dispatcher.dispatchOnVenueDbosAdded(listOf(inserted))
+//            return
+//        }
 //        val bytes = withContext(Dispatchers.IO) {
 //            DelayedSyncer::class.java.getResourceAsStream("/defaultVenueImage.png")!!.readAllBytes()
 //        }

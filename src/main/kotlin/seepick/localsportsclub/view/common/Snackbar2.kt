@@ -9,12 +9,23 @@ import androidx.compose.material.SnackbarData
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.SnackbarType
+
+private val SnackbarType.color
+    get() = when (this) {
+        SnackbarType.Info -> Lsc.colors.surface
+        SnackbarType.Warn -> Color.Yellow.copy(alpha = 0.3f).compositeOver(Lsc.colors.surface)
+        SnackbarType.Error -> Color.Red.copy(alpha = 0.3f).compositeOver(Lsc.colors.surface)
+    }
 
 @Composable
 fun Snackbar2(
     snackbarData: SnackbarData,
+    snackbarType: SnackbarType,
     modifier: Modifier = Modifier,
 ) {
     val actionLabel = snackbarData.actionLabel
@@ -35,7 +46,7 @@ fun Snackbar2(
         action = actionComposable,
         actionOnNewLine = false,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = Lsc.colors.surface,
+        backgroundColor = snackbarType.color,
         contentColor = Lsc.colors.surface, // what for?!
         elevation = 6.dp,
     )

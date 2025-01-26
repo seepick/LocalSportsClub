@@ -67,13 +67,13 @@ fun SubEntityDetail(
         Text(
             text = buildString {
                 if (isBooked) {
-                    append("${Icons.Lsc.booked} ${subEntity.bookedLabel.firstUpper()} ")
+                    append("${Icons.Lsc.bookedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
                 }
                 if (isCheckedin) {
-                    "${Icons.Lsc.checkedin} checked-in "
+                    "${Icons.Lsc.checkedinEmoji} checked-in "
                 }
                 if (isNoshow) {
-                    Text("${Icons.Lsc.noshow} no-show")
+                    Text("${Icons.Lsc.noshowEmoji} no-show")
                 }
                 append(subEntity.category)
                 if (subEntity is SubEntity.ActivityEntity) {

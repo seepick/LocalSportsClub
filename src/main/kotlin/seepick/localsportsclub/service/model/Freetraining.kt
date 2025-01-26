@@ -13,8 +13,8 @@ enum class FreetrainingState {
 
     fun iconStringAndSuffix() = when (this) {
         Blank -> ""
-        Scheduled -> "${LscIcons.booked} "
-        Checkedin -> "${LscIcons.checkedin} "
+        Scheduled -> "${LscIcons.bookedEmoji} "
+        Checkedin -> "${LscIcons.checkedinEmoji} "
     }
 }
 

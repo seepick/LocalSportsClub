@@ -90,11 +90,11 @@ class LoginHttpApi(
             return if (jsonRoot.jsonObject["success"].toString() == "true") {
                 LoginResult.Success(phpSessionId = response.phpSessionId)
             } else {
-                log.warn { "Returned JSON after login:\n$jsonSuccessOrHtmlFail" }
-                LoginResult.Failure("Invalid JSON returned!")
+                log.warn { "Success != true; returned JSON after login:\n$jsonSuccessOrHtmlFail" }
+                LoginResult.Failure("Invalid server response")
             }
         } catch (e: SerializationException) {
-            return LoginResult.Failure("Seems username/password is wrong.")
+            return LoginResult.Failure("Username/password is wrong")
         }
     }
 }

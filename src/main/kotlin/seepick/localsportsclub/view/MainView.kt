@@ -13,13 +13,18 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarData
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,16 +46,28 @@ fun MainView(
     viewModel: MainViewModel = koinViewModel(),
     snackbarService: SnackbarService = koinInject(),
 ) {
+    var snackbarType by mutableStateOf(SnackbarType.Info)
     val snackbarHostState = remember {
-        SnackbarHostState().also {
-            snackbarService.initializeSnackbarHostState(it)
+        SnackbarHostState().also { hostState ->
+            val callback: suspend (SnackbarData2) -> SnackbarResult = { data ->
+                snackbarType = data.type
+                hostState.showSnackbar(
+                    message = data.message,
+                    actionLabel = data.actionLabel,
+                    duration = data.duration,
+                )
+            }
+            snackbarService.initCallback(callback)
+//            snackbarService.initializeSnackbarHostState(hostState)
         }
     }
     Column {
         Scaffold(snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
-            ) { Snackbar2(it) }
+            ) { data: SnackbarData ->
+                Snackbar2(data, snackbarType)
+            }
         }) {
             Column {
                 Row(

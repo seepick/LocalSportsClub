@@ -21,6 +21,7 @@ class VenueSyncer(
     private val api: UscApi,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
+    private val dispatcher: SyncerListenerDispatcher,
 ) {
     private val log = logger {}
 
@@ -34,6 +35,7 @@ class VenueSyncer(
         val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
         // this also means that the "hidden linked ones" will be deleted
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
+        dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
         markDeleted.values.forEach {
             venueRepo.update(it.copy(isDeleted = true))
         }

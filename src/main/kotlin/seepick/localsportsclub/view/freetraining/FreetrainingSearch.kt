@@ -21,7 +21,7 @@ class FreetrainingSearch(
     val date = newDateSearchOption("Date", initialDate = searchDates.first()) { it.date }
     val category = newSelectSearchOption("Category", allOptions = allCategories) { listOf(it.category) }
     val rating = newRatingSearchOption("Rating") { it.venue.rating }
-    val favorited = newBooleanSearchOption("Favorited") { it.venue.isFavorited }
-    val wishlisted = newBooleanSearchOption("Wishlisted") { it.venue.isWishlisted }
-    val scheduled = newBooleanSearchOption("Scheduled") { it.state == FreetrainingState.Scheduled }
+    val favorited = newBooleanSearchOption("Favorited", initialValue = true) { it.venue.isFavorited }
+    val wishlisted = newBooleanSearchOption("Wishlisted", initialValue = true) { it.venue.isWishlisted }
+    val scheduled = newBooleanSearchOption("Scheduled", initialValue = true) { it.state == FreetrainingState.Scheduled }
 }

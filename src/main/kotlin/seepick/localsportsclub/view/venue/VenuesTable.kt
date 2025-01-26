@@ -35,14 +35,14 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     }, sortValueExtractor = { it.name.lowercase() }),
     TableColumn("Act", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.activities.size }),
     TableColumn("Fre", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size }),
-    TableColumn(LscIcons.checkedin, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
+    TableColumn(LscIcons.checkedinEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
     }),
-    TableColumn(LscIcons.booked, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
+    TableColumn(LscIcons.bookedEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
         it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
     }),
-    TableColumn(LscIcons.hidden, WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Center) {
-        if (it.isHidden) LscIcons.hidden else ""
+    TableColumn(LscIcons.hiddenEmoji, WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Center) {
+        if (it.isHidden) LscIcons.hiddenEmoji else ""
     }),
     TableColumn(
         "Last Visit", WidthOrWeight.Width(80.dp), TextRenderer(

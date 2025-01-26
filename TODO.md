@@ -2,22 +2,22 @@
 
 ## Next
 
-* system test: book something which can't be booked (different limits); parse response and show proper message
+* in search panel, use icons (fav/wish/hidden/activity/freetrianing/checkins/booked)
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
 
 ## Backlog
 
-* ad usage: display how many reservations max
-* after sync, display report what happened ++ big WARNING if new noshow was detected!
-    * when no-show indicated, create big alert (request money get back if forgot to simply checkin but was there)
+* system test: book something which can't be bookedl parse response and show proper message
+    * +6 reservations; +2 same day (visit limit); over checkin limit (end of period); over period limit (same venue per
+      calendar month)
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
 * make long venue texts "somehow" selectable; A) selectable text (toolitp?!) or B) click => copy clipboard
 
 ## Later
 
 * sync the membership tag (minimum one only) for venue&activity
-* support plan Onefit other than premium (best guess?!)
+* support custom plan; define everything yourself (as so many other plans are there; think of B2B)
 * ... no-show for freetraining possible?? try it yourself ;)
 * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
 * when text has emoji, then its height is much bigger; e.g. see in activities/freetrainings table, when there is only 1

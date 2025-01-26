@@ -78,7 +78,7 @@ class UsageStorage(
 
     override fun onStartUp() {
         isUsageVisible = singlesService.plan != null && singlesService.preferences.periodFirstDay != null
-        
+
         singlesService.preferences.city?.id?.let { cityId ->
             activityRepo.selectAll(cityId).forEach(::processActivity)
             freetrainingRepo.selectAll(cityId).forEach(::processFreetraining)
@@ -86,6 +86,10 @@ class UsageStorage(
     }
 
     override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
+        // no-op
+    }
+
+    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
         // no-op
     }
 

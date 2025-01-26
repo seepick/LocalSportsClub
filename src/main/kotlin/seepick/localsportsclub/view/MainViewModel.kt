@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view
 
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,6 +9,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.common.executeBackgroundTask
 
@@ -15,6 +17,7 @@ class MainViewModel(
     private val syncer: Syncer,
     private val singlesService: SinglesService,
     private val snackbarService: SnackbarService,
+    private val syncReporter: SyncReporter,
 ) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -40,11 +43,24 @@ class MainViewModel(
             },
             doFinally = {
                 log.info { "sync DONE" }
+                syncReporter.clear()
                 isSyncing = false
             }
         ) {
             syncer.sync()
-            snackbarService.show("Finished synchronizing data ✅")
+
+            val report = syncReporter.report.buildMessage()
+            snackbarService.show(
+                message = buildString {
+                    append("Finished synchronizing data 🔄✅")
+                    if (report != null) {
+                        appendLine()
+                        append(report)
+                    }
+                },
+                duration = SnackbarDuration.Indefinite,
+                actionLabel = "Close",
+            )
         }
     }
 

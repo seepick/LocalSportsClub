@@ -16,6 +16,7 @@ private val log = logger {}
 fun syncModule(config: AppConfig) = module {
     log.debug { "Configuring sync mode: ${config.sync}" }
     singleOf(::SyncerListenerDispatcher)
+    singleOf(::SyncReporter)
     singleOf(::HttpDownloader) bind Downloader::class
     when (config.sync) {
         SyncMode.Noop -> single { NoopSyncer } bind Syncer::class

@@ -12,12 +12,16 @@ interface Syncer {
 }
 
 interface SyncerListener {
+    fun alsoRegisterForBooking(): Boolean = true
     fun onVenueDbosAdded(venueDbos: List<VenueDbo>)
+    fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>)
+
     fun onActivityDbosAdded(activityDbos: List<ActivityDbo>)
     fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
+    fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>)
+
     fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>)
     fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate)
-    fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>)
     fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>)
 }
 
@@ -53,6 +57,12 @@ class SyncerListenerDispatcher {
     fun dispatchOnVenueDbosAdded(venueDbos: List<VenueDbo>) {
         listeners.forEach {
             it.onVenueDbosAdded(venueDbos)
+        }
+    }
+
+    fun dispatchOnVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
+        listeners.forEach {
+            it.onVenueDbosMarkedDeleted(venueDbos)
         }
     }
 

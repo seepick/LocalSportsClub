@@ -18,8 +18,8 @@ data class AppConfig(
 
 //            sync = SyncMode.Real,
 //            sync = SyncMode.Noop,
-            sync = SyncMode.Delayed,
-//            sync = SyncMode.Dummy,
+//            sync = SyncMode.Delayed,
+            sync = SyncMode.Dummy,
 
 //            gcal = GcalMode.Real,
             gcal = GcalMode.Noop,

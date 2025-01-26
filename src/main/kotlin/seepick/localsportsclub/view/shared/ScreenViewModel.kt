@@ -31,7 +31,9 @@ import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.view.SnackbarData2
 import seepick.localsportsclub.view.SnackbarService
+import seepick.localsportsclub.view.SnackbarType
 import seepick.localsportsclub.view.common.executeBackgroundTask
 import seepick.localsportsclub.view.common.executeViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
@@ -180,8 +182,11 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.debug { "onBook: $subEntity" }
         bookOrCancel(subEntity, BookingService::book) { result ->
             when (result) {
-                BookingResult.BookingSuccess -> "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅💪🏻"
-                is BookingResult.BookingFail -> "Error while booking ❌🤔\n${result.message}"
+                BookingResult.BookingSuccess -> SnackbarData2("Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅")
+                is BookingResult.BookingFail -> SnackbarData2(
+                    "Error while booking ❌\n${result.message}",
+                    SnackbarType.Error
+                )
             }
         }
     }
@@ -190,8 +195,11 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.debug { "onCancelBooking: $subEntity" }
         bookOrCancel(subEntity, BookingService::cancel) { result ->
             when (result) {
-                CancelResult.CancelSuccess -> "Successfully cancelled booking for '${subEntity.name}' ✅💪🏻"
-                is CancelResult.CancelFail -> "Error while canceling ❌🤔\n${result.message}"
+                CancelResult.CancelSuccess -> SnackbarData2("Successfully cancelled booking for '${subEntity.name}' ✅")
+                is CancelResult.CancelFail -> SnackbarData2(
+                    "Error while canceling ❌\n${result.message}",
+                    SnackbarType.Error
+                )
             }
         }
     }
@@ -199,7 +207,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private fun <T> bookOrCancel(
         subEntity: SubEntity,
         bookingOperation: suspend BookingService.(SubEntity, Boolean, Boolean) -> T,
-        resultHandler: (T) -> String,
+        resultHandler: (T) -> SnackbarData2,
     ) {
         executeBackgroundTask(
             "Booking/Canceling activity/freetraining failed!",

@@ -166,6 +166,10 @@ class DataStorage(
         dispatchOnVenuesAdded(venues)
     }
 
+    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
+        // no op
+    }
+
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
         val activities = activityDbos.map { activityDbo ->
             val venue = venuesById[activityDbo.venueId]

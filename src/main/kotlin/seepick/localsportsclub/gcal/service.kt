@@ -214,7 +214,7 @@ class RealGcalService : GcalService {
         } catch (e: GoogleJsonResponseException) {
             if (e.details.code == 404) {
                 log.debug { "GCal connection test failed: ${e.details}" }
-                GcalConnectionTest.Fail
+                GcalConnectionTest.Fail("Calendar not found.")
             } else {
                 throw e
             }
@@ -310,5 +310,5 @@ class RealGcalService : GcalService {
 
 sealed interface GcalConnectionTest {
     data object Success : GcalConnectionTest
-    data object Fail : GcalConnectionTest
+    data class Fail(val message: String) : GcalConnectionTest
 }

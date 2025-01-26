@@ -11,7 +11,7 @@ import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.TableColumn
 
 fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<T>(
-    LscIcons.checkedin,
+    LscIcons.checkedinEmoji,
     WidthOrWeight.Width(40.dp),
     CellRenderer.TextRenderer(textAlign = TextAlign.Right, paddingRight = paddingRight) {
         it.venue.activities.filter { it.state == ActivityState.Checkedin }.size + it.venue.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size

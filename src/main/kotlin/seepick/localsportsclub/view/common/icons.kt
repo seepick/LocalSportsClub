@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.ImageBitmap
 
+@Suppress("ConstPropertyName")
 object LscIcons {
     private fun loadIcon(filename: String): ImageBitmap = readImageBitmapFromClasspath("/icons/$filename")
     val FavoriteFull = loadIcon("favorite_full.png")
@@ -13,10 +14,10 @@ object LscIcons {
     val WishlistOutline = loadIcon("wishlist_outline.png")
     val Wishlists = WishlistFull to WishlistOutline
 
-    const val checkedin = "📝"
-    const val booked = "☑️" // or scheduled (for freetrainings)
-    const val noshow = "❌"
-    const val hidden = "🙈"
+    const val checkedinEmoji = "📝"
+    const val bookedEmoji = "☑️" // or scheduled (for freetrainings)
+    const val noshowEmoji = "🚷"
+    const val hiddenEmoji = "🙈"
 
     val activities = Icons.Default.SportsGymnastics
     val freetrainings = Icons.Default.FitnessCenter
@@ -25,4 +26,5 @@ object LscIcons {
     val preferences = Icons.Default.Settings
 }
 
+@Suppress("UnusedReceiverParameter")
 val Icons.Lsc get() = LscIcons

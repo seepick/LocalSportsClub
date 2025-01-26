@@ -37,20 +37,22 @@ class VersionNotifier(
 
     private fun handleOutdated() {
         snackbarService.show(
-            message = "Your current version is out-of-date. Please download a newer one.",
+            message = "Your current version is out-of-date 👴🏻 Please download a newer one 🙏🏻",
             actionLabel = "Download",
             duration = SnackbarDuration.Long,
             onResult = {
                 when (it) {
                     SnackbarResult.Dismissed -> log.debug { "Download newer version dismissed." }
-                    SnackbarResult.ActionPerformed -> {
-                        val url =
-                            "https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub." +
-                                    (if (System.getProperty("os.name") == "Mac OS X") "dmg" else "exe")
-                        java.awt.Desktop.getDesktop().browse(URI(url))
-                    }
+                    SnackbarResult.ActionPerformed -> downloadLatestVersion()
                 }
             }
         )
+    }
+
+    private fun downloadLatestVersion() {
+        val url = "https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub." +
+                (if (System.getProperty("os.name") == "Mac OS X") "dmg" else "exe")
+        log.debug { "Downloading latest version at: $url" }
+        java.awt.Desktop.getDesktop().browse(URI(url))
     }
 }

@@ -11,9 +11,9 @@ class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : Abstrac
         extractors = listOf { it.name },
         initiallyEnabled = true,
     )
-    val wishlisted = newBooleanSearchOption("Wishlisted") { it.isWishlisted }
-    val favorited = newBooleanSearchOption("Favorited") { it.isFavorited }
-    val hidden = newBooleanSearchOption("Hidden") { it.isHidden }
+    val wishlisted = newBooleanSearchOption("Wishlisted", initialValue = true) { it.isWishlisted }
+    val favorited = newBooleanSearchOption("Favorited", initialValue = true) { it.isFavorited }
+    val hidden = newBooleanSearchOption("Hidden", initialValue = true) { it.isHidden }
     val checkins = newIntSearchOption("Checkins") {
         it.activities.count { it.state == ActivityState.Checkedin } +
                 it.freetrainings.count { it.state == FreetrainingState.Checkedin }
