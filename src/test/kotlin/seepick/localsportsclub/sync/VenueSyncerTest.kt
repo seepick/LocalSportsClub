@@ -2,6 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
@@ -31,10 +32,11 @@ class VenueSyncerTest : StringSpec() {
 
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
-    private val phpSessionId = Arb.phpSessionId().next()
+    private val session = Arb.phpSessionId().next()
     private val city = Arb.city().next()
     private val plan = Arb.plan().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
+    private val syncVenueDbosMarkedDeleted = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
     private lateinit var venueRepo: InMemoryVenueRepo
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
@@ -48,11 +50,16 @@ class VenueSyncerTest : StringSpec() {
         venueLinksRepo = InMemoryVenueLinksRepo()
         imageStorage = MemorizableImageStorage()
         syncVenueDbosAdded.clear()
+        syncVenueDbosMarkedDeleted.clear()
 
         val syncerListenerDispatcher = SyncerListenerDispatcher()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
             override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
                 syncVenueDbosAdded += venueDbos
+            }
+
+            override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
+                syncVenueDbosMarkedDeleted += venueDbos
             }
         })
         syncer = VenueSyncer(
@@ -76,12 +83,12 @@ class VenueSyncerTest : StringSpec() {
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
-                api.fetchVenues(any(), eq(VenuesFilter(city, plan)))
+                api.fetchVenues(session, VenuesFilter(city, plan))
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
             coEvery { api.fetchVenueDetail(any(), eq(remoteVenue.slug)) } returns
                     remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
 
-            syncer.sync(phpSessionId, plan, city)
+            syncer.sync(session, plan, city)
 
             venueRepo.stored.should {
                 val stored = it.values.shouldBeSingleton().first()
@@ -93,29 +100,32 @@ class VenueSyncerTest : StringSpec() {
                 val expectedImageFileName = "${stored.slug}.png"
                 imageStorage.savedVenueImages.shouldBeSingleton().first().first shouldBe expectedImageFileName
             }
+            syncVenueDbosMarkedDeleted.shouldBeEmpty()
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
-            coEvery { api.fetchVenues(any(), eq(VenuesFilter(city, plan))) } returns emptyList()
-            venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
+            coEvery { api.fetchVenues(session, VenuesFilter(city, plan)) } returns emptyList()
+            val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
 
-            syncer.sync(phpSessionId, plan, city)
+            syncer.sync(session, plan, city)
 
             venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
+            syncVenueDbosMarkedDeleted.shouldBeSingleton().first().id shouldBe stored.id
         }
-        "Given api returns 1 with linked and db has this 1 When sync Then link them" {
-            val yetExisting = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id))
-            coEvery { api.fetchVenues(any(), eq(VenuesFilter(city, plan))) } returns listOf(
-                remoteVenue
+        "Given 1 stored And api returns it and one linked to it When sync Then link them" {
+            val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
+            coEvery { api.fetchVenues(session, VenuesFilter(city, plan)) } returns listOf(
+                remoteVenue.copy(slug = stored.slug), remoteVenue
             )
-            coEvery { api.fetchVenueDetail(any(), eq(remoteVenue.slug)) } returns remoteDetails
-                .copy(linkedVenueSlugs = listOf(yetExisting.slug))
+            coEvery { api.fetchVenueDetail(session, remoteVenue.slug) } returns remoteDetails
+                .copy(slug = remoteVenue.slug, linkedVenueSlugs = listOf(stored.slug))
 
-            syncer.sync(phpSessionId, plan, city)
+            syncer.sync(session, plan, city)
 
             venueLinksRepo.stored.also {
                 it.shouldHaveSize(1)
                 it.shouldContain(VenueIdLink(2, 1))
             }
+            syncVenueDbosMarkedDeleted.shouldBeEmpty()
         }
     }
 }

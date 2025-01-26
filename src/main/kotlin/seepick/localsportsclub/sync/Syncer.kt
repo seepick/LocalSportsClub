@@ -55,20 +55,26 @@ class SyncerListenerDispatcher {
     }
 
     fun dispatchOnVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        listeners.forEach {
-            it.onVenueDbosAdded(venueDbos)
+        if (venueDbos.isNotEmpty()) {
+            listeners.forEach {
+                it.onVenueDbosAdded(venueDbos)
+            }
         }
     }
 
     fun dispatchOnVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        listeners.forEach {
-            it.onVenueDbosMarkedDeleted(venueDbos)
+        if (venueDbos.isNotEmpty()) {
+            listeners.forEach {
+                it.onVenueDbosMarkedDeleted(venueDbos)
+            }
         }
     }
 
     fun dispatchOnActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        listeners.forEach {
-            it.onActivityDbosAdded(activityDbos)
+        if (activityDbos.isNotEmpty()) {
+            listeners.forEach {
+                it.onActivityDbosAdded(activityDbos)
+            }
         }
     }
 
@@ -91,14 +97,18 @@ class SyncerListenerDispatcher {
     }
 
     fun dispatchOnActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        listeners.forEach {
-            it.onActivityDbosDeleted(activityDbos)
+        if (activityDbos.isNotEmpty()) {
+            listeners.forEach {
+                it.onActivityDbosDeleted(activityDbos)
+            }
         }
     }
 
     fun dispatchOnFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        listeners.forEach {
-            it.onFreetrainingDbosDeleted(freetrainingDbos)
+        if (freetrainingDbos.isNotEmpty()) {
+            listeners.forEach {
+                it.onFreetrainingDbosDeleted(freetrainingDbos)
+            }
         }
     }
 }

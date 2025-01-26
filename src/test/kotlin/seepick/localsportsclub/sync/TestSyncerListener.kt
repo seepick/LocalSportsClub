@@ -6,11 +6,11 @@ import seepick.localsportsclub.persistence.VenueDbo
 
 abstract class TestSyncerListener : SyncerListener {
     override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        error("Unexpected call to onVenueDbosAdded!")
+        error("Unexpected call to onVenueDbosAdded! $venueDbos")
     }
 
     override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        error("Unexpected call to onVenueDbosMarkedDeleted!")
+        error("Unexpected call to onVenueDbosMarkedDeleted! $venueDbos")
     }
 
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
@@ -18,22 +18,22 @@ abstract class TestSyncerListener : SyncerListener {
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        error("Unexpected call to onActivityDboUpdated!")
+        error("Unexpected call to onActivityDboUpdated! $field $activityDbo")
     }
 
     override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
-        error("Unexpected call to onFreetrainingDboAdded")
+        error("Unexpected call to onFreetrainingDboAdded! $freetrainingDbos")
     }
 
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
-        error("Unexpected call to onFreetrainingDboUpdated")
+        error("Unexpected call to onFreetrainingDboUpdated! $field $freetrainingDbo")
     }
 
     override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        error("Unexpected call to onActivityDbosDeleted")
+        error("Unexpected call to onActivityDbosDeleted! $activityDbos")
     }
 
     override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        error("Unexpected call to onFreetrainingDbosDeleted")
+        error("Unexpected call to onFreetrainingDbosDeleted! $freetrainingDbos")
     }
 }
