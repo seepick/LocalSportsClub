@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.singles
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -16,11 +17,13 @@ import seepick.localsportsclub.persistence.location
 import seepick.localsportsclub.persistence.preferences
 import seepick.localsportsclub.service.Encrypter
 import seepick.localsportsclub.service.model.City
+import java.time.LocalDateTime
 
 class SinglesServiceImplTest : StringSpec() {
 
     private val notes = Arb.string().next()
     private val prefs = Arb.preferences().next()
+    private val timestamp = LocalDateTime.now()
 
     private lateinit var singlesRepo: InMemorySinglesRepo
     private lateinit var singlesService: SinglesServiceImpl
@@ -60,6 +63,14 @@ class SinglesServiceImplTest : StringSpec() {
                 it.prefGoogleCalendarId shouldBe prefs.gcal.maybeCalendarId
             }
             singlesService.preferences.uscCredentials.shouldNotBeNull().password shouldBe credentials.password
+        }
+        "When get last sync Then return it" {
+            singlesService.getLastSyncFor(City.Amsterdam).shouldBeNull()
+        }
+        "When set last sync Then store it" {
+            singlesService.setLastSyncFor(City.Amsterdam, timestamp)
+            singlesService.getLastSyncFor(City.Amsterdam) shouldBe timestamp
+            singlesService.getLastSyncFor(City.Berlin).shouldBeNull()
         }
     }
 

@@ -20,4 +20,10 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     override fun deserialize(decoder: Decoder): LocalDateTime {
         return LocalDateTime.parse(decoder.decodeString(), formatter)
     }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        println(formatter.format(LocalDateTime.now()))
+        LocalDateTime.parse("2025-01-25T13:55:54.779233", formatter)
+    }
 }

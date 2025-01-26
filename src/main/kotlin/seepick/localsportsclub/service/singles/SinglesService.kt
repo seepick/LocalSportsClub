@@ -37,20 +37,16 @@ class SinglesServiceImpl(
             update { copy(notes = value) }
         }
 
-    override fun getLastSyncFor(city: City): LocalDateTime? {
-        // FIXME
-        return null
-    }
+    override fun getLastSyncFor(city: City): LocalDateTime? =
+        cachedOrSelect().lastSyncs[city.id]
 
     override fun setLastSyncFor(city: City, timestamp: LocalDateTime) {
-// FIXME
+        update {
+            copy(lastSyncs = lastSyncs.toMutableMap().also {
+                it[city.id] = timestamp
+            })
+        }
     }
-
-//    override var lastSync: LocalDateTime?
-//        get() = cachedOrSelect().lastSync
-//        set(value) {
-//            update { copy(lastSync = value) }
-//        }
 
     override var windowPref: WindowPref?
         get() {

@@ -24,7 +24,6 @@ class PreferencesScreenUiTest : UiTest(), KoinTest {
             uscApi = MockUscApi(),
             snackbarService = snackbarService,
         )
-        // TODO work in progress...
         // LocalViewModelStoreOwner
 //        startKoin {
 //            modules(module {

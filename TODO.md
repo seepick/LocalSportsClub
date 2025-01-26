@@ -41,6 +41,7 @@
   jaap-eden-ijsbaan has strange/long one
 * IMPROVE: the syncer should not add the year information; return incomplete day+month only (let logic determine year)
 * make rating UI a slider with custom renderer
+* uitest+koin (work in progress)
 
 ## Nope
 

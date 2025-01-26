@@ -11,29 +11,11 @@ import org.jetbrains.exposed.sql.update
 object SinglesTable : Table("SINGLES") {
     val version = integer("VERSION")
     val json = text("JSON")
-//    val notes = text("JSON")
-//    val lastSync = datetime("LAST_SYNC").nullable()
-//    val windowPref = varchar("WINDOW_PREF", 128).nullable()
-//    val plan = varchar("USC_PLAN", 8).nullable()
-//
-//    // Preferences
-//    val uscCredentialUsername = varchar("USC_CREDENTIAL_USERNAME", 64).nullable()
-//    val uscCredentialPassword = varchar("USC_CREDENTIAL_PASSWORD", 128).nullable()
-//    val uscCityId = integer("USC_CITY_ID").nullable()
-//    val uscPeriodFirstDay = integer("USC_PERIOD_FIRST_DAY").nullable()
-//    val googleCalendarId = varchar("GOOGLE_CALENDAR_ID", 64).nullable()
-//    val homeLatitude = double("HOME_LATITUDE").nullable()
-//    val homeLongitude = double("HOME_LONGITUDE").nullable()
 }
 
 data class SinglesDbo(
     val version: Int,
     val json: String,
-//    val notes: String,
-//    val lastSync: LocalDateTime?,
-//    val windowPref: WindowPref?,
-//    val plan: Plan?,
-//    val preferences: Preferences,
 ) {
     override fun toString() =
         "SinglesDbo[version=$version, json=$json]"

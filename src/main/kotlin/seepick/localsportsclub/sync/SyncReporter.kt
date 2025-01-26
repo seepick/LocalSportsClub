@@ -35,7 +35,7 @@ data class SyncReport(
                 // TODO only show for != 0
                 append("Checked-in $activitiesCheckedin Act. / $freetrainingsCheckedin Free.; ")
             }
-            // TODO highlight no-shows with red color
+            // TODO highlight no-shows with red color; maybe display separate snackbar with YELLOW-Warn background
             if (activitiesNoshow != 0) {
                 append("+$activitiesNoshow no-shows; ")
             }

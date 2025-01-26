@@ -6,8 +6,6 @@ import java.time.LocalDateTime
 
 typealias CityId = Int
 
-// not yet deployed to PROD (running v1). still ok to do changes in the current version.
-
 // do NOT add/edit/delete anything here; requires manual migration!
 @Serializable
 data class SinglesVersionCurrent(
@@ -27,7 +25,7 @@ data class SinglesVersionCurrent(
     val prefPeriodFirstDay: Int?,
 ) {
     companion object {
-        val VERSION = 2
+        const val VERSION = 2
         val empty = SinglesVersionCurrent(
             notes = null,
             lastSyncs = emptyMap(),
@@ -69,7 +67,7 @@ data class SinglesVersionV1(
     val prefPeriodFirstDay: Int?,
 ) {
     companion object {
-        val VERSION = 1
+        const val VERSION = 1
         val empty = SinglesVersionV1(
             notes = null,
             lastSync = null,
