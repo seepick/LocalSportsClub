@@ -14,12 +14,17 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
+fun SyncProgress.onProgressActivities(detail: String?) {
+    onProgress("Activities", detail)
+}
+
 class ActivitiesSyncer(
     private val api: UscApi,
     private val activityRepo: ActivityRepo,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     private val log = logger {}
 
@@ -27,14 +32,15 @@ class ActivitiesSyncer(
         log.info { "Syncing activities for: $days" }
         val allStoredActivities = activityRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAll(city.id).associateBy { it.slug }.toMutableMap()
-        days.forEach { day ->
+        days.forEachIndexed { index, day ->
+            progress.onProgressActivities("Day ${index + 1}/${days.size}")
             syncForDay(
                 session,
                 plan,
                 city,
                 day,
                 allStoredActivities.filter { it.from.toLocalDate() == day },
-                venuesBySlug
+                venuesBySlug,
             )
         }
     }

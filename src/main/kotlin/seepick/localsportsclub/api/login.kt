@@ -17,6 +17,8 @@ import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.phpSessionId
 import seepick.localsportsclub.service.requireStatusOk
 
+class UscLoginException(message: String) : Exception(message)
+
 interface LoginApi {
     suspend fun login(credentials: Credentials): LoginResult
 }

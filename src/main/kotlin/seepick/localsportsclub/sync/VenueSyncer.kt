@@ -16,17 +16,24 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
+import java.util.concurrent.atomic.AtomicInteger
+
+fun SyncProgress.onProgressVenues(detail: String?) {
+    onProgress("Venues", detail)
+}
 
 class VenueSyncer(
     private val api: UscApi,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     private val log = logger {}
 
     suspend fun sync(session: PhpSessionId, plan: Plan, city: City) {
         log.info { "Syncing venues ..." }
+        progress.onProgressVenues(null)
         val remoteVenuesBySlug = api.fetchVenues(session, VenuesFilter(city, plan)).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenuesBySlug =
@@ -73,8 +80,17 @@ class VenueSyncInserterImpl(
     private val downloader: Downloader,
     private val imageStorage: ImageStorage,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) : VenueSyncInserter {
     private val log = logger {}
+
+    private var venueCount = AtomicInteger(-1)
+    private fun SyncProgress.onProgressVenueItem() {
+        val current = venueCount.getAndDecrement().let { if (it < 0) 0 else it }
+        if (current % 10 == 0) {
+            onProgressVenues("Load $current")
+        }
+    }
 
     override suspend fun fetchInsertAndDispatch(
         session: PhpSessionId,
@@ -83,8 +99,11 @@ class VenueSyncInserterImpl(
         prefilledNotes: String,
     ) {
         log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
+        venueCount.set(venueSlugs.size)
+
         val newDbos = mutableListOf<VenueDbo>()
         val newLinks = mutableSetOf<VenueSlugLink>()
+        progress.onProgressVenues("Load ${venueSlugs.size}")
         fetchAllInsertDispatch(
             session,
             city,
@@ -134,6 +153,7 @@ class VenueSyncInserterImpl(
         log.trace { "linkVenues ... missingVenuesBySlug=$missingVenuesBySlug" }
         if (missingVenuesBySlug.isNotEmpty()) {
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
+            venueCount.addAndGet(missingVenuesBySlug.size)
             fetchAllInsertDispatch(
                 session,
                 city,
@@ -151,6 +171,7 @@ class VenueSyncInserterImpl(
         slug: String,
         venueSlugLinks: MutableSet<VenueSlugLink>
     ): VenueDbo {
+        progress.onProgressVenueItem()
         val details = api.fetchVenueDetail(session, slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)

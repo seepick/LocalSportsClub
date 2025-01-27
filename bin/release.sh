@@ -31,5 +31,6 @@ git_status_verify
 ./gradlew check -Plsc_version="$APP_VERSION" || exit 1
 git_tag_and_push
 echo "Successfully created release $APP_VERSION ✅"
+open "https://github.com/seepick/LocalSportsClub/actions"
 
 exit 0

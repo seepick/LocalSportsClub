@@ -14,12 +14,17 @@ import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
+fun SyncProgress.onProgressFreetrainings(detail: String?) {
+    onProgress("Freetrainings", detail)
+}
+
 class FreetrainingSyncer(
     private val api: UscApi,
     private val freetrainingRepo: FreetrainingRepo,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     private val log = logger {}
 
@@ -27,7 +32,8 @@ class FreetrainingSyncer(
         log.info { "Syncing freetrainiings for: $days" }
         val allStoredFreetrainings = freetrainingRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAll(city.id).associateBy { it.slug }.toMutableMap()
-        days.forEach { day ->
+        days.forEachIndexed { index, day ->
+            progress.onProgressFreetrainings("Day ${index + 1}/${days.size}")
             syncForDay(session, plan, city, day, allStoredFreetrainings.filter { it.date == day }, venuesBySlug)
         }
     }

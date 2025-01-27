@@ -9,9 +9,9 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.DummyGenerator
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
@@ -70,7 +70,7 @@ class DummySyncer(
     }
 
     private fun generateVenues(): List<VenueDbo> = buildList {
-        this += dummyVenue().copy(
+        this += DummyGenerator.venue().copy(
             id = 1,
             name = "Double Shift",
             slug = "double-shift",
@@ -78,9 +78,9 @@ class DummySyncer(
             rating = 3,
             description = "Some\nline"
         )
-        this += dummyVenue().copy(id = 2, name = "EMS", slug = "ems")
-        this += dummyVenue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio")
-        this += dummyVenue().copy(
+        this += DummyGenerator.venue().copy(id = 2, name = "EMS", slug = "ems")
+        this += DummyGenerator.venue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio")
+        this += DummyGenerator.venue().copy(
             id = 4,
             name = "All Of It", slug = "aoi",
             rating = 5, facilities = "",
@@ -89,12 +89,12 @@ class DummySyncer(
             isFavorited = true, isWishlisted = true,
             postalCode = "1000AB", street = "Main Street", addressLocality = "Amsterdam, Netherlands",
         )
-        this += dummyVenue().copy(id = 5, name = "Zzz", slug = "zzz")
-        this += dummyVenue().copy(id = 6, name = "Zzz2", slug = "zzz2")
-        this += dummyVenue().copy(id = 7, name = "lowercased", slug = "lower-cased")
-        this += dummyVenue().copy(id = 8, name = "Very long name it is very long indeed", slug = "very-long")
-        this += dummyVenue().copy(id = 9, name = "Deleted", slug = "deleted", isDeleted = true)
-        this += dummyVenue().copy(id = 10, name = "Hidden", slug = "hidden", isHidden = true)
+        this += DummyGenerator.venue().copy(id = 5, name = "Zzz", slug = "zzz")
+        this += DummyGenerator.venue().copy(id = 6, name = "Zzz2", slug = "zzz2")
+        this += DummyGenerator.venue().copy(id = 7, name = "lowercased", slug = "lower-cased")
+        this += DummyGenerator.venue().copy(id = 8, name = "Very long name it is very long indeed", slug = "very-long")
+        this += DummyGenerator.venue().copy(id = 9, name = "Deleted", slug = "deleted", isDeleted = true)
+        this += DummyGenerator.venue().copy(id = 10, name = "Hidden", slug = "hidden", isHidden = true)
     }
 
     private fun generateActivities(): List<ActivityDbo> = buildList {
@@ -156,29 +156,6 @@ class DummySyncer(
         )
     }
 
-    private fun dummyVenue() = VenueDbo(
-        id = 0,
-        name = "",
-        slug = "",
-        facilities = "",
-        cityId = City.Amsterdam.id,
-        officialWebsite = null,
-        rating = 0,
-        notes = "",
-        imageFileName = null,
-        postalCode = "",
-        street = "",
-        addressLocality = "",
-        latitude = "",
-        longitude = "",
-        description = "",
-        importantInfo = null,
-        openingTimes = null,
-        isFavorited = false,
-        isWishlisted = false,
-        isHidden = false,
-        isDeleted = false,
-    )
 
     private fun dummyActivity(activityId: Int, venueId: Int): ActivityDbo {
         val now = clock.now().withMinute(0).withSecond(0)

@@ -42,10 +42,10 @@ object ManualSystemTests {
 //            testCheckins()
 //            testVenues()
 //            testVenue()
-//            testActivities()
+            testActivities()
 //            testSchedule()
 //            testBook(84737975)
-            testMembership()
+//            testMembership()
         }
     }
 

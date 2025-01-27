@@ -13,17 +13,23 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
+fun SyncProgress.onProgressCheckins(detail: String?) {
+    onProgress("Check-ins", detail)
+}
+
 class CheckinSyncer(
     private val uscApi: UscApi,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val dataSyncRescuer: DataSyncRescuer,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     private val log = logger {}
 
     suspend fun sync(session: PhpSessionId, city: City) {
         log.debug { "Syncing checkins..." }
+        progress.onProgressCheckins(null)
         val entries = fetchEntries(session)
         entries.map { entry ->
             when (entry) {
@@ -40,6 +46,7 @@ class CheckinSyncer(
         val entries = mutableListOf<CheckinEntry>()
         var oldestRemoteDate: LocalDate?
         do {
+            progress.onProgressCheckins("Page $currentPage")
             val page = uscApi.fetchCheckinsPage(session, currentPage)
             oldestRemoteDate = page.entries.minByOrNull { it.date }?.date
             entries += page.entries

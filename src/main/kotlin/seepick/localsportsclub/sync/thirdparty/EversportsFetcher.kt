@@ -17,6 +17,7 @@ import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.machinePrint
 import seepick.localsportsclub.service.httpClient
+import seepick.localsportsclub.service.model.HasSlug
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
 import java.time.LocalDateTime

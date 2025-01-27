@@ -22,9 +22,10 @@ class PhpSessionProviderImpl(
         runBlocking {
             log.info { "Creating cached PHP Session ID..." }
             val creds = singlesService.preferences.uscCredentials ?: error("No USC credentials set!")
-            val result = loginApi.login(creds)
-            require(result is LoginResult.Success) { "Login failed: $result" }
-            result.phpSessionId
+            when (val result = loginApi.login(creds)) {
+                is LoginResult.Failure -> throw UscLoginException(result.message)
+                is LoginResult.Success -> result.phpSessionId
+            }
         }
     }
 

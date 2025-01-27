@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -58,7 +60,6 @@ fun MainView(
                 )
             }
             snackbarService.initCallback(callback)
-//            snackbarService.initializeSnackbarHostState(hostState)
         }
     }
     Column {
@@ -80,22 +81,7 @@ fun MainView(
                     val (selectedScreenValue, setSelectedScreen) = viewModel.selectedScreen
                     NavigationScreen(selectedScreenValue, setSelectedScreen)
                     Spacer(Modifier.width(10.dp))
-                    ConditionalTooltip(
-                        !viewModel.isSyncPossible, "Please enter your USC credentials in the preferences first."
-                    ) {
-                        Button(
-                            enabled = viewModel.isSyncPossible && !viewModel.isSyncing,
-                            onClick = { viewModel.startSync() },
-                        ) {
-                            Icon(Icons.Default.Refresh, contentDescription = null)
-                            Text(text = "Sync")
-                        }
-                    }
-                    AnimatedVisibility(
-                        visible = viewModel.isSyncing, enter = fadeIn(), exit = fadeOut()
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    SyncPanel()
                     Spacer(Modifier.width(10.dp))
                     UsageView()
                 }
@@ -111,3 +97,40 @@ fun MainView(
     }
 }
 
+@Composable
+fun SyncPanel(
+    viewModel: MainViewModel = koinViewModel(),
+) {
+    ConditionalTooltip(
+        !viewModel.isSyncPossible, "Please enter your USC credentials in the preferences first."
+    ) {
+        Button(
+            enabled = viewModel.isSyncPossible && !viewModel.isSyncing,
+            onClick = { viewModel.startSync() },
+        ) {
+            Icon(Icons.Default.Refresh, contentDescription = null)
+            Text(text = "Sync")
+        }
+    }
+    AnimatedVisibility(
+        visible = viewModel.isSyncing, enter = fadeIn(), exit = fadeOut()
+    ) {
+        BoxWithConstraints(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .width(60.dp)
+//                .background(Color.Red)
+        ) {
+            CircularProgressIndicator()
+            viewModel.currentSyncStep?.also {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier.background(Color.Green),
+                ) {
+                    Text(it.section, fontSize = 10.sp)
+                    Text(it.detail ?: "", fontSize = 9.sp)
+                }
+            }
+        }
+    }
+}

@@ -27,6 +27,7 @@ class SyncerFacade(
     private val uscConfig: UscConfig,
     private val phpSessionProvider: PhpSessionProvider,
     private val planProvider: PlanProvider,
+    private val progress: SyncProgress,
 ) : Syncer {
 
     private val log = logger {}
@@ -57,33 +58,42 @@ class SyncerFacade(
 
     override suspend fun sync() {
         log.debug { "Syncing ..." }
+        progress.start()
+        try {
+            transaction {
+                runBlocking {
+                    safeSync()
+                }
+            }
+        } finally {
+            progress.stop()
+        }
+    }
+
+    private suspend fun safeSync() {
         val now = clock.now()
         val city = singlesService.preferences.city ?: error("No city defined!")
         val lastSync = singlesService.getLastSyncFor(city)
         val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
-
         val session = phpSessionProvider.provide()
         val plan = planProvider.provide(session)
+        val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
+        log.debug { "isFullSync=$isFullSync, lastSync=$lastSync, days=$days" }
 
-        transaction {
-            runBlocking {
-                val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
-                log.debug { "isFullSync=$isFullSync, lastSync=$lastSync, days=$days" }
-                if (isFullSync) {
-                    venueSyncer.sync(session, plan, city)
-                    activitiesSyncer.sync(session, plan, city, days)
-                    freetrainingSyncer.sync(session, plan, city, days)
-                }
-                scheduleSyncer.sync(session, city)
-                checkinSyncer.sync(session, city)
-                if (isFullSync) {
-                    if (city == City.Amsterdam) {
-                        thirdPartySyncerAmsterdam.sync(days)
-                    }
-                    cleanupPostSync.cleanup()
-                }
-                singlesService.setLastSyncFor(city, now)
-            }
+        if (isFullSync) {
+            venueSyncer.sync(session, plan, city)
+            activitiesSyncer.sync(session, plan, city, days)
+            freetrainingSyncer.sync(session, plan, city, days)
         }
+        scheduleSyncer.sync(session, city)
+        checkinSyncer.sync(session, city)
+        if (isFullSync) {
+            if (city == City.Amsterdam) {
+                thirdPartySyncerAmsterdam.sync(days)
+            }
+            cleanupPostSync.cleanup()
+        }
+
+        singlesService.setLastSyncFor(city, now)
     }
 }

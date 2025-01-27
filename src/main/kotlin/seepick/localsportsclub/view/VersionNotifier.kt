@@ -4,13 +4,15 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.service.VersionChecker
 import seepick.localsportsclub.service.VersionResult
 import seepick.localsportsclub.view.common.executeBackgroundTask
-import seepick.localsportsclub.view.common.executeViewTask
 import java.net.URI
+import java.net.UnknownHostException
 
 class VersionNotifier(
     private val versionChecker: VersionChecker,
@@ -22,15 +24,19 @@ class VersionNotifier(
     override fun onStartUp() {
         val version = AppPropertiesProvider.provide().version
         executeBackgroundTask("Failed to get latest application version from the web.") {
-            val result = versionChecker.check(version)
-            when (result) {
-                is VersionResult.TooOld -> {
-                    executeViewTask("Failed to download newer version.") {
-                        handleOutdated()
+            try {
+                val result = versionChecker.check(version)
+                when (result) {
+                    is VersionResult.TooOld -> {
+                        withContext(Dispatchers.Main) {
+                            handleOutdated()
+                        }
                     }
-                }
 
-                is VersionResult.UpToDate -> log.debug { "Current version [$version] is up2date." }
+                    is VersionResult.UpToDate -> log.debug { "Current version [$version] is up2date." }
+                }
+            } catch (e: UnknownHostException) {
+                log.debug { "Skip version check as seems not to be connected to the internet." }
             }
         }
     }

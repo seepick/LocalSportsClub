@@ -17,7 +17,9 @@ fun syncModule(config: AppConfig) = module {
     log.debug { "Configuring sync mode: ${config.sync}" }
     singleOf(::SyncerListenerDispatcher)
     singleOf(::SyncReporter)
+    singleOf(::SyncProgressThreaded) bind SyncProgress::class
     singleOf(::HttpDownloader) bind Downloader::class
+
     when (config.sync) {
         SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
         SyncMode.Delayed -> singleOf(::DelayedSyncer) bind Syncer::class
@@ -36,7 +38,6 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::ThirdPartySyncerAmsterdam)
             singleOf(::CleanupPostSync)
             singleOf(::SyncerFacade) bind Syncer::class
-
         }
     }
 }

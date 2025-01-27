@@ -12,17 +12,20 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.EntityType
 import seepick.localsportsclub.service.model.FreetrainingState
 
+
 class ScheduleSyncer(
     private val uscApi: UscApi,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val dataSyncRescuer: DataSyncRescuer,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     private val log = logger {}
 
     suspend fun sync(session: PhpSessionId, city: City) {
         log.debug { "Syncing scheduled activities." }
+        progress.onProgress("Schedule")
         val scheduleRows = uscApi.fetchScheduleRows(session)
         val scheduleActivities = scheduleRows.filter { it.entityType == EntityType.Activity }
             .associateBy { it.activityOrFreetrainingId }

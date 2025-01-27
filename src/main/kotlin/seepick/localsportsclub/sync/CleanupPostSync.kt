@@ -9,8 +9,10 @@ class CleanupPostSync(
     private val freetrainingRepo: FreetrainingRepo,
     private val clock: Clock,
     private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
 ) {
     fun cleanup() {
+        progress.onProgress("Cleanup")
         val today = clock.today()
 
         val activities = activityRepo.deleteBlanksBefore(today)

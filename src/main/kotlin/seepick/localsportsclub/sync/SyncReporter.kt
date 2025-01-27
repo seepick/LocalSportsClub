@@ -55,15 +55,15 @@ class SyncReporter : SyncerListener {
     }
 
     override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        report.venuesAdded++
+        report.venuesAdded += venueDbos.size
     }
 
     override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        report.venuesMarkedDeleted++
+        report.venuesMarkedDeleted += venueDbos.size
     }
 
     override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        report.activitiesAdded++
+        report.activitiesAdded += activityDbos.size
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
@@ -78,7 +78,7 @@ class SyncReporter : SyncerListener {
     }
 
     override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
-        report.freetrainingsAdded++
+        report.freetrainingsAdded += freetrainingDbos.size
     }
 
     override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {

@@ -18,6 +18,7 @@ import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.MainView
@@ -97,14 +98,16 @@ object LocalSportsClub {
                         val dataStorage = koinInject<DataStorage>()
                         val usageStorage = koinInject<UsageStorage>()
                         val bookingService = koinInject<BookingService>()
-                        val syncReporter = koinInject<SyncReporter>()
-                        val syncerListeners = listOf(dataStorage, usageStorage, syncReporter)
+                        val syncerListeners = listOf(dataStorage, usageStorage, koinInject<SyncReporter>())
                         syncerListeners.forEach {
                             syncer.registerListener(it)
                             if (it.alsoRegisterForBooking()) {
                                 bookingService.registerListener(it)
                             }
                         }
+
+                        val syncProgress = koinInject<SyncProgress>()
+                        syncProgress.register(koinViewModel<MainViewModel>())
 
                         val dataStorageListeners = listOf(
                             koinViewModel<SyncerViewModel>(),

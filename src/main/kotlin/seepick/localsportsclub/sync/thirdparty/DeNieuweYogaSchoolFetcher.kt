@@ -15,6 +15,7 @@ import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.daysBetween
 import seepick.localsportsclub.service.httpClient
 import seepick.localsportsclub.service.jsoupBody
+import seepick.localsportsclub.service.model.HasSlug
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
 import java.time.LocalDateTime

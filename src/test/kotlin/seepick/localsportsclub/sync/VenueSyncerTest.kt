@@ -74,6 +74,7 @@ class VenueSyncerTest : StringSpec() {
                 imageStorage,
                 syncerListenerDispatcher,
             ),
+            progress = DummySyncProgress,
         )
     }
 

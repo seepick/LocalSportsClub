@@ -18,7 +18,6 @@ suspend fun <T, R> workParallel(coroutineCount: Int, data: List<T>, processor: s
         val result = mutableListOf<R>()
         withContext(Dispatchers.IO) {
             val items = ConcurrentLinkedQueue(data.toMutableList())
-
             (1..min(coroutineCount, data.size)).map { coroutine ->
                 log.debug { "Starting coroutine $coroutine/$coroutineCount ..." }
                 launch {
@@ -92,3 +91,4 @@ private suspend fun <T> doRetrySuspend(
 fun String.unescape(): String = replace("\\\"", "\"").replace("\\n", "\n")
 
 fun String.firstUpper() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }
+

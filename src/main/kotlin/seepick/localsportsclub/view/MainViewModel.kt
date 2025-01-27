@@ -9,7 +9,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.sync.SyncProgressListener
 import seepick.localsportsclub.sync.SyncReporter
+import seepick.localsportsclub.sync.SyncStep
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.common.executeBackgroundTask
 
@@ -18,7 +20,7 @@ class MainViewModel(
     private val singlesService: SinglesService,
     private val snackbarService: SnackbarService,
     private val syncReporter: SyncReporter,
-) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener {
+) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener, SyncProgressListener {
 
     private val log = logger {}
 
@@ -28,6 +30,8 @@ class MainViewModel(
         private set
     var isSyncPossible: Boolean by mutableStateOf(false)
         private set
+    var currentSyncStep by mutableStateOf<SyncStep?>(null)
+        private set
 
     override fun onStartUp() {
         val preferences = singlesService.preferences
@@ -35,32 +39,9 @@ class MainViewModel(
     }
 
     fun startSync() {
-        executeBackgroundTask(
-            "Synchronisation of data failed!",
-            doBefore = {
-                log.info { "sync START" }
-                isSyncing = true
-            },
-            doFinally = {
-                log.info { "sync DONE" }
-                syncReporter.clear()
-                isSyncing = false
-            }
-        ) {
+        executeBackgroundTask("Synchronisation of data failed!") {
+            currentSyncStep = null
             syncer.sync()
-
-            val report = syncReporter.report.buildMessage()
-            snackbarService.show(
-                message = buildString {
-                    append("Finished synchronizing data 🔄✅")
-                    if (report != null) {
-                        appendLine()
-                        append(report)
-                    }
-                },
-                duration = SnackbarDuration.Indefinite,
-                actionLabel = "Close",
-            )
         }
     }
 
@@ -72,5 +53,33 @@ class MainViewModel(
     fun changeScreen(screen: Screen) {
         log.debug { "selecting: $screen" }
         selectedScreen.value = screen
+    }
+
+    override fun onSyncStart() {
+        log.info { "sync START" }
+        isSyncing = true
+    }
+
+    override fun onSyncStep(syncStep: SyncStep) {
+        currentSyncStep = syncStep
+    }
+
+    override fun onSyncFinish() {
+        log.info { "sync DONE" }
+        isSyncing = false
+
+        val report = syncReporter.report.buildMessage()
+        syncReporter.clear()
+        snackbarService.show(
+            message = buildString {
+                append("Finished synchronizing data 🔄✅")
+                if (report != null) {
+                    appendLine()
+                    append(report)
+                }
+            },
+            duration = SnackbarDuration.Indefinite,
+            actionLabel = "Close",
+        )
     }
 }

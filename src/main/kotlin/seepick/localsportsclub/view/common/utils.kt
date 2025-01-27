@@ -29,7 +29,6 @@ fun readImageBitmapFromClasspath(classpath: String): ImageBitmap =
 @OptIn(ExperimentalResourceApi::class)
 fun readImageBitmapFromFile(file: File): ImageBitmap = file.inputStream().readAllBytes().decodeToImageBitmap()
 
-
 fun ViewModel.executeBackgroundTask(
     errorMessage: String,
     doBefore: () -> Unit = {},

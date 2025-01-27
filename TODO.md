@@ -2,11 +2,19 @@
 
 ## Next
 
-* tooltips for table headers (some are not self-explanatory)
-* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
+* verifiedUscCredentials: instead "test connection" => "verify connection"
+    * enable sync/book only if current creds == verified creds
+    * same for GCal
+* fetch activity days in parallel (syncProgress, display "Day 13", "Day 12",... counter like, as done with venues;
+    * alternatively: send ~80 requests (each different page), for a single day ;)
+* BUG: select search time; navigate other screen and back; time is gone!
 
 ## Backlog
 
+* tooltips for table headers (some are not self-explanatory)
+* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
+  day can have 66 pages!); and/or is it possible to increase page-size?!
+* colored output for sync report (green for +, red for -)
 * different icon for wishlisted
 * make date search field more compact
 * system test: book something which can't be bookedl parse response and show proper message
@@ -14,9 +22,14 @@
       calendar month)
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
 * make long venue texts "somehow" selectable; A) selectable text (toolitp?!) or B) click => copy clipboard
+* third party syncer for cosmos-west
+* ad snackbar: when type != info, make it duration=indef and closeable button (otherwise message gone without time to
+  read it)
 
-## Later
+## Back-Backlog (unsorted)
 
+* adaptive layout: depending on window size, change layout (add columns, change formatting)
+* html click on image, zoom (https://codeconvey.com/html-image-zoom-on-click/)
 * sync the membership tag (minimum one only) for venue&activity
 * support custom plan; define everything yourself (as so many other plans are there; think of B2B)
 * ... no-show for freetraining possible?? try it yourself ;)

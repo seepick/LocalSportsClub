@@ -13,6 +13,7 @@ import seepick.localsportsclub.api.ResponseStorage
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.httpClient
+import seepick.localsportsclub.service.model.HasSlug
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
 import java.time.LocalDateTime

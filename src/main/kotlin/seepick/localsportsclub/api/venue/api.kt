@@ -16,6 +16,8 @@ import seepick.localsportsclub.service.ApiException
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.safeGet
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.onProgressVenues
 
 data class VenuesFilter(
     val city: City,
@@ -31,6 +33,7 @@ class VenueHttpApi(
     private val http: HttpClient,
     private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
+    private val progress: SyncProgress,
 ) : VenueApi {
     private val baseUrl = uscConfig.baseUrl
 
@@ -42,6 +45,7 @@ class VenueHttpApi(
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
     private suspend fun fetchPage(session: PhpSessionId, filter: VenuesFilter, page: Int): VenuesDataJson {
         log.debug { "Fetching venue page $page" }
+        progress.onProgressVenues("Page $page")
         val response = http.safeGet(Url("$baseUrl/venues")) {
             cookie("PHPSESSID", session.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!
