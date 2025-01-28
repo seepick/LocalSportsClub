@@ -120,9 +120,9 @@ object LocalSportsClub {
                         }
 
                         val applicationLifecycleListeners = listOf(
+                            mainViewModel, // has to be first ;)
                             usageStorage,
                             koinInject<VersionNotifier>(),
-                            koinViewModel<MainViewModel>(),
                             koinViewModel<ActivityViewModel>(),
                             koinViewModel<FreetrainingViewModel>(),
                             koinViewModel<VenueViewModel>(),

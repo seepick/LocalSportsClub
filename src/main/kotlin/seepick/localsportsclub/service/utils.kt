@@ -2,7 +2,6 @@ package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,7 +25,6 @@ suspend fun <T, R> workParallel(
             launch {
                 var item = items.poll()
                 while (item != null) {
-                    ensureActive()
                     result += processor(item)
                     item = items.poll()
                 }

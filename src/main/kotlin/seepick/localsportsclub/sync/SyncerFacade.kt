@@ -1,8 +1,7 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import seepick.localsportsclub.api.PhpSessionProvider
 import seepick.localsportsclub.api.PlanProvider
 import seepick.localsportsclub.api.UscConfig
@@ -60,11 +59,8 @@ class SyncerFacade(
         log.debug { "Syncing ..." }
         progress.start()
         try {
-//            newSuspendedTransaction {
-            transaction {
-                runBlocking {
-                    safeSync()
-                }
+            newSuspendedTransaction {
+                safeSync()
             }
         } finally {
             progress.stop()

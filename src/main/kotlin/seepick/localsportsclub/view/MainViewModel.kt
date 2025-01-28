@@ -6,6 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.service.singles.SinglesService
@@ -32,16 +35,22 @@ class MainViewModel(
         private set
     var currentSyncStep by mutableStateOf<SyncStep?>(null)
         private set
+    private var currentSyncJob: Job? = null
+    private var currentSyncJobCancelled = false
 
     override fun onStartUp() {
+        log.debug { "onStartUp()" }
         val preferences = singlesService.preferences
         isSyncPossible = preferences.uscCredentials != null && preferences.city != null
     }
 
-    fun startSync() {
-        executeBackgroundTask("Synchronisation of data failed!") {
-            currentSyncStep = null
-            syncer.sync()
+    override fun onExit() {
+        log.debug { "onExit()" }
+        runBlocking {
+            log.debug { "Cancel and join sync job ..." }
+            currentSyncJobCancelled = true
+            currentSyncJob?.cancelAndJoin()
+            log.debug { "Cancel and join sync job ... DONE" }
         }
     }
 
@@ -58,6 +67,14 @@ class MainViewModel(
     override fun onSyncStart() {
         log.info { "sync START" }
         isSyncing = true
+        currentSyncJobCancelled = false
+    }
+
+    fun startSync() {
+        currentSyncJob = executeBackgroundTask("Synchronisation of data failed!") {
+            currentSyncStep = null
+            syncer.sync()
+        }
     }
 
     override fun onSyncStep(syncStep: SyncStep) {
@@ -67,19 +84,22 @@ class MainViewModel(
     override fun onSyncFinish() {
         log.info { "sync DONE" }
         isSyncing = false
+        currentSyncJob = null
 
-        val report = syncReporter.report.buildMessage()
-        syncReporter.clear()
-        snackbarService.show(
-            message = buildString {
-                append("Finished synchronizing data 🔄✅")
-                if (report != null) {
-                    appendLine()
-                    append(report)
-                }
-            },
-            duration = SnackbarDuration.Indefinite,
-            actionLabel = "Close",
-        )
+        if (!currentSyncJobCancelled) {
+            val report = syncReporter.report.buildMessage()
+            syncReporter.clear()
+            snackbarService.show(
+                message = buildString {
+                    append("Finished synchronizing data 🔄✅")
+                    if (report != null) {
+                        appendLine()
+                        append(report)
+                    }
+                },
+                duration = SnackbarDuration.Indefinite,
+                actionLabel = "Close",
+            )
+        }
     }
 }
