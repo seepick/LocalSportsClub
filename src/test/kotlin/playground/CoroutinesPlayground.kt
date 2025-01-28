@@ -20,9 +20,11 @@ import seepick.localsportsclub.reconfigureLog
 import kotlin.time.measureTime
 
 object CoroutinesPlayground {
+    // -Dkotlinx.coroutines.debug JVM option
     // https://www.youtube.com/watch?v=2QInrEaXyMo
     // https://www.youtube.com/watch?v=VWlwkqmTLHc
-
+    // https://www.youtube.com/watch?v=VWlwkqmTLHc
+    // https://www.youtube.com/watch?v=ZX8VsqNO_Ss
     private val log: KLogger
 
     init {

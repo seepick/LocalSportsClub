@@ -2,7 +2,6 @@
 
 ## Next
 
-* BUG: quit while sync
 * verifiedUscCredentials: instead "test connection" => "verify connection"
     * enable sync/book only if current creds == verified creds
     * same for GCal
@@ -10,6 +9,7 @@
 
 ## Backlog
 
+* BUG: while sync, quit/update
 * sync also cancellation times.
 * system test: when cancel too late
 * tooltips for table headers (some are not self-explanatory)

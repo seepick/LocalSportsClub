@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import seepick.localsportsclub.openFromClasspath
@@ -34,10 +34,8 @@ fun ViewModel.executeBackgroundTask(
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) = viewModelScope.launch {
-    withContext(Dispatchers.IO) {
-        executeTask(errorMessage, doBefore, doFinally, doTask)
-    }
+) = viewModelScope.launch(Dispatchers.IO) {
+    executeTask(errorMessage, doBefore, doFinally, doTask)
 }
 
 fun ViewModel.executeViewTask(
@@ -45,7 +43,7 @@ fun ViewModel.executeViewTask(
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) = viewModelScope.launch {
+) = viewModelScope.launch(Dispatchers.Main) {
     executeTask(errorMessage, doBefore, doFinally, doTask)
 }
 
@@ -61,6 +59,7 @@ private suspend fun executeTask(
         doTask()
     } catch (e: Throwable) {
         when (e) {
+            is CancellationException -> throw e
             is Exception, is NoClassDefFoundError -> {
                 log.error(e) { "Executing task failed!" }
                 showErrorDialog(
@@ -79,24 +78,21 @@ private suspend fun executeTask(
     }
 }
 
-fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
-    factory = {
-        val density = LocalDensity.current
-        val strokeWidthPx = density.run { strokeWidth.toPx() }
+fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(factory = {
+    val density = LocalDensity.current
+    val strokeWidthPx = density.run { strokeWidth.toPx() }
 
-        Modifier.drawBehind {
-            val width = size.width
-            val height = size.height - strokeWidthPx / 2
+    Modifier.drawBehind {
+        val width = size.width
+        val height = size.height - strokeWidthPx / 2
 
-            drawLine(
-                color = color,
-                start = Offset(x = 0f, y = height),
-                end = Offset(x = width, y = height),
-                strokeWidth = strokeWidthPx
-            )
-        }
+        drawLine(
+            color = color,
+            start = Offset(x = 0f, y = height),
+            end = Offset(x = width, y = height),
+            strokeWidth = strokeWidthPx
+        )
     }
-)
+})
 
-fun Modifier.applyTestTag(testTagName: String?) =
-    let { if (testTagName == null) it else it.testTag(testTagName) }
+fun Modifier.applyTestTag(testTagName: String?) = let { if (testTagName == null) it else it.testTag(testTagName) }

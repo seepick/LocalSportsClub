@@ -60,6 +60,7 @@ class SyncerFacade(
         log.debug { "Syncing ..." }
         progress.start()
         try {
+//            newSuspendedTransaction {
             transaction {
                 runBlocking {
                     safeSync()

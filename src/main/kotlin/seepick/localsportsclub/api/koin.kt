@@ -36,7 +36,7 @@ fun apiModule(config: AppConfig) = module {
         single { if (config.usc.storeResponses) ResponseStorageImpl() else NoopResponseStorage } bind ResponseStorage::class
         single { LoginHttpApi(get(), config.usc.baseUrl) } bind LoginApi::class
         singleOf(::VenueHttpApi) bind VenueApi::class
-        singleOf(::ActivityHttpApi) bind ActivityApi::class
+        single { ActivityHttpApi(get(), get(), get(), get()) } bind ActivityApi::class
         singleOf(::ScheduleHttpApi) bind ScheduleApi::class
         singleOf(::CheckinHttpApi) bind CheckinApi::class
         singleOf(::BookingHttpApi) bind BookingApi::class
