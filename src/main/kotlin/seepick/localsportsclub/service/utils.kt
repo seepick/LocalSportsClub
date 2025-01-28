@@ -13,22 +13,24 @@ import kotlin.reflect.full.isSuperclassOf
 
 private val log = logger {}
 
-suspend fun <T, R> workParallel(coroutineCount: Int, data: List<T>, processor: suspend (T) -> R): List<R> {
-    return coroutineScope {
+suspend fun <T, R> workParallel(
+    coroutineCount: Int,
+    data: List<T>,
+    processor: suspend (T) -> R,
+): List<R> = coroutineScope {
+    withContext(Dispatchers.IO) {
         val result = mutableListOf<R>()
-        withContext(Dispatchers.IO) {
-            val items = ConcurrentLinkedQueue(data.toMutableList())
-            (1..min(coroutineCount, data.size)).map { coroutine ->
-                log.debug { "Starting coroutine $coroutine/$coroutineCount ..." }
-                launch {
-                    var item = items.poll()
-                    while (item != null) {
-                        result += processor(item)
-                        item = items.poll()
-                    }
+        val items = ConcurrentLinkedQueue(data.toMutableList())
+        (1..min(coroutineCount, data.size)).map { coroutine ->
+            log.debug { "Starting coroutine $coroutine/$coroutineCount ..." }
+            launch {
+                var item = items.poll()
+                while (item != null) {
+                    result += processor(item)
+                    item = items.poll()
                 }
-            }.joinAll()
-        }
+            }
+        }.joinAll()
         result
     }
 }

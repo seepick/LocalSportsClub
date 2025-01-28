@@ -68,6 +68,7 @@ class ActivityHttpApi(
     private val responseStorage: ResponseStorage,
     uscConfig: UscConfig,
     private val clock: Clock,
+    private val pageSizeHint: Int = 100,
 ) : ActivityApi {
 
     private val log = logger {}
@@ -78,7 +79,7 @@ class ActivityHttpApi(
         filter: ActivitiesFilter,
         serviceType: ServiceType
     ): List<ActivitiesDataJson> =
-        fetchPageable { fetchPage(session, filter, serviceType, it) }
+        fetchPageable(pageSizeHint) { fetchPage(session, filter, serviceType, it) }
 
     // /activities?service_type=0&city=1144&date=2024-12-16&business_type[]=b2c&plan_type=3&type[]=onsite&page=2
     private suspend fun fetchPage(

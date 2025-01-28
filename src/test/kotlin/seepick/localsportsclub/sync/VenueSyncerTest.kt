@@ -73,6 +73,7 @@ class VenueSyncerTest : StringSpec() {
                 NoopDownloader,
                 imageStorage,
                 syncerListenerDispatcher,
+                DummySyncProgress,
             ),
             progress = DummySyncProgress,
         )

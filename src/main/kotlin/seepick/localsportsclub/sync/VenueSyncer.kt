@@ -17,6 +17,7 @@ import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.min
 
 fun SyncProgress.onProgressVenues(detail: String?) {
     onProgress("Venues", detail)
@@ -87,7 +88,7 @@ class VenueSyncInserterImpl(
     private var venueCount = AtomicInteger(-1)
     private fun SyncProgress.onProgressVenueItem() {
         val current = venueCount.getAndDecrement().let { if (it < 0) 0 else it }
-        if (current % 10 == 0) {
+        if (current % 25 == 0) {
             onProgressVenues("Load $current")
         }
     }
@@ -133,7 +134,7 @@ class VenueSyncInserterImpl(
         newLinks: MutableSet<VenueSlugLink>,
     ) {
         log.trace { "fetchAllInsertDispatch(venueSlugs=$venueSlugs, newLinks=$newLinks)" }
-        newDbos += workParallel(5, venueSlugs) { slug ->
+        newDbos += workParallel(min(venueSlugs.size, 40), venueSlugs) { slug ->
             fetchDetailsDownloadImage(session, city, slug, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)

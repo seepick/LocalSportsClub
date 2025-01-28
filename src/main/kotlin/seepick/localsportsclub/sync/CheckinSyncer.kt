@@ -65,7 +65,7 @@ class CheckinSyncer(
             city = city,
             activityId = entry.activityId,
             venueSlug = entry.venueSlug,
-            prefilledNotes = "[SYNC] rescued activity for past check-in"
+            prefilledVenueNotes = "[SYNC] rescued activity for past check-in"
         )
         if (activity.state == ActivityState.Checkedin) {
             log.debug { "Activity was already marked as checked-in, skipping: $entry" }

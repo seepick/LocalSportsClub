@@ -31,6 +31,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private lateinit var venueSyncInserter: VenueSyncInserter
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = StaticClock(todayNow)
+    private val syncProgress = DummySyncProgress
     private val syncDaysAhead = 4
     private val anySession = Arb.phpSessionId().next()
     private val city = Arb.city().next()
@@ -55,6 +56,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
         venueRepo = venueRepo,
         dispatcher = syncerListenerDispatcher,
         venueSyncInserter = venueSyncInserter,
+        progress = syncProgress,
     )
 
     init {

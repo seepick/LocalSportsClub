@@ -10,6 +10,7 @@ import java.io.File
 import java.io.FilenameFilter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicBoolean
 
 interface ResponseStorage {
     suspend fun store(response: HttpResponse, suffix: String)
@@ -32,13 +33,12 @@ class ResponseStorageImpl : ResponseStorage {
 
     private val log = logger {}
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS")
-    private var cleanedUpYet = false
+    private var cleanedUpYet = AtomicBoolean(false)
     private val apiLogsFolder = FileResolver.resolve(DirectoryEntry.ApiLogs)
 
     override suspend fun store(response: HttpResponse, suffix: String) {
-        if (!cleanedUpYet) {
+        if (!cleanedUpYet.getAndSet(true)) {
             cleanUp()
-            cleanedUpYet = true
         }
         val target = File(apiLogsFolder, "${dateTimeFormatter.format(SystemClock.now())}-$suffix.apilog.txt")
         target.writeText(response.bodyAsText())

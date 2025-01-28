@@ -43,7 +43,7 @@ class SyncProgressThreaded : SyncProgress {
 
     private val listeners = mutableListOf<SyncProgressListener>()
     private val steps = LinkedBlockingQueue<SyncStep>()
-    private val minimumDelayInMs = 500
+    private val minimumDelayInMs = 300
     private var currentThread: Thread? = null
     private var isFirst = true
     private var shouldStop = false
@@ -72,7 +72,7 @@ class SyncProgressThreaded : SyncProgress {
                 if (!isFirst) {
                     val timeNeeded = getTimeMillis() - lastExecution
                     val delayAdded = minimumDelayInMs - timeNeeded
-                    
+
                     if (delayAdded > 0) {
                         log.debug { "Adding artificial delay of ${delayAdded}ms" }
                         try {

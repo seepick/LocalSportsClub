@@ -38,7 +38,8 @@ class ActivityHttpApiTest : StringSpec() {
                 http = http,
                 uscConfig = uscConfig,
                 clock = clock,
-                responseStorage = NoopResponseStorage
+                responseStorage = NoopResponseStorage,
+                pageSizeHint = 1,
             )
 
             val response = api.fetchPages(phpSessionId, filter, ServiceType.Courses)

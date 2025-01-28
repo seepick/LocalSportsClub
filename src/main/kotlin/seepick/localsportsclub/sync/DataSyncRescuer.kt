@@ -23,7 +23,7 @@ interface DataSyncRescuer {
         city: City,
         activityId: Int,
         venueSlug: String,
-        prefilledNotes: String
+        prefilledVenueNotes: String
     ): ActivityDbo
 
     suspend fun fetchInsertAndDispatchFreetraining(
@@ -51,13 +51,13 @@ class DataSyncRescuerImpl(
         city: City,
         activityId: Int,
         venueSlug: String,
-        prefilledNotes: String,
+        prefilledVenueNotes: String,
     ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity with ID $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
         val activityDetails = activityApi.fetchDetails(session, activityId).let(::adjustDate)
 
-        val venue = ensureVenue(session, city, venueSlug, prefilledNotes)
+        val venue = ensureVenue(session, city, venueSlug, prefilledVenueNotes)
         val dbo = activityDetails.toActivityDbo(activityId, venue.id)
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))

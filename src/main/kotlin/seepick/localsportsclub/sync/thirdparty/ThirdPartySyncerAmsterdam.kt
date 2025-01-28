@@ -53,7 +53,7 @@ class ThirdPartySyncerAmsterdam(
 
     private suspend fun <P : HasSlug> syncThirdParty(fetch: suspend (P) -> List<ThirdEvent>, param: P) {
         log.debug { "Syncing third party events for venue: ${param.slug}" }
-        progress.onProgressThirdParty("Party ${currentPartyIndex++}/$totalPartiesCount")
+        progress.onProgressThirdParty("Venue ${currentPartyIndex++}/$totalPartiesCount")
         val venue = venueRepo.selectBySlug(param.slug)
             ?: error("Venue not found in DB with slug [${param.slug}]")
         val events = fetch(param)

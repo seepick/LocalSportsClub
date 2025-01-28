@@ -60,6 +60,7 @@ class CheckinSyncerTest : StringSpec() {
             freetrainingRepo = freetrainingRepo,
             dispatcher = syncerListenerDispatcher,
             dataSyncRescuer = dataSyncRescuer,
+            progress = DummySyncProgress,
         )
     }
 

@@ -18,6 +18,7 @@ import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.safeGet
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.onProgressVenues
+import java.util.concurrent.atomic.AtomicInteger
 
 data class VenuesFilter(
     val city: City,
@@ -38,14 +39,16 @@ class VenueHttpApi(
     private val baseUrl = uscConfig.baseUrl
 
     private val log = logger {}
-
-    override suspend fun fetchPages(session: PhpSessionId, filter: VenuesFilter): List<VenuesDataJson> =
-        fetchPageable { fetchPage(session, filter, it) }
+    private var pageCounter = AtomicInteger(-1)
+    override suspend fun fetchPages(session: PhpSessionId, filter: VenuesFilter): List<VenuesDataJson> {
+        pageCounter.set(0)
+        return fetchPageable(20) { fetchPage(session, filter, it) }
+    }
 
     // GET https://urbansportsclub.com/nl/venues?city_id=1144&plan_type=3&page=2
     private suspend fun fetchPage(session: PhpSessionId, filter: VenuesFilter, page: Int): VenuesDataJson {
         log.debug { "Fetching venue page $page" }
-        progress.onProgressVenues("Page $page")
+        progress.onProgressVenues("Page ${pageCounter.incrementAndGet()}")
         val response = http.safeGet(Url("$baseUrl/venues")) {
             cookie("PHPSESSID", session.value)
             header("x-requested-with", "XMLHttpRequest") // IMPORTANT! to change the response to JSON!!!

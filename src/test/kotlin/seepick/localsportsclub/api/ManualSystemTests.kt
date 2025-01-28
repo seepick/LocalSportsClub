@@ -21,6 +21,7 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesServiceImpl
+import seepick.localsportsclub.sync.DummySyncProgress
 import seepick.localsportsclub.tools.cliConnectToDatabase
 import java.time.LocalDate
 
@@ -32,6 +33,7 @@ object ManualSystemTests {
     )
     private val responseStorage = ResponseStorageImpl()
     private val phpSessionId: PhpSessionId by lazy { runBlocking { loadSessionId() } }
+    private val syncProgress = DummySyncProgress
 
     // https://urbansportsclub.com/en/venues/wilhelmina-gasthuisterrein
     @JvmStatic
@@ -40,9 +42,9 @@ object ManualSystemTests {
             log.info { "Manual test running..." }
 //            testFreetrainingDetails()
 //            testCheckins()
-//            testVenues()
+            testVenues()
 //            testVenue()
-            testActivities()
+//            testActivities()
 //            testSchedule()
 //            testBook(84737975)
 //            testMembership()
@@ -51,7 +53,7 @@ object ManualSystemTests {
 
     private fun activityApi() = ActivityHttpApi(httpClient, responseStorage, uscConfig, SystemClock)
     private fun checkinApi() = CheckinHttpApi(httpClient, responseStorage, SystemClock, uscConfig)
-    private fun venueApi() = VenueHttpApi(httpClient, responseStorage, uscConfig)
+    private fun venueApi() = VenueHttpApi(httpClient, responseStorage, uscConfig, syncProgress)
     private fun bookingApi() = BookingHttpApi(httpClient, uscConfig, responseStorage)
 
     private suspend fun testMembership() {

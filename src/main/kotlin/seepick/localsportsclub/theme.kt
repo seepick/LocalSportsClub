@@ -114,8 +114,11 @@ object LightLscColors : LscColors {
 }
 
 object Lsc {
-    val isDarkTheme2 = currentSystemTheme == SystemTheme.DARK
-    val isDarkTheme = false
+    val isDarkTheme = if (Environment.current == Environment.Development) {
+        true
+    } else {
+        currentSystemTheme == SystemTheme.DARK
+    }
     val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
     val icons = LscIcons
 }

@@ -18,6 +18,11 @@ class DelayedSyncer(
         dispatcher.dispatchOnVenueDbosAdded(listOf(DummyGenerator.venue()))
         delay(1_000)
 
+        progress.onProgress("Venues")
+        delay(500)
+        progress.onProgress("Venues", "Quick 1")
+        progress.onProgress("Venues", "Quick 2")
+        progress.onProgress("Venues", "Quick 3")
         progress.onProgress("Activities")
         delay(500)
         progress.onProgress("Activities", "Day 1/3")
@@ -26,6 +31,8 @@ class DelayedSyncer(
         delay(2_000)
         progress.onProgress("Activities", "Day 3/3")
         delay(2_000)
+        progress.onProgress("Freetrainings", "")
+        delay(3_000)
         progress.onProgress("Checkins", "")
 
         log.info { "Delay sync done." }
