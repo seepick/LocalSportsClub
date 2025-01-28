@@ -34,11 +34,9 @@ fun ViewModel.executeBackgroundTask(
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) {
-    viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            executeTask(errorMessage, doBefore, doFinally, doTask)
-        }
+) = viewModelScope.launch {
+    withContext(Dispatchers.IO) {
+        executeTask(errorMessage, doBefore, doFinally, doTask)
     }
 }
 
@@ -47,10 +45,8 @@ fun ViewModel.executeViewTask(
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) {
-    viewModelScope.launch {
-        executeTask(errorMessage, doBefore, doFinally, doTask)
-    }
+) = viewModelScope.launch {
+    executeTask(errorMessage, doBefore, doFinally, doTask)
 }
 
 private suspend fun executeTask(

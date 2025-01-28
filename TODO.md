@@ -2,15 +2,16 @@
 
 ## Next
 
+* BUG: quit while sync
 * verifiedUscCredentials: instead "test connection" => "verify connection"
     * enable sync/book only if current creds == verified creds
     * same for GCal
-* fetch activity days in parallel (syncProgress, display "Day 13", "Day 12",... counter like, as done with venues;
-    * alternatively: send ~80 requests (each different page), for a single day ;)
 * BUG: select search time; navigate other screen and back; time is gone!
 
 ## Backlog
 
+* sync also cancellation times.
+* system test: when cancel too late
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
   day can have 66 pages!); and/or is it possible to increase page-size?!
