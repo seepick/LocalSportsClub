@@ -30,7 +30,7 @@ import seepick.localsportsclub.persistence.SinglesTable
 import seepick.localsportsclub.persistence.connectToDatabaseEnvAware
 import seepick.localsportsclub.reconfigureLog
 import seepick.localsportsclub.service.workParallel
-import seepick.localsportsclub.view.common.executeBackgroundTask
+import seepick.localsportsclub.view.common.launchBackgroundTask
 
 private class ExitHandler {
     private val log = logger {}
@@ -79,7 +79,7 @@ private class MyViewModel(private val syncer: MySyncer) : ViewModel() {
     private var job: Job? = null
     fun onStartSync() {
         log.debug { "onStartSync()" }
-        job = executeBackgroundTask("Synchronisation of data failed!") {
+        job = launchBackgroundTask("Synchronisation of data failed!") {
             syncer.sync()
         }
     }

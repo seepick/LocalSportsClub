@@ -22,6 +22,8 @@ interface SinglesService {
     var windowPref: WindowPref?
     var plan: Plan?
     var preferences: Preferences
+    var verifiedUscCredentials: Credentials?
+    var verifiedGcalId: String?
 }
 
 class SinglesServiceImpl(
@@ -78,18 +80,27 @@ class SinglesServiceImpl(
                 else copy(planInternalId = value.internalId)
             }
         }
+    override var verifiedUscCredentials: Credentials?
+        get() = cachedOrSelect().verifiedUscCredentials?.toCredentials()
+        set(value) {
+            update {
+                copy(verifiedUscCredentials = value?.toJsonCredentials())
+            }
+        }
+    override var verifiedGcalId: String?
+        get() = cachedOrSelect().verifiedGcalId
+        set(value) {
+            update {
+                copy(verifiedGcalId = value)
+            }
+        }
 
     override var preferences: Preferences
         get() {
             val single = cachedOrSelect()
 
             return Preferences(
-                uscCredentials = single.prefUscCredUsername?.let {
-                    Credentials(
-                        username = single.prefUscCredUsername,
-                        password = single.prefUscCredPassword!!.let { Encrypter.decrypt(it) }
-                    )
-                },
+                uscCredentials = single.prefUscCredentials?.toCredentials(),
                 city = single.prefCityId?.let { City.byId(it) },
                 gcal = single.prefGoogleCalendarId?.let { Gcal.GcalEnabled(it) } ?: Gcal.GcalDisabled,
                 home = single.prefHomeLat?.let {
@@ -104,8 +115,7 @@ class SinglesServiceImpl(
         set(value) {
             update {
                 copy(
-                    prefUscCredUsername = value.uscCredentials?.username,
-                    prefUscCredPassword = value.uscCredentials?.password?.let { Encrypter.encrypt(it) },
+                    prefUscCredentials = value.uscCredentials?.toJsonCredentials(),
                     prefCityId = value.city?.id,
                     prefGoogleCalendarId = value.gcal.maybeCalendarId,
                     prefHomeLat = value.home?.latitude,
@@ -156,3 +166,13 @@ class SinglesServiceImpl(
         )
     }
 }
+
+fun Credentials.toJsonCredentials() = JsonCredentials(
+    username = username,
+    encryptedPassword = Encrypter.encrypt(password),
+)
+
+fun JsonCredentials.toCredentials() = Credentials(
+    username = username,
+    password = Encrypter.decrypt(encryptedPassword),
+)

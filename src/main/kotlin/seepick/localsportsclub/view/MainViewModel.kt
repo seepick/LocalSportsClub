@@ -16,13 +16,15 @@ import seepick.localsportsclub.sync.SyncProgressListener
 import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.SyncStep
 import seepick.localsportsclub.sync.Syncer
-import seepick.localsportsclub.view.common.executeBackgroundTask
+import seepick.localsportsclub.view.common.launchBackgroundTask
+import seepick.localsportsclub.view.shared.SharedModel
 
 class MainViewModel(
     private val syncer: Syncer,
     private val singlesService: SinglesService,
     private val snackbarService: SnackbarService,
     private val syncReporter: SyncReporter,
+    private val sharedModel: SharedModel,
 ) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener, SyncProgressListener {
 
     private val log = logger {}
@@ -41,7 +43,11 @@ class MainViewModel(
     override fun onStartUp() {
         log.debug { "onStartUp()" }
         val preferences = singlesService.preferences
-        isSyncPossible = preferences.uscCredentials != null && preferences.city != null
+        sharedModel.isUscConnectionVerified.value = singlesService.verifiedUscCredentials != null
+        sharedModel.verifiedUscUsername.value = singlesService.verifiedUscCredentials?.username
+        sharedModel.verifiedUscPassword.value = singlesService.verifiedUscCredentials?.password
+        isSyncPossible = sharedModel.isUscConnectionVerified.value && preferences.city != null
+        sharedModel.verifiedGcalId.value = singlesService.verifiedGcalId
     }
 
     override fun onExit() {
@@ -71,7 +77,7 @@ class MainViewModel(
     }
 
     fun startSync() {
-        currentSyncJob = executeBackgroundTask("Synchronisation of data failed!") {
+        currentSyncJob = launchBackgroundTask("Synchronisation of data failed!") {
             currentSyncStep = null
             syncer.sync()
         }

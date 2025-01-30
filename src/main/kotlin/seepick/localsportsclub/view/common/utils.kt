@@ -12,8 +12,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
@@ -29,52 +31,51 @@ fun readImageBitmapFromClasspath(classpath: String): ImageBitmap =
 @OptIn(ExperimentalResourceApi::class)
 fun readImageBitmapFromFile(file: File): ImageBitmap = file.inputStream().readAllBytes().decodeToImageBitmap()
 
-fun ViewModel.executeBackgroundTask(
+fun ViewModel.launchBackgroundTask(
     errorMessage: String,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) = viewModelScope.launch(Dispatchers.IO) {
-    executeTask(errorMessage, doBefore, doFinally, doTask)
-}
+): Job = executeTask(Dispatchers.IO, errorMessage, doBefore, doFinally, doTask)
 
-fun ViewModel.executeViewTask(
+fun ViewModel.launchViewTask(
     errorMessage: String,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) = viewModelScope.launch(Dispatchers.Main) {
-    executeTask(errorMessage, doBefore, doFinally, doTask)
-}
+): Job = executeTask(Dispatchers.Main, errorMessage, doBefore, doFinally, doTask)
 
-private suspend fun executeTask(
+private fun ViewModel.executeTask(
+    dispatcher: CoroutineDispatcher,
     errorMessage: String,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-) {
-    log.debug { "Executing task..." }
-    doBefore()
-    try {
-        doTask()
-    } catch (e: Throwable) {
-        when (e) {
-            is CancellationException -> throw e
-            is Exception, is NoClassDefFoundError -> {
-                log.error(e) { "Executing task failed!" }
-                showErrorDialog(
-                    message = errorMessage,
-                    exception = e,
-                )
-            }
-
-            else -> {
-                log.error(e) { "Unhandled error thrown during task! ($errorMessage)" }
-                throw e
-            }
+): Job =
+    viewModelScope.launch(dispatcher + exceptionHandler(errorMessage)) {
+        log.debug { "Executing task..." }
+        doBefore()
+        try {
+            doTask()
+        } finally {
+            doFinally()
         }
-    } finally {
-        doFinally()
+    }
+
+private fun exceptionHandler(errorMessage: String) = CoroutineExceptionHandler { _, throwable ->
+    when (throwable) {
+        is Exception, is NoClassDefFoundError -> {
+            log.error(throwable) { "Executing task failed!" }
+            showErrorDialog(
+                message = errorMessage,
+                exception = throwable,
+            )
+        }
+
+        else -> { // let application crash on Error
+            log.error(throwable) { "Unhandled error thrown during task! ($errorMessage)" }
+            throw throwable
+        }
     }
 }
 

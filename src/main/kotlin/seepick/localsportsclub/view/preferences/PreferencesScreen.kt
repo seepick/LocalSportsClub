@@ -41,6 +41,8 @@ import seepick.localsportsclub.view.common.WidthOrFill
 
 private val col1width = 180.dp
 
+const val tooltipTextVerifyUscFirst = "Please enter and verify your USC login data in the preferences first."
+
 @Composable
 fun PreferencesScreen(
     viewModel: PreferencesViewModel = koinViewModel()
@@ -101,7 +103,7 @@ private fun CredentialsRow(
     TextField(
         value = viewModel.entity.uscUsername,
         label = { Text("Username") },
-        onValueChange = { viewModel.entity.uscUsername = it },
+        onValueChange = { viewModel.setUscUsername(it) },
         modifier = Modifier.onPreviewKeyEvent {
             if (it.key == Key.Tab && it.type == KeyEventType.KeyDown) {
                 focusManager.moveFocus(FocusDirection.Right)
@@ -112,18 +114,22 @@ private fun CredentialsRow(
         },
     )
     Spacer(Modifier.width(10.dp))
-    PasswordField(password = viewModel.entity.uscPassword, onChange = { viewModel.entity.uscPassword = it })
+    PasswordField(password = viewModel.entity.uscPassword, onChange = { viewModel.setUscPassword(it) })
     Spacer(Modifier.width(10.dp))
     Button(
-        enabled = viewModel.entity.uscUsername.isNotEmpty() && !viewModel.isUscConnectingTesting && viewModel.entity.uscPassword.isNotEmpty(),
+        enabled = viewModel.entity.uscUsername.isNotEmpty() &&
+                !viewModel.isUscConnectionVerifying &&
+                viewModel.entity.uscPassword.isNotEmpty() &&
+                viewModel.verifiedUscUsername.value != viewModel.entity.uscUsername &&
+                viewModel.verifiedUscPassword.value != viewModel.entity.uscPassword,
         onClick = {
-            viewModel.testUscConnection()
+            viewModel.verifyUscConnection()
         },
     ) {
-        Text("Test Connection")
+        Text("Verify Login")
     }
     AnimatedVisibility(
-        visible = viewModel.isUscConnectingTesting, enter = fadeIn(), exit = fadeOut()
+        visible = viewModel.isUscConnectionVerifying, enter = fadeIn(), exit = fadeOut()
     ) {
         CircularProgressIndicator()
     }
@@ -203,20 +209,23 @@ fun GCalRow(
         label = { Text("Calendar ID") },
         value = viewModel.entity.calendarId,
         enabled = viewModel.entity.calendarEnabled,
-        onValueChange = { viewModel.entity.calendarId = it },
+        onValueChange = { viewModel.setCalendarId(it) },
         modifier = Modifier.width(500.dp)
     )
     Spacer(Modifier.width(10.dp))
     Button(
-        enabled = viewModel.entity.calendarEnabled && !viewModel.isGcalConnectingTesting && viewModel.entity.calendarId.isNotEmpty(),
+        enabled = viewModel.entity.calendarEnabled &&
+                !viewModel.isGcalConnectionVerifying &&
+                viewModel.entity.calendarId.isNotEmpty() &&
+                viewModel.verifiedGcalId.value != viewModel.entity.calendarId,
         onClick = {
-            viewModel.testGcalConnection()
+            viewModel.verifyGcalConnection()
         },
     ) {
-        Text("Test Connection")
+        Text("Verify Login")
     }
     AnimatedVisibility(
-        visible = viewModel.isGcalConnectingTesting, enter = fadeIn(), exit = fadeOut()
+        visible = viewModel.isGcalConnectionVerifying, enter = fadeIn(), exit = fadeOut()
     ) {
         CircularProgressIndicator()
     }
@@ -229,7 +238,7 @@ fun GCalRow(
             enabled = viewModel.entity.calendarEnabled,
             onClick = { viewModel.resetTokenCache() },
         ) {
-            Text("Reset Token Cache")
+            Text("Reset Cache")
         }
     }
 }

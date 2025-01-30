@@ -26,6 +26,7 @@ import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
+import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 
 
 @Composable
@@ -91,7 +92,7 @@ fun SubEntityDetail(
             ) {
                 ConditionalTooltip(
                     !isBookOrCancelPossible,
-                    "Please enter your USC credentials in the preferences first."
+                    tooltipTextVerifyUscFirst,
                 ) {
                     Button(
                         onClick = {

@@ -6,9 +6,63 @@ import java.time.LocalDateTime
 
 typealias CityId = Int
 
+
+val SinglesVersionCurrent.Companion.empty
+    get() = SinglesVersionCurrent(
+        notes = null,
+        lastSyncs = emptyMap(),
+        windowWidth = null,
+        windowHeight = null,
+        windowPosX = null,
+        windowPosY = null,
+        planInternalId = null,
+        prefUscCredentials = null,
+        prefCityId = null,
+        prefGoogleCalendarId = null,
+        prefHomeLat = null,
+        prefHomeLong = null,
+        prefPeriodFirstDay = null,
+        verifiedUscCredentials = null,
+        verifiedGcalId = null,
+    )
+
+@Serializable
+data class JsonCredentials(
+    val username: String,
+    val encryptedPassword: String,
+) {
+    override fun toString() = "JsonCredentials[username=$username,encryptedPassword=****]"
+}
+
 // do NOT add/edit/delete anything here; requires manual migration!
 @Serializable
 data class SinglesVersionCurrent(
+    val notes: String?,
+    val lastSyncs: Map<CityId, @Serializable(with = LocalDateTimeSerializer::class) LocalDateTime>,
+    val windowWidth: Int?,
+    val windowHeight: Int?,
+    val windowPosX: Int?,
+    val windowPosY: Int?,
+    var planInternalId: String?,
+    val prefUscCredentials: JsonCredentials?,
+    val prefCityId: Int?,
+    val prefGoogleCalendarId: String?,
+    val prefHomeLat: Double?,
+    val prefHomeLong: Double?,
+    val prefPeriodFirstDay: Int?,
+    val verifiedUscCredentials: JsonCredentials?,
+    val verifiedGcalId: String?,
+) {
+    companion object {
+        const val VERSION = 3
+    }
+
+    override fun toString() =
+        "SinglesVersionCurrent[lastSyncs=$lastSyncs,planInternalId=$planInternalId,prefCityId=$prefCityId,...]"
+}
+
+@Serializable
+data class SinglesVersionV2(
     val notes: String?,
     val lastSyncs: Map<CityId, @Serializable(with = LocalDateTimeSerializer::class) LocalDateTime>,
     val windowWidth: Int?,
@@ -26,26 +80,10 @@ data class SinglesVersionCurrent(
 ) {
     companion object {
         const val VERSION = 2
-        val empty = SinglesVersionCurrent(
-            notes = null,
-            lastSyncs = emptyMap(),
-            windowWidth = null,
-            windowHeight = null,
-            windowPosX = null,
-            windowPosY = null,
-            planInternalId = null,
-            prefUscCredUsername = null,
-            prefUscCredPassword = null,
-            prefCityId = null,
-            prefGoogleCalendarId = null,
-            prefHomeLat = null,
-            prefHomeLong = null,
-            prefPeriodFirstDay = null,
-        )
     }
 
     override fun toString() =
-        "SinglesVersionCurrent[lastSyncs=$lastSyncs,planInternalId=$planInternalId,prefCityId=$prefCityId,...]"
+        "SinglesVersionV2[lastSyncs=$lastSyncs,planInternalId=$planInternalId,prefCityId=$prefCityId,...]"
 }
 
 @Serializable
@@ -68,22 +106,6 @@ data class SinglesVersionV1(
 ) {
     companion object {
         const val VERSION = 1
-        val empty = SinglesVersionV1(
-            notes = null,
-            lastSync = null,
-            windowWidth = null,
-            windowHeight = null,
-            windowPosX = null,
-            windowPosY = null,
-            planApiString = null,
-            prefUscCredUsername = null,
-            prefUscCredPassword = null,
-            prefCityId = null,
-            prefGoogleCalendarId = null,
-            prefHomeLat = null,
-            prefHomeLong = null,
-            prefPeriodFirstDay = null,
-        )
     }
 
     override fun toString() = "SinglesVersionV1[lastSync=$lastSync,planApiString=$planApiString,prefCityId=$prefCityId]"

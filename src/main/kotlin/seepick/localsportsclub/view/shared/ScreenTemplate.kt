@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.venue.detail.VenueDetail
 
 @Composable
@@ -20,6 +21,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
     searchPanel: @Composable () -> Unit,
     table: @Composable () -> Unit,
     viewModel: ScreenViewModel<ITEM, SEARCH>,
+    mainViewModel: MainViewModel,
 ) {
     val selectedVenue by viewModel.selectedVenue.collectAsState()
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
@@ -54,6 +56,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             onFreetrainingClicked = viewModel::onFreetrainingSelected,
                             reducedVSpace = selectedSubEntity != null,
                             configuredCity = viewModel.configuredCity,
+                            isSyncing = mainViewModel.isSyncing,
                             modifier = Modifier.weight(1.0f),
                         )
                     }
@@ -62,7 +65,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             subEntity = it,
                             onBook = viewModel::onBook,
                             onCancelBooking = viewModel::onCancelBooking,
-                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible,
+                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncing,
                             isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             onActivityNoshowToCheckedin = viewModel::onActivityNoshowToCheckedin,
                             isGcalEnabled = viewModel.isGcalEnabled,

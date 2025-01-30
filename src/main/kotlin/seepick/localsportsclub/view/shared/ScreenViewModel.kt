@@ -34,8 +34,8 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarData2
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.SnackbarType
-import seepick.localsportsclub.view.common.executeBackgroundTask
-import seepick.localsportsclub.view.common.executeViewTask
+import seepick.localsportsclub.view.common.launchBackgroundTask
+import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
@@ -94,8 +94,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         log.info { "Filling initial data for: ${this::class.simpleName}" }
 
         val preferences = singlesService.preferences
-        isBookOrCancelPossible = preferences.uscCredentials != null
-        isGcalEnabled = preferences.gcal is Gcal.GcalEnabled
+        isBookOrCancelPossible = singlesService.verifiedUscCredentials != null
+        isGcalEnabled = preferences.gcal is Gcal.GcalEnabled && singlesService.verifiedGcalId != null
         configuredCity = preferences.city
 
         _allItems.addAll(dataStorage.selectAllItems())
@@ -140,7 +140,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onVenueSelected(venue: Venue) {
-        executeViewTask("Unable to select venue!") {
+        launchViewTask("Unable to select venue!") {
             log.trace { "Selected: $venue" }
             require(this::class == VenueViewModel::class) { "venue can only be clicked in VenueViewModel" }
             @Suppress("UNCHECKED_CAST")
@@ -152,7 +152,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onActivitySelected(activity: Activity) {
-        executeViewTask("Unable to select activity!") {
+        launchViewTask("Unable to select activity!") {
             log.trace { "Selected: $activity" }
             _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
             onItemSelected(ActivitySelected(activity))
@@ -160,7 +160,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onFreetrainingSelected(freetraining: Freetraining) {
-        executeViewTask("Unable to select freetraiing!") {
+        launchViewTask("Unable to select freetraiing!") {
             log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
             onItemSelected(FreetrainingSelected(freetraining))
@@ -209,7 +209,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         bookingOperation: suspend BookingService.(SubEntity, Boolean, Boolean) -> T,
         resultHandler: (T) -> SnackbarData2,
     ) {
-        executeBackgroundTask(
+        launchBackgroundTask(
             "Booking/Canceling activity/freetraining failed!",
             doBefore = {
                 isBookingOrCancelInProgress = true

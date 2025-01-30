@@ -2,15 +2,12 @@
 
 ## Next
 
-* verifiedUscCredentials: instead "test connection" => "verify connection"
-    * enable sync/book only if current creds == verified creds
-    * same for GCal
 * BUG: select search time; navigate other screen and back; time is gone!
 
 ## Backlog
 
-* BUG: while sync, quit/update
-* sync also cancellation times.
+* data cleanup: link 4x thrive yoga
+* sync also cancellation times (see gmail)
 * system test: when cancel too late
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)

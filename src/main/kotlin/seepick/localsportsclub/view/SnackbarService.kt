@@ -4,7 +4,7 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.view.common.executeViewTask
+import seepick.localsportsclub.view.common.launchViewTask
 
 interface SnackbarService {
     fun initCallback(callback: suspend (SnackbarData2) -> SnackbarResult)
@@ -53,7 +53,7 @@ class SnackbarServiceViewModel : ViewModel(), SnackbarService {
         data: SnackbarData2,
         onResult: (SnackbarResult) -> Unit,
     ) {
-        executeViewTask("Showing snackbar failed") {
+        launchViewTask("Showing snackbar failed") {
             log.debug { "showing snackbar $data" }
             val result = callback(data)
             onResult(result)

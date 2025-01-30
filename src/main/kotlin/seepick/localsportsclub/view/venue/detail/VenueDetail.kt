@@ -65,6 +65,7 @@ fun VenueDetail(
     onFreetrainingClicked: ((Freetraining) -> Unit)?,
     modifier: Modifier = Modifier,
     reducedVSpace: Boolean,
+    isSyncing: Boolean,
     configuredCity: City?,
     mainWindowState: MainWindowState = koinInject(),
 ) {
@@ -150,7 +151,7 @@ fun VenueDetail(
         )
         Button(
             onClick = onUpdateVenue,
-            enabled = !venueEdit.isClean(),
+            enabled = !venueEdit.isClean() && !isSyncing,
         ) { Text("Update") }
 
         if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
@@ -192,10 +193,10 @@ private fun calcTableHeights(
     val maxActivityRows = 20
     val maxFreetrainingRows = 5
     val activitiesCalcRows = calcRows(
-        reducedVSpace, 4, maxActivityRows, SimpleActivitiesTable_rowEstimatedHeight, windowHeight
+        reducedVSpace, 2, maxActivityRows, SimpleActivitiesTable_rowEstimatedHeight, windowHeight
     )
     val freetrainingsCalcRows = calcRows(
-        reducedVSpace, 2, maxFreetrainingRows, SimpleFreetrainingsTable_rowEstimatedHeight, windowHeight
+        reducedVSpace, 1, maxFreetrainingRows, SimpleFreetrainingsTable_rowEstimatedHeight, windowHeight
     )
     val activityLeftovers = if (activitiesCount < activitiesCalcRows) activitiesCalcRows - activitiesCount else 0
     val freetrainingLeftovers =
@@ -208,7 +209,7 @@ private fun calcTableHeights(
 }
 
 private fun calcRows(reducedVSpace: Boolean, min: Int, max: Int, rowEstimatedHeight: Int, windowHeight: Int): Int {
-    val gap = 850 + (if (reducedVSpace) 150 else 0)
+    val gap = 850 + (if (reducedVSpace) 120 else 0)
     val calced = (windowHeight - gap) / rowEstimatedHeight
     return min(max, max(min, calced))
 }

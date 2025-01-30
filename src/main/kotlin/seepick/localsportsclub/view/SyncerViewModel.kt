@@ -7,7 +7,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
-import seepick.localsportsclub.view.common.executeViewTask
+import seepick.localsportsclub.view.common.launchViewTask
 
 class SyncerViewModel(
     private val dataStorage: DataStorage,
@@ -28,7 +28,7 @@ class SyncerViewModel(
         activities: List<Activity>,
         addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
     ) {
-        executeViewTask("Unable to add/remove activities!") {
+        launchViewTask("Unable to add/remove activities!") {
             log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
@@ -50,7 +50,7 @@ class SyncerViewModel(
         freetrainings: List<Freetraining>,
         addOrRemove: (MutableList<Freetraining>, Set<Freetraining>) -> Unit
     ) {
-        executeViewTask("Unable to add/remove freetraining") {
+        launchViewTask("Unable to add/remove freetraining") {
             log.debug { "$logPrompt ${freetrainings.size} freetrainings from/to their corresponding venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->

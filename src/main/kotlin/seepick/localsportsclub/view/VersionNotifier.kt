@@ -10,7 +10,7 @@ import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.service.VersionChecker
 import seepick.localsportsclub.service.VersionResult
-import seepick.localsportsclub.view.common.executeBackgroundTask
+import seepick.localsportsclub.view.common.launchBackgroundTask
 import java.net.URI
 import java.net.UnknownHostException
 
@@ -23,7 +23,7 @@ class VersionNotifier(
 
     override fun onStartUp() {
         val version = AppPropertiesProvider.provide().version
-        executeBackgroundTask("Failed to get latest application version from the web.") {
+        launchBackgroundTask("Failed to get latest application version from the web.") {
             try {
                 val result = versionChecker.check(version)
                 when (result) {

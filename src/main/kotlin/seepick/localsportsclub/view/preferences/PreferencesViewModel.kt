@@ -17,22 +17,28 @@ import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.SnackbarType
-import seepick.localsportsclub.view.common.executeBackgroundTask
+import seepick.localsportsclub.view.common.launchBackgroundTask
+import seepick.localsportsclub.view.shared.SharedModel
 
 class PreferencesViewModel(
     private val singlesService: SinglesService,
     private val uscApi: UscApi,
     private val snackbarService: SnackbarService,
+    private val sharedModel: SharedModel,
 ) : ViewModel(), ApplicationLifecycleListener {
 
     private val gcalService = RealGcalService()
     private val log = logger {}
     val entity = PreferencesViewEntity()
-    var isUscConnectingTesting: Boolean by mutableStateOf(false)
+    var isUscConnectionVerifying: Boolean by mutableStateOf(false)
         private set
-    var isGcalConnectingTesting: Boolean by mutableStateOf(false)
+    var isGcalConnectionVerifying: Boolean by mutableStateOf(false)
         private set
     var plan: Plan? by mutableStateOf(null)
+
+    val verifiedGcalId = sharedModel.verifiedGcalId
+    val verifiedUscUsername = sharedModel.verifiedUscUsername
+    val verifiedUscPassword = sharedModel.verifiedUscPassword
 
     override fun onStartUp() {
         entity.setup(singlesService.preferences)
@@ -51,14 +57,24 @@ class PreferencesViewModel(
         entity.homeLongitude = value
     }
 
-    fun testUscConnection() {
-        executeBackgroundTask("Error during testing the USC connection.",
-            doBefore = { isUscConnectingTesting = true },
-            doFinally = { isUscConnectingTesting = false }) {
-            log.info { "Testing USC connection ..." }
-            when (val result = uscApi.login(entity.buildCredentials()!!)) {
-                is LoginResult.Failure -> snackbarService.show(" ${result.message} 🔐❌", SnackbarType.Warn)
+    fun verifyUscConnection() {
+        launchBackgroundTask("Failed to verify the USC connection.",
+            doBefore = { isUscConnectionVerifying = true },
+            doFinally = { isUscConnectionVerifying = false }) {
+            log.info { "Verifying USC connection ..." }
+            val credentials = entity.buildCredentials()!!
+            when (val result = uscApi.login(credentials)) {
+                is LoginResult.Failure -> {
+                    singlesService.verifiedUscCredentials = null
+                    sharedModel.verifiedUscUsername.value = null
+                    sharedModel.verifiedUscPassword.value = null
+                    snackbarService.show(" ${result.message} 🔐❌", SnackbarType.Warn)
+                }
+
                 is LoginResult.Success -> {
+                    singlesService.verifiedUscCredentials = credentials
+                    sharedModel.verifiedUscUsername.value = credentials.username
+                    sharedModel.verifiedUscPassword.value = credentials.password
                     initialUscInfoOnLoginSuccess(result.phpSessionId)
                     snackbarService.show("USC login was successful 🔐✅")
                 }
@@ -81,18 +97,26 @@ class PreferencesViewModel(
         }
     }
 
-    fun testGcalConnection() {
-        executeBackgroundTask("Error during testing the Google Calendar connection.",
-            doBefore = { isGcalConnectingTesting = true },
-            doFinally = { isGcalConnectingTesting = false }) {
+    fun verifyGcalConnection() {
+        launchBackgroundTask("Error during testing the Google Calendar connection.",
+            doBefore = { isGcalConnectionVerifying = true },
+            doFinally = { isGcalConnectionVerifying = false }) {
             log.info { "Testing GCal connection ..." }
-            when (val result = gcalService.testConnection(entity.calendarId)) {
-                is GcalConnectionTest.Fail -> snackbarService.show(
-                    "Google connection failed 📆❌\n${result.message}",
-                    SnackbarType.Warn
-                )
+            val calendarId = entity.calendarId
+            when (val result = gcalService.testConnection(calendarId)) {
+                is GcalConnectionTest.Fail -> {
+                    singlesService.verifiedGcalId = null
+                    sharedModel.verifiedGcalId.value = null
+                    snackbarService.show(
+                        "Google connection failed 📆❌\n${result.message}", SnackbarType.Warn
+                    )
+                }
 
-                GcalConnectionTest.Success -> snackbarService.show("Google connection succeeded 📆✅")
+                GcalConnectionTest.Success -> {
+                    singlesService.verifiedGcalId = calendarId
+                    sharedModel.verifiedGcalId.value = calendarId
+                    snackbarService.show("Google connection succeeded 📆✅")
+                }
             }
         }
     }
@@ -102,9 +126,36 @@ class PreferencesViewModel(
         if (file.exists()) {
             log.debug { "About to delete google cache at: ${file.absolutePath}" }
             file.delete()
+            singlesService.verifiedGcalId = null
             snackbarService.show("Google login token cache successfully deleted 🗑️✅")
         } else {
             snackbarService.show("Nothing to delete, token cache is already empty 🤷🏻‍♂️")
+        }
+    }
+
+    fun setUscUsername(username: String) {
+        entity.uscUsername = username
+        sharedModel.verifiedUscUsername.value = null
+        sharedModel.verifiedUscPassword.value = null
+        if (singlesService.verifiedUscCredentials != null) {
+            singlesService.verifiedUscCredentials = null
+        }
+    }
+
+    fun setUscPassword(password: String) {
+        entity.uscPassword = password
+        sharedModel.verifiedUscUsername.value = null
+        sharedModel.verifiedUscPassword.value = null
+        if (singlesService.verifiedUscCredentials != null) {
+            singlesService.verifiedUscCredentials = null
+        }
+    }
+
+    fun setCalendarId(id: String) {
+        entity.calendarId = id
+        sharedModel.verifiedGcalId.value = null
+        if (singlesService.verifiedGcalId != null) {
+            singlesService.verifiedGcalId = null
         }
     }
 }

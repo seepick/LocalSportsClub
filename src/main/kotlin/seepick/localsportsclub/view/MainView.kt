@@ -41,6 +41,7 @@ import seepick.localsportsclub.view.common.bottomBorder
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
 import seepick.localsportsclub.view.notes.NotesScreen
 import seepick.localsportsclub.view.preferences.PreferencesScreen
+import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
@@ -103,7 +104,7 @@ fun SyncPanel(
     viewModel: MainViewModel = koinViewModel(),
 ) {
     ConditionalTooltip(
-        !viewModel.isSyncPossible, "Please enter your USC credentials in the preferences first."
+        !viewModel.isSyncPossible, tooltipTextVerifyUscFirst
     ) {
         Button(
             enabled = viewModel.isSyncPossible && !viewModel.isSyncing,

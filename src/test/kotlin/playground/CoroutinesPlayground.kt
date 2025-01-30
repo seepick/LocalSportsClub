@@ -21,10 +21,10 @@ import kotlin.time.measureTime
 
 object CoroutinesPlayground {
     // -Dkotlinx.coroutines.debug JVM option
-    // https://www.youtube.com/watch?v=2QInrEaXyMo
-    // https://www.youtube.com/watch?v=VWlwkqmTLHc
     // https://www.youtube.com/watch?v=VWlwkqmTLHc
     // https://www.youtube.com/watch?v=ZX8VsqNO_Ss
+    // https://www.youtube.com/watch?v=4_fDefmI3yI
+    // https://www.youtube.com/watch?v=ZX8VsqNO_Ss flows
     private val log: KLogger
 
     init {
