@@ -103,7 +103,7 @@ class DataStorage(
                 .sortedByDescending { it.from }.map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
                     activityDbo.toActivity(venueForActivity).also {
-                        venueForActivity.activities += it
+                        venueForActivity.addActivities(setOf(it))
                     }
                 }.groupByTo(mutableMapOf()) { it.venue.id }
         } ?: mutableMapOf()
@@ -117,7 +117,7 @@ class DataStorage(
                     val venueForFreetraining =
                         venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
                     freetrainingDbo.toFreetraining(venueForFreetraining).also {
-                        venueForFreetraining.freetrainings += it
+                        venueForFreetraining.addFreetrainings(setOf(it))
                     }
                 }.groupByTo(mutableMapOf()) { it.venue.id }
         } ?: mutableMapOf()

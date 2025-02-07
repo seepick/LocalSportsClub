@@ -7,6 +7,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.NoopDataStorageListener
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.launchViewTask
 
 class SyncerViewModel(
@@ -16,45 +17,45 @@ class SyncerViewModel(
     private val log = logger {}
 
     override fun onActivitiesAdded(activities: List<Activity>) {
-        addOrRemoveActivities("Adding", activities) { venues, acts -> venues += acts }
+        addOrRemoveActivities("Adding", activities) { venue, acts -> venue.addActivities(acts.toSet()) }
     }
 
     override fun onActivitiesDeleted(activities: List<Activity>) {
-        addOrRemoveActivities("Deleting", activities) { venues, acts -> venues -= acts }
+        addOrRemoveActivities("Deleting", activities) { venue, acts -> venue.removeActivities(acts.toSet()) }
     }
 
     private fun addOrRemoveActivities(
         logPrompt: String,
         activities: List<Activity>,
-        addOrRemove: (MutableList<Activity>, Set<Activity>) -> Unit
+        addOrRemove: (Venue, List<Activity>) -> Unit
     ) {
         launchViewTask("Unable to add/remove activities!") {
             log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
-                addOrRemove(venuesById[venueId]!!.activities, venueActivities.toSet())
+                addOrRemove(venuesById[venueId]!!, venueActivities)
             }
         }
     }
 
     override fun onFreetrainingsAdded(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining("Adding", freetrainings) { venues, frees -> venues += frees }
+        removeOrAddFretraining("Adding", freetrainings) { venue, frees -> venue.addFreetrainings(frees) }
     }
 
     override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
-        removeOrAddFretraining("Deleting", freetrainings) { venues, frees -> venues -= frees }
+        removeOrAddFretraining("Deleting", freetrainings) { venue, frees -> venue.removeFreetrainings(frees) }
     }
 
     private fun removeOrAddFretraining(
         logPrompt: String,
         freetrainings: List<Freetraining>,
-        addOrRemove: (MutableList<Freetraining>, Set<Freetraining>) -> Unit
+        addOrRemove: (Venue, Set<Freetraining>) -> Unit
     ) {
         launchViewTask("Unable to add/remove freetraining") {
             log.debug { "$logPrompt ${freetrainings.size} freetrainings from/to their corresponding venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->
-                addOrRemove(venuesById[venueId]!!.freetrainings, venueFreetraining.toSet())
+                addOrRemove(venuesById[venueId]!!, venueFreetraining.toSet())
             }
         }
     }

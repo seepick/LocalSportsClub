@@ -67,7 +67,7 @@ fun SimpleActivitiesTable(
             ),
             onItemClicked = onActivitySelected,
             sortColumn = null,
-            sortDirection = SortDirection.Asc, // doesnt matter
+            sortDirection = SortDirection.Asc, // doesnt matter; will be ignored
         )
     }
 }

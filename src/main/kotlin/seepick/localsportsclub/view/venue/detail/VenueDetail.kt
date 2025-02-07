@@ -171,14 +171,14 @@ fun VenueDetail(
             freetrainingsCount = venue.freetrainings.size,
         )
         SimpleActivitiesTable(
-            activities = venue.activities,
+            activities = venue.sortedActivities.toList(),
             selectedActivity = activity,
             onActivitySelected = onActivityClicked,
             modifier = Modifier.fillMaxWidth(),
             height = heights.first,
         )
         SimpleFreetrainingsTable(
-            freetrainings = venue.freetrainings,
+            freetrainings = venue.sortedFreetrainings.toList(),
             selectedFreetraining = freetraining,
             onFreetrainingSelected = onFreetrainingClicked,
             modifier = Modifier.fillMaxWidth(),

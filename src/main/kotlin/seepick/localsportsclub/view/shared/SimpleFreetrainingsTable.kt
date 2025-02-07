@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +26,7 @@ val SimpleFreetrainingsTable_rowEstimatedHeight = 18
 
 @Composable
 fun SimpleFreetrainingsTable(
-    freetrainings: SnapshotStateList<Freetraining>,
+    freetrainings: List<Freetraining>,
     selectedFreetraining: Freetraining? = null,
     onFreetrainingSelected: ((Freetraining) -> Unit)?,
     clock: Clock = koinInject(),

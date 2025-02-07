@@ -2,7 +2,6 @@
 
 ## Next
 
-* order activities/freetrainings: top new (date asc), bottom booked (date asc too)
 * data cleanup: link 4x thrive yoga
 * filter activities for no-shows/late-cancellation
 * also add conversion button, for no-show into booked, for late-cancellation

@@ -10,6 +10,31 @@ import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
+import java.util.TreeSet
+
+data class Foo(
+    val id: Int,
+    val isNew: Boolean,
+)
+
+fun main() {
+    val tree = TreeSet<Foo>(object : Comparator<Foo> {
+        override fun compare(o1: Foo, o2: Foo): Int =
+            if (o1.isNew && o2.isNew) {
+                o1.id.compareTo(o2.id)
+            } else if (!o1.isNew && !o2.isNew) {
+                o2.id.compareTo(o1.id)
+            } else {
+                if (o1.isNew) -1 else 1
+            }
+    })
+    tree.add(Foo(3, true))
+    tree.add(Foo(4, false))
+    tree.add(Foo(5, true))
+    tree.add(Foo(1, false))
+    tree.add(Foo(2, true))
+    println(tree)
+}
 
 class Venue(
     val id: Int,
@@ -47,16 +72,63 @@ class Venue(
     var isFavorited: Boolean by mutableStateOf(isFavorited)
     var isWishlisted: Boolean by mutableStateOf(isWishlisted)
     var isHidden: Boolean by mutableStateOf(isHidden)
-
-    val activities = mutableStateListOf<Activity>()
-    val freetrainings = mutableStateListOf<Freetraining>()
     var officialWebsite: String? by mutableStateOf(officialWebsite)
-
     val linkedVenues = mutableStateListOf<Venue>()
+
+    private val _activities = mutableStateListOf<Activity>()
+    val activities: List<Activity> = _activities
+    private val _freetrainings = mutableStateListOf<Freetraining>()
+    val freetrainings: List<Freetraining> = _freetrainings
+
+    private val now = LocalDate.now()
+
+    // reordered according to display style in simple table (first future ASC, then past DESC)
+    val sortedActivities = TreeSet(Comparator<Activity> { a1, a2 ->
+        val a1IsNew = a1.dateTimeRange.from.toLocalDate() >= now
+        val a2IsNew = a2.dateTimeRange.from.toLocalDate() >= now
+        if (a1IsNew && a2IsNew) {
+            a1.dateTimeRange.from.compareTo(a2.dateTimeRange.from)
+        } else if (!a1IsNew && !a2IsNew) {
+            a2.dateTimeRange.from.compareTo(a1.dateTimeRange.from)
+        } else {
+            if (a1IsNew) -1 else 1
+        }
+    })
+    val sortedFreetrainings = TreeSet(Comparator<Freetraining> { f1, f2 ->
+        val f1IsNew = f1.date >= now
+        val f2IsNew = f2.date >= now
+        if (f1IsNew && f2IsNew) {
+            f1.date.compareTo(f2.date)
+        } else if (!f1IsNew && !f2IsNew) {
+            f2.date.compareTo(f1.date)
+        } else {
+            if (f1IsNew) -1 else 1
+        }
+    })
+
+    fun addActivities(activities: Set<Activity>) {
+        _activities += activities
+        sortedActivities += activities
+    }
+
+    fun removeActivities(activities: Set<Activity>) {
+        _activities -= activities
+        sortedActivities -= activities
+    }
+
+    fun addFreetrainings(freetrainings: Set<Freetraining>) {
+        _freetrainings += freetrainings
+        sortedFreetrainings += freetrainings
+    }
+
+    fun removeFreetrainings(freetrainings: Set<Freetraining>) {
+        _freetrainings -= freetrainings
+        sortedFreetrainings -= freetrainings
+    }
 
     fun lastVisit(): LocalDate? {
         val nope = LocalDate.of(2000, 1, 1)
-        val actMax = activities.filter { it.state == ActivityState.Checkedin }
+        val actMax = _activities.filter { it.state == ActivityState.Checkedin }
             .maxByOrNull { it.dateTimeRange }?.dateTimeRange?.from?.toLocalDate() ?: nope
         val freMax =
             freetrainings.filter { it.state == FreetrainingState.Checkedin }.maxByOrNull { it.date }?.date ?: nope
