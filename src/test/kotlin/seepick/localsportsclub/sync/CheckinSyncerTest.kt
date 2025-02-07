@@ -2,6 +2,7 @@ package seepick.localsportsclub.sync
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -66,9 +67,18 @@ class CheckinSyncerTest : StringSpec() {
     }
 
 
-    private fun mockCheckinsPage(pageNr: Int, date: LocalDate, activityId: Int): CheckinEntry {
+    private fun mockCheckinsPage(
+        pageNr: Int,
+        date: LocalDate,
+        activityId: Int,
+        type: ActivityCheckinEntryType = ActivityCheckinEntryType.Checkedin
+    ): CheckinEntry {
         val entry = Arb.activityCheckinEntry().next()
-            .copy(activityId = activityId, date = date, type = ActivityCheckinEntryType.CheckedIn)
+            .copy(
+                activityId = activityId,
+                date = date,
+                type = type,
+            )
         coEvery { uscApi.fetchCheckinsPage(phpSessionId, pageNr) } returns CheckinsPage(listOf(entry))
         return entry
     }
@@ -81,7 +91,7 @@ class CheckinSyncerTest : StringSpec() {
         "Given non-checkedin activity and page with entry for it Then update it" {
             val activity = testRepo.insertActivity(state = ActivityState.Blank)
             val entry = Arb.activityCheckinEntry().next()
-                .copy(activityId = activity.id, type = ActivityCheckinEntryType.CheckedIn)
+                .copy(activityId = activity.id, type = ActivityCheckinEntryType.Checkedin)
             coEvery { uscApi.fetchCheckinsPage(phpSessionId, 1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 
@@ -131,6 +141,22 @@ class CheckinSyncerTest : StringSpec() {
             syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State(
                 ActivityState.Blank
             ))
+        }
+        listOf(
+            ActivityState.Checkedin to ActivityCheckinEntryType.Checkedin,
+            ActivityState.CancelledLate to ActivityCheckinEntryType.CancelledLate,
+            ActivityState.Noshow to ActivityCheckinEntryType.Noshow,
+        ).forEach { (state, type) ->
+            "Given activity already ${state.name} When get it again Then do nothing" {
+                val activity = testRepo.insertActivity(state = state)
+                mockCheckinsPage(1, today, activity.id, type)
+                mockCheckinsEmptyPage(2)
+
+                syncer.sync(phpSessionId, city)
+
+                activityRepo.selectById(activity.id) shouldBe activity
+                syncActivityDbosUpdated.shouldBeEmpty()
+            }
         }
     }
 

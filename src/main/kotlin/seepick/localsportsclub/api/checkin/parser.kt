@@ -21,7 +21,7 @@ sealed interface CheckinEntry {
 }
 
 enum class ActivityCheckinEntryType {
-    CheckedIn, NoShow, CancelledLate;
+    Checkedin, Noshow, CancelledLate;
 }
 
 data class ActivityCheckinEntry(
@@ -66,11 +66,11 @@ object CheckinsParser {
                     } else {
                         val select = sub.select("span.smm-booking-state-label")
                         val type = if (select.hasClass("noshow")) {
-                            ActivityCheckinEntryType.NoShow
+                            ActivityCheckinEntryType.Noshow
                         } else if (select.hasClass("late")) {
                             ActivityCheckinEntryType.CancelledLate
                         } else if (select.hasClass("done")) {
-                            ActivityCheckinEntryType.CheckedIn
+                            ActivityCheckinEntryType.Checkedin
                         } else {
                             error("Could not determine activity checkin type by CSS class: ${select.attr("class")}")
                         }

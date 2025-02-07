@@ -61,8 +61,8 @@ class CheckinSyncer(
     }
 
     private fun ActivityCheckinEntryType.toActivityState() = when (this) {
-        ActivityCheckinEntryType.CheckedIn -> ActivityState.Checkedin
-        ActivityCheckinEntryType.NoShow -> ActivityState.Noshow
+        ActivityCheckinEntryType.Checkedin -> ActivityState.Checkedin
+        ActivityCheckinEntryType.Noshow -> ActivityState.Noshow
         ActivityCheckinEntryType.CancelledLate -> ActivityState.CancelledLate
     }
 
@@ -74,17 +74,8 @@ class CheckinSyncer(
             venueSlug = entry.venueSlug,
             prefilledVenueNotes = "[SYNC] rescued activity for past check-in"
         )
-        // TODO test first, then simplify this
-        if (activity.state == ActivityState.Checkedin && entry.type == ActivityCheckinEntryType.CheckedIn) {
-            log.debug { "Activity was already marked as checked-in, skipping: $entry" }
-            return
-        }
-        if (activity.state == ActivityState.CancelledLate && entry.type == ActivityCheckinEntryType.CancelledLate) {
-            log.debug { "Activity was already marked as cancelled-late, skipping: $entry" }
-            return
-        }
-        if (activity.state == ActivityState.Noshow && entry.type == ActivityCheckinEntryType.NoShow) {
-            log.debug { "Activity was already marked as no-show, skipping: $entry" }
+        if (activity.state == entry.type.toActivityState()) {
+            log.debug { "Activity was already marked as ${activity.state.name}, skipping: $entry" }
             return
         }
         val updated = activity.copy(

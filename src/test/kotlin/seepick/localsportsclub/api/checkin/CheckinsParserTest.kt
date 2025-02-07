@@ -31,21 +31,21 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "yoga-spot-olympisch-stadion",
                     date = LocalDate.of(year, 12, 24),
                     timeRange = TimeRange("15:00-16:00"),
-                    type = ActivityCheckinEntryType.CheckedIn,
+                    type = ActivityCheckinEntryType.Checkedin,
                 ),
                 ActivityCheckinEntry(
                     activityId = 84742854,
                     venueSlug = "studio-108-3",
                     date = LocalDate.of(year, 12, 24),
                     timeRange = TimeRange("10:00-11:15"),
-                    type = ActivityCheckinEntryType.CheckedIn,
+                    type = ActivityCheckinEntryType.Checkedin,
                 ),
                 ActivityCheckinEntry(
                     activityId = 83535971,
                     venueSlug = "de-nieuwe-yogaschool",
                     date = LocalDate.of(year, 12, 23),
                     timeRange = TimeRange("15:45-17:00"),
-                    type = ActivityCheckinEntryType.CheckedIn,
+                    type = ActivityCheckinEntryType.Checkedin,
                 ),
             )
         }
@@ -68,7 +68,7 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "movements-city",
                     date = LocalDate.of(year, 12, 29),
                     timeRange = TimeRange("9:00-10:00"),
-                    type = ActivityCheckinEntryType.CheckedIn,
+                    type = ActivityCheckinEntryType.Checkedin,
                 ),
             )
         }
@@ -76,7 +76,7 @@ class CheckinsParserTest : StringSpec() {
             val result = parseCheckinsFile("checkins.noshow.html")
 
             result.entries.shouldBeSingleton().first()
-                .shouldBeInstanceOf<ActivityCheckinEntry>().type shouldBe ActivityCheckinEntryType.NoShow
+                .shouldBeInstanceOf<ActivityCheckinEntry>().type shouldBe ActivityCheckinEntryType.Noshow
         }
 
         "When parse late cancellation Then return proper state" {
