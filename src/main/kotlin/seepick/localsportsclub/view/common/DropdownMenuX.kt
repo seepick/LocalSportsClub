@@ -26,7 +26,7 @@ fun <T : HasLabel> DropdownMenuX(
     isMenuExpanded: MutableState<Boolean>,
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
-    selectedItem: T,
+    selectedItem: T?,
 ) {
     _DropdownMenuX(
         items = items,
@@ -44,7 +44,7 @@ fun <T> DropdownMenuX(
     isMenuExpanded: MutableState<Boolean>,
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
-    selectedItem: T,
+    selectedItem: T?,
 ) {
     _DropdownMenuX(
         items = items,
@@ -64,7 +64,7 @@ fun <T> _DropdownMenuX(
     isMenuExpanded: MutableState<Boolean>,
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
-    selectedItem: T,
+    selectedItem: T?,
 ) {
     DropdownMenu(
         expanded = isMenuExpanded.value,

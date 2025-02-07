@@ -3,10 +3,8 @@ package seepick.localsportsclub.view.search
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,13 +35,13 @@ fun <T> DateTimeRangeSearchField(
             TimeRangeSelector(
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeStart,
-                selectedTime = searchOption.searchTimeStart,
+                preselectedTime = searchOption.searchTimeStart,
             )
             Text("-")
             TimeRangeSelector(
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeEnd,
-                selectedTime = searchOption.searchTimeEnd,
+                preselectedTime = searchOption.searchTimeEnd,
             )
         }
     }
@@ -57,17 +55,15 @@ private val times: List<LocalTime> = (6..22).map {
 fun TimeRangeSelector(
     enabled: Boolean,
     onTimeSelected: (LocalTime?) -> Unit,
-    selectedTime: LocalTime?,
+    preselectedTime: LocalTime?,
 ) {
-    var time: LocalTime? by remember { mutableStateOf(null) }
-    val timeAsString = remember { mutableStateOf("") }
+    val timeAsString = remember { mutableStateOf(preselectedTime?.prettyPrint() ?: "") }
 
     DropDownTextField(
         items = times,
-        selectedItem = selectedTime,
+        selectedItem = preselectedTime,
         itemFormatter = { it?.prettyPrint() ?: "" },
         onItemSelected = {
-            time = it
             timeAsString.value = it?.prettyPrint() ?: ""
             onTimeSelected(it)
         },
@@ -79,14 +75,12 @@ fun TimeRangeSelector(
                 timeAsString.value = enteredString
                 if (enteredString.isEmpty()) onTimeSelected(null)
                 else DateParser.parseTimeOrNull(enteredString)?.also { enteredTime ->
-                    time = enteredTime
                     onTimeSelected(enteredTime)
                 }
             },
             errorChecker = { if (timeAsString.value.isEmpty()) false else DateParser.parseTimeOrNull(timeAsString.value) == null },
             textAlign = TextAlign.Center,
             onReset = {
-                time = null
                 timeAsString.value = ""
                 onTimeSelected(null)
             }
