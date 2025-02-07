@@ -31,6 +31,7 @@ data class ActivityDbo(
     val spotsLeft: Int,
     val teacher: String?,
     val state: ActivityState,
+    val cancellationLimit: LocalDateTime?,
 ) {
     val isBooked = state == ActivityState.Booked
     val isCheckedin = state == ActivityState.Checkedin
@@ -46,16 +47,18 @@ data class ActivityDbo(
         statement[ActivitiesTable.state] = this.state
         statement[ActivitiesTable.teacher] = this.teacher
         statement[ActivitiesTable.spotsLeft] = this.spotsLeft
+        statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
     }
 
-    fun prepareUpdate(update: UpdateStatement) {
-        update[ActivitiesTable.name] = this.name
-        update[ActivitiesTable.category] = this.category
-        update[ActivitiesTable.from] = this.from
-        update[ActivitiesTable.to] = this.to
-        update[ActivitiesTable.state] = this.state
-        update[ActivitiesTable.teacher] = this.teacher
-        update[ActivitiesTable.spotsLeft] = this.spotsLeft
+    fun prepareUpdate(statement: UpdateStatement) {
+        statement[ActivitiesTable.name] = this.name
+        statement[ActivitiesTable.category] = this.category
+        statement[ActivitiesTable.from] = this.from
+        statement[ActivitiesTable.to] = this.to
+        statement[ActivitiesTable.state] = this.state
+        statement[ActivitiesTable.teacher] = this.teacher
+        statement[ActivitiesTable.spotsLeft] = this.spotsLeft
+        statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
     }
 
     companion object {
@@ -69,6 +72,7 @@ data class ActivityDbo(
             state = row[ActivitiesTable.state],
             teacher = row[ActivitiesTable.teacher],
             spotsLeft = row[ActivitiesTable.spotsLeft],
+            cancellationLimit = row[ActivitiesTable.cancellationLimit],
         )
     }
 }
@@ -82,6 +86,7 @@ object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
     val spotsLeft = integer("SPOTS_LEFT")
     val teacher = varchar("TEACHER", 64).nullable()
     val state = enumerationByName<ActivityState>("STATE", 32)
+    val cancellationLimit = datetime("CANCELLATION_LIMIT").nullable()
 }
 
 interface ActivityRepo {
@@ -96,13 +101,28 @@ interface ActivityRepo {
     fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo>
 }
 
-class InMemoryActivityRepo : ActivityRepo {
+class InMemoryActivityRepo(
+    private val venueRepo: VenueRepo? = null
+) : ActivityRepo {
 
     val stored = mutableMapOf<Int, ActivityDbo>()
 
-    override fun selectAll(cityId: Int) = stored.values.toList()
+    override fun selectAll(cityId: Int): List<ActivityDbo> =
+        if (venueRepo == null) stored.values.toList()
+        else {
+            val venueIdsInCity = venueRepo.selectAllByCity(cityId).map { it.id }.toSet()
+            stored.values.filter { venueIdsInCity.contains(it.venueId) }
+        }
 
-    override fun selectAllBooked(cityId: Int) = stored.filter { it.value.state == ActivityState.Booked }.values.toList()
+    override fun selectAllBooked(cityId: Int): List<ActivityDbo> {
+        val condition: (ActivityDbo) -> Boolean = if (venueRepo == null) {
+            { _ -> true }
+        } else {
+            val venueIdsInCity = venueRepo.selectAllByCity(cityId).map { it.id }.toSet();
+            { activity: ActivityDbo -> venueIdsInCity.contains(activity.venueId) }
+        }
+        return stored.values.filter { it.state == ActivityState.Booked && condition(it) }.toList()
+    }
 
     override fun selectAllForVenueId(venueId: Int) = stored.values.filter { it.venueId == venueId }
 
@@ -210,5 +230,4 @@ object ExposedActivityRepo : ActivityRepo {
         log.info { "Deleted ${deletedActivities.size} old activities before $threshold." }
         deletedActivities
     }
-
 }

@@ -41,7 +41,7 @@ data class VenueDbo(
 
 interface VenueRepo {
     /** Doesn't do any filtering, not even the deleted ones. */
-    fun selectAll(cityId: Int): List<VenueDbo>
+    fun selectAllByCity(cityId: Int): List<VenueDbo>
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
     fun selectById(id: Int): VenueDbo?
@@ -75,7 +75,7 @@ object ExposedVenueRepo : VenueRepo {
 
     private val log = logger {}
 
-    override fun selectAll(cityId: Int): List<VenueDbo> = transaction {
+    override fun selectAllByCity(cityId: Int): List<VenueDbo> = transaction {
         VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
             VenueDbo.fromRow(it)
         }
@@ -181,7 +181,7 @@ class InMemoryVenueRepo : VenueRepo {
     private var currentId = 1
     val stored = mutableMapOf<Int, VenueDbo>()
 
-    override fun selectAll(cityId: Int): List<VenueDbo> =
+    override fun selectAllByCity(cityId: Int): List<VenueDbo> =
         stored.values.filter { it.cityId == cityId }.toList().sortedBy { it.id }
 
     override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }

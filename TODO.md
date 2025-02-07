@@ -6,8 +6,14 @@
 
 ## Backlog
 
+* mark book/cancel button red if know issue (max reserve 6; 2 for venue; late cancel)
+* 3rd party teacher sync for: balanzcs
+* enable/disable 3rd party sync in prefs (only show if city==amsterdam)
+* order activities/freetrainings: top new (date asc), bottom booked (date asc too)
+* sync also cancellation times
 * data cleanup: link 4x thrive yoga
-* sync also cancellation times (see gmail)
+* filter activities for no-shows/late-cancellation
+* also add conversion button, for no-show into booked, for late-cancellation
 * system test: when cancel too late
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)

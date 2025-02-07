@@ -13,11 +13,11 @@ data class AppConfig(
 ) {
     companion object {
         val development = AppConfig(
-            api = ApiMode.RealHttp,
-//            api = ApiMode.Mock,
+//            api = ApiMode.RealHttp,
+            api = ApiMode.Mock,
 
-            sync = SyncMode.Real,
-//            sync = SyncMode.Noop,
+//            sync = SyncMode.Real,
+            sync = SyncMode.Noop,
 //            sync = SyncMode.Delayed,
 //            sync = SyncMode.Dummy,
 

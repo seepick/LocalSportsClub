@@ -2,6 +2,7 @@ package seepick.localsportsclub.view.venue
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.singles.SinglesService
@@ -17,7 +18,15 @@ class VenueViewModel(
     singlesService: SinglesService,
     snackbarService: SnackbarService,
     sharedModel: SharedModel,
-) : ScreenViewModel<Venue, VenueSearch>(dataStorage, bookingService, singlesService, snackbarService, sharedModel) {
+    bookingValidator: BookingValidator,
+) : ScreenViewModel<Venue, VenueSearch>(
+    dataStorage,
+    bookingService,
+    singlesService,
+    snackbarService,
+    sharedModel,
+    bookingValidator,
+) {
 
     override val tableColumns = venuesTableColumns()
     override val selectedVenue = MutableStateFlow<Venue?>(null)

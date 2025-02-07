@@ -23,10 +23,11 @@ private val SnackbarType.color
     }
 
 @Composable
-fun Snackbar2(
+fun CustomSnackbar(
     snackbarData: SnackbarData,
     snackbarType: SnackbarType,
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
     val actionLabel = snackbarData.actionLabel
     val actionComposable: (@Composable () -> Unit)? = if (actionLabel != null) {
@@ -42,7 +43,7 @@ fun Snackbar2(
     }
     Snackbar(
         modifier = modifier.padding(12.dp).border(1.dp, Lsc.colors.primary),
-        content = { Text(snackbarData.message) },
+        content = content,
         action = actionComposable,
         actionOnNewLine = false,
         shape = MaterialTheme.shapes.small,

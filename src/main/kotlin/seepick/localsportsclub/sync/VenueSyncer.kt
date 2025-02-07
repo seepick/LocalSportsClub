@@ -38,7 +38,7 @@ class VenueSyncer(
         val remoteVenuesBySlug = api.fetchVenues(session, VenuesFilter(city, plan)).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenuesBySlug =
-            venueRepo.selectAll(city.id).filter { !it.isDeleted }.associateBy { it.slug }
+            venueRepo.selectAllByCity(city.id).filter { !it.isDeleted }.associateBy { it.slug }
 
         val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
         // this also means that the "hidden linked ones" will be deleted
@@ -114,7 +114,7 @@ class VenueSyncInserterImpl(
             newLinks = newLinks,
         )
         log.trace { "Inserting links: $newLinks" }
-        val existingVenues = venueRepo.selectAll(city.id).associate { it.slug to it.id }
+        val existingVenues = venueRepo.selectAllByCity(city.id).associate { it.slug to it.id }
         newLinks.map { newLink ->
             VenueIdLink(
                 existingVenues[newLink.slug1] ?: error("Venue1 not found by slug for link: $newLink"),
@@ -148,7 +148,7 @@ class VenueSyncInserterImpl(
         newDbos: MutableList<VenueDbo>,
         newLinks: MutableSet<VenueSlugLink>,
     ) {
-        val existingVenues = venueRepo.selectAll(city.id).associate { it.slug to it.id }
+        val existingVenues = venueRepo.selectAllByCity(city.id).associate { it.slug to it.id }
         val newLinkSlugs = newLinks.map { it.slug1 }.plus(newLinks.map { it.slug2 }).distinct()
         val missingVenuesBySlug = newLinkSlugs - existingVenues.keys
         log.trace { "linkVenues ... missingVenuesBySlug=$missingVenuesBySlug" }

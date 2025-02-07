@@ -13,9 +13,13 @@ object SinglesMigrator {
         require(dbo.version != SinglesVersionCurrent.VERSION)
         log.debug { "Migrating singles from version ${dbo.version} to ${SinglesVersionCurrent.VERSION}" }
 
-        val v2 = if (dbo.version == 1) migrateV1toV2(Json.decodeFromString<SinglesVersionV1>(dbo.json)) else null
+        val v2 = if (dbo.version == 1) {
+            log.info { "Migrating singles form v1 to v2" }
+            migrateV1toV2(Json.decodeFromString<SinglesVersionV1>(dbo.json))
+        } else null
 
         if (v2 != null || dbo.version == 2) {
+            log.info { "Migrating singles form v2 to v3/current" }
             return migrateV2toV3(v2 ?: Json.decodeFromString<SinglesVersionV2>(dbo.json))
         }
         error("Unhandled version: ${dbo.version}")

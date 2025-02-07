@@ -17,6 +17,7 @@ import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.SyncStep
 import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.common.launchBackgroundTask
+import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.shared.SharedModel
 
 class MainViewModel(
@@ -93,19 +94,16 @@ class MainViewModel(
         currentSyncJob = null
 
         if (!currentSyncJobCancelled) {
-            val report = syncReporter.report.buildMessage()
             syncReporter.clear()
-            snackbarService.show(
-                message = buildString {
-                    append("Finished synchronizing data 🔄✅")
-                    if (report != null) {
-                        appendLine()
-                        append(report)
-                    }
-                },
-                duration = SnackbarDuration.Indefinite,
-                actionLabel = "Close",
-            )
+            launchViewTask("Failed to show snackbar!") {
+                snackbarService.show(
+                    SnackbarEvent(
+                        content = SnackbarContent.CustomContent(syncReporter.report.buildContent()),
+                        duration = SnackbarDuration.Indefinite,
+                        actionLabel = "Close",
+                    )
+                )
+            }
         }
     }
 }

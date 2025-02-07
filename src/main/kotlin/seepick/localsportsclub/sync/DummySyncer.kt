@@ -169,6 +169,7 @@ class DummySyncer(
             to = now.plusDays(1).plusMinutes(75),
             teacher = null,
             state = ActivityState.Blank,
+            cancellationLimit = null,
         )
     }
 

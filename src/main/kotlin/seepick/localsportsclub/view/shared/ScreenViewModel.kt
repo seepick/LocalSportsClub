@@ -18,6 +18,8 @@ import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.BookingValidation
+import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
@@ -31,9 +33,10 @@ import seepick.localsportsclub.service.model.NoopDataStorageListener
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.service.singles.SinglesService
-import seepick.localsportsclub.view.SnackbarData2
+import seepick.localsportsclub.view.SnackbarEvent
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.SnackbarType
+import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.launchBackgroundTask
 import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
@@ -46,7 +49,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val bookingService: BookingService,
     private val singlesService: SinglesService,
     private val snackbarService: SnackbarService,
-    sharedModel: SharedModel,
+    private val sharedModel: SharedModel,
+    private val bookingValidator: BookingValidator,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -180,10 +184,32 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onBook(subEntity: SubEntity) {
         log.debug { "onBook: $subEntity" }
+        when (val validity = validateBooking(subEntity)) {
+            BookingValidation.Valid -> doBook(subEntity)
+            is BookingValidation.Invalid -> {
+                sharedModel.customDialog.value = CustomDialog(
+                    title = "Booking",
+                    text = validity.reason,
+                    confirmLabel = "Book anyway",
+                    onConfirm = {
+                        doBook(subEntity)
+                    },
+                )
+            }
+        }
+    }
+
+    private fun validateBooking(subEntity: SubEntity): BookingValidation =
+        when (subEntity) {
+            is SubEntity.ActivityEntity -> bookingValidator.canBook(subEntity.activity)
+            is SubEntity.FreetrainingEntity -> BookingValidation.Valid
+        }
+
+    private fun doBook(subEntity: SubEntity) {
         bookOrCancel(subEntity, BookingService::book) { result ->
             when (result) {
-                BookingResult.BookingSuccess -> SnackbarData2("Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅")
-                is BookingResult.BookingFail -> SnackbarData2(
+                BookingResult.BookingSuccess -> SnackbarEvent("Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅")
+                is BookingResult.BookingFail -> SnackbarEvent(
                     "Error while booking ❌\n${result.message}",
                     SnackbarType.Error
                 )
@@ -193,10 +219,33 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onCancelBooking(subEntity: SubEntity) {
         log.debug { "onCancelBooking: $subEntity" }
+        when (val validity = validateCancelBooking(subEntity)) {
+            BookingValidation.Valid -> doCancelBooking(subEntity)
+            is BookingValidation.Invalid -> {
+                sharedModel.customDialog.value = CustomDialog(
+                    title = "Booking",
+                    text = validity.reason,
+                    confirmLabel = "Cancel anyway",
+                    onConfirm = {
+                        doCancelBooking(subEntity)
+                    },
+                )
+            }
+        }
+    }
+
+    private fun validateCancelBooking(subEntity: SubEntity): BookingValidation =
+        when (subEntity) {
+            is SubEntity.ActivityEntity -> bookingValidator.canCancel(subEntity.activity)
+            is SubEntity.FreetrainingEntity -> BookingValidation.Valid
+        }
+
+    private fun doCancelBooking(subEntity: SubEntity) {
+        log.debug { "doCancelBooking: $subEntity" }
         bookOrCancel(subEntity, BookingService::cancel) { result ->
             when (result) {
-                CancelResult.CancelSuccess -> SnackbarData2("Successfully cancelled booking for '${subEntity.name}' ✅")
-                is CancelResult.CancelFail -> SnackbarData2(
+                CancelResult.CancelSuccess -> SnackbarEvent("Successfully cancelled booking for '${subEntity.name}' ✅")
+                is CancelResult.CancelFail -> SnackbarEvent(
                     "Error while canceling ❌\n${result.message}",
                     SnackbarType.Error
                 )
@@ -207,7 +256,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private fun <T> bookOrCancel(
         subEntity: SubEntity,
         bookingOperation: suspend BookingService.(SubEntity, Boolean, Boolean) -> T,
-        resultHandler: (T) -> SnackbarData2,
+        resultHandler: (T) -> SnackbarEvent,
     ) {
         launchBackgroundTask(
             "Booking/Canceling activity/freetraining failed!",

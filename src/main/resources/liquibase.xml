@@ -144,7 +144,15 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <!-- !already deployed! -->
+    </changeSet>
+
+    <changeSet id="2" author="owner" failOnError="true">
+        <addColumn tableName="ACTIVITIES">
+            <column name="CANCELLATION_LIMIT" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <!-- !will be deployed soon! -->
     </changeSet>
 
     <!-- create new changeset here -->

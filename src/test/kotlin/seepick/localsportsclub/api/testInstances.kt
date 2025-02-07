@@ -5,7 +5,7 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
-import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.localDate
@@ -14,6 +14,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.api.activity.ActivityInfo
 import seepick.localsportsclub.api.checkin.ActivityCheckinEntry
+import seepick.localsportsclub.api.checkin.ActivityCheckinEntryType
 import seepick.localsportsclub.api.checkin.FreetrainingCheckinEntry
 import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
@@ -71,7 +72,7 @@ fun Arb.Companion.activityCheckinEntry() = arbitrary {
         venueSlug = slug().next(),
         date = localDate().next(),
         timeRange = timeRange().next(),
-        isNoShow = boolean().next(),
+        type = enum<ActivityCheckinEntryType>().next(),
     )
 }
 

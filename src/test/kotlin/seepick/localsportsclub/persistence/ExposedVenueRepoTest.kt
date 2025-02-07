@@ -29,7 +29,7 @@ class ExposedVenueRepoTest : DescribeSpec() {
 
         describe("When select all") {
             it("Then return empty") {
-                repo.selectAll(anyCityId).shouldBeEmpty()
+                repo.selectAllByCity(anyCityId).shouldBeEmpty()
             }
         }
         describe("When insert") {
@@ -53,11 +53,11 @@ class ExposedVenueRepoTest : DescribeSpec() {
         describe("When insert and select all") {
             it("Then returned") {
                 val venue = repo.insert(Arb.venueDbo().next().copy(cityId = cityId))
-                repo.selectAll(cityId).shouldBeSingleton().first() shouldBe venue
+                repo.selectAllByCity(cityId).shouldBeSingleton().first() shouldBe venue
             }
             it("different city Then empty") {
                 repo.insert(Arb.venueDbo().next().copy(cityId = cityId1))
-                repo.selectAll(cityId2).shouldBeEmpty()
+                repo.selectAllByCity(cityId2).shouldBeEmpty()
             }
         }
         describe("When update") {
@@ -82,7 +82,7 @@ class ExposedVenueRepoTest : DescribeSpec() {
                     )
                 )
 
-                repo.selectAll(cityId).first().should {
+                repo.selectAllByCity(cityId).first().should {
                     it.notes shouldBe "notes2"
                     it.rating shouldBe 2
                 }

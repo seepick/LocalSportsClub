@@ -1,23 +1,16 @@
 package seepick.localsportsclub.view
 
-import androidx.compose.material.SnackbarResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-class TestableSnackbarService : SnackbarService {
+class TestableSnackbarService() : SnackbarService {
 
-    val shownParams = mutableListOf<SnackbarParam>()
+    val sentEvents = mutableListOf<SnackbarEvent>()
+    override val events: Flow<SnackbarEvent> = MutableSharedFlow()
 
-    override fun initCallback(callback: suspend (SnackbarData2) -> SnackbarResult) {
-    }
-
-    override fun show(
-        data: SnackbarData2,
-        onResult: (SnackbarResult) -> Unit
+    override suspend fun show(
+        event: SnackbarEvent,
     ) {
-        shownParams += SnackbarParam(data, onResult)
+        sentEvents += event
     }
 }
-
-data class SnackbarParam(
-    val data: SnackbarData2,
-    val onResult: (SnackbarResult) -> Unit,
-)

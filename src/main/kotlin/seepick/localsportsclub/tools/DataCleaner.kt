@@ -63,7 +63,7 @@ object DataCleaner {
 
     private fun cleanTexts() {
         val escapedSymbols = listOf("\\\"", "\\n")
-        venueRepo.selectAll(City.Amsterdam.id).forEach { venue ->
+        venueRepo.selectAllByCity(City.Amsterdam.id).forEach { venue ->
             val dirtyTexts = VenueDboText.entries.filter { textField ->
                 val value: String? = textField.getValue(venue)
                 (value != null && escapedSymbols.any { value.contains(it) })
@@ -80,7 +80,7 @@ object DataCleaner {
             }
         }
 
-        venueRepo.selectAll(City.Amsterdam.id).forEach { venue ->
+        venueRepo.selectAllByCity(City.Amsterdam.id).forEach { venue ->
             if (venue.importantInfo != null) {
                 val cleanedInfo = cleanVenueInfo(venue.importantInfo)
                 if (cleanedInfo != venue.importantInfo) {
@@ -144,10 +144,10 @@ object DataCleaner {
                 )
             )
         }
-        venueRepo.selectAll(City.Amsterdam.id).filter { it.street == "undefined" }.forEach {
+        venueRepo.selectAllByCity(City.Amsterdam.id).filter { it.street == "undefined" }.forEach {
             venueRepo.update(it.copy(street = ""))
         }
-        venueRepo.selectAll(City.Amsterdam.id).filter { it.addressLocality == "Amsterdam" }.forEach {
+        venueRepo.selectAllByCity(City.Amsterdam.id).filter { it.addressLocality == "Amsterdam" }.forEach {
             venueRepo.update(it.copy(addressLocality = "Amsterdam, Netherlands"))
         }
     }

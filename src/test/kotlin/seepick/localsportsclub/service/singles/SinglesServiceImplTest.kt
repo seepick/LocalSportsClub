@@ -57,8 +57,10 @@ class SinglesServiceImplTest : StringSpec() {
                 it.prefHomeLong shouldBe home.longitude
                 it.prefHomeLat shouldBe home.latitude
                 it.prefCityId shouldBe prefs.city?.id
-                it.prefUscCredUsername shouldBe credentials.username
-                it.prefUscCredPassword shouldBe Encrypter.encrypt(credentials.password)
+                it.prefUscCredentials shouldBe JsonCredentials(
+                    username = credentials.username,
+                    encryptedPassword = Encrypter.encrypt(credentials.password)
+                )
                 it.prefPeriodFirstDay shouldBe prefs.periodFirstDay
                 it.prefGoogleCalendarId shouldBe prefs.gcal.maybeCalendarId
             }

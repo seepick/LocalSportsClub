@@ -13,7 +13,7 @@ object MigrationApp {
     @JvmStatic
     fun main(args: Array<String>) {
         cliConnectToDatabase(isProd = false)
-        val venues = ExposedVenueRepo.selectAll(City.Amsterdam.id).sortedBy { it.name }
+        val venues = ExposedVenueRepo.selectAllByCity(City.Amsterdam.id).sortedBy { it.name }
         transaction {
             val onefitPartners = OnefitPartners.decode(onefitExportFile)
             val matches = MigrationMatcher.match(onefitPartners, venues)

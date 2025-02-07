@@ -21,7 +21,7 @@ fun syncModule(config: AppConfig) = module {
     singleOf(::HttpDownloader) bind Downloader::class
 
     when (config.sync) {
-        SyncMode.Noop -> single { NoopSyncer } bind Syncer::class
+        SyncMode.Noop -> singleOf(::NoopSyncer) bind Syncer::class
         SyncMode.Delayed -> singleOf(::DelayedSyncer) bind Syncer::class
         SyncMode.Dummy -> singleOf(::DummySyncer) bind Syncer::class
         SyncMode.Real -> {

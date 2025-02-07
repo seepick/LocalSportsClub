@@ -7,11 +7,15 @@ import seepick.localsportsclub.service.date.DateTimeRange
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class ActivityParserTest : StringSpec() {
+class ActivityDetailsParserTest : StringSpec() {
 
     init {
+        "Extract date time" {
+            extractDateTime("If you need to cancel, please cancel your booking by 27/12/2024, 08:00.") shouldBe
+                    LocalDateTime.of(2024, 12, 27, 8, 0)
+        }
         "When parse upcoming Then return" {
-            ActivityParser.parse(readTestResponse("activity_detail.html"), 2024) shouldBe ActivityDetails(
+            ActivityDetailsParser.parseDetails(readTestResponse("activity_detail.html"), 2024) shouldBe ActivityDetails(
                 name = "RESTORATIVE YOGA",
                 dateTimeRange = DateTimeRange(
                     from = LocalDateTime.of(2024, 12, 27, 10, 0),
@@ -20,10 +24,14 @@ class ActivityParserTest : StringSpec() {
                 venueName = "Movements City",
                 category = "Yoga",
                 spotsLeft = 2,
+                cancellationDateLimit = LocalDateTime.of(2024, 12, 27, 8, 0),
             )
         }
         "When parse old Then return" {
-            ActivityParser.parse(readTestResponse("activity_detail.past.html"), 2024) shouldBe ActivityDetails(
+            ActivityDetailsParser.parseDetails(
+                readTestResponse("activity_detail.past.html"),
+                2024
+            ) shouldBe ActivityDetails(
                 name = "Sound Healing with Katty",
                 dateTimeRange = DateTimeRange(
                     from = LocalDateTime.of(2024, 12, 24, 15, 0),
@@ -32,10 +40,11 @@ class ActivityParserTest : StringSpec() {
                 venueName = "Yogaspot Olympisch Stadion",
                 category = "Meditation",
                 spotsLeft = 0, // for past, this is actually not available ;)
+                cancellationDateLimit = null,
             )
         }
         "When parse single freetraining Then return" {
-            ActivityParser.parseFreetraining(
+            ActivityDetailsParser.parseFreetraining(
                 readTestResponse("activity_detail.freetraining.html"),
                 2024
             ) shouldBe FreetrainingDetails(

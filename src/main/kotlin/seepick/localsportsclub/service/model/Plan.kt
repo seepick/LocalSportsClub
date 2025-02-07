@@ -31,6 +31,7 @@ sealed interface Plan {
                 maxCheckinsInPeriod = 4,
                 maxOnlineCheckins = 4,
                 maxPlusCheckins = 0,
+                maxCheckinsInMonthPerVenue = 2,
             )
         ),
         Medium(
@@ -42,6 +43,7 @@ sealed interface Plan {
                 maxCheckinsInPeriod = 10,
                 maxOnlineCheckins = 8,
                 maxPlusCheckins = 0,
+                maxCheckinsInMonthPerVenue = 4,
             )
         ),
         Large(
@@ -53,6 +55,7 @@ sealed interface Plan {
                 maxCheckinsInPeriod = 14,
                 maxOnlineCheckins = 8,
                 maxPlusCheckins = 4,
+                maxCheckinsInMonthPerVenue = 6,
                 // 2 per day
             )
         ),
@@ -65,6 +68,7 @@ sealed interface Plan {
                 maxCheckinsInPeriod = 18,
                 maxOnlineCheckins = 8,
                 maxPlusCheckins = 8,
+                maxCheckinsInMonthPerVenue = 6,
             )
         );
 
@@ -81,10 +85,8 @@ sealed interface Plan {
         Premium(UscPlan.Large) {
             override val internalId = "onefitPremium"
             override val label = "Onefit Premium"
-            override val usageInfo = UsageInfo(
-                maxCheckinsInPeriod = 18,
-                maxOnlineCheckins = 8,
-                maxPlusCheckins = 4,
+            override val usageInfo = UscPlan.Large.usageInfo.copy(
+                maxCheckinsInPeriod = 18, // instead of only 14
             )
         };
 
@@ -96,4 +98,8 @@ data class UsageInfo(
     val maxCheckinsInPeriod: Int, // max monthly, real-life
     val maxOnlineCheckins: Int, // max monthly, internet videostream
     val maxPlusCheckins: Int,
-)
+    val maxCheckinsInMonthPerVenue: Int,
+) {
+    val maxReservationsConcurrentlyTotal = 6 // valid for all plans
+    val maxReservationsConcurrentlyPerDay = 6 // valid for all plans
+}

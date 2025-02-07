@@ -117,11 +117,7 @@ private fun CredentialsRow(
     PasswordField(password = viewModel.entity.uscPassword, onChange = { viewModel.setUscPassword(it) })
     Spacer(Modifier.width(10.dp))
     Button(
-        enabled = viewModel.entity.uscUsername.isNotEmpty() &&
-                !viewModel.isUscConnectionVerifying &&
-                viewModel.entity.uscPassword.isNotEmpty() &&
-                viewModel.verifiedUscUsername.value != viewModel.entity.uscUsername &&
-                viewModel.verifiedUscPassword.value != viewModel.entity.uscPassword,
+        enabled = viewModel.entity.uscUsername.isNotEmpty() && !viewModel.isUscConnectionVerifying && viewModel.entity.uscPassword.isNotEmpty() && viewModel.verifiedUscUsername.value != viewModel.entity.uscUsername && viewModel.verifiedUscPassword.value != viewModel.entity.uscPassword,
         onClick = {
             viewModel.verifyUscConnection()
         },
@@ -171,8 +167,7 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
     var periodFirstDayString by remember { mutableStateOf(periodFirstDay.value?.toString() ?: "") }
 
     Tooltip("The day of the month when the check-in period starts (between 1 and 28)", offset = true) {
-        TextField(
-            value = periodFirstDayString,
+        TextField(value = periodFirstDayString,
             label = { Text("Period") },
             modifier = Modifier.width(120.dp),
             isError = if (periodFirstDayString.isEmpty()) {
@@ -214,10 +209,7 @@ fun GCalRow(
     )
     Spacer(Modifier.width(10.dp))
     Button(
-        enabled = viewModel.entity.calendarEnabled &&
-                !viewModel.isGcalConnectionVerifying &&
-                viewModel.entity.calendarId.isNotEmpty() &&
-                viewModel.verifiedGcalId.value != viewModel.entity.calendarId,
+        enabled = viewModel.entity.calendarEnabled && !viewModel.isGcalConnectionVerifying && viewModel.entity.calendarId.isNotEmpty() && viewModel.verifiedGcalId.value != viewModel.entity.calendarId,
         onClick = {
             viewModel.verifyGcalConnection()
         },
@@ -233,7 +225,10 @@ fun GCalRow(
 
     // GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
     // { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
-    Tooltip("Consider deleting the credentials when you get an error message saying that your token has been expired/revoked.") {
+    Tooltip(
+        text = "Do this when you get an error message saying that your token has been expired/revoked.",
+        offset = true
+    ) {
         Button(
             enabled = viewModel.entity.calendarEnabled,
             onClick = { viewModel.resetTokenCache() },

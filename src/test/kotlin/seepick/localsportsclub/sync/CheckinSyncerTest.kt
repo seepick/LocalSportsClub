@@ -10,6 +10,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.activityCheckinEntry
+import seepick.localsportsclub.api.checkin.ActivityCheckinEntryType
 import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.checkin.CheckinsPage
 import seepick.localsportsclub.api.phpSessionId
@@ -66,7 +67,8 @@ class CheckinSyncerTest : StringSpec() {
 
 
     private fun mockCheckinsPage(pageNr: Int, date: LocalDate, activityId: Int): CheckinEntry {
-        val entry = Arb.activityCheckinEntry().next().copy(activityId = activityId, date = date, isNoShow = false)
+        val entry = Arb.activityCheckinEntry().next()
+            .copy(activityId = activityId, date = date, type = ActivityCheckinEntryType.CheckedIn)
         coEvery { uscApi.fetchCheckinsPage(phpSessionId, pageNr) } returns CheckinsPage(listOf(entry))
         return entry
     }
@@ -78,7 +80,8 @@ class CheckinSyncerTest : StringSpec() {
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
             val activity = testRepo.insertActivity(state = ActivityState.Blank)
-            val entry = Arb.activityCheckinEntry().next().copy(activityId = activity.id, isNoShow = false)
+            val entry = Arb.activityCheckinEntry().next()
+                .copy(activityId = activity.id, type = ActivityCheckinEntryType.CheckedIn)
             coEvery { uscApi.fetchCheckinsPage(phpSessionId, 1) } returns CheckinsPage(listOf(entry))
             mockCheckinsEmptyPage(2)
 
@@ -86,7 +89,9 @@ class CheckinSyncerTest : StringSpec() {
 
             val expected = activity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(activity.id) shouldBe expected
-            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State)
+            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State(
+                ActivityState.Blank
+            ))
         }
         "Given local checked-in activity Then sync until that time although more pages potentially available" {
             val activity1 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
@@ -123,7 +128,9 @@ class CheckinSyncerTest : StringSpec() {
 
             val expected = rescuedActivity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(expected.id) shouldBe expected
-            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State)
+            syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State(
+                ActivityState.Blank
+            ))
         }
     }
 

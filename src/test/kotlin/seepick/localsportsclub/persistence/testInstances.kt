@@ -63,6 +63,7 @@ fun Arb.Companion.activityDbo() = arbitrary {
         to = from.plusMinutes(long(min = 30, max = 120).next()),
         teacher = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().next(),
         state = enum<ActivityState>().next(),
+        cancellationLimit = if (boolean().next()) null else from.minusHours(2),
     )
 }
 

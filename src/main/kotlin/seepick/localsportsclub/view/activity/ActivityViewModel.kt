@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.activity
 import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -20,12 +21,14 @@ class ActivityViewModel(
     singlesService: SinglesService,
     snackbarService: SnackbarService,
     sharedModel: SharedModel,
+    bookingValidator: BookingValidator,
 ) : ScreenViewModel<Activity, ActivitySearch>(
     dataStorage,
     bookingService,
     singlesService,
     snackbarService,
-    sharedModel
+    sharedModel,
+    bookingValidator,
 ) {
 
     override val tableColumns = activitiesTableColumns(clock)

@@ -31,7 +31,7 @@ class FreetrainingSyncer(
     suspend fun sync(session: PhpSessionId, plan: Plan, city: City, days: List<LocalDate>) {
         log.info { "Syncing freetrainiings for: $days" }
         val allStoredFreetrainings = freetrainingRepo.selectAll(city.id)
-        val venuesBySlug = venueRepo.selectAll(city.id).associateBy { it.slug }.toMutableMap()
+        val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
         days.forEachIndexed { index, day ->
             progress.onProgressFreetrainings("Day ${index + 1}/${days.size}")
             syncForDay(session, plan, city, day, allStoredFreetrainings.filter { it.date == day }, venuesBySlug)

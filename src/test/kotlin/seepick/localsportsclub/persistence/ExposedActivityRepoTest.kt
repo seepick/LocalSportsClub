@@ -188,6 +188,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                     from = activity.from.plusHours(1),
                     to = activity.to.plusHours(1),
                     venueId = venue2.id,
+                    cancellationLimit = activity.cancellationLimit,
                 )
                 activityRepo.update(updateActivity)
 

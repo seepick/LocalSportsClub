@@ -12,6 +12,13 @@ data class DateTimeRange(
         require(from <= to) { "From ($from) must be <= to ($to)" }
     }
 
+    companion object {
+        fun merge(date: LocalDate, times: TimeRange) = DateTimeRange(
+            from = LocalDateTime.of(date, times.start),
+            to = LocalDateTime.of(date, times.end)
+        )
+    }
+
     private val fromDate = from.toLocalDate()
     private val fromTime = from.toLocalTime()
 

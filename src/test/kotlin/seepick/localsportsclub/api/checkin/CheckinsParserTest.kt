@@ -13,17 +13,17 @@ class CheckinsParserTest : StringSpec() {
     private val year = 2024
     private val today = LocalDate.of(year, 12, 30)
 
-    private fun parseTestFile(fileName: String, date: LocalDate = today) =
+    private fun parseCheckinsFile(fileName: String, date: LocalDate = today) =
         CheckinsParser.parse(readTestResponse<String>(fileName), date)
 
     init {
         "When parse empty Then return empty" {
-            val result = parseTestFile("checkins.empty.html")
+            val result = parseCheckinsFile("checkins.empty.html")
 
             result.entries.shouldBeEmpty()
         }
         "When parse some Then return them" {
-            val result = parseTestFile("checkins.html")
+            val result = parseCheckinsFile("checkins.html")
 
             result.entries shouldBe listOf(
                 ActivityCheckinEntry(
@@ -31,31 +31,31 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "yoga-spot-olympisch-stadion",
                     date = LocalDate.of(year, 12, 24),
                     timeRange = TimeRange("15:00-16:00"),
-                    isNoShow = false,
+                    type = ActivityCheckinEntryType.CheckedIn,
                 ),
                 ActivityCheckinEntry(
                     activityId = 84742854,
                     venueSlug = "studio-108-3",
                     date = LocalDate.of(year, 12, 24),
                     timeRange = TimeRange("10:00-11:15"),
-                    isNoShow = false,
+                    type = ActivityCheckinEntryType.CheckedIn,
                 ),
                 ActivityCheckinEntry(
                     activityId = 83535971,
                     venueSlug = "de-nieuwe-yogaschool",
                     date = LocalDate.of(year, 12, 23),
                     timeRange = TimeRange("15:45-17:00"),
-                    isNoShow = false,
+                    type = ActivityCheckinEntryType.CheckedIn,
                 ),
             )
         }
         "When parse some in the future Then return them" {
-            val result = parseTestFile("checkins.html", today.withMonth(1))
+            val result = parseCheckinsFile("checkins.html", today.withMonth(1))
 
             result.entries.forEach { it.date.year shouldBe (today.year - 1) }
         }
         "When parse with activity and freetraining Then return both" {
-            val result = parseTestFile("checkins.withFreetraining.html")
+            val result = parseCheckinsFile("checkins.withFreetraining.html")
 
             result.entries shouldBe listOf(
                 FreetrainingCheckinEntry(
@@ -68,14 +68,22 @@ class CheckinsParserTest : StringSpec() {
                     venueSlug = "movements-city",
                     date = LocalDate.of(year, 12, 29),
                     timeRange = TimeRange("9:00-10:00"),
-                    isNoShow = false,
+                    type = ActivityCheckinEntryType.CheckedIn,
                 ),
             )
         }
         "When parse with no-show activity Then mark it" {
-            val result = parseTestFile("checkins.noshow.html")
+            val result = parseCheckinsFile("checkins.noshow.html")
 
-            result.entries.shouldBeSingleton().first().shouldBeInstanceOf<ActivityCheckinEntry>().isNoShow shouldBe true
+            result.entries.shouldBeSingleton().first()
+                .shouldBeInstanceOf<ActivityCheckinEntry>().type shouldBe ActivityCheckinEntryType.NoShow
+        }
+
+        "When parse late cancellation Then return proper state" {
+            val result = parseCheckinsFile("checkins.cancellate.html")
+
+            result.entries.shouldBeSingleton().first()
+                .shouldBeInstanceOf<ActivityCheckinEntry>().type shouldBe ActivityCheckinEntryType.CancelledLate
         }
     }
 }

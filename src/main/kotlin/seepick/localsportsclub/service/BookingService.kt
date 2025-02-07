@@ -133,7 +133,7 @@ class BookingService(
             }
         }
         listeners.forEach {
-            it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State)
+            it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State(oldState = activityDbo.state))
         }
     }
 
@@ -197,10 +197,11 @@ class BookingService(
     fun markActivityFromNoshowToCheckedin(activity: Activity) {
         log.debug { "markActivityFromNoshowToCheckedin($activity)" }
         require(activity.state == ActivityState.Noshow)
-        val updated = activityRepo.selectById(activity.id)!!.copy(state = ActivityState.Checkedin)
+        val oldDbo = activityRepo.selectById(activity.id)!!
+        val updated = oldDbo.copy(state = ActivityState.Checkedin)
         activityRepo.update(updated)
         listeners.forEach {
-            it.onActivityDboUpdated(updated, ActivityFieldUpdate.State)
+            it.onActivityDboUpdated(updated, ActivityFieldUpdate.State(oldState = oldDbo.state))
         }
     }
 }

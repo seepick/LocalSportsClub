@@ -41,7 +41,7 @@ class VersionNotifier(
         }
     }
 
-    private fun handleOutdated() {
+    private suspend fun handleOutdated() {
         snackbarService.show(
             message = "Your current version is out-of-date 👴🏻 Please download a newer one 🙏🏻",
             actionLabel = "Download",

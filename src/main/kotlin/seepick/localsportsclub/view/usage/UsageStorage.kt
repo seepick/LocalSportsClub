@@ -43,13 +43,13 @@ class UsageStorage(
     private val checkedinActivityIds = MutableStateFlow(emptySet<Int>())
     private val checkedinFreetrainingIds = MutableStateFlow(emptySet<Int>())
 
-    val bookedCount: Flow<Int> = combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
-        activityIds.size + freetrainingIds.size
-    }
     val checkedinCount: Flow<Int> =
         combine(checkedinActivityIds, checkedinFreetrainingIds) { activityIds, freetrainingIds ->
             activityIds.size + freetrainingIds.size
         }
+    val bookedCount: Flow<Int> = combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
+        activityIds.size + freetrainingIds.size
+    }
 
     val percentageCheckedin: Flow<Double> = checkedinCount.map {
         it / maxBookingsForPeriod.toDouble()
@@ -58,10 +58,9 @@ class UsageStorage(
         it / maxBookingsForPeriod.toDouble()
     }
 
-    // visible for testing
     val periodFirstDay: LocalDate
     val periodLastDay: LocalDate // inclusive
-    private val periodRange: ClosedRange<LocalDate>
+    val periodRange: ClosedRange<LocalDate>
     val percentagePeriod: Double
 
     init {
@@ -106,7 +105,7 @@ class UsageStorage(
             return
         }
         when (field) {
-            ActivityFieldUpdate.State -> {
+            is ActivityFieldUpdate.State -> {
                 if (activityDbo.isBooked) {
                     bookedActivityIds.update { it + activityDbo.id }
                 } else if (bookedActivityIds.value.contains(activityDbo.id)) {

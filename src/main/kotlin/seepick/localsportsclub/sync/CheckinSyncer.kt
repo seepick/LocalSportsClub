@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.api.PhpSessionId
 import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.api.checkin.ActivityCheckinEntry
+import seepick.localsportsclub.api.checkin.ActivityCheckinEntryType
 import seepick.localsportsclub.api.checkin.CheckinEntry
 import seepick.localsportsclub.api.checkin.FreetrainingCheckinEntry
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -33,8 +34,8 @@ class CheckinSyncer(
         val entries = fetchEntries(session)
         entries.map { entry ->
             when (entry) {
-                is ActivityCheckinEntry -> markActivityAsCheckedin(session, city, entry)
-                is FreetrainingCheckinEntry -> markFreetrainingAsCheckedin(session, city, entry)
+                is ActivityCheckinEntry -> processActivity(session, city, entry)
+                is FreetrainingCheckinEntry -> processFreetraining(session, city, entry)
             }
         }
     }
@@ -59,7 +60,13 @@ class CheckinSyncer(
         return entries
     }
 
-    private suspend fun markActivityAsCheckedin(session: PhpSessionId, city: City, entry: ActivityCheckinEntry) {
+    private fun ActivityCheckinEntryType.toActivityState() = when (this) {
+        ActivityCheckinEntryType.CheckedIn -> ActivityState.Checkedin
+        ActivityCheckinEntryType.NoShow -> ActivityState.Noshow
+        ActivityCheckinEntryType.CancelledLate -> ActivityState.CancelledLate
+    }
+
+    private suspend fun processActivity(session: PhpSessionId, city: City, entry: ActivityCheckinEntry) {
         val activity = activityRepo.selectById(entry.activityId) ?: dataSyncRescuer.fetchInsertAndDispatchActivity(
             session = session,
             city = city,
@@ -67,18 +74,27 @@ class CheckinSyncer(
             venueSlug = entry.venueSlug,
             prefilledVenueNotes = "[SYNC] rescued activity for past check-in"
         )
-        if (activity.state == ActivityState.Checkedin) {
+        // TODO test first, then simplify this
+        if (activity.state == ActivityState.Checkedin && entry.type == ActivityCheckinEntryType.CheckedIn) {
             log.debug { "Activity was already marked as checked-in, skipping: $entry" }
             return
         }
+        if (activity.state == ActivityState.CancelledLate && entry.type == ActivityCheckinEntryType.CancelledLate) {
+            log.debug { "Activity was already marked as cancelled-late, skipping: $entry" }
+            return
+        }
+        if (activity.state == ActivityState.Noshow && entry.type == ActivityCheckinEntryType.NoShow) {
+            log.debug { "Activity was already marked as no-show, skipping: $entry" }
+            return
+        }
         val updated = activity.copy(
-            state = if (entry.isNoShow) ActivityState.Noshow else ActivityState.Checkedin
+            state = entry.type.toActivityState()
         )
         activityRepo.update(updated)
-        dispatcher.dispatchOnActivityDboUpdated(updated, ActivityFieldUpdate.State)
+        dispatcher.dispatchOnActivityDboUpdated(updated, ActivityFieldUpdate.State(oldState = activity.state))
     }
 
-    private suspend fun markFreetrainingAsCheckedin(
+    private suspend fun processFreetraining(
         session: PhpSessionId,
         city: City,
         entry: FreetrainingCheckinEntry

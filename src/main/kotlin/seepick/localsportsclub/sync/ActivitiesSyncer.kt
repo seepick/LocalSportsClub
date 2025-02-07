@@ -31,7 +31,7 @@ class ActivitiesSyncer(
     suspend fun sync(session: PhpSessionId, plan: Plan, city: City, days: List<LocalDate>) {
         log.info { "Syncing activities for: $days" }
         val allStoredActivities = activityRepo.selectAll(city.id)
-        val venuesBySlug = venueRepo.selectAll(city.id).associateBy { it.slug }.toMutableMap()
+        val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
         days.forEachIndexed { index, day ->
             progress.onProgressActivities("Day ${index + 1}/${days.size}")
             syncForDay(
@@ -106,5 +106,6 @@ class ActivitiesSyncer(
         to = dateTimeRange.to,
         teacher = null,
         state = ActivityState.Blank,
+        cancellationLimit = null
     )
 }

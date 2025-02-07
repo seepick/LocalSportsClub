@@ -8,7 +8,8 @@ import org.koin.test.KoinTest
 import seepick.localsportsclub.api.MockUscApi
 import seepick.localsportsclub.view.TestableSnackbarService
 import seepick.localsportsclub.view.UiTest
-import seepick.localsportsclub.view.usage.DummySinglesService
+import seepick.localsportsclub.view.shared.SharedModel
+import seepick.localsportsclub.view.usage.InMemorySinglesService
 
 class PreferencesScreenUiTest : UiTest(), KoinTest {
     private var snackbarService = TestableSnackbarService()
@@ -20,9 +21,10 @@ class PreferencesScreenUiTest : UiTest(), KoinTest {
 
     fun `When foo`() = uiTest {
         val vm = PreferencesViewModel(
-            singlesService = DummySinglesService(),
+            singlesService = InMemorySinglesService(),
             uscApi = MockUscApi(),
             snackbarService = snackbarService,
+            sharedModel = SharedModel()
         )
         // LocalViewModelStoreOwner
 //        startKoin {

@@ -1,10 +1,28 @@
 package seepick.localsportsclub.sync
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+
+private data class ReportEntry(
+    val tokens: List<ReportToken>
+)
+
+private sealed interface ReportToken {
+    data class Text(val text: String) : ReportToken
+    data class ColoredText(val text: String, val color: Color) : ReportToken
+}
 
 data class SyncReport(
     var venuesAdded: Int = 0,
@@ -14,33 +32,105 @@ data class SyncReport(
     var activitiesBooked: Int = 0,
     var activitiesCheckedin: Int = 0,
     var activitiesNoshow: Int = 0,
+    var activitiesCancelledLate: Int = 0,
+
 
     var freetrainingsAdded: Int = 0,
     var freetrainingsScheduled: Int = 0,
     var freetrainingsCheckedin: Int = 0,
 ) {
-    fun buildMessage(): String? {
-        val string = buildString {
+    fun buildContent(): @Composable () -> Unit {
+//        venuesAdded += 3
+//        venuesMarkedDeleted += 2
+//        activitiesAdded += 4_124
+//        activitiesBooked += 4
+//        freetrainingsAdded += 132
+//        freetrainingsScheduled += 1
+//        activitiesCheckedin += 2
+//        activitiesNoshow += 1
+//        activitiesCancelledLate += 2
+
+        val entries = buildList {
             if (venuesAdded != 0 || venuesMarkedDeleted != 0) {
-                append("Venues +$venuesAdded/-$venuesMarkedDeleted; ")
+                add(ReportEntry(buildList {
+                    add(ReportToken.Text("Venues "))
+                    if (venuesAdded != 0) add(ReportToken.ColoredText("+$venuesAdded", Color.Green))
+                    if (venuesAdded != 0 && venuesMarkedDeleted != 0) add(ReportToken.Text("/"))
+                    if (venuesMarkedDeleted != 0) add(ReportToken.ColoredText("-$venuesMarkedDeleted", Color.Gray))
+                }))
             }
-            if (activitiesAdded != 0 || freetrainingsAdded != 0) {
-                append("+$activitiesAdded Act. / +$freetrainingsAdded Free.; ")
+            if (activitiesAdded != 0) {
+                add(ReportEntry(buildList {
+                    add(ReportToken.Text("Activities "))
+                    add(ReportToken.ColoredText("+$activitiesAdded", Color.Green))
+                }))
             }
-            // TODO reuse known Lsc.icons
-            if (activitiesBooked != 0 || freetrainingsScheduled != 0) {
-                append("Booked $activitiesBooked Act. / $freetrainingsScheduled Free.; ")
+            if (freetrainingsAdded != 0) {
+                add(ReportEntry(buildList {
+                    add(ReportToken.Text("Freetrainings "))
+                    add(ReportToken.ColoredText("+$freetrainingsAdded", Color.Green))
+                }))
             }
-            if (activitiesCheckedin != 0 || freetrainingsCheckedin != 0) {
-                // TODO only show for != 0
-                append("Checked-in $activitiesCheckedin Act. / $freetrainingsCheckedin Free.; ")
+            val totalBooked = activitiesBooked + freetrainingsScheduled
+            if (totalBooked != 0) {
+                add(ReportEntry(buildList {
+                    add(ReportToken.Text("${Lsc.icons.reservedEmoji} Booked "))
+                    add(ReportToken.ColoredText("+${totalBooked}", Color.Green))
+                }))
             }
-            // TODO highlight no-shows with red color; maybe display separate snackbar with YELLOW-Warn background
-            if (activitiesNoshow != 0) {
-                append("+$activitiesNoshow no-shows; ")
+            val totalCheckedin = activitiesCheckedin + freetrainingsCheckedin
+            if (totalCheckedin != 0) {
+                add(ReportEntry(buildList {
+                    add(ReportToken.Text("${Lsc.icons.checkedinEmoji} Checked-In "))
+                    add(ReportToken.ColoredText("+$totalCheckedin", Color.Green))
+                }))
+            }
+            if (activitiesNoshow != 0 || activitiesCancelledLate != 0) {
+                add(ReportEntry(buildList {
+                    if (activitiesNoshow != 0) {
+                        add(ReportToken.Text(Lsc.icons.noshowEmoji))
+                        add(ReportToken.Text(" No-Show "))
+                        add(ReportToken.ColoredText("$activitiesNoshow", Color.Red))
+                    }
+                    if (activitiesNoshow != 0 && activitiesCancelledLate != 0) add(ReportToken.Text(" / "))
+                    if (activitiesCancelledLate != 0) {
+                        add(ReportToken.Text(Lsc.icons.cancelledLateEmoji))
+                        add(ReportToken.Text(" Cancelled-Late "))
+                        add(ReportToken.ColoredText("$activitiesCancelledLate", Color.Red))
+                    }
+                }))
             }
         }
-        return if (string.isEmpty()) null else string.substring(0, string.length - 2)
+
+        return {
+            Column {
+                Text("Finished synchronizing data 🔄✅")
+                if (venuesAdded != 0 || venuesMarkedDeleted != 0) {
+                    Text(
+                        fontSize = 11.sp,
+                        text = buildAnnotatedString {
+                            if (entries.isEmpty()) {
+                                append("Everything was up-to-date, nothing was changed.")
+                            }
+                            entries.forEachIndexed { index, entry ->
+                                if (index != 0) {
+                                    append(" ● ")
+                                }
+                                entry.tokens.forEach { token ->
+                                    when (token) {
+                                        is ReportToken.ColoredText -> withStyle(style = SpanStyle(color = token.color)) {
+                                            append(token.text)
+                                        }
+
+                                        is ReportToken.Text -> append(token.text)
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -67,12 +157,13 @@ class SyncReporter : SyncerListener {
     }
 
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        if (field == ActivityFieldUpdate.State) {
+        if (field is ActivityFieldUpdate.State) {
             when (activityDbo.state) {
                 ActivityState.Blank -> {} // ignore
                 ActivityState.Booked -> report.activitiesBooked++
                 ActivityState.Checkedin -> report.activitiesCheckedin++
                 ActivityState.Noshow -> report.activitiesNoshow++
+                ActivityState.CancelledLate -> report.activitiesCancelledLate++
             }
         }
     }

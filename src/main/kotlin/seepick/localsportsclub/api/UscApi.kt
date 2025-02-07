@@ -6,7 +6,9 @@ import kotlinx.coroutines.delay
 import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.ActivitiesParser
 import seepick.localsportsclub.api.activity.ActivityApi
+import seepick.localsportsclub.api.activity.ActivityDetails
 import seepick.localsportsclub.api.activity.ActivityInfo
+import seepick.localsportsclub.api.activity.FreetrainingDetails
 import seepick.localsportsclub.api.activity.FreetrainingInfo
 import seepick.localsportsclub.api.activity.ServiceType
 import seepick.localsportsclub.api.booking.BookingApi
@@ -23,17 +25,22 @@ import seepick.localsportsclub.api.venue.VenueDetails
 import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Plan
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface UscApi {
     suspend fun login(credentials: Credentials): LoginResult
     suspend fun fetchVenues(session: PhpSessionId, filter: VenuesFilter): List<VenueInfo>
     suspend fun fetchVenueDetail(session: PhpSessionId, slug: String): VenueDetails
     suspend fun fetchActivities(session: PhpSessionId, filter: ActivitiesFilter): List<ActivityInfo>
+    suspend fun fetchActivityDetails(session: PhpSessionId, activityId: Int): ActivityDetails
     suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo>
+    suspend fun fetchFreetrainingDetails(session: PhpSessionId, freetrainingId: Int): FreetrainingDetails
     suspend fun fetchScheduleRows(session: PhpSessionId): List<ScheduleRow>
     suspend fun fetchCheckinsPage(session: PhpSessionId, pageNr: Int): CheckinsPage
     suspend fun book(session: PhpSessionId, activityOrFreetrainingId: Int): BookingResult
@@ -79,11 +86,25 @@ class MockUscApi : UscApi {
         return emptyList()
     }
 
+    override suspend fun fetchActivityDetails(session: PhpSessionId, activityId: Int): ActivityDetails =
+        ActivityDetails(
+            name = "Cruz Sheppard",
+            dateTimeRange = DateTimeRange(from = LocalDateTime.now(), to = LocalDateTime.now().plusHours(1)),
+            venueName = "Hubert Welch",
+            category = "vidisse",
+            spotsLeft = 2,
+            cancellationDateLimit = null,
+        )
+
     override suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo> {
         log.debug { "Mock returning empty freetrainings list." }
         delay(500)
         return emptyList()
     }
+
+    override suspend fun fetchFreetrainingDetails(session: PhpSessionId, freetrainingId: Int) = FreetrainingDetails(
+        id = 7308, name = "Joann Dillard", date = LocalDate.now(), venueSlug = "aptent", category = "suscipit"
+    )
 
     override suspend fun fetchScheduleRows(session: PhpSessionId): List<ScheduleRow> {
         log.debug { "Mock returning empty schedule list." }
@@ -149,10 +170,16 @@ class UscApiAdapter(
             ActivitiesParser.parseContent(it.content, filter.date)
         }
 
+    override suspend fun fetchActivityDetails(session: PhpSessionId, activityId: Int): ActivityDetails =
+        activityApi.fetchActivityDetails(session, activityId)
+
     override suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo> =
         activityApi.fetchPages(session, filter, ServiceType.FreeTraining).flatMap {
             ActivitiesParser.parseFreetrainingContent(it.content)
         }
+
+    override suspend fun fetchFreetrainingDetails(session: PhpSessionId, freetrainingId: Int): FreetrainingDetails =
+        activityApi.fetchFreetrainingDetails(session, freetrainingId)
 
     override suspend fun fetchScheduleRows(session: PhpSessionId) =
         scheduleApi.fetchScheduleRows(session)

@@ -41,14 +41,16 @@ fun Arb.Companion.venue() = arbitrary {
 }
 
 fun Arb.Companion.activity() = arbitrary {
+    val dateTimeRange = dateTimeRange().next()
     Activity(
         id = int(min = 1).next(),
         venue = venue().next(),
         name = string(minSize = 5, maxSize = 20, codepoints = Codepoint.az()).next(),
         category = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).next(),
-        dateTimeRange = dateTimeRange().next(),
+        dateTimeRange = dateTimeRange,
         spotsLeft = int(min = 0, max = 20).next(),
         teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().next(),
         state = enum<ActivityState>().next(),
+        cancellationLimit = if (boolean().next()) null else dateTimeRange.from.minusHours(2)
     )
 }

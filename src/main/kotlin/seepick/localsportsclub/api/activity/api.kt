@@ -19,16 +19,18 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.safeGet
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface ActivityApi {
+
     suspend fun fetchPages(
         session: PhpSessionId,
         filter: ActivitiesFilter,
         serviceType: ServiceType
     ): List<ActivitiesDataJson>
 
-    suspend fun fetchDetails(session: PhpSessionId, id: Int): ActivityDetails
+    suspend fun fetchActivityDetails(session: PhpSessionId, id: Int): ActivityDetails
     suspend fun fetchFreetrainingDetails(session: PhpSessionId, id: Int): FreetrainingDetails
 }
 
@@ -53,6 +55,7 @@ data class ActivityDetails(
     val venueName: String,
     val category: String,
     val spotsLeft: Int,
+    val cancellationDateLimit: LocalDateTime?,
 )
 
 data class FreetrainingDetails(
@@ -107,13 +110,13 @@ class ActivityHttpApi(
         return json.data
     }
 
-    override suspend fun fetchDetails(session: PhpSessionId, id: Int): ActivityDetails {
+    override suspend fun fetchActivityDetails(session: PhpSessionId, id: Int): ActivityDetails {
         log.debug { "Fetching details for $id" }
         val response = http.safeGet(Url("$baseUrl/class-details/$id")) {
             cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "ActivtiesDetails-$id")
-        return ActivityParser.parse(response.bodyAsText(), clock.today().year)
+        return ActivityDetailsParser.parseDetails(response.bodyAsText(), clock.today().year)
     }
 
     override suspend fun fetchFreetrainingDetails(session: PhpSessionId, id: Int): FreetrainingDetails {
@@ -121,6 +124,6 @@ class ActivityHttpApi(
             cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "FreetrainingDetails-$id")
-        return ActivityParser.parseFreetraining(response.bodyAsText(), clock.today().year)
+        return ActivityDetailsParser.parseFreetraining(response.bodyAsText(), clock.today().year)
     }
 }

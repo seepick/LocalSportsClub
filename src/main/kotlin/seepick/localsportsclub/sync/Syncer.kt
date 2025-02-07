@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.service.model.ActivityState
 
 interface Syncer {
     fun registerListener(listener: SyncerListener)
@@ -25,23 +26,33 @@ interface SyncerListener {
     fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>)
 }
 
-enum class ActivityFieldUpdate {
-    State, Teacher,
+sealed interface ActivityFieldUpdate {
+    data object Teacher : ActivityFieldUpdate
+    data class State(val oldState: ActivityState) : ActivityFieldUpdate
 }
 
 enum class FreetrainingFieldUpdate {
     State,
 }
 
-object NoopSyncer : Syncer {
+class NoopSyncer(
+    private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
+) : Syncer {
     private val log = logger {}
 
     override fun registerListener(listener: SyncerListener) {
+        dispatcher.registerListener(listener)
     }
 
     override suspend fun sync() {
         log.info { "Noop syncer not doing anything." }
-        delay(500)
+        progress.start()
+        try {
+            delay(500)
+        } finally {
+            progress.stop()
+        }
     }
 }
 

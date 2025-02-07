@@ -15,33 +15,15 @@ import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.freetrainingDbo
-import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
-import seepick.localsportsclub.service.singles.CityId
-import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-
-data class DummySinglesService(
-    override var notes: String? = "",
-    override var windowPref: WindowPref? = null,
-    override var plan: Plan? = null,
-    override var preferences: Preferences = Preferences.empty
-) : SinglesService {
-    val lastSyncs = mutableMapOf<CityId, LocalDateTime>()
-    override fun getLastSyncFor(city: City): LocalDateTime? =
-        lastSyncs[city.id]
-
-    override fun setLastSyncFor(city: City, timestamp: LocalDateTime) {
-        lastSyncs[city.id] = timestamp
-    }
-}
 
 class UsageStorageTest : DescribeSpec() {
 
@@ -61,7 +43,7 @@ class UsageStorageTest : DescribeSpec() {
         clock = StaticClock(today.parseDateWithFixedTime()),
         activityRepo = activityRepo,
         freetrainingRepo = freetrainingRepo,
-        singlesService = DummySinglesService(
+        singlesService = InMemorySinglesService(
             plan = plan, preferences = Preferences.empty.copy(periodFirstDay = periodFirstDay, city = city)
         )
     )
@@ -158,7 +140,10 @@ class UsageStorageTest : DescribeSpec() {
                 val activity = activity("5.5.") { copy(state = ActivityState.Checkedin) }
                 usage.onActivityAdded(activity)
 
-                usage.onActivityDboUpdated(activity.copy(state = ActivityState.Blank), ActivityFieldUpdate.State)
+                usage.onActivityDboUpdated(
+                    activity.copy(state = ActivityState.Blank),
+                    ActivityFieldUpdate.State(ActivityState.Blank)
+                )
 
                 usage checkedinCountShouldBe 0
             }

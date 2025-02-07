@@ -112,6 +112,7 @@ object MigrationProcessor {
                     to = parseZonedDateTimeToLocalDateTime(checkin.end),
                     teacher = null,
                     state = ActivityState.Checkedin,
+                    cancellationLimit = null,
                 )
             )
         }

@@ -6,9 +6,12 @@ import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.model.EntityType
 
 class ScheduleParserTest : StringSpec() {
+    private fun parseSchedule(fileName: String) =
+        ScheduleParser.parse(readTestResponse(fileName))
+
     init {
         "When parse booked activities Then return entries" {
-            val schedule = ScheduleParser.parse(readTestResponse("schedule.activities.html"))
+            val schedule = parseSchedule("schedule.activities.html")
 
             schedule shouldBe ScheduleHtml(
                 rows = listOf(
@@ -19,7 +22,7 @@ class ScheduleParserTest : StringSpec() {
             )
         }
         "When parse scheduled freetraining Then return entry" {
-            val schedule = ScheduleParser.parse(readTestResponse("schedule.freetraining.html"))
+            val schedule = parseSchedule("schedule.freetraining.html")
 
             schedule shouldBe ScheduleHtml(
                 rows = listOf(

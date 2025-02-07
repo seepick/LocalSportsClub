@@ -6,16 +6,18 @@ import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
+import java.time.LocalDateTime
 
 enum class ActivityState {
     // CAVE: names are used for DB mapping!
-    Blank, Booked, Checkedin, Noshow;
+    Blank, Booked, Checkedin, Noshow, CancelledLate;
 
     fun iconStringAndSuffix() = when (this) {
         Blank -> ""
         Booked -> "${LscIcons.reservedEmoji} "
         Checkedin -> "${LscIcons.checkedinEmoji} "
         Noshow -> "${LscIcons.noshowEmoji} "
+        CancelledLate -> "${LscIcons.cancelledLateEmoji} "
     }
 }
 
@@ -25,6 +27,7 @@ class Activity(
     val name: String,
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
+    val cancellationLimit: LocalDateTime?,
     teacher: String?,
     spotsLeft: Int,
     state: ActivityState,

@@ -18,6 +18,7 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.SnackbarType
 import seepick.localsportsclub.view.common.launchBackgroundTask
+import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.shared.SharedModel
 
 class PreferencesViewModel(
@@ -123,13 +124,16 @@ class PreferencesViewModel(
 
     fun resetTokenCache() {
         val file = FileResolver.resolve(FileEntry.GoogleCredentialsCache)
-        if (file.exists()) {
+        val snackbarMessage = if (file.exists()) {
             log.debug { "About to delete google cache at: ${file.absolutePath}" }
             file.delete()
             singlesService.verifiedGcalId = null
-            snackbarService.show("Google login token cache successfully deleted 🗑️✅")
+            "Google login token cache successfully deleted 🗑️✅"
         } else {
-            snackbarService.show("Nothing to delete, token cache is already empty 🤷🏻‍♂️")
+            "Nothing to delete, token cache is already empty 🤷🏻‍♂️"
+        }
+        launchViewTask("Failed to show snackbar") {
+            snackbarService.show(snackbarMessage)
         }
     }
 

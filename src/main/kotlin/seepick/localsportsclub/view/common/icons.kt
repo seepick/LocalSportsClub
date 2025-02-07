@@ -24,6 +24,7 @@ object LscIcons {
     const val reservedEmoji = "👟" // booked (activity) or scheduled (freetraining)
     val reservedEmojiIndicator = VisualIndicator.EmojiIndicator(reservedEmoji)
     const val noshowEmoji = "🚷"
+    const val cancelledLateEmoji = "🚯"
     const val hiddenEmoji = "🙈"
     val hiddenIndicator = VisualIndicator.EmojiIndicator(hiddenEmoji)
     const val ratingEmoji = "⭐️"

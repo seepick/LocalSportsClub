@@ -12,7 +12,9 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.EntityType
 import seepick.localsportsclub.service.model.FreetrainingState
 
-
+/**
+ * For booked activities and scheduled freetrainings.
+ */
 class ScheduleSyncer(
     private val uscApi: UscApi,
     private val activityRepo: ActivityRepo,
@@ -78,7 +80,10 @@ class ScheduleSyncer(
             require(activity.state != targetState) { "Expected activity state not to be $targetState: $activity" }
             val updatedActivity = activity.copy(state = targetState)
             activityRepo.update(updatedActivity)
-            dispatcher.dispatchOnActivityDboUpdated(updatedActivity, ActivityFieldUpdate.State)
+            dispatcher.dispatchOnActivityDboUpdated(
+                updatedActivity,
+                ActivityFieldUpdate.State(oldState = activity.state)
+            )
         }
     }
 

@@ -15,7 +15,7 @@ object DateParser {
     private val timeParser = DateTimeFormatter.ofPattern("H:mm", Locale.ENGLISH)
     private val concatDateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH)
     private val machineDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
-
+    private val parseEuropeDate = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH)
 
     /**
      * @param dateString e.g. "Friday, 27 December"
@@ -32,6 +32,9 @@ object DateParser {
 
     /** @param dateString e.g. "2025-01-12" */
     fun parseMachineDate(dateString: String): LocalDate = parseAnyDate(dateString, machineDateFormatter)
+
+    /** @param dateString e.g. "24/12/2025" */
+    fun parseEuropeDate(dateString: String): LocalDate = parseAnyDate(dateString, parseEuropeDate)
 
     fun parseAnyDate(dateString: String, dateFormatter: DateTimeFormatter): LocalDate {
         val dateTemporal = dateFormatter.parse(dateString)

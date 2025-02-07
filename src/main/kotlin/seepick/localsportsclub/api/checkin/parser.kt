@@ -20,12 +20,16 @@ sealed interface CheckinEntry {
     val date: LocalDate
 }
 
+enum class ActivityCheckinEntryType {
+    CheckedIn, NoShow, CancelledLate;
+}
+
 data class ActivityCheckinEntry(
     val activityId: Int,
     override val venueSlug: String,
     override val date: LocalDate,
     val timeRange: TimeRange,
-    val isNoShow: Boolean,
+    val type: ActivityCheckinEntryType,
 ) : CheckinEntry
 
 data class FreetrainingCheckinEntry(
@@ -60,12 +64,22 @@ object CheckinsParser {
                             venueSlug = venueSlug,
                         )
                     } else {
+                        val select = sub.select("span.smm-booking-state-label")
+                        val type = if (select.hasClass("noshow")) {
+                            ActivityCheckinEntryType.NoShow
+                        } else if (select.hasClass("late")) {
+                            ActivityCheckinEntryType.CancelledLate
+                        } else if (select.hasClass("done")) {
+                            ActivityCheckinEntryType.CheckedIn
+                        } else {
+                            error("Could not determine activity checkin type by CSS class: ${select.attr("class")}")
+                        }
                         ActivityCheckinEntry(
                             date = currentDate!!,
                             activityId = id,
                             venueSlug = venueSlug,
                             timeRange = DateParser.parseTimes(sub.select("p.smm-class-snippet__class-time").text()),
-                            isNoShow = sub.select("span.smm-booking-state-label").hasClass("noshow"),
+                            type = type,
                         )
                     }
                 }

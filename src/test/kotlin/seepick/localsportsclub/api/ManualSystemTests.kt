@@ -10,10 +10,10 @@ import seepick.localsportsclub.api.activity.ServiceType
 import seepick.localsportsclub.api.booking.BookingHttpApi
 import seepick.localsportsclub.api.checkin.CheckinHttpApi
 import seepick.localsportsclub.api.plan.MembershipHttpApi
-import seepick.localsportsclub.api.schedule.ScheduleHttpApi
 import seepick.localsportsclub.api.venue.VenueHttpApi
 import seepick.localsportsclub.api.venue.VenueParser
 import seepick.localsportsclub.api.venue.VenuesFilter
+import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedSinglesRepo
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.httpClient
@@ -23,6 +23,7 @@ import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesServiceImpl
 import seepick.localsportsclub.sync.DummySyncProgress
 import seepick.localsportsclub.tools.cliConnectToDatabase
+import java.time.Duration
 import java.time.LocalDate
 
 object ManualSystemTests {
@@ -42,9 +43,9 @@ object ManualSystemTests {
             log.info { "Manual test running..." }
 //            testFreetrainingDetails()
 //            testCheckins()
-            testVenues()
+//            testVenues()
 //            testVenue()
-//            testActivities()
+            testActivities()
 //            testSchedule()
 //            testBook(84737975)
 //            testMembership()
@@ -102,23 +103,48 @@ object ManualSystemTests {
 
     private suspend fun testActivities() {
         val today = LocalDate.now()
-        val pages = activityApi().fetchPages(
+        val api = activityApi()
+        val pages = api.fetchPages(
             phpSessionId,
             filter = ActivitiesFilter(city = City.Amsterdam, plan = Plan.OnefitPlan.Premium, date = today),
             serviceType = ServiceType.Courses,
         )
         println("Received ${pages.size} pages of activities.")
-        val activities = pages.flatMapIndexed { index, page ->
-            println("Parsing page ${index + 1}")
+        val activities = pages.flatMap { page ->
             ActivitiesParser.parseContent(page.content, today)
         }
-        println("In total ${activities.size} activities:")
-        activities.forEach { println("- $it") }
+        println("In total ${activities.size} activities.")
+//        activities.forEach { println("- $it") }
+        activities.map { activity ->
+            activity to api.fetchActivityDetails(phpSessionId, activity.id)
+        }.groupBy {
+            it.first.venueSlug
+        }
+            .forEach { (venue, infoAndDetails) ->
+                println("Venue: $venue")
+                infoAndDetails.forEach { (info, detail) ->
+                    val diff: String = if (detail.cancellationDateLimit != null) {
+                        Duration.between(detail.cancellationDateLimit, info.dateTimeRange.from).toHours().toString()
+                    } else "?"
+                    println(
+                        " $diff hours ... ${info.name} [${info.dateTimeRange}] // ${detail.cancellationDateLimit}"
+                    )
+                }
+            }
     }
 
     private suspend fun testSchedule() {
-        val ids = ScheduleHttpApi(httpClient, responseStorage, uscConfig).fetchScheduleRows(phpSessionId)
-        println("Got ${ids.size} activity IDs back: $ids")
+        val booked = ExposedActivityRepo.selectAllBooked(City.Amsterdam.id)
+        println("Got ${booked.size} locally booked activities.")
+        booked.forEach { row ->
+            println("- $row")
+        }
+
+//        val rows = ScheduleHttpApi(httpClient, responseStorage, uscConfig).fetchScheduleRows(phpSessionId)
+//        println("Got ${rows.size} scheduled rows back.")
+//        rows.forEach { row ->
+//            println("- $row")
+//        }
     }
 
     private suspend fun loadSessionId(): PhpSessionId {

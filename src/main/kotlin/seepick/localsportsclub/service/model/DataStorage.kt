@@ -68,7 +68,8 @@ class DataStorage(
     private val venuesById: MutableMap<Int, Venue> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val venues =
-                venueRepo.selectAll(cityId).map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
+                venueRepo.selectAllByCity(cityId)
+                    .map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
                     .associateBy { it.id }
             venueLinksRepo.selectAll(cityId).forEach { (id1, id2) ->
                 val venue1 = venues[id1] ?: error("Linking venue1 not found by ID: $id1")
@@ -197,7 +198,7 @@ class DataStorage(
     override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
         allActivitiesByVenueId[activityDbo.venueId]?.singleOrNull { it.id == activityDbo.id }?.also { activity ->
             when (field) {
-                ActivityFieldUpdate.State -> activity.state = activityDbo.state
+                is ActivityFieldUpdate.State -> activity.state = activityDbo.state
                 ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
             }
         } ?: log.warn {
@@ -302,6 +303,7 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     teacher = teacher,
     dateTimeRange = DateTimeRange(from, to),
     state = state,
+    cancellationLimit = cancellationLimit,
 )
 
 fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
