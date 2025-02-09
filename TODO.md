@@ -8,6 +8,7 @@
 * different icon for wishlisted
 * make date search field more compact
 * when snackbar type!=info, make duration=indef and closeable button (otherwise message gone without time to read it)
+* if booked, in VenueDetails, show cancellationLimit next to cancel button
 
 ## Backlog
 
@@ -22,7 +23,7 @@
 * sync the membership tag (minimum one only) for venue&activity (which plan applies)
 * support custom plan; define everything yourself (as so many other plans are there; think of B2B)
 * enable/disable specific 3rd party sync in prefs (make it city aware)
-    * third party syncer for: cosmos-west, balanzcs
+    * third party syncer for: cosmos-west, balanzcs, white door yoga
 
 ## Back-Backlog (unsorted)
 

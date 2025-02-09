@@ -47,14 +47,18 @@ class UsageStorage(
         combine(checkedinActivityIds, checkedinFreetrainingIds) { activityIds, freetrainingIds ->
             activityIds.size + freetrainingIds.size
         }
-    val bookedCount: Flow<Int> = combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
-        activityIds.size + freetrainingIds.size
-    }
+
+    val bookedCount: Flow<Int> = bookedActivityIds.map { it.size }
+
+    val reservedCount: Flow<Int> =
+        combine(bookedActivityIds, scheduledFreetrainingIds) { activityIds, freetrainingIds ->
+            activityIds.size + freetrainingIds.size
+        }
 
     val percentageCheckedin: Flow<Double> = checkedinCount.map {
         it / maxBookingsForPeriod.toDouble()
     }
-    val percentageBooked: Flow<Double> = bookedCount.map {
+    val percentageBooked: Flow<Double> = reservedCount.map {
         it / maxBookingsForPeriod.toDouble()
     }
 

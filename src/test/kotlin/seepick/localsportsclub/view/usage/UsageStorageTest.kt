@@ -227,7 +227,7 @@ class UsageStorageTest : DescribeSpec() {
     }
 
     private suspend infix fun UsageStorage.bookedCountShouldBe(expected: Int) {
-        bookedCount.test {
+        reservedCount.test {
             awaitItem() shouldBe expected
         }
     }

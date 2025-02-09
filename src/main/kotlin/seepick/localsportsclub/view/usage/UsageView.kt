@@ -39,7 +39,7 @@ fun UsageView(
     }
 
     val checkedinCount by usageStorage.checkedinCount.collectAsState(0)
-    val bookedCount by usageStorage.bookedCount.collectAsState(0)
+    val bookedCount by usageStorage.reservedCount.collectAsState(0)
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)
     val percentageBooked by usageStorage.percentageBooked.collectAsState(0.0)
     val year = clock.today().year

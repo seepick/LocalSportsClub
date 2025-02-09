@@ -105,30 +105,28 @@ data class SyncReport(
         return {
             Column {
                 Text("Finished synchronizing data 🔄✅")
-                if (venuesAdded != 0 || venuesMarkedDeleted != 0) {
-                    Text(
-                        fontSize = 11.sp,
-                        text = buildAnnotatedString {
-                            if (entries.isEmpty()) {
-                                append("Everything was up-to-date, nothing was changed.")
+                Text(
+                    fontSize = 11.sp,
+                    text = buildAnnotatedString {
+                        if (entries.isEmpty()) {
+                            append("Everything was up-to-date, nothing was changed.")
+                        }
+                        entries.forEachIndexed { index, entry ->
+                            if (index != 0) {
+                                append(" ● ")
                             }
-                            entries.forEachIndexed { index, entry ->
-                                if (index != 0) {
-                                    append(" ● ")
-                                }
-                                entry.tokens.forEach { token ->
-                                    when (token) {
-                                        is ReportToken.ColoredText -> withStyle(style = SpanStyle(color = token.color)) {
-                                            append(token.text)
-                                        }
-
-                                        is ReportToken.Text -> append(token.text)
+                            entry.tokens.forEach { token ->
+                                when (token) {
+                                    is ReportToken.ColoredText -> withStyle(style = SpanStyle(color = token.color)) {
+                                        append(token.text)
                                     }
+
+                                    is ReportToken.Text -> append(token.text)
                                 }
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }
