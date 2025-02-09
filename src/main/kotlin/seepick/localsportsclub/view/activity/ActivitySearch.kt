@@ -20,6 +20,9 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
     val booked = newBooleanSearchOption(
         "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedEmojiIndicator
     ) { it.state == ActivityState.Booked }
+    val missed = newBooleanSearchOption(
+        "Missed", initialValue = true, visualIndicator = Lsc.icons.noshowEmojiIndicator
+    ) { it.state == ActivityState.Noshow || it.state == ActivityState.CancelledLate }
     val favorited = newBooleanSearchOption(
         "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
     ) { it.venue.isFavorited }

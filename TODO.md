@@ -2,13 +2,9 @@
 
 ## Next
 
-* data cleanup: link 4x thrive yoga
-* filter activities for no-shows/late-cancellation
-* also add conversion button, for no-show into booked, for late-cancellation
 * different icon for wishlisted
 * make date search field more compact
 * when snackbar type!=info, make duration=indef and closeable button (otherwise message gone without time to read it)
-* if booked, in VenueDetails, show cancellationLimit next to cancel button
 
 ## Backlog
 

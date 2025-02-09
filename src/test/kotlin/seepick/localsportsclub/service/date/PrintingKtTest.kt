@@ -53,7 +53,7 @@ class PrintingKtTest : DescribeSpec() {
                 DateTimeRange(
                     from = LocalDateTime.of(2001, 1, 2, 4, 5, 6),
                     to = LocalDateTime.of(2001, 1, 2, 4, 6, 7),
-                ).prettyShorterPrint(2001) shouldBe "2.1. 04:05"
+                ).prettyFromShorterPrint(2001) shouldBe "2.1. 04:05"
             }
         }
     }

@@ -16,20 +16,30 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.unescape
 
-
 object DataCleaner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        cliConnectToDatabase(isProd = true)
+        cliConnectToDatabase(isProd = false)
 //        cleanActivityNames()
 //        cleanVenueAddresses()
 //        cleanTexts()
 //        linkMissingVenues()
 //        changeVenues()
+        linkThriveYogaVenues()
         println("Done ✅")
     }
 
+    private fun linkThriveYogaVenues() {
+        val venues = venueRepo.selectAllByCity(City.Amsterdam.id).filter { it.name.lowercase().contains("thrive yoga") }
+        venues.flatMap { v1 ->
+            venues.mapNotNull { v2 ->
+                if (v1 == v2) null else VenueIdLink(v1.id, v2.id)
+            }
+        }.toSet().forEach {
+            venueLinksRepo.insert(it)
+        }
+    }
 
     private fun changeVenues() {
         listOf("ems-health-studio", "ems-health-studio-groepslessen").forEach { slug ->
@@ -41,6 +51,7 @@ object DataCleaner {
     private val activityRepo: ActivityRepo = ExposedActivityRepo
     private val freetrainingRepo: FreetrainingRepo = ExposedFreetrainingRepo
     private val venueRepo: VenueRepo = ExposedVenueRepo
+    private val venueLinksRepo: VenueLinksRepo = ExposedVenueLinksRepo
     private val linkRepo: VenueLinksRepo = ExposedVenueLinksRepo
 
     enum class VenueDboText {

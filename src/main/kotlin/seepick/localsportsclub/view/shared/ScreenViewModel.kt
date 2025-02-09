@@ -272,9 +272,9 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         }
     }
 
-    fun onActivityNoshowToCheckedin(activity: Activity) {
-        log.debug { "onActivityNoshowToCheckedin($activity)" }
-        bookingService.markActivityFromNoshowToCheckedin(activity)
+    fun onActivityChangeToCheckedin(activity: Activity) {
+        log.debug { "onActivityChangeToCheckedin($activity)" }
+        bookingService.changeActivityToCheckedin(activity)
     }
 
     private fun resetItems() {

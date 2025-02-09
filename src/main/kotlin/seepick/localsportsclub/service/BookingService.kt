@@ -194,9 +194,9 @@ class BookingService(
             ))
     }
 
-    fun markActivityFromNoshowToCheckedin(activity: Activity) {
-        log.debug { "markActivityFromNoshowToCheckedin($activity)" }
-        require(activity.state == ActivityState.Noshow)
+    fun changeActivityToCheckedin(activity: Activity) {
+        log.debug { "changeActivityToCheckedin($activity)" }
+        require(activity.state != ActivityState.Checkedin) // no-show, or cancelled-late
         val oldDbo = activityRepo.selectById(activity.id)!!
         val updated = oldDbo.copy(state = ActivityState.Checkedin)
         activityRepo.update(updated)

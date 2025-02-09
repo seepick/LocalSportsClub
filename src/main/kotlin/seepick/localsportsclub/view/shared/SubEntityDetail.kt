@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.firstUpper
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
@@ -28,7 +30,6 @@ import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 
-
 @Composable
 fun SubEntityDetail(
     subEntity: SubEntity,
@@ -38,7 +39,7 @@ fun SubEntityDetail(
     onCancelBooking: (SubEntity) -> Unit,
     isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
-    onActivityNoshowToCheckedin: (Activity) -> Unit,
+    onActivityChangeToCheckedin: (Activity) -> Unit,
     isGcalEnabled: Boolean,
     shouldGcalBeManaged: MutableState<Boolean>,
 ) {
@@ -107,6 +108,13 @@ fun SubEntityDetail(
                         Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                     }
                 }
+                if (isBooked && subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
+                    Text(
+                        maxLines = 2,
+                        text = "Free cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint()}",
+                        fontSize = 10.sp,
+                    )
+                }
                 if (isGcalEnabled) {
                     CheckboxTexted(
                         label = "Manage Calendar",
@@ -122,9 +130,11 @@ fun SubEntityDetail(
             }
         }
         if (subEntity is SubEntity.ActivityEntity) {
-            if (subEntity.activity.state == ActivityState.Noshow) {
-                Button(onClick = { onActivityNoshowToCheckedin(subEntity.activity) }) {
-                    Text("Change noshow to checkedin")
+            if (subEntity.activity.state == ActivityState.Noshow ||
+                subEntity.activity.state == ActivityState.CancelledLate
+            ) {
+                Button(onClick = { onActivityChangeToCheckedin(subEntity.activity) }) {
+                    Text("Change to Checked-In")
                 }
             }
         }

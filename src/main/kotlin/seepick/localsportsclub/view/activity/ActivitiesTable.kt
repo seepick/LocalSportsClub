@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.date.prettyShorterPrint
+import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.view.common.WidthOrWeight
@@ -43,7 +43,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
         "Date", WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
-            extractor = { it.dateTimeRange.prettyShorterPrint(clock.today().year) },
+            extractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,
         )

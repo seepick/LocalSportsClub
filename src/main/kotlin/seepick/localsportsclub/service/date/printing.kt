@@ -20,6 +20,13 @@ private val dayDatetimeFormatter = DateTimeFormatter.ofPattern("E d.M. HH:mm", L
 private val dayDatetimeFormatterShorterWithYear = DateTimeFormatter.ofPattern("d.M.yy HH:mm", Locale.ENGLISH)
 private val dayDatetimeFormatterShorter = DateTimeFormatter.ofPattern("d.M. HH:mm", Locale.ENGLISH)
 
+private val dayDateTimeFormatter = DateTimeFormatter.ofPattern("E d.M. HH:mm", Locale.ENGLISH)
+
+/**
+ * @return "Sat 3.11. 18:30
+ */
+fun LocalDateTime.prettyPrint(): String = dayDateTimeFormatter.format(this)
+
 /**
  * @return "Sat 3.11."
  */
@@ -54,5 +61,5 @@ fun DateTimeRange.prettyPrint(currentYear: Int): String =
 /**
  * @return "3.11. 04:05"
  */
-fun DateTimeRange.prettyShorterPrint(currentYear: Int): String =
+fun DateTimeRange.prettyFromShorterPrint(currentYear: Int): String =
     from.format(if (from.year != currentYear) dayDatetimeFormatterShorterWithYear else dayDatetimeFormatterShorter)
