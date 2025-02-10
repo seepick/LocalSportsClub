@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.shared
 
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -208,10 +209,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private fun doBook(subEntity: SubEntity) {
         bookOrCancel(subEntity, BookingService::book) { result ->
             when (result) {
-                BookingResult.BookingSuccess -> SnackbarEvent("Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅")
+                BookingResult.BookingSuccess -> SnackbarEvent(
+                    message = "Successfully ${subEntity.bookedLabel} '${subEntity.name}' ✅",
+                )
+
                 is BookingResult.BookingFail -> SnackbarEvent(
-                    "Error while booking ❌\n${result.message}",
-                    SnackbarType.Error
+                    message = "Error while booking ❌\n${result.message}",
+                    type = SnackbarType.Error,
+                    duration = SnackbarDuration.Long,
                 )
             }
         }

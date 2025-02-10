@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.preferences
 
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -69,7 +70,11 @@ class PreferencesViewModel(
                     singlesService.verifiedUscCredentials = null
                     sharedModel.verifiedUscUsername.value = null
                     sharedModel.verifiedUscPassword.value = null
-                    snackbarService.show(" ${result.message} 🔐❌", SnackbarType.Warn)
+                    snackbarService.show(
+                        message = "${result.message} 🔐❌",
+                        type = SnackbarType.Warn,
+                        duration = SnackbarDuration.Long,
+                    )
                 }
 
                 is LoginResult.Success -> {
@@ -109,7 +114,9 @@ class PreferencesViewModel(
                     singlesService.verifiedGcalId = null
                     sharedModel.verifiedGcalId.value = null
                     snackbarService.show(
-                        "Google connection failed 📆❌\n${result.message}", SnackbarType.Warn
+                        message = "Google connection failed 📆❌\n${result.message}",
+                        type = SnackbarType.Warn,
+                        duration = SnackbarDuration.Long,
                     )
                 }
 

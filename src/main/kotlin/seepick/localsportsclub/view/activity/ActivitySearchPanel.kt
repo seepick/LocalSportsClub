@@ -17,7 +17,6 @@ fun ActivitySearchPanel(
         StringSearchField(viewModel.searching.name)
         DateTimeRangeSearchField(viewModel.searching.date, viewModel.syncDates)
         BooleanSearchField(viewModel.searching.booked)
-        BooleanSearchField(viewModel.searching.missed)
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
         RatingSearchField(viewModel.searching.rating)

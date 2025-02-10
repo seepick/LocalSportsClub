@@ -114,11 +114,14 @@ private fun <T> _DropDownTextField(
                 readOnly = true,
                 enabled = enabled,
                 singleLine = true,
-                modifier = Modifier.widthOrFill(textSize).onGloballyPositioned { coordinates ->
-                    textFieldSize = coordinates.size.toSize()
-                }.onFocusChanged { state ->
-                    isMenuExpanded.value = state.isFocused
-                },
+                modifier = Modifier
+                    .widthOrFill(textSize)
+                    .onGloballyPositioned { coordinates ->
+                        textFieldSize = coordinates.size.toSize()
+                    }
+                    .onFocusChanged { state ->
+                        isMenuExpanded.value = state.isFocused
+                    },
                 label = label?.let { { Text(label) } },
                 trailingIcon = {
                     Icon(icon,

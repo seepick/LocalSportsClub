@@ -4,10 +4,10 @@
 
 * different icon for wishlisted
 * make date search field more compact
-* when snackbar type!=info, make duration=indef and closeable button (otherwise message gone without time to read it)
 
 ## Backlog
 
+* implement usage statistics
 * tooltips for table headers (some are not self-explanatory)
 * if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
   day can have 66 pages!); and/or is it possible to increase page-size?!
@@ -20,6 +20,8 @@
 * support custom plan; define everything yourself (as so many other plans are there; think of B2B)
 * enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
+* clear all active search filters
+* show how many days sync to left (last sync date -DIFF- today)
 
 ## Back-Backlog (unsorted)
 
@@ -43,6 +45,7 @@
 * IMPROVE: the syncer should not add the year information; return incomplete day+month only (let logic determine year)
 * uitest+koin (work in progress)
 * spots left: make updateable (see SubEntityDetail view)
+* new tab "Other", with summaries/report/statistics/overview (no shows/late cancellation)
 
 ## Nope
 
