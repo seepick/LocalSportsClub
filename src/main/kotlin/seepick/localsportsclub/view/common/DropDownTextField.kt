@@ -3,14 +3,18 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -33,6 +37,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 
 data class DropDownTextFieldEdits(
@@ -52,6 +57,7 @@ fun <T : HasLabel> DropDownTextField(
     enabled: Boolean = true,
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
+    useSlimDisplay: Boolean = false,
 ) {
     _DropDownTextField(
         label = label,
@@ -61,6 +67,7 @@ fun <T : HasLabel> DropDownTextField(
         enabled = enabled,
         textSize = textSize,
         textFieldEdits = textFieldEdits,
+        useSlimDisplay = useSlimDisplay,
     )
 }
 
@@ -74,6 +81,7 @@ fun <T> DropDownTextField(
     enabled: Boolean = true,
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
+    useSlimDisplay: Boolean = false,
 ) {
     _DropDownTextField(
         label = label,
@@ -84,6 +92,7 @@ fun <T> DropDownTextField(
         enabled = enabled,
         textSize = textSize,
         textFieldEdits = textFieldEdits,
+        useSlimDisplay = useSlimDisplay,
     )
 }
 
@@ -97,65 +106,124 @@ private fun <T> _DropDownTextField(
     enabled: Boolean,
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
+    useSlimDisplay: Boolean
 ) {
-    val selectedItemLabel = if (selectedItem == null) "" else {
+    val selectedItemLabel = if (selectedItem == null) {
+        label ?: ""
+    } else {
         (selectedItem as? HasLabel)?.label ?: itemFormatter!!(selectedItem)
     }
+    val source = remember {
+        MutableInteractionSource()
+    }
     val isMenuExpanded = remember { mutableStateOf(false) }
+    if (source.collectIsPressedAsState().value) {
+        // modifier.onClick/clickable not working...
+        isMenuExpanded.value = !isMenuExpanded.value
+    }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon = if (isMenuExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
     val focusRequester = remember { FocusRequester() }
+    var isFocused by remember { mutableStateOf(false) }
+    val icon = if (isMenuExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
     Column {
         if (textFieldEdits == null) {
-            OutlinedTextField(
-                value = selectedItemLabel,
-                onValueChange = { /* no-op */ },
-                readOnly = true,
-                enabled = enabled,
-                singleLine = true,
-                modifier = Modifier
-                    .widthOrFill(textSize)
-                    .onGloballyPositioned { coordinates ->
-                        textFieldSize = coordinates.size.toSize()
-                    }
-                    .onFocusChanged { state ->
-                        isMenuExpanded.value = state.isFocused
+            if (useSlimDisplay) {
+                TextFieldSlim(
+                    value = selectedItemLabel,
+                    onValueChange = { /* no-op */ },
+                    readOnly = true,
+                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                    enabled = enabled,
+                    singleLine = true,
+                    nullifyContentPadding = true,
+                    interactionSource = source,
+                    modifier = Modifier
+                        .widthOrFill(textSize)
+//                        .padding(5.dp)
+                        .defaultMinSize(minHeight = 1.dp).height(26.dp)
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        }
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { state ->
+                            isFocused = state.isFocused
+                        },
+                    label = label?.let { { Text(label) } },
+                    trailingIcon = {
+                        Icon(icon,
+                            null,
+                            Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
+                                .let {
+                                    if (enabled) {
+                                        it.clickable {
+                                            isMenuExpanded.value = !isMenuExpanded.value
+                                        }
+                                    } else it
+                                })
                     },
-                label = label?.let { { Text(label) } },
-                trailingIcon = {
-                    Icon(icon,
-                        null,
-                        Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
-                            .let {
-                                if (enabled) {
-                                    it.clickable {
-                                        isMenuExpanded.value = !isMenuExpanded.value
-                                    }
-                                } else it
-                            })
-                },
-            )
+                )
+            } else {
+                OutlinedTextField(
+                    value = selectedItemLabel,
+                    onValueChange = { /* no-op */ },
+                    readOnly = true,
+                    enabled = enabled,
+                    singleLine = true,
+                    modifier = Modifier
+                        .widthOrFill(textSize)
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        }
+                        .onFocusChanged { state ->
+                            isMenuExpanded.value = state.isFocused
+                        },
+                    label = label?.let { { Text(label) } },
+                    trailingIcon = {
+                        Icon(icon,
+                            null,
+                            Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
+                                .let {
+                                    if (enabled) {
+                                        it.clickable {
+                                            isMenuExpanded.value = !isMenuExpanded.value
+                                        }
+                                    } else it
+                                })
+                    },
+                )
+            }
         } else {
-            TextField(
+            TextFieldSlim(
                 value = textFieldEdits.text.value,
                 onValueChange = textFieldEdits.onTextChanged,
                 readOnly = false,
                 isError = textFieldEdits.errorChecker(),
                 enabled = enabled,
                 singleLine = true,
-                modifier = Modifier.widthOrFill(textSize).onGloballyPositioned { coordinates ->
-                    textFieldSize = coordinates.size.toSize()
-                }.let { m ->
-                    textFieldEdits.onReset?.let { reset ->
-                        m.onPreviewKeyEvent { e ->
-                            if (e.key == Key.Escape && e.type == KeyEventType.KeyUp) {
-                                reset()
+                nullifyContentPadding = useSlimDisplay,
+                modifier = Modifier
+                    .widthOrFill(textSize)
+                    .onGloballyPositioned { coordinates ->
+                        textFieldSize = coordinates.size.toSize()
+                    }
+                    .let { m ->
+                        textFieldEdits.onReset?.let { reset ->
+                            m.onPreviewKeyEvent { e ->
+                                if (e.key == Key.Escape && e.type == KeyEventType.KeyUp) {
+                                    reset()
+                                }
+                                false
                             }
-                            false
-                        }
-                    } ?: m
-                },
+                        } ?: m
+                    }
+                    .let {
+                        if (useSlimDisplay) {
+                            it
+                                .padding(0.dp)
+                                .defaultMinSize(minHeight = 1.dp).height(26.dp)
+                        } else it
+                    },
                 textStyle = textFieldEdits.textAlign?.let { LocalTextStyle.current.copy(textAlign = textFieldEdits.textAlign) }
                     ?: LocalTextStyle.current,
                 label = label?.let { { Text(label) } },

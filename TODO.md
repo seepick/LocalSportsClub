@@ -4,6 +4,8 @@
 
 * different icon for wishlisted
 * make date search field more compact
+* in search panels: v-align center all
+* make search inputs vertical compact/slim (like date/time range search); for rating, activities, checkins, reservations
 
 ## Backlog
 
