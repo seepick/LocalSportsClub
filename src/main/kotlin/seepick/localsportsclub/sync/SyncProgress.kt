@@ -19,8 +19,10 @@ object DummySyncProgress : SyncProgress {
         listeners.forEach(SyncProgressListener::onSyncStart)
     }
 
-    override fun stop() {
-        listeners.forEach(SyncProgressListener::onSyncFinish)
+    override fun stop(isError: Boolean) {
+        listeners.forEach {
+            it.onSyncFinish(isError)
+        }
     }
 
     override fun onProgress(step: String, subStep: String?) {
@@ -34,7 +36,7 @@ object DummySyncProgress : SyncProgress {
 interface SyncProgress {
     fun register(listener: SyncProgressListener)
     fun start()
-    fun stop()
+    fun stop(isError: Boolean)
     fun onProgress(step: String, subStep: String? = null)
 }
 
@@ -90,12 +92,14 @@ class SyncProgressThreaded : SyncProgress {
         }, "SyncProgressThread").also { it.start() }
     }
 
-    override fun stop() {
-        log.debug { "stop()" }
+    override fun stop(isError: Boolean) {
+        log.debug { "stop(isError=$isError)" }
         shouldStop = true
         steps.offer(finalSyncStep)
         currentThread!!.interrupt()
-        listeners.forEach(SyncProgressListener::onSyncFinish)
+        listeners.forEach {
+            it.onSyncFinish(isError)
+        }
     }
 
     override fun onProgress(step: String, subStep: String?) {
@@ -107,5 +111,5 @@ class SyncProgressThreaded : SyncProgress {
 interface SyncProgressListener {
     fun onSyncStart()
     fun onSyncStep(syncStep: SyncStep)
-    fun onSyncFinish()
+    fun onSyncFinish(isError: Boolean)
 }

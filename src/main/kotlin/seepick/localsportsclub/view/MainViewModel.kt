@@ -78,6 +78,7 @@ class MainViewModel(
     }
 
     fun startSync() {
+        syncReporter.clear()
         currentSyncJob = launchBackgroundTask("Synchronisation of data failed!") {
             currentSyncStep = null
             syncer.sync()
@@ -88,19 +89,21 @@ class MainViewModel(
         currentSyncStep = syncStep
     }
 
-    override fun onSyncFinish() {
-        log.info { "sync DONE" }
+    override fun onSyncFinish(isError: Boolean) {
+        log.info { "onSyncFinish(isError=$isError)" }
         isSyncing = false
         currentSyncJob = null
 
         if (!currentSyncJobCancelled) {
-            syncReporter.clear()
             launchViewTask("Failed to show snackbar!") {
                 snackbarService.show(
                     SnackbarEvent(
-                        content = SnackbarContent.CustomContent(syncReporter.report.buildContent()),
+                        content = if (isError) SnackbarContent.TextContent("See error dialog for details...") else SnackbarContent.CustomContent(
+                            syncReporter.report.buildContent()
+                        ),
                         duration = SnackbarDuration.Indefinite,
                         actionLabel = "Close",
+                        type = if (isError) SnackbarType.Error else SnackbarType.Info
                     )
                 )
             }

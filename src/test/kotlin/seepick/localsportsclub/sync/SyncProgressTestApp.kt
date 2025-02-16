@@ -16,8 +16,8 @@ fun main() {
             println("=> onStep: $syncStep")
         }
 
-        override fun onSyncFinish() {
-            println("=> onFinish")
+        override fun onSyncFinish(isError: Boolean) {
+            println("=> onFinish(isError=$isError)")
         }
     }
     progress.register(listener)
@@ -35,7 +35,7 @@ fun main() {
                 Text("Step")
             }
             Button(onClick = {
-                progress.stop()
+                progress.stop(isError = false)
             }) {
                 Text("Stop")
             }

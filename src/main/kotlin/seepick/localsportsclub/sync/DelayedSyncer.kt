@@ -36,7 +36,7 @@ class DelayedSyncer(
         progress.onProgress("Checkins", "")
 
         log.info { "Delay sync done." }
-        progress.stop()
+        progress.stop(isError = false)
     }
 
     override fun registerListener(listener: SyncerListener) {

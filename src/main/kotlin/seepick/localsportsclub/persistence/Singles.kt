@@ -18,7 +18,7 @@ data class SinglesDbo(
     val json: String,
 ) {
     override fun toString() =
-        "SinglesDbo[version=$version, json=$json]"
+        "SinglesDbo[version=$version, json=...]"
 }
 
 interface SinglesRepo {

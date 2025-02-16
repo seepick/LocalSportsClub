@@ -37,10 +37,8 @@ class VenueSyncer(
         progress.onProgressVenues(null)
         val remoteVenuesBySlug = api.fetchVenues(session, VenuesFilter(city, plan)).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
-        val localVenuesBySlug =
-            venueRepo.selectAllByCity(city.id).filter { !it.isDeleted }.associateBy { it.slug }
-
-        val markDeleted = localVenuesBySlug.minus(remoteVenuesBySlug.keys)
+        val localVenues = venueRepo.selectAllByCity(city.id)
+        val markDeleted = localVenues.filter { !it.isDeleted }.associateBy { it.slug }.minus(remoteVenuesBySlug.keys)
         // this also means that the "hidden linked ones" will be deleted
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
@@ -48,7 +46,7 @@ class VenueSyncer(
             venueRepo.update(it.copy(isDeleted = true))
         }
 
-        val missingVenues = remoteVenuesBySlug.minus(localVenuesBySlug.keys)
+        val missingVenues = remoteVenuesBySlug.minus(localVenues.associateBy { it.slug }.keys)
         venueSyncInserter.fetchInsertAndDispatch(session, city, missingVenues.keys.toList())
     }
 }

@@ -22,12 +22,24 @@ class DummySyncer(
     private val freetrainingRepo: FreetrainingRepo,
     private val dispatcher: SyncerListenerDispatcher,
     private val clock: Clock,
+    private val progress: SyncProgress,
 ) : Syncer {
 
     private var activityId = 1
     private var freetrainingId = 1
 
     override suspend fun sync() {
+        progress.start()
+        var isError = true
+        try {
+            sync2()
+            isError = false
+        } finally {
+            progress.stop(isError)
+        }
+    }
+
+    private suspend fun sync2() {
 //        if (true) {
 //            throw Exception("foobar")
 //        }

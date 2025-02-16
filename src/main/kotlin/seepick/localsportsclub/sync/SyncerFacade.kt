@@ -58,12 +58,14 @@ class SyncerFacade(
     override suspend fun sync() {
         log.debug { "Syncing ..." }
         progress.start()
+        var successfullyFinished = false
         try {
             newSuspendedTransaction {
                 safeSync()
+                successfullyFinished = true
             }
         } finally {
-            progress.stop()
+            progress.stop(isError = !successfullyFinished)
         }
     }
 

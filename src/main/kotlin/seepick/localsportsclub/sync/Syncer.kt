@@ -51,7 +51,7 @@ class NoopSyncer(
         try {
             delay(500)
         } finally {
-            progress.stop()
+            progress.stop(isError = false)
         }
     }
 }

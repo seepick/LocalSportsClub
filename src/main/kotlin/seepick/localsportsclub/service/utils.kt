@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Collections
 import java.util.Locale
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
@@ -18,7 +19,7 @@ suspend fun <T, R> workParallel(
     processor: suspend (T) -> R,
 ): List<R> {
     return withContext(Dispatchers.IO) {
-        val result = mutableListOf<R>()
+        val result = Collections.synchronizedList(mutableListOf<R>())
         val items = ConcurrentLinkedQueue(data.toMutableList())
         (1..min(coroutineCount, data.size)).map { coroutine ->
             log.debug { "Starting coroutine $coroutine/$coroutineCount ..." }
