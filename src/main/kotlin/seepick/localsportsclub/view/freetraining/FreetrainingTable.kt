@@ -57,6 +57,7 @@ fun FreetrainingsTable(
         sortColumn = viewModel.sorting.sortColumn,
         sortDirection = viewModel.sorting.sortDirection,
         onItemClicked = viewModel::onFreetrainingSelected,
+        onItemNavigation = viewModel::onItemNavigation,
         onHeaderClicked = viewModel.sorting::onSortColumn,
     )
 }

@@ -21,6 +21,7 @@ import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableNavigation
 
 
 val SimpleActivitiesTable_rowEstimatedHeight = 18
@@ -33,6 +34,7 @@ fun SimpleActivitiesTable(
     clock: Clock = koinInject(),
     height: Dp,
     modifier: Modifier = Modifier,
+    onItemNavigation: (TableNavigation, Activity) -> Unit,
 ) {
     if (activities.isEmpty()) {
         Text("No activities.")
@@ -46,6 +48,8 @@ fun SimpleActivitiesTable(
             items = activities,
             headerEnabled = false,
             selectedItem = selectedActivity,
+            onItemClicked = onActivitySelected,
+            onItemNavigation = onItemNavigation,
             boxModifier = Modifier
                 .border(1.dp, Lsc.colors.onSurface)
                 .height(height)
@@ -65,7 +69,6 @@ fun SimpleActivitiesTable(
                     },
                 )
             ),
-            onItemClicked = onActivitySelected,
             sortColumn = null,
             sortDirection = SortDirection.Asc, // doesnt matter; will be ignored
         )

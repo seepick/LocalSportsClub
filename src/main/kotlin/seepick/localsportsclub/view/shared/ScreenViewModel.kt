@@ -41,6 +41,8 @@ import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.launchBackgroundTask
 import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableNavigation
+import seepick.localsportsclub.view.common.table.navigate
 import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.util.concurrent.atomic.AtomicBoolean
@@ -169,6 +171,32 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
             onItemSelected(FreetrainingSelected(freetraining))
+        }
+    }
+
+    fun onItemNavigation(navigation: TableNavigation, currentItem: ITEM) {
+        log.trace { "onItemNavigation($navigation)" }
+        _items.navigate(currentItem, navigation)?.also { newItem ->
+            when (newItem) {
+                is Activity -> onActivitySelected(newItem)
+                is Freetraining -> onFreetrainingSelected(newItem)
+                is Venue -> onVenueSelected(newItem)
+                else -> error("Unhandled table item type: $newItem")
+            }
+        }
+    }
+
+    fun onSubActivityNavigated(navigation: TableNavigation, item: Activity) {
+        log.trace { "onSubActivityNavigated($navigation, $item)" }
+        selectedVenue.value!!.activities.navigate(item, navigation)?.also { newItem ->
+            onActivitySelected(newItem)
+        }
+    }
+
+    fun onSubFreetrainingNavigated(navigation: TableNavigation, item: Freetraining) {
+        log.trace { "onSubFreetrainingNavigated($navigation, $item)" }
+        selectedVenue.value!!.freetrainings.navigate(item, navigation)?.also { newItem ->
+            onFreetrainingSelected(newItem)
         }
     }
 

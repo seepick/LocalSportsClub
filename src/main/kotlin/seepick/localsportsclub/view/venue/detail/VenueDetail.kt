@@ -42,6 +42,7 @@ import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlText
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.common.WidthOrFill
+import seepick.localsportsclub.view.common.table.TableNavigation
 import seepick.localsportsclub.view.shared.SimpleActivitiesTable
 import seepick.localsportsclub.view.shared.SimpleActivitiesTable_rowEstimatedHeight
 import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable
@@ -68,6 +69,8 @@ fun VenueDetail(
     isSyncing: Boolean,
     configuredCity: City?,
     mainWindowState: MainWindowState = koinInject(),
+    onActivityNavigated: (TableNavigation, Activity) -> Unit,
+    onFreetrainingNavigated: (TableNavigation, Freetraining) -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
     Column(
@@ -174,13 +177,15 @@ fun VenueDetail(
             activities = venue.sortedActivities.toList(),
             selectedActivity = activity,
             onActivitySelected = onActivityClicked,
-            modifier = Modifier.fillMaxWidth(),
+            onItemNavigation = onActivityNavigated,
             height = heights.first,
+            modifier = Modifier.fillMaxWidth(),
         )
         SimpleFreetrainingsTable(
             freetrainings = venue.sortedFreetrainings.toList(),
             selectedFreetraining = freetraining,
             onFreetrainingSelected = onFreetrainingClicked,
+            onItemNavigation = onFreetrainingNavigated,
             modifier = Modifier.fillMaxWidth(),
             height = heights.second,
         )
