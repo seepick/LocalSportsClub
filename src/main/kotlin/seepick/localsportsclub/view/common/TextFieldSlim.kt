@@ -3,6 +3,7 @@ package seepick.localsportsclub.view.common
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +23,10 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+
+enum class PaddingMode {
+    Default, Zero, Horizontal,
+}
 
 @Composable
 fun TextFieldSlim(
@@ -45,7 +50,7 @@ fun TextFieldSlim(
     interactionSource: MutableInteractionSource? = null,
     shape: Shape = TextFieldDefaults.TextFieldShape,
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
-    nullifyContentPadding: Boolean = false,
+    paddingMode: PaddingMode = PaddingMode.Default,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -56,14 +61,18 @@ fun TextFieldSlim(
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
 
     @OptIn(ExperimentalMaterialApi::class)
-    (BasicTextField(
+    BasicTextField(
         value = value,
-        modifier = modifier
+        modifier = modifier.let {
+            if (paddingMode != PaddingMode.Default) {
+                it.defaultMinSize(minHeight = 1.dp).height(26.dp)
+            } else it
+        }
             .indicatorLine(enabled, isError, interactionSource, colors)
             //.defaultErrorSemantics(isError, getString(Strings.DefaultErrorMessage))
             .defaultMinSize(
                 minWidth = TextFieldDefaults.MinWidth,
-                minHeight = TextFieldDefaults.MinHeight
+                minHeight = TextFieldDefaults.MinHeight,
             ),
         onValueChange = onValueChange,
         enabled = enabled,
@@ -94,17 +103,17 @@ fun TextFieldSlim(
                 shape = shape,
                 colors = colors,
                 // ... we needed this one here
-                contentPadding = if (nullifyContentPadding) {
-                    PaddingValues(0.dp)
-                } else {
-                    if (label == null) {
+                contentPadding = when (paddingMode) {
+                    PaddingMode.Default -> if (label == null) {
                         textFieldWithoutLabelPadding()
                     } else {
                         textFieldWithLabelPadding()
                     }
-                }
 
+                    PaddingMode.Zero -> PaddingValues(0.dp)
+                    PaddingMode.Horizontal -> PaddingValues(10.dp, 0.dp)
+                }
             )
         }
-    ))
+    )
 }

@@ -136,7 +136,7 @@ private fun <T> _DropDownTextField(
                     textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
                     enabled = enabled,
                     singleLine = true,
-                    nullifyContentPadding = true,
+                    paddingMode = PaddingMode.Zero,
                     interactionSource = source,
                     modifier = Modifier
                         .widthOrFill(textSize)
@@ -201,7 +201,10 @@ private fun <T> _DropDownTextField(
                 isError = textFieldEdits.errorChecker(),
                 enabled = enabled,
                 singleLine = true,
-                nullifyContentPadding = useSlimDisplay,
+                paddingMode = if (useSlimDisplay) PaddingMode.Zero else PaddingMode.Default,
+                textStyle = textFieldEdits.textAlign?.let { LocalTextStyle.current.copy(textAlign = textFieldEdits.textAlign) }
+                    ?: LocalTextStyle.current,
+                label = label?.let { { Text(label) } },
                 modifier = Modifier
                     .widthOrFill(textSize)
                     .onGloballyPositioned { coordinates ->
@@ -224,9 +227,6 @@ private fun <T> _DropDownTextField(
                                 .defaultMinSize(minHeight = 1.dp).height(26.dp)
                         } else it
                     },
-                textStyle = textFieldEdits.textAlign?.let { LocalTextStyle.current.copy(textAlign = textFieldEdits.textAlign) }
-                    ?: LocalTextStyle.current,
-                label = label?.let { { Text(label) } },
                 leadingIcon = {
                     if (textFieldEdits.onReset != null && selectedItem != null && enabled) {
                         Icon(Icons.Default.Close, null, Modifier.clickable { textFieldEdits.onReset.invoke() })

@@ -2,9 +2,6 @@
 
 ## Next
 
-* make date search field more compact
-* in search panels: v-align center all
-* make search inputs vertical compact/slim (like date/time range search); for rating, activities, checkins, reservations
 * enable up/down arrow for table; (would require a global listener, and changing focus...)
 * make long venue texts selectable; "i..." button click opens dialog
 * clear all active search filters button
