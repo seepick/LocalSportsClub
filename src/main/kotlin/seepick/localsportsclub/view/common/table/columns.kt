@@ -7,13 +7,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.ModifierWith
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.venue.VenueImage
 
 data class TableColumn<T>(
-    val headerLabel: String? = null,
+    val header: VisualIndicator,
     val size: WidthOrWeight,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,
@@ -29,25 +31,24 @@ data class TableColumn<T>(
     }
 }
 
-fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> {
-    return TableColumn(
-        "Image", WidthOrWeight.Width(70.dp),
+fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> =
+    TableColumn(
+        VisualIndicator.StringIndicator("Image"), WidthOrWeight.Width(70.dp),
         CellRenderer.CustomRenderer { item, col ->
             Row(ModifierWith(col.size).height(30.dp)) {
                 VenueImage(imageFileName(item))
             }
         }, sortingEnabled = false
     )
-}
 
 fun <T> tableColumnFavorited(isFavorited: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn("Fav", isFavorited, Icons.Lsc.favorited2)
+    iconImageColumn(Lsc.icons.favoritedIndicator, isFavorited, Icons.Lsc.favorited2)
 
 fun <T> tableColumnWishlisted(isWishlisted: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn("Wsh", isWishlisted, Icons.Lsc.wishlisted2)
+    iconImageColumn(Lsc.icons.wishlistedIndicator, isWishlisted, Icons.Lsc.wishlisted2)
 
 private fun <T> iconImageColumn(
-    header: String,
+    header: VisualIndicator,
     flagExtractor: (T) -> Boolean,
     icons: Pair<ImageBitmap, ImageBitmap>
 ): TableColumn<T> =

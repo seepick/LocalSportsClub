@@ -9,6 +9,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SharedModel
 import java.time.LocalDate
@@ -34,7 +35,8 @@ class FreetrainingViewModel(
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }
     override val selectedVenue = selectedVenueBySelectedSubEntity
     override val showLinkedVenues = false
-    override val initialSortColumn = tableColumns.single { it.headerLabel == "Date" }
+    override val initialSortColumn =
+        tableColumns.single { it.header is VisualIndicator.StringIndicator && it.header.label == "Date" }
 
     val syncDates: List<LocalDate>
 

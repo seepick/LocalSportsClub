@@ -7,18 +7,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.LscIcons
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.Table
-import seepick.localsportsclub.view.common.table.TableCell
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableTextCell
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
@@ -26,33 +28,52 @@ import seepick.localsportsclub.view.shared.RatingColumn
 
 fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it.imageFileName },
-    TableColumn("Name", WidthOrWeight.Weight(0.7f), CellRenderer.CustomRenderer { venue, col ->
-        TableCell(
-            text = venue.name,
-            size = col.size,
-            textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
-        )
-    }, sortValueExtractor = { it.name.lowercase() }),
-    TableColumn("Act", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.activities.size }),
-    TableColumn("Fre", WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size }),
-    TableColumn(LscIcons.checkedinEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
-        it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
-    }),
-    TableColumn(LscIcons.reservedEmoji, WidthOrWeight.Width(30.dp), TextRenderer(textAlign = TextAlign.Right) {
-        it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
-    }),
-    TableColumn(LscIcons.hiddenEmoji, WidthOrWeight.Width(40.dp), TextRenderer(textAlign = TextAlign.Center) {
-        if (it.isHidden) LscIcons.hiddenEmoji else ""
-    }),
     TableColumn(
-        "Last Visit", WidthOrWeight.Width(80.dp), TextRenderer(
+        VisualIndicator.StringIndicator("Name"),
+        WidthOrWeight.Weight(0.7f),
+        CellRenderer.CustomRenderer { venue, col ->
+            TableTextCell(
+                text = venue.name,
+                size = col.size,
+                textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
+            )
+        },
+        sortValueExtractor = { it.name.lowercase() }),
+    TableColumn(
+        Lsc.icons.activitiesIndicator,
+        WidthOrWeight.Width(40.dp),
+        TextRenderer(textAlign = TextAlign.Right) { it.activities.size }),
+    TableColumn(
+        Lsc.icons.freetrainingsIndicator,
+        WidthOrWeight.Width(40.dp),
+        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size }),
+    TableColumn(
+        VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
+        WidthOrWeight.Width(30.dp),
+        TextRenderer(textAlign = TextAlign.Right) {
+            it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
+        }),
+    TableColumn(
+        VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
+        WidthOrWeight.Width(30.dp),
+        TextRenderer(textAlign = TextAlign.Right) {
+            it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
+        }),
+    TableColumn(
+        VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
+        WidthOrWeight.Width(40.dp),
+        TextRenderer(textAlign = TextAlign.Center) {
+            if (it.isHidden) LscIcons.hiddenEmoji else ""
+        }),
+    TableColumn(
+        VisualIndicator.StringIndicator("Last Visit"), WidthOrWeight.Width(80.dp), TextRenderer(
             extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
         )
     ),
     TableColumn(
-        "km",
+        VisualIndicator.StringIndicator("km"),
         WidthOrWeight.Width(50.dp),
         TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm?.toString() ?: "" }),
     RatingColumn(),

@@ -114,7 +114,6 @@ fun <T> Table(
         ) {
             if (headerEnabled) {
                 renderTableHeader(columns, sortColumn, sortDirection, onHeaderClicked = {
-                    println("request focus; header")
                     focusRequester.requestFocus()
                     onHeaderClicked(it)
                 })
@@ -149,7 +148,7 @@ fun <T> Table(
                             }
 
                             is CellRenderer.TextRenderer -> {
-                                TableCell(
+                                TableTextCell(
                                     text = col.renderer.extractor(item).toString(),
                                     size = col.size,
                                     textAlign = col.renderer.textAlign,

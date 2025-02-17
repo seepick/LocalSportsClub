@@ -3,7 +3,6 @@
 ## Next
 
 * make long venue texts selectable; "i..." button click opens dialog
-* render activity/freetraining icon in table header
 * clear all active search filters button
 * sync the membership tag (minimum one only) for venue&activity (which plan applies)
 

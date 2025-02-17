@@ -9,6 +9,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Freetraining
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
@@ -21,11 +22,21 @@ import seepick.localsportsclub.view.shared.RatingColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue.imageFileName },
-    TableColumn("Name", WidthOrWeight.Weight(0.6f), CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })),
-    TableColumn("Venue", WidthOrWeight.Weight(0.4f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        "Date",
+        VisualIndicator.StringIndicator("Name"),
+        WidthOrWeight.Weight(0.6f),
+        CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })
+    ),
+    TableColumn(
+        VisualIndicator.StringIndicator("Venue"),
+        WidthOrWeight.Weight(0.4f),
+        CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn(
+        VisualIndicator.StringIndicator("Category"),
+        WidthOrWeight.Width(120.dp),
+        CellRenderer.TextRenderer { it.category }),
+    TableColumn(
+        VisualIndicator.StringIndicator("Date"),
         WidthOrWeight.Width(80.dp),
         CellRenderer.TextRenderer(
             extractor = { it.date.prettyPrint(clock.today().year) },

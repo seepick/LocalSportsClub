@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.ColorOrBrush
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.background
 import seepick.localsportsclub.view.common.brighter
+import seepick.localsportsclub.view.common.composeIt
 import seepick.localsportsclub.view.common.darker
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -41,7 +44,7 @@ fun <T> LazyListScope.renderTableHeader(
         Row(modifier = Modifier.height(30.dp)) {
             columns.forEach { col ->
                 TableHeader(
-                    text = col.headerLabel ?: error("Missing header label for: $col"),
+                    header = col.header,
                     size = col.size,
                     isSortEnabled = col.sortingEnabled,
                     isSortActive = col == sortColumn,
@@ -56,7 +59,7 @@ fun <T> LazyListScope.renderTableHeader(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun RowScope.TableHeader(
-    text: String,
+    header: VisualIndicator,
     size: WidthOrWeight,
     isSortEnabled: Boolean,
     isSortActive: Boolean,
@@ -65,12 +68,9 @@ fun RowScope.TableHeader(
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val background: ColorOrBrush = tableHeaderBgColor(isSortEnabled, isSortActive, isHovered, sortDirection)
-    TableCell(
-        text = text,
-        size = size,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = applyColSize(Modifier, size)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
             .background(background)
@@ -80,7 +80,29 @@ fun RowScope.TableHeader(
                 if (!isSortEnabled) it else {
                     it.onClick { onClick() }
                 }
-            })
+            }
+    ) {
+        when (header) {
+            is VisualIndicator.BitmapIndicator, is VisualIndicator.VectorIndicator -> {
+                header.composeIt(1.0f)
+            }
+
+            VisualIndicator.NoIndicator, is VisualIndicator.StringIndicator, is VisualIndicator.EmojiIndicator -> {
+                val headerText = when (header) {
+                    VisualIndicator.NoIndicator -> ""
+                    is VisualIndicator.StringIndicator -> header.label
+                    is VisualIndicator.EmojiIndicator -> header.emoji
+                    else -> error("Unhandled: $header")
+                }
+                TableTextCell(
+                    text = headerText,
+                    size = size,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
 }
 
 @Composable

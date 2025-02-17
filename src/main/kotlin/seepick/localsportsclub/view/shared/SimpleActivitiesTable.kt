@@ -17,6 +17,7 @@ import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
@@ -56,6 +57,7 @@ fun SimpleActivitiesTable(
                 .then(modifier),
             columns = listOf(
                 TableColumn(
+                    header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Width(170.dp),
                     renderer = CellRenderer.TextRenderer(
                         textAlign = TextAlign.Right,
@@ -63,6 +65,7 @@ fun SimpleActivitiesTable(
                     ) { it.dateTimeRange.prettyPrint(currentYear) },
                 ),
                 TableColumn(
+                    header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
                         "${it.state.iconStringAndSuffix()}${if (it.teacher == null) it.name else "${it.name} /${it.teacher}"}"

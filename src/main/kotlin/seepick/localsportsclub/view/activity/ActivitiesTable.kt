@@ -11,6 +11,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
@@ -24,7 +25,7 @@ import seepick.localsportsclub.view.shared.RatingColumn
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue.imageFileName },
     TableColumn(
-        "Name",
+        VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.6f),
         CellRenderer.TextRenderer(extractor = { activity ->
             buildString {
@@ -39,10 +40,16 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         },
             sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
-    TableColumn("Venue", WidthOrWeight.Weight(0.4f), CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn("Category", WidthOrWeight.Width(120.dp), CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        "Date", WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
+        VisualIndicator.StringIndicator("Venue"),
+        WidthOrWeight.Weight(0.4f),
+        CellRenderer.TextRenderer { it.venue.name }),
+    TableColumn(
+        VisualIndicator.StringIndicator("Category"),
+        WidthOrWeight.Width(120.dp),
+        CellRenderer.TextRenderer { it.category }),
+    TableColumn(
+        VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,

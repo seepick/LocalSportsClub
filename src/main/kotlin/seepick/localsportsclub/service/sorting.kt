@@ -47,7 +47,7 @@ class SortingDelegate<T>(
         private set
 
     fun onSortColumn(column: TableColumn<T>) {
-        log.debug { "update sorting for: ${column.headerLabel}" }
+        log.debug { "update sorting" }
         require(sortColumn.sortingEnabled)
         if (sortColumn == column) {
             sortDirection = sortDirection.toggle()

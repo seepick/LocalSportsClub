@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import seepick.localsportsclub.view.common.WidthOrWeight
 
 @Composable
-fun RowScope.TableCell(
+fun RowScope.TableTextCell(
     text: String,
     size: WidthOrWeight,
     textDecoration: TextDecoration? = null,
