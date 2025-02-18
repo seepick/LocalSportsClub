@@ -86,7 +86,6 @@ fun <T> Table(
     Box(modifier = Modifier
         .focusRequester(focusRequester)
         .onFocusChanged { state ->
-            println("onFocusChanged: $state")
             isFocused = state.isFocused
         }
         .onKeyEvent {
@@ -136,7 +135,6 @@ fun <T> Table(
                     .let {
                         if (onItemClicked == null) it
                         else it.onClick {
-                            println("request focus; row")
                             focusRequester.requestFocus()
                             onItemClicked(item)
                         }

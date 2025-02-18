@@ -88,7 +88,9 @@ class DummySyncer(
             slug = "double-shift",
             facilities = "Gym,Sauna",
             rating = 3,
-            description = "Some\nline"
+            description = (1..20).joinToString(" ") { "This is a very long description you cannot imagine $it." },
+            importantInfo = (1..20).joinToString(" ") { "This is a very long info you cannot imagine $it." },
+            openingTimes = (1..20).joinToString(" ") { "This is a very long opening time you cannot imagine $it." },
         )
         this += DummyGenerator.venue().copy(id = 2, name = "EMS", slug = "ems")
         this += DummyGenerator.venue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio")

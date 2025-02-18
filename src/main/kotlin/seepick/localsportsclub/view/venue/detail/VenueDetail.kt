@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
@@ -30,9 +29,10 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxTexted
+import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.DropDownTextField
-import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.LinkTonalButton
+import seepick.localsportsclub.view.common.LongText
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
@@ -43,10 +43,7 @@ import seepick.localsportsclub.view.common.UrlText
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.common.WidthOrFill
 import seepick.localsportsclub.view.common.table.TableNavigation
-import seepick.localsportsclub.view.shared.SimpleActivitiesTable
-import seepick.localsportsclub.view.shared.SimpleActivitiesTable_rowEstimatedHeight
-import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable
-import seepick.localsportsclub.view.shared.SimpleFreetrainingsTable_rowEstimatedHeight
+import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueImage
 import java.net.URLEncoder
 import kotlin.math.max
@@ -68,6 +65,7 @@ fun VenueDetail(
     reducedVSpace: Boolean,
     isSyncing: Boolean,
     configuredCity: City?,
+    sharedModel: SharedModel = koinInject(),
     mainWindowState: MainWindowState = koinInject(),
     onActivityNavigated: (TableNavigation, Activity) -> Unit,
     onFreetrainingNavigated: (TableNavigation, Freetraining) -> Unit,
@@ -108,20 +106,27 @@ fun VenueDetail(
             }
         }
 
-        Tooltip(venue.description) {
-            Text(venue.description, maxLines = 2, overflow = TextOverflow.Ellipsis)
-        }
+        LongText(text = venue.description, onShowLongText = {
+            sharedModel.customDialog.value =
+                CustomDialog(title = "Description", text = it, showDismissButton = false)
+        })
         if (venue.city != configuredCity) {
             Spacer(Modifier.height(5.dp))
-            LabeledText("City", venue.city.label)
+            LongText(label = "City", text = venue.city.label)
         }
         venue.importantInfo?.also {
             Spacer(Modifier.height(5.dp))
-            LabeledText("Info", it)
+            LongText(label = "Info", text = it, onShowLongText = {
+                sharedModel.customDialog.value =
+                    CustomDialog(title = "Important Info", text = it, showDismissButton = false)
+            })
         }
         venue.openingTimes?.also {
             Spacer(Modifier.height(5.dp))
-            LabeledText("Times", it)
+            LongText(label = "Times", text = it, onShowLongText = {
+                sharedModel.customDialog.value =
+                    CustomDialog(title = "Opening Times", text = it, showDismissButton = false)
+            })
         }
         Row {
             CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.favorited2)

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.shared
+package seepick.localsportsclub.view.venue.detail
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,7 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
-import seepick.localsportsclub.service.model.Freetraining
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
@@ -24,31 +24,32 @@ import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableNavigation
 
-val SimpleFreetrainingsTable_rowEstimatedHeight = 18
+
+val SimpleActivitiesTable_rowEstimatedHeight = 18
 
 @Composable
-fun SimpleFreetrainingsTable(
-    freetrainings: List<Freetraining>,
-    selectedFreetraining: Freetraining? = null,
-    onFreetrainingSelected: ((Freetraining) -> Unit)?,
+fun SimpleActivitiesTable(
+    activities: List<Activity>,
+    selectedActivity: Activity? = null,
+    onActivitySelected: ((Activity) -> Unit)?,
     clock: Clock = koinInject(),
     height: Dp,
     modifier: Modifier = Modifier,
-    onItemNavigation: (TableNavigation, Freetraining) -> Unit,
+    onItemNavigation: (TableNavigation, Activity) -> Unit,
 ) {
-    if (freetrainings.isEmpty()) {
-        Text("No Freetrainings.")
+    if (activities.isEmpty()) {
+        Text("No activities.")
     } else {
         val currentYear = clock.today().year
         Row(verticalAlignment = Alignment.Bottom) {
-            Icon(Lsc.icons.freetrainings, contentDescription = null)
-            Text("${freetrainings.size} Freetrainings:")
+            Icon(Lsc.icons.activities, contentDescription = null)
+            Text("${activities.size} Activities:")
         }
         Table(
-            items = freetrainings,
+            items = activities,
             headerEnabled = false,
-            selectedItem = selectedFreetraining,
-            onItemClicked = onFreetrainingSelected,
+            selectedItem = selectedActivity,
+            onItemClicked = onActivitySelected,
             onItemNavigation = onItemNavigation,
             boxModifier = Modifier
                 .border(1.dp, Lsc.colors.onSurface)
@@ -56,23 +57,23 @@ fun SimpleFreetrainingsTable(
                 .then(modifier),
             columns = listOf(
                 TableColumn(
-                    size = WidthOrWeight.Width(170.dp),
                     header = VisualIndicator.NoIndicator,
+                    size = WidthOrWeight.Width(170.dp),
                     renderer = CellRenderer.TextRenderer(
                         textAlign = TextAlign.Right,
                         paddingRight = true,
-                    ) { it.date.prettyPrint(currentYear) },
+                    ) { it.dateTimeRange.prettyPrint(currentYear) },
                 ),
                 TableColumn(
-                    size = WidthOrWeight.Weight(1.0f),
                     header = VisualIndicator.NoIndicator,
+                    size = WidthOrWeight.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
-                        "${it.state.iconStringAndSuffix()}${it.name}"
+                        "${it.state.iconStringAndSuffix()}${if (it.teacher == null) it.name else "${it.name} /${it.teacher}"}"
                     },
                 )
             ),
             sortColumn = null,
-            sortDirection = SortDirection.Asc, // doesnt matter
+            sortDirection = SortDirection.Asc, // doesnt matter; will be ignored
         )
     }
 }

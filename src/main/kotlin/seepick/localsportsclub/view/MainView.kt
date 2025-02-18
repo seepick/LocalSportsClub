@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -90,25 +91,31 @@ fun MainView(
                         customDialog = null
                     }) { Text(customDialog!!.confirmLabel) }
             },
-            dismissButton = {
-                TextButton(
-                    colors = if (Lsc.isDarkTheme) {
-                        ButtonDefaults.textButtonColors(
-                            backgroundColor = Lsc.colors.primary.copy(alpha = 0.3f),
-                            contentColor = Color.White,
-                        )
-                    } else {
-                        ButtonDefaults.textButtonColors(
-                            backgroundColor = Lsc.colors.primary.brighter(),
-                            contentColor = Color.White,
-                        )
-                    },
-                    onClick = {
-                        customDialog = null
-                    }) { Text("Cancel") }
-            },
+            dismissButton = if (customDialog!!.showDismissButton) {
+                {
+                    TextButton(
+                        colors = if (Lsc.isDarkTheme) {
+                            ButtonDefaults.textButtonColors(
+                                backgroundColor = Lsc.colors.primary.copy(alpha = 0.3f),
+                                contentColor = Color.White,
+                            )
+                        } else {
+                            ButtonDefaults.textButtonColors(
+                                backgroundColor = Lsc.colors.primary.brighter(),
+                                contentColor = Color.White,
+                            )
+                        },
+                        onClick = {
+                            customDialog = null
+                        }) { Text("Cancel") }
+                }
+            } else null,
             title = { Text(customDialog!!.title) },
-            text = { Text(customDialog!!.text) },
+            text = {
+                SelectionContainer {
+                    Text(customDialog!!.text)
+                }
+            },
 //        shape =,
 //        backgroundColor =,
 //        contentColor =,
