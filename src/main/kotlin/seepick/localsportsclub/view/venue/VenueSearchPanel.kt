@@ -13,7 +13,10 @@ import seepick.localsportsclub.view.search.StringSearchField
 fun VenueSearchPanel(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
-    GenericSearchPanel {
+    GenericSearchPanel(
+        clearSearchEnabled = viewModel.searching.anyEnabled,
+        clearSearch = viewModel.searching::clearAll,
+    ) {
         StringSearchField(viewModel.searching.name)
         IntSearchField(viewModel.searching.activities)
         IntSearchField(viewModel.searching.reservations)

@@ -9,15 +9,21 @@ import seepick.localsportsclub.view.common.VisualIndicator
 class StringSearchOption<T>(
     label: String,
     private val stringExtractors: List<(T) -> String?>,
-    initiallyEnabled: Boolean = false,
+    permanentEnabled: Boolean = false,
     reset: () -> Unit,
     visualIndicator: VisualIndicator = VisualIndicator.NoIndicator
-) : SearchOption<T>(label, reset, initiallyEnabled, visualIndicator) {
+) : SearchOption<T>(label, reset, permanentEnabled, visualIndicator) {
 
     private val log = logger {}
     var searchTerm by mutableStateOf("")
         private set
     private val terms = mutableListOf<String>()
+
+    override val permanentEnabledIsModified get() = searchTerm != ""
+    override fun resetPermanentEnabledState() {
+        searchTerm = ""
+        terms.clear()
+    }
 
     fun setSearchInput(givenInput: String) {
         searchTerm = givenInput

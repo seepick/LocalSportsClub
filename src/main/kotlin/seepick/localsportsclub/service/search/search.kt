@@ -15,6 +15,23 @@ abstract class AbstractSearch<T>(
     private val log = logger {}
     private val options = mutableListOf<SearchOption<T>>()
     private val predicates = mutableListOf<(T) -> Boolean>()
+    val anyEnabled
+        get() =
+            options.any {
+                !it.permanentEnabled && it.enabled ||
+                        it.permanentEnabled && it.permanentEnabledIsModified
+            }
+
+    fun clearAll() {
+        log.debug { "clearAll()" }
+        options.filter { it.permanentEnabled }.forEach {
+            it.resetPermanentEnabledState()
+        }
+        options.filter { it.enabled && !it.permanentEnabled }.forEach {
+            it.updateEnabled(isEnabled = false, suppressReset = true)
+        }
+        reset()
+    }
 
     protected fun newStringSearchOption(
         label: String,
@@ -26,7 +43,7 @@ abstract class AbstractSearch<T>(
             label = label,
             reset = ::reset,
             stringExtractors = extractors.toList(),
-            initiallyEnabled = initiallyEnabled,
+            permanentEnabled = initiallyEnabled,
             visualIndicator = visualIndicator,
         ).also {
             options += it
@@ -152,13 +169,13 @@ abstract class AbstractSearch<T>(
 abstract class SearchOption<T>(
     val label: String,
     protected val reset: () -> Unit,
-    initiallyEnabled: Boolean,
+    val permanentEnabled: Boolean,
     val visualIndicator: VisualIndicator,
 ) {
     private val log = logger {}
     protected val alwaysTruePredicate: (T) -> Boolean = { true }
 
-    var enabled by mutableStateOf(initiallyEnabled)
+    var enabled by mutableStateOf(permanentEnabled)
         private set
 
     protected abstract fun buildPredicate(): (T) -> Boolean
@@ -166,10 +183,16 @@ abstract class SearchOption<T>(
     fun buildPredicateIfEnabled(): ((T) -> Boolean)? =
         if (enabled) buildPredicate() else null
 
-    fun updateEnabled(isEnabled: Boolean) {
+    open val permanentEnabledIsModified = false
+    open fun resetPermanentEnabledState() {}
+
+    fun updateEnabled(isEnabled: Boolean, suppressReset: Boolean = false) {
+        if (permanentEnabled && !isEnabled) error("Cannot disable a permanently enabled search option: $this")
         if (enabled == isEnabled) return
-        log.debug { "${this::class.simpleName} - updateEnabled(isEnabled=$isEnabled)" }
+        log.debug { "${this::class.simpleName} - updateEnabled(isEnabled=$isEnabled, suppressReset=$suppressReset)" }
         enabled = isEnabled
-        reset()
+        if (!suppressReset) {
+            reset()
+        }
     }
 }

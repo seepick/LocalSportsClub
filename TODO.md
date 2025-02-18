@@ -2,41 +2,41 @@
 
 ## Next
 
-* clear all active search filters button
 * sync the membership tag (minimum one only) for venue&activity (which plan applies)
 
 ## Backlog
 
-* support custom plan; define everything yourself (as so many other plans are there; think of B2B)
+* new tab "Other", with summaries/report/usage statistics/overview (no shows/late cancellation)
+    * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
+* what about plus checkins??
+* notes with rich format text-editor (bold, italic, colors, fontsize)
+
+### Low Prio
+
+* adaptive layout: depending on window size, change layout (add columns, change formatting)
+* make rating UI a slider with custom renderer
 * enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
 * show how many days sync to left (last sync date -DIFF- today)
 * system test: book something which can't be booked parse response and show proper message
-    * +6 reservations; +2 same day (visit limit); over checkin limit (end of period); over period limit (same venue per
-      calendar month); late cancellation (fee applied!)
-* if sorted by rating, then update rating, then need to be resorted (just that one which has been updated)
-  day can have 66 pages!); and/or is it possible to increase page-size?!
-* tooltips for table headers (some are not self-explanatory)
-* new tab "Other", with summaries/report/usage statistics/overview (no shows/late cancellation)
-* adaptive layout: depending on window size, change layout (add columns, change formatting)
-* make rating UI a slider with custom renderer
+    * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
+* if rating sorted, then update rating => resort! (just that one which has been updated)
 * ... no-show for freetraining possible?? try it yourself ;)
-* report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
-* when text has emoji, its height bigger; e.g. in activities/freetrainings table, when there is only 1 checked-in row
-    * emoji same height as text (annotated text/change font size? or make 2 Text() composables, for text/emoji?)
-* maybe period restart day can be fetched via API (it is shown in app...)
-* what about plus checkins??
 * UI/ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
-* notes with rich format text-editor (bold, italic, colors, fontsize)
 * map component: https://wiki.openstreetmap.org/wiki/JMapViewer (compose google map only for android, not desktop)
 * "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 * BUG: DateParser dutch locale doesn't work when packaged as app...?!
-* if textfield elipse ("foo...") => show tooltip full text
 * could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
-  jaap-eden-ijsbaan has strange/long one
 * IMPROVE: the syncer should not add the year information; return incomplete day+month only (let logic determine year)
 * uitest+koin (work in progress)
 * spots left: make updateable (see SubEntityDetail view)
+
+### Public
+
+* if it is first time started, disable all screens; only prefs. to enter credentials (wizard)
+* maybe period restart day can be fetched via API (it is shown in app...)
+* support custom plan; define everything yourself (as so many other plans are there; think of B2B)
+* tooltips for table headers (some are not self-explanatory)
 
 ## Nope
 

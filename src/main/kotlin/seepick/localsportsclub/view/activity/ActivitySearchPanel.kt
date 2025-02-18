@@ -13,7 +13,10 @@ import seepick.localsportsclub.view.search.StringSearchField
 fun ActivitySearchPanel(
     viewModel: ActivityViewModel = koinViewModel(),
 ) {
-    GenericSearchPanel {
+    GenericSearchPanel(
+        clearSearchEnabled = viewModel.searching.anyEnabled,
+        clearSearch = viewModel.searching::clearAll,
+    ) {
         StringSearchField(viewModel.searching.name)
         DateTimeRangeSearchField(viewModel.searching.date, viewModel.syncDates)
         BooleanSearchField(viewModel.searching.booked)

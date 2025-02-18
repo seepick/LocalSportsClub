@@ -28,7 +28,7 @@ class IntSearchOption<T>(
 ) : SearchOption<T>(
     label = label,
     reset = reset,
-    initiallyEnabled = initiallyEnabled,
+    permanentEnabled = initiallyEnabled,
     visualIndicator = visualIndicator,
 ) {
 
