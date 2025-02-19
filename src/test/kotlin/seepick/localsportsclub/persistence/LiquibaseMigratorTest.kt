@@ -11,6 +11,12 @@ import java.sql.DriverManager
 class LiquibaseMigratorTest : StringSpec() {
     init {
         "When migrate Then load and save works" {
+//            reconfigureLog(
+//                false, mapOf(
+//                    "org.jetbrains.exposed" to ch.qos.logback.classic.Level.TRACE,
+//                    "liquibase" to ch.qos.logback.classic.Level.TRACE,
+//                )
+//            )
             val jdbcUrl = testJdbcInmemoryUrl()
             val keepAliveConnection = DriverManager.getConnection(jdbcUrl)
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))

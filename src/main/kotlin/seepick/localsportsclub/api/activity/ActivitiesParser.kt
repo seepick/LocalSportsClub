@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element
 import seepick.localsportsclub.serializerLenient
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 object ActivitiesParser {
@@ -19,7 +20,7 @@ object ActivitiesParser {
         val divs = body.children()
         log.debug { "Parsing ${divs.size} activities." }
         return divs.map { div ->
-            parseSingle(div, date)
+            parseSingleActivity(div, date)
         }
     }
 
@@ -29,17 +30,19 @@ object ActivitiesParser {
         val body = html.children()[1]
         val divs = body.children()
         log.debug { "Parsing ${divs.size} freetrainings." }
-        return divs.map { div ->
-            FreetrainingInfo(
-                id = div.attr("data-appointment-id").toInt(),
-                name = cleanActivityFreetrainingName(div.select("div.title a.title").text()),
-                category = div.select("div.title p").text().trim(),
-                venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
-            )
-        }
+        return divs.map(::parseSingleFreetraining)
     }
 
-    private fun parseSingle(div: Element, date: LocalDate): ActivityInfo {
+    private fun parseSingleFreetraining(div: Element): FreetrainingInfo =
+        FreetrainingInfo(
+            id = div.attr("data-appointment-id").toInt(),
+            plan = div.selectPlanFromSnippet(),
+            name = cleanActivityFreetrainingName(div.select("div.title a.title").text()),
+            category = div.select("div.title p").text().trim(),
+            venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
+        )
+
+    private fun parseSingleActivity(div: Element, date: LocalDate): ActivityInfo {
         val dataLayerJsonString = div.select("a[href=\"#modal-class\"]").first()!!.attr("data-datalayer")
         val dataLayer = serializerLenient.decodeFromString<ActivityDataLayerJson>(dataLayerJsonString).`class`
         val dateTimeRange = DateTimeRange.merge(
@@ -54,10 +57,13 @@ object ActivitiesParser {
             venueSlug = div.select("a.smm-studio-link").first()!!.attr("href").substringAfterLast("/").trim(),
             dateTimeRange = dateTimeRange,
             category = dataLayer.category.trim(),
+            plan = div.selectPlanFromSnippet(),
             spotsLeft = dataLayer.spots_left.toInt(),
         )
     }
+
 }
+
 
 data class ActivityInfo(
     val id: Int,
@@ -66,7 +72,7 @@ data class ActivityInfo(
     val dateTimeRange: DateTimeRange,
     val category: String, // aka disciplines/facilities
     val spotsLeft: Int,
-    // membership plan support ...
+    val plan: Plan.UscPlan,
     // type = "instant booking"
 )
 
@@ -75,6 +81,7 @@ data class FreetrainingInfo(
     val name: String,
     val category: String,
     val venueSlug: String,
+    val plan: Plan.UscPlan,
 )
 
 @Serializable

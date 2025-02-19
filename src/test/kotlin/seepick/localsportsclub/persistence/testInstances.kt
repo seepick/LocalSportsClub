@@ -22,6 +22,7 @@ import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 
 fun Arb.Companion.venueDbo() = arbitrary {
@@ -48,6 +49,7 @@ fun Arb.Companion.venueDbo() = arbitrary {
         postalCode = string(minSize = 5, maxSize = 6).next(),
         longitude = double(0.0, 5.0, false).next().toString().take(5),
         latitude = double(0.0, 5.0, false).next().toString().take(5),
+        planId = enum<Plan.UscPlan>().next().id,
     )
 }
 
@@ -64,6 +66,7 @@ fun Arb.Companion.activityDbo() = arbitrary {
         teacher = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().next(),
         state = enum<ActivityState>().next(),
         cancellationLimit = if (boolean().next()) null else from.minusHours(2),
+        planId = enum<Plan.UscPlan>().next().id,
     )
 }
 
@@ -79,6 +82,7 @@ fun Arb.Companion.freetrainingDbo() = arbitrary {
         date = localDate().next(),
         venueId = int(min = 1).next(),
         state = enum<FreetrainingState>().next(),
+        planId = enum<Plan.UscPlan>().next().id,
     )
 }
 

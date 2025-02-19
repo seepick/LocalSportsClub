@@ -30,6 +30,7 @@ object ActivityDetailsParser {
         val cancellationDateLimit = div.select("p.smm-class-details__hint.cancellation.requested").text().trim().let {
             if (it.isEmpty()) null else extractDateTime(it)
         }
+        val plan = div.selectPlanFromDetail()
         return if (buttonBook.hasAttr("data-book-success")) {
             val json = buttonBook.attr("data-book-success")
             val data = serializerLenient.decodeFromString<ActivityBookDataJson>(json)
@@ -40,6 +41,7 @@ object ActivityDetailsParser {
                 category = data.`class`.category.trim(),
                 spotsLeft = data.`class`.spots_left.toInt(),
                 cancellationDateLimit = cancellationDateLimit,
+                plan = plan,
             )
         } else {
             val buttonCancel = div.select("button.cancel")
@@ -52,6 +54,7 @@ object ActivityDetailsParser {
                 category = data.`class`.category.trim(),
                 spotsLeft = 0,
                 cancellationDateLimit = cancellationDateLimit,
+                plan = plan,
             )
         }
     }
@@ -61,13 +64,14 @@ object ActivityDetailsParser {
         val root = document.childNodes()[0] as Element
         val body = root.children()[1]
         val div = body.children().first()!!
-
+        val plan = div.selectPlanFromDetail()
         return FreetrainingDetails(
             id = div.attr("data-appointment-id").toInt(),
             name = cleanActivityFreetrainingName(div.select("div.general h3").first()!!.text()),
             date = div.select("p.smm-class-details__datetime").text().let { DateParser.parseDate(it, year) },
             category = div.select("span.disciplines").parents().first()!!.text().trim(),
             venueSlug = parseSlugFromGoogleMapUrls(div.select("div.usc-google-map").attr("data-static-map-urls")),
+            plan = plan,
         )
     }
 

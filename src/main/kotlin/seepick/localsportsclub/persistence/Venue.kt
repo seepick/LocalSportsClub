@@ -28,6 +28,7 @@ data class VenueDbo(
     val description: String,
     val importantInfo: String?,
     val openingTimes: String?,
+    val planId: Int,
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
     val isHidden: Boolean,
@@ -69,6 +70,7 @@ object VenuesTable : IntIdTable("VENUES", "ID") {
     val isWishlisted = bool("IS_WISHLISTED") // custom
     val isHidden = bool("IS_HIDDEN") // custom
     val isDeleted = bool("IS_DELETED") // custom
+    val planId = integer("PLAN_ID") // custom
 }
 
 object ExposedVenueRepo : VenueRepo {
@@ -122,6 +124,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isWishlisted] = venue.isWishlisted
             it[isHidden] = venue.isHidden
             it[isDeleted] = venue.isDeleted
+            it[planId] = venue.planId
         }
         log.trace { "New venue ID=$nextId" }
         venue.copy(id = nextId)
@@ -146,6 +149,7 @@ object ExposedVenueRepo : VenueRepo {
             it[description] = venue.description
             it[importantInfo] = venue.importantInfo
             it[openingTimes] = venue.openingTimes
+            it[planId] = venue.planId
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
         venue
@@ -173,6 +177,7 @@ object ExposedVenueRepo : VenueRepo {
         isWishlisted = row[VenuesTable.isWishlisted],
         isHidden = row[VenuesTable.isHidden],
         isDeleted = row[VenuesTable.isDeleted],
+        planId = row[VenuesTable.planId],
     )
 }
 

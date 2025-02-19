@@ -2,30 +2,29 @@
 
 ## Next
 
-* sync the membership tag (minimum one only) for venue&activity (which plan applies)
+* new tab "Other", with summaries/report/usage statistics/overview (no shows/late cancellation)
+    * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
+* also sync "plus checkins"
+* notes with rich format text-editor (bold, italic, colors, fontsize)
 
 ## Backlog
 
-* new tab "Other", with summaries/report/usage statistics/overview (no shows/late cancellation)
-    * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
-* what about plus checkins??
-* notes with rich format text-editor (bold, italic, colors, fontsize)
-
-### Low Prio
-
+* also fetch plan for venue (available in list, but not in detail response!)
 * adaptive layout: depending on window size, change layout (add columns, change formatting)
 * make rating UI a slider with custom renderer
 * enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
-* show how many days sync to left (last sync date -DIFF- today)
+* "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
+* BUG: DateParser dutch locale doesn't work when packaged as app...?!
+
+### Low Prio
+
 * system test: book something which can't be booked parse response and show proper message
     * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
 * if rating sorted, then update rating => resort! (just that one which has been updated)
 * ... no-show for freetraining possible?? try it yourself ;)
 * UI/ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
 * map component: https://wiki.openstreetmap.org/wiki/JMapViewer (compose google map only for android, not desktop)
-* "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
-* BUG: DateParser dutch locale doesn't work when packaged as app...?!
 * could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
 * IMPROVE: the syncer should not add the year information; return incomplete day+month only (let logic determine year)
 * uitest+koin (work in progress)

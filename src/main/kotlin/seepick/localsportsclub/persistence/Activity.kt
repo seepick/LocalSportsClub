@@ -27,11 +27,11 @@ data class ActivityDbo(
     val category: String, // aka disciplines/facilities
     val from: LocalDateTime,
     val to: LocalDateTime,
-    // updateable
-    val spotsLeft: Int,
-    val teacher: String?,
-    val state: ActivityState,
     val cancellationLimit: LocalDateTime?,
+    val planId: Int,
+    val spotsLeft: Int, // updateable
+    val teacher: String?, // updateable
+    val state: ActivityState, // updateable
 ) {
     val isBooked = state == ActivityState.Booked
     val isCheckedin = state == ActivityState.Checkedin
@@ -48,6 +48,7 @@ data class ActivityDbo(
         statement[ActivitiesTable.teacher] = this.teacher
         statement[ActivitiesTable.spotsLeft] = this.spotsLeft
         statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
+        statement[ActivitiesTable.planId] = this.planId
     }
 
     fun prepareUpdate(statement: UpdateStatement) {
@@ -59,6 +60,7 @@ data class ActivityDbo(
         statement[ActivitiesTable.teacher] = this.teacher
         statement[ActivitiesTable.spotsLeft] = this.spotsLeft
         statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
+        statement[ActivitiesTable.planId] = this.planId
     }
 
     companion object {
@@ -73,6 +75,7 @@ data class ActivityDbo(
             teacher = row[ActivitiesTable.teacher],
             spotsLeft = row[ActivitiesTable.spotsLeft],
             cancellationLimit = row[ActivitiesTable.cancellationLimit],
+            planId = row[ActivitiesTable.planId],
         )
     }
 }
@@ -87,6 +90,7 @@ object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
     val teacher = varchar("TEACHER", 64).nullable()
     val state = enumerationByName<ActivityState>("STATE", 32)
     val cancellationLimit = datetime("CANCELLATION_LIMIT").nullable()
+    val planId = integer("PLAN_ID")
 }
 
 interface ActivityRepo {

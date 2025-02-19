@@ -58,9 +58,7 @@ class FreetrainingSyncer(
             val venueId = venuesBySlug[freetraining.venueSlug]?.id ?: suspend {
                 log.debug { "Trying to rescue venue for missing: $freetraining" }
                 venueSyncInserter.fetchInsertAndDispatch(
-                    session,
-                    city,
-                    listOf(freetraining.venueSlug),
+                    session, city, listOf(VenueMeta(slug = freetraining.venueSlug, plan = null)),
                     "[SYNC] fetched through freetraining ${freetraining.name}"
                 )
                 venueRepo.selectBySlug(freetraining.venueSlug)?.also {
@@ -82,4 +80,5 @@ private fun FreetrainingInfo.toDbo(venueId: Int, date: LocalDate) = Freetraining
     category = category,
     date = date,
     state = FreetrainingState.Blank,
+    planId = plan.id,
 )

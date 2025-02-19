@@ -21,6 +21,7 @@ import seepick.localsportsclub.api.venue.VenueInfo
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.service.date.dateTimeRange
 import seepick.localsportsclub.service.date.timeRange
+import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.slug
 import seepick.localsportsclub.url
 
@@ -33,6 +34,7 @@ fun Arb.Companion.venueInfo() = arbitrary {
         addressId = int(min = 1, max = 999).next(),
         addressDistrict = string(minSize = 3, maxSize = 5, codepoints = Codepoint.alphanumeric()).next(),
         addressStreet = string(minSize = 5, maxSize = 10, codepoints = Codepoint.alphanumeric()).next(),
+        plan = enum<Plan.UscPlan>().next(),
     )
 }
 
@@ -63,6 +65,7 @@ fun Arb.Companion.activityInfo() = arbitrary {
         category = string(minSize = 1, maxSize = 5, codepoints = Codepoint.az()).next(),
         spotsLeft = int(min = 0, max = 10).next(),
         dateTimeRange = dateTimeRange().next(),
+        plan = enum<Plan.UscPlan>().next(),
     )
 }
 

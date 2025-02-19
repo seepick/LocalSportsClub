@@ -11,6 +11,7 @@ import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -72,6 +73,7 @@ object MigrationProcessor {
             isWishlisted = partner.isWishlisted,
             isHidden = partner.isHidden,
             isDeleted = true,
+            planId = Plan.UscPlan.Small.id,
         )
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id
         linkedVenueSlugs.forEach { otherSlug ->
@@ -113,6 +115,7 @@ object MigrationProcessor {
                     teacher = null,
                     state = ActivityState.Checkedin,
                     cancellationLimit = null,
+                    planId = Plan.UscPlan.Small.id,
                 )
             )
         }
@@ -128,6 +131,7 @@ object MigrationProcessor {
                     category = "",
                     date = parseZonedDateTimeToLocalDateTime(dropin.createdAt).toLocalDate(),
                     state = FreetrainingState.Checkedin,
+                    planId = Plan.UscPlan.Small.id,
                 )
             )
         }

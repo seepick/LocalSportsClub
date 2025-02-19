@@ -37,6 +37,7 @@ fun Arb.Companion.venue() = arbitrary {
         isWishlisted = boolean().next(),
         isHidden = boolean().next(),
         rating = Rating.entries.random(),
+        plan = enum<Plan.UscPlan>().next(),
     )
 }
 

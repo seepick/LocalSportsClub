@@ -175,7 +175,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
             it("Given venue and activity Then update all excluding venueId") {
                 val venue1 = venueRepo.insert(venue())
                 val venue2 = venueRepo.insert(venue())
-                val activity = activity().copy(venueId = venue1.id)
+                val activity = activity().copy(venueId = venue1.id, planId = 1)
                 activityRepo.insert(activity)
 
                 val updateActivity = ActivityDbo(
@@ -189,6 +189,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                     to = activity.to.plusHours(1),
                     venueId = venue2.id,
                     cancellationLimit = activity.cancellationLimit,
+                    planId = 2,
                 )
                 activityRepo.update(updateActivity)
 

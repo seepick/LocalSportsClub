@@ -21,6 +21,7 @@ data class VenueDetails(
     val latitude: String, // from JSON script
     val longitude: String,
     val originalImageUrl: Url?, // from JSON script
+    // doesn't have a plan
     // multiple pictures ... maybe in the future
     // visit limits ... always the same
 )

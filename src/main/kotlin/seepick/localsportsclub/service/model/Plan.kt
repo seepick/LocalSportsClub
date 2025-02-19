@@ -73,7 +73,9 @@ sealed interface Plan {
         );
 
         companion object {
-            fun byApiString(id: String) = entries.single { it.apiString == id }
+            val default = Small
+            fun byApiString(apiString: String) = entries.single { it.apiString == apiString }
+            fun byId(id: Int) = entries.single { it.id == id }
         }
 
         override fun toString() = "Plan.Usc.$name"

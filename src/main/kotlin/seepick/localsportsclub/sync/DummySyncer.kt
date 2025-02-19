@@ -13,6 +13,7 @@ import seepick.localsportsclub.service.DummyGenerator
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 class DummySyncer(
@@ -184,6 +185,7 @@ class DummySyncer(
             teacher = null,
             state = ActivityState.Blank,
             cancellationLimit = null,
+            planId = Plan.UscPlan.Small.id,
         )
     }
 
@@ -194,5 +196,6 @@ class DummySyncer(
         category = "",
         date = LocalDate.now().plusDays(3),
         state = FreetrainingState.Blank,
+        planId = Plan.UscPlan.Medium.id,
     )
 }

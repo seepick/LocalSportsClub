@@ -6,6 +6,7 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.http.Url
 import seepick.localsportsclub.readTestResponse
+import seepick.localsportsclub.service.model.Plan
 
 fun main() {
     val json = readTestResponse<VenuesJson>("venues.json")
@@ -44,6 +45,7 @@ class VenueParserTest : StringSpec() {
                 disciplines = listOf("Bokssport", "Fitness"),
                 addressDistrict = "West",
                 addressStreet = "Herentalsstraat 132",
+                plan = Plan.UscPlan.Medium,
             )
         }
         "When merchant venue catalog image is set Then parse null" {

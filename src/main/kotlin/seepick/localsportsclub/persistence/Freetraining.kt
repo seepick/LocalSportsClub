@@ -25,6 +25,7 @@ data class FreetrainingDbo(
     val category: String,
     val date: LocalDate,
     val state: FreetrainingState,
+    val planId: Int,
 ) {
     val isScheduled = state == FreetrainingState.Scheduled
     val isCheckedin = state == FreetrainingState.Checkedin
@@ -36,13 +37,15 @@ data class FreetrainingDbo(
         statement[FreetrainingsTable.category] = this.category
         statement[FreetrainingsTable.date] = this.date
         statement[FreetrainingsTable.state] = this.state
+        statement[FreetrainingsTable.planId] = this.planId
     }
 
-    fun prepareUpdate(update: UpdateStatement) {
-        update[FreetrainingsTable.name] = this.name
-        update[FreetrainingsTable.category] = this.category
-        update[FreetrainingsTable.date] = this.date
-        update[FreetrainingsTable.state] = this.state
+    fun prepareUpdate(statement: UpdateStatement) {
+        statement[FreetrainingsTable.name] = this.name
+        statement[FreetrainingsTable.category] = this.category
+        statement[FreetrainingsTable.date] = this.date
+        statement[FreetrainingsTable.state] = this.state
+        statement[FreetrainingsTable.planId] = this.planId
     }
 
     companion object {
@@ -53,6 +56,7 @@ data class FreetrainingDbo(
             category = row[FreetrainingsTable.category],
             date = row[FreetrainingsTable.date],
             state = row[FreetrainingsTable.state],
+            planId = row[FreetrainingsTable.planId],
         )
     }
 }
@@ -63,6 +67,7 @@ object FreetrainingsTable : IntIdTable("FREETRAININGS", "ID") {
     val category = varchar("CATEGORY", 64)
     val date = date("DATE")
     val state = enumerationByName<FreetrainingState>("STATE", 32)
+    val planId = integer("PLAN_ID")
 }
 
 interface FreetrainingRepo {

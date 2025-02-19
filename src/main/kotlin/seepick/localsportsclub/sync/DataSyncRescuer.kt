@@ -81,6 +81,7 @@ class DataSyncRescuerImpl(
         teacher = null,
         state = ActivityState.Blank,
         cancellationLimit = cancellationDateLimit,
+        planId = plan.id,
     )
 
     private suspend fun ensureVenue(
@@ -90,7 +91,9 @@ class DataSyncRescuerImpl(
         prefilledNotes: String
     ): VenueDbo =
         venueRepo.selectBySlug(venueSlug) ?: suspend {
-            venueSyncInserter.fetchInsertAndDispatch(session, city, listOf(venueSlug), prefilledNotes)
+            venueSyncInserter.fetchInsertAndDispatch(
+                session, city, listOf(VenueMeta(slug = venueSlug, plan = null)), prefilledNotes
+            )
             venueRepo.selectBySlug(venueSlug)
                 ?: error("Terribly failed rescuing venue: [$venueSlug]")
         }()
@@ -125,5 +128,6 @@ class DataSyncRescuerImpl(
         category = category,
         date = date,
         state = FreetrainingState.Blank,
+        planId = plan.id,
     )
 }

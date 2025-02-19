@@ -48,7 +48,7 @@ dependencies {
         implementation("org.jetbrains.exposed:exposed-$it:0.56.0")
     }
     implementation("org.xerial:sqlite-jdbc:3.48.0.0")
-    implementation("org.liquibase:liquibase-core:4.30.0")
+    implementation("org.liquibase:liquibase-core:4.31.1")
     implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
 
     // WEB

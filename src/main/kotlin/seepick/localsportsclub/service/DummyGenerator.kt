@@ -2,6 +2,7 @@ package seepick.localsportsclub.service
 
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Plan
 
 object DummyGenerator {
 
@@ -27,5 +28,6 @@ object DummyGenerator {
         isWishlisted = false,
         isHidden = false,
         isDeleted = false,
+        planId = Plan.UscPlan.Small.id,
     )
 }

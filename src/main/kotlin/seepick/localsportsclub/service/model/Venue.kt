@@ -52,7 +52,7 @@ class Venue(
     val importantInfo: String?,
     val openingTimes: String?,
     val uscWebsite: String, // inferred by static URL + slug
-
+    val plan: Plan.UscPlan,
     // those down below also mutable...
     officialWebsite: String?,
     val isDeleted: Boolean,
@@ -165,6 +165,7 @@ class Venue(
             addressLocality = "Amsterdam, Netherlands",
             location = null,
             distanceInKm = null,
+            plan = Plan.UscPlan.Small,
         )
     }
 
@@ -192,6 +193,7 @@ class Venue(
         rating: Rating = this.rating,
         isFavorited: Boolean = this.isFavorited,
         linkedVenues: List<Venue> = this.linkedVenues,
+        plan: Plan.UscPlan = this.plan,
     ) = Venue(
         id = id,
         slug = slug,
@@ -215,6 +217,7 @@ class Venue(
         notes = notes,
         rating = rating,
         isFavorited = isFavorited,
+        plan = plan,
     )
 
     override fun toString() = "Venue[id=$id, slug=$slug, name=$name, rating=$rating]"

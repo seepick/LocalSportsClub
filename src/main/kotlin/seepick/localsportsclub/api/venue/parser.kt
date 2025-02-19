@@ -4,6 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.http.Url
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import seepick.localsportsclub.api.activity.selectPlanForVenue
+import seepick.localsportsclub.service.model.Plan
 
 object VenueParser {
     private val log = logger {}
@@ -26,6 +28,7 @@ object VenueParser {
                 addressId = div.attr("data-address-id").toInt(),
                 addressDistrict = div.select("p.smm-studio-snippet__address").text().trim().substringBefore(","),
                 addressStreet = div.select("span.smm-studio-snippet__address-street").text().trim(),
+                plan = div.selectPlanForVenue(),
             )
         }
     }
@@ -39,4 +42,5 @@ data class VenueInfo(
     val addressId: Int,
     val addressDistrict: String,
     val addressStreet: String,
+    val plan: Plan.UscPlan,
 )

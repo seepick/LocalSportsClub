@@ -152,9 +152,17 @@
                 <constraints nullable="true"/>
             </column>
         </addColumn>
-        <!-- !will be deployed soon! -->
     </changeSet>
 
-    <!-- create new changeset here -->
+    <changeSet id="3" author="owner" failOnError="true">
+        <!-- DONT use "addColumn", as it will rename the table (for SQLite: "VENUES_temporary") and fuck up the references-->
+        <!-- liquibase has a faulty implementation, as warned about here: https://sqlite.org/lang_altertable.html -->
+        <sql>alter table VENUES add column PLAN_ID integer NOT NULL DEFAULT 1</sql>
+        <sql>alter table ACTIVITIES add column PLAN_ID integer NOT NULL DEFAULT 1</sql>
+        <sql>alter table FREETRAININGS add column PLAN_ID integer NOT NULL DEFAULT 1</sql>
+        <sql>update VENUES set PLAN_ID = 1</sql>
+        <sql>update ACTIVITIES set PLAN_ID = 1</sql>
+        <sql>update FREETRAININGS set PLAN_ID = 1</sql>
+    </changeSet>
 
 </databaseChangeLog>

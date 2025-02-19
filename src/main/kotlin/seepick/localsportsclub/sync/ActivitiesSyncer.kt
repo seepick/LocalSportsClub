@@ -86,9 +86,7 @@ class ActivitiesSyncer(
     ): Int {
         log.debug { "Trying to rescue venue for missing: $activity" }
         venueSyncInserter.fetchInsertAndDispatch(
-            session,
-            city,
-            listOf(activity.venueSlug),
+            session, city, listOf(VenueMeta(slug = activity.venueSlug, plan = null)),
             "[SYNC] fetched through activity ${activity.name}"
         )
         return venueRepo.selectBySlug(activity.venueSlug)?.also {
@@ -106,6 +104,7 @@ class ActivitiesSyncer(
         to = dateTimeRange.to,
         teacher = null,
         state = ActivityState.Blank,
-        cancellationLimit = null
+        cancellationLimit = null,
+        planId = plan.id,
     )
 }

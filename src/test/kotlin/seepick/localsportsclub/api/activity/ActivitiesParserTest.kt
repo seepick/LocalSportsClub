@@ -6,13 +6,14 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 class ActivitiesParserTest : StringSpec() {
 
-    private val singleTrainingHtmlContent = """<div class="smm-class-snippet row"
+    private val singleFreetrainingHtmlContent = """<div class="smm-class-snippet row"
    data-appointment-id="83845951"
    data-address-id="25091">
    <a href="#modal-class"
@@ -27,8 +28,6 @@ class ActivitiesParserTest : StringSpec() {
    <div class="time col-xs-3 col-md-2 col-md-offset-2">
       <div class="smm-class-snippet__class-time-plans-wrapper">
          <span class="smm-class-snippet__class-plans">
-         <span class="smm-class-snippet__class-plan" data-type="1">
-         Essential                                            </span>
          <span class="smm-class-snippet__class-plan" data-type="2">
          Classic                                            </span>
          <span class="smm-class-snippet__class-plan" data-type="3">
@@ -86,6 +85,7 @@ class ActivitiesParserTest : StringSpec() {
                 venueSlug = "basecampwest",
                 category = "Mixed Martial Arts",
                 spotsLeft = 7,
+                plan = Plan.UscPlan.Medium,
                 dateTimeRange = DateTimeRange(
                     from = LocalDateTime.of(date, LocalTime.of(7, 0)),
                     to = LocalDateTime.of(date, LocalTime.of(7, 45)),
@@ -93,9 +93,13 @@ class ActivitiesParserTest : StringSpec() {
             )
         }
         "parse single freetraining" {
-            ActivitiesParser.parseFreetrainingContent(singleTrainingHtmlContent).shouldBeSingleton()
+            ActivitiesParser.parseFreetrainingContent(singleFreetrainingHtmlContent).shouldBeSingleton()
                 .first() shouldBe FreetrainingInfo(
-                id = 83845951, name = "Aerial", category = "Aerial", venueSlug = "aerials-amsterdam-cla"
+                id = 83845951,
+                name = "Aerial",
+                category = "Aerial",
+                venueSlug = "aerials-amsterdam-cla",
+                plan = Plan.UscPlan.Medium,
             )
         }
         "parse freetrainings" {
@@ -106,7 +110,8 @@ class ActivitiesParserTest : StringSpec() {
                 id = 83846191,
                 name = "Essentrics",
                 category = "Fitness",
-                venueSlug = "calisthenics-amsterdam-rembrandtpark"
+                venueSlug = "calisthenics-amsterdam-rembrandtpark",
+                plan = Plan.UscPlan.Small,
             )
         }
     }

@@ -76,7 +76,7 @@ class MockUscApi : UscApi {
             originalImageUrl = Url("http://mock/test.png"),
             postalCode = "1001AA",
             streetAddress = "Main Street 42",
-            addressLocality = "Amsterdam, Netherlands"
+            addressLocality = "Amsterdam, Netherlands",
         )
     }
 
@@ -94,6 +94,7 @@ class MockUscApi : UscApi {
             category = "vidisse",
             spotsLeft = 2,
             cancellationDateLimit = null,
+            plan = Plan.UscPlan.Small,
         )
 
     override suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo> {
@@ -103,7 +104,12 @@ class MockUscApi : UscApi {
     }
 
     override suspend fun fetchFreetrainingDetails(session: PhpSessionId, freetrainingId: Int) = FreetrainingDetails(
-        id = 7308, name = "Joann Dillard", date = LocalDate.now(), venueSlug = "aptent", category = "suscipit"
+        id = 7308,
+        name = "Joann Dillard",
+        date = LocalDate.now(),
+        venueSlug = "aptent",
+        category = "suscipit",
+        plan = Plan.UscPlan.Medium,
     )
 
     override suspend fun fetchScheduleRows(session: PhpSessionId): List<ScheduleRow> {

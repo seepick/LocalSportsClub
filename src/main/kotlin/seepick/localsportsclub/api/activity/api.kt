@@ -56,6 +56,7 @@ data class ActivityDetails(
     val category: String,
     val spotsLeft: Int,
     val cancellationDateLimit: LocalDateTime?,
+    val plan: Plan.UscPlan,
 )
 
 data class FreetrainingDetails(
@@ -64,6 +65,7 @@ data class FreetrainingDetails(
     val date: LocalDate,
     val venueSlug: String,
     val category: String,
+    val plan: Plan.UscPlan,
 )
 
 class ActivityHttpApi(

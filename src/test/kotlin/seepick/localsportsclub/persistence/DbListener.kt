@@ -34,4 +34,4 @@ class DbListener : BeforeEachListener, AfterEachListener {
 }
 
 fun testJdbcInmemoryUrl(): String =
-    "jdbc:sqlite:file:test?mode=memory&cache=shared"
+    "jdbc:sqlite:file:test${System.currentTimeMillis()}?mode=memory&cache=shared"

@@ -47,7 +47,8 @@ class VenueSyncer(
         }
 
         val missingVenues = remoteVenuesBySlug.minus(localVenues.associateBy { it.slug }.keys)
-        venueSyncInserter.fetchInsertAndDispatch(session, city, missingVenues.keys.toList())
+        venueSyncInserter.fetchInsertAndDispatch(
+            session, city, missingVenues.values.map { VenueMeta(slug = it.slug, plan = it.plan) })
     }
 }
 
@@ -63,11 +64,16 @@ class VenueSlugLink(
     }
 }
 
+data class VenueMeta(
+    val slug: String,
+    val plan: Plan.UscPlan?,
+)
+
 interface VenueSyncInserter {
     suspend fun fetchInsertAndDispatch(
         session: PhpSessionId,
         city: City,
-        venueSlugs: List<String>,
+        venueMeta: List<VenueMeta>,
         prefilledNotes: String = "",
     )
 }
@@ -94,20 +100,20 @@ class VenueSyncInserterImpl(
     override suspend fun fetchInsertAndDispatch(
         session: PhpSessionId,
         city: City,
-        venueSlugs: List<String>,
+        venueMeta: List<VenueMeta>,
         prefilledNotes: String,
     ) {
-        log.debug { "Fetching details, image, linking and dispatching for ${venueSlugs.size} venues." }
-        venueCount.set(venueSlugs.size)
+        log.debug { "Fetching details, image, linking and dispatching for ${venueMeta.size} venues." }
+        venueCount.set(venueMeta.size)
 
         val newDbos = mutableListOf<VenueDbo>()
         val newLinks = mutableSetOf<VenueSlugLink>()
-        progress.onProgressVenues("Load ${venueSlugs.size}")
+        progress.onProgressVenues("Load ${venueMeta.size}")
         fetchAllInsertDispatch(
-            session,
-            city,
-            venueSlugs,
-            prefilledNotes,
+            session = session,
+            city = city,
+            venueMeta = venueMeta,
+            prefilledNotes = prefilledNotes,
             newDbos = newDbos,
             newLinks = newLinks,
         )
@@ -126,14 +132,14 @@ class VenueSyncInserterImpl(
     private suspend fun fetchAllInsertDispatch(
         session: PhpSessionId,
         city: City,
-        venueSlugs: List<String>,
+        venueMeta: List<VenueMeta>,
         prefilledNotes: String = "",
         newDbos: MutableList<VenueDbo>,
         newLinks: MutableSet<VenueSlugLink>,
     ) {
-        log.trace { "fetchAllInsertDispatch(venueSlugs=$venueSlugs, newLinks=$newLinks)" }
-        newDbos += workParallel(min(venueSlugs.size, 40), venueSlugs) { slug ->
-            fetchDetailsDownloadImage(session, city, slug, newLinks).copy(notes = prefilledNotes)
+        log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
+        newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
+            fetchDetailsDownloadImage(session, city, meta, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
@@ -156,7 +162,7 @@ class VenueSyncInserterImpl(
             fetchAllInsertDispatch(
                 session,
                 city,
-                missingVenuesBySlug,
+                missingVenuesBySlug.map { VenueMeta(slug = it, plan = null) },
                 prefilledNotes = "[SYNC] refetch due to missing venue link",
                 newDbos,
                 newLinks,
@@ -167,15 +173,17 @@ class VenueSyncInserterImpl(
     private suspend fun fetchDetailsDownloadImage(
         session: PhpSessionId,
         city: City,
-        slug: String,
+        meta: VenueMeta,
         venueSlugLinks: MutableSet<VenueSlugLink>
     ): VenueDbo {
         progress.onProgressVenueItem()
-        val details = api.fetchVenueDetail(session, slug)
+        val details = api.fetchVenueDetail(session, meta.slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details.toDbo(city.id).ensureHasImageIfPresent(details)
+        return details
+            .toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id)
+            .ensureHasImageIfPresent(details)
     }
 
     private suspend fun VenueDbo.ensureHasImageIfPresent(details: VenueDetails): VenueDbo {
@@ -196,7 +204,7 @@ class VenueSyncInserterImpl(
     }
 }
 
-private fun VenueDetails.toDbo(cityId: Int) = VenueDbo(
+private fun VenueDetails.toDbo(cityId: Int, planId: Int) = VenueDbo(
     id = -1,
     name = title,
     slug = slug,
@@ -218,4 +226,5 @@ private fun VenueDetails.toDbo(cityId: Int) = VenueDbo(
     isWishlisted = false,
     isHidden = false,
     isDeleted = false,
+    planId = planId,
 )
