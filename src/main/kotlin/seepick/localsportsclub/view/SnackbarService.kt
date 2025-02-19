@@ -22,10 +22,10 @@ interface SnackbarService {
         show(
             SnackbarEvent(
                 content = SnackbarContent.TextContent(message),
+                type = type,
+                duration = duration,
                 actionLabel = actionLabel,
                 onResult = onResult,
-                duration = duration,
-                type = type,
             )
         )
     }
@@ -52,9 +52,11 @@ data class SnackbarEvent(
             message: String,
             type: SnackbarType = SnackbarType.Info,
             actionLabel: String? = null,
+            onResult: ((SnackbarResult) -> Unit)? = null,
             duration: SnackbarDuration = SnackbarDuration.Short,
         ) = SnackbarEvent(
             content = SnackbarContent.TextContent(message),
+            onResult = onResult,
             type = type,
             actionLabel = actionLabel,
             duration = duration,

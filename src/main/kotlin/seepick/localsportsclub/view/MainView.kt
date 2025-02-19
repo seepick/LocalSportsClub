@@ -127,16 +127,19 @@ fun MainView(
             hostState = snackbarHostState,
         ) { data: SnackbarData ->
             val event = snackbarEvent!!
-            CustomSnackbar(data, event.type, content = event.content.let { snackContent ->
-                when (snackContent) {
-                    is SnackbarContent.CustomContent -> snackContent.composable
-                    is SnackbarContent.TextContent -> {
-                        {
-                            Text(snackContent.message)
+            CustomSnackbar(
+                snackbarData = data,
+                event = event,
+                content = event.content.let { snackContent ->
+                    when (snackContent) {
+                        is SnackbarContent.CustomContent -> snackContent.composable
+                        is SnackbarContent.TextContent -> {
+                            {
+                                Text(snackContent.message)
+                            }
                         }
                     }
-                }
-            })
+                })
         }
     }) {
         Column {

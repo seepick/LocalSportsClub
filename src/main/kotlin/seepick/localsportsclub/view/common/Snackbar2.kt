@@ -6,6 +6,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarData
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.SnackbarEvent
 import seepick.localsportsclub.view.SnackbarType
 
 private val SnackbarType.color
@@ -25,7 +27,7 @@ private val SnackbarType.color
 @Composable
 fun CustomSnackbar(
     snackbarData: SnackbarData,
-    snackbarType: SnackbarType,
+    event: SnackbarEvent,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -33,7 +35,10 @@ fun CustomSnackbar(
     val actionComposable: (@Composable () -> Unit)? = if (actionLabel != null) {
         @Composable {
             Button(
-                onClick = { snackbarData.performAction() },
+                onClick = {
+                    snackbarData.performAction() // to close the snackbar dialog
+                    event.onResult?.invoke(SnackbarResult.ActionPerformed) // to execute the actual logic
+                },
             ) {
                 Text(actionLabel)
             }
@@ -47,7 +52,7 @@ fun CustomSnackbar(
         action = actionComposable,
         actionOnNewLine = false,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = snackbarType.color,
+        backgroundColor = event.type.color,
         contentColor = Lsc.colors.surface, // what for?!
         elevation = 6.dp,
     )
