@@ -82,7 +82,11 @@ object MovementsYogaParser {
         if (customType.isNotEmpty()) {
             return null // a day event/special workshop, not a regular class
         }
-        val from = LocalDateTime.of(date, DateParser.parseTime(eventDiv.select("span.scheduleTime").text().trim()))
+        val timeString = eventDiv.select("span.scheduleTime").text().trim()
+        if (timeString.contains("cancelled")) {
+            return null
+        }
+        val from = LocalDateTime.of(date, DateParser.parseTime(timeString))
         val duration =
             eventDiv.select("span.classlength").text().trim().replace("mins", "").replace("min", "").trim().toLong()
         val to = from.plusMinutes(duration)
@@ -93,7 +97,9 @@ object MovementsYogaParser {
                 to = to,
             ),
             teacher = eventDiv.select("span.scheduleInstruc").text().trim(),
-        )
+        ).also {
+            println(it)
+        }
     }
 
     /** @param string e.g.: "day20250124" */

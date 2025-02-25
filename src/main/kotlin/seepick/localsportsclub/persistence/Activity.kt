@@ -96,6 +96,7 @@ object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
 interface ActivityRepo {
     fun selectAll(cityId: Int): List<ActivityDbo>
     fun selectAllBooked(cityId: Int): List<ActivityDbo>
+    fun selectAllAnywhere(): List<ActivityDbo>
     fun selectAllForVenueId(venueId: Int): List<ActivityDbo>
     fun selectById(id: Int): ActivityDbo?
     fun selectFutureMostDate(): LocalDate?
@@ -127,6 +128,9 @@ class InMemoryActivityRepo(
         }
         return stored.values.filter { it.state == ActivityState.Booked && condition(it) }.toList()
     }
+
+    override fun selectAllAnywhere(): List<ActivityDbo> =
+        stored.values.toList()
 
     override fun selectAllForVenueId(venueId: Int) = stored.values.filter { it.venueId == venueId }
 
@@ -176,6 +180,12 @@ object ExposedActivityRepo : ActivityRepo {
             .orderBy(ActivitiesTable.from).map {
                 ActivityDbo.fromRow(it)
             }
+    }
+
+    override fun selectAllAnywhere(): List<ActivityDbo> = transaction {
+        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).map {
+            ActivityDbo.fromRow(it)
+        }
     }
 
     override fun selectById(id: Int) = transaction {

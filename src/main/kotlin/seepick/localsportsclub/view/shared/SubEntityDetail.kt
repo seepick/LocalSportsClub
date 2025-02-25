@@ -111,7 +111,7 @@ fun SubEntityDetail(
                 if (isBooked && subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
                     Text(
                         maxLines = 2,
-                        text = "Free cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint()}",
+                        text = "Free cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint(clock.today().year)}",
                         fontSize = 10.sp,
                     )
                 }

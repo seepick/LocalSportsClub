@@ -1,6 +1,7 @@
 package seepick.localsportsclub.sync.thirdparty
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.date.DateTimeRange
@@ -10,7 +11,8 @@ class MovementsYogaParserTest : StringSpec() {
     init {
         "When parse Then return" {
             val events = MovementsYogaParser.parse(readTestResponse("/thirdparty/movementsyoga.html"))
-            events.size shouldBe 50
+            events.size shouldBe 49
+            events.map { it.title } shouldNotContain "HOT CANCELLED"
             events.first() shouldBe ThirdEvent(
                 title = "HOT PILATES",
                 teacher = "Roxann",

@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.date
 
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 
 fun LocalDate.daysBetween(other: LocalDate): Long =
@@ -12,3 +13,9 @@ fun LocalDate.monthRange(): ClosedRange<LocalDate> =
 
 fun LocalDate.atEndOfMonth(): LocalDate =
     YearMonth.of(year, month).atEndOfMonth()
+
+fun LocalDate.sameYearMonth(target: LocalDate) =
+    year == target.year && month == target.month
+
+fun LocalDateTime.sameYearMonth(target: LocalDate) =
+    year == target.year && month == target.month

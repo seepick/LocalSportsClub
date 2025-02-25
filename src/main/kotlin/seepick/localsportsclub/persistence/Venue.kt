@@ -8,6 +8,8 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import seepick.localsportsclub.service.model.City
+import seepick.localsportsclub.service.model.Plan
 
 data class VenueDbo(
     val id: Int,
@@ -34,7 +36,32 @@ data class VenueDbo(
     val isHidden: Boolean,
     val isDeleted: Boolean,
 ) {
-    companion object; // for extensions
+    companion object {
+        val dummy = VenueDbo(
+            id = 999,
+            name = "Josef Sutton",
+            slug = "netus",
+            facilities = "alienum",
+            cityId = City.Amsterdam.id,
+            officialWebsite = null,
+            rating = 4,
+            notes = "malorum",
+            imageFileName = null,
+            postalCode = "quem",
+            street = "scripserit",
+            addressLocality = "inimicus",
+            latitude = "graece",
+            longitude = "mus",
+            description = "cetero",
+            importantInfo = null,
+            openingTimes = null,
+            planId = Plan.UscPlan.Medium.id,
+            isFavorited = false,
+            isWishlisted = false,
+            isHidden = false,
+            isDeleted = false
+        )
+    }
 
     override fun toString() =
         "VenueDbo[id=$id, slug=$slug, name=$name, cityId=$cityId, imageFileName=$imageFileName, " + "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted]"
@@ -42,6 +69,7 @@ data class VenueDbo(
 
 interface VenueRepo {
     /** Doesn't do any filtering, not even the deleted ones. */
+    fun selectAllAnywhere(): List<VenueDbo>
     fun selectAllByCity(cityId: Int): List<VenueDbo>
     fun insert(venue: VenueDbo): VenueDbo
     fun update(venue: VenueDbo): VenueDbo
@@ -79,6 +107,12 @@ object ExposedVenueRepo : VenueRepo {
 
     override fun selectAllByCity(cityId: Int): List<VenueDbo> = transaction {
         VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
+            VenueDbo.fromRow(it)
+        }
+    }
+
+    override fun selectAllAnywhere(): List<VenueDbo> = transaction {
+        VenuesTable.selectAll().map {
             VenueDbo.fromRow(it)
         }
     }
@@ -188,6 +222,9 @@ class InMemoryVenueRepo : VenueRepo {
 
     override fun selectAllByCity(cityId: Int): List<VenueDbo> =
         stored.values.filter { it.cityId == cityId }.toList().sortedBy { it.id }
+
+    override fun selectAllAnywhere(): List<VenueDbo> =
+        stored.values.toList()
 
     override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
 

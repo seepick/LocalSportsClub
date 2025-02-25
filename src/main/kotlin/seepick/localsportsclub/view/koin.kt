@@ -20,6 +20,7 @@ fun viewModule() = module {
     viewModelOf(::NotesViewModel)
     viewModelOf(::SyncerViewModel)
     viewModelOf(::PreferencesViewModel)
+    viewModelOf(::StatsViewModel)
     viewModelOf(::VersionNotifier)
     singleOf(::SharedModel)
     singleOf(::UsageStorage)

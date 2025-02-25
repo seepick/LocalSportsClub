@@ -1,24 +1,21 @@
 # TODO
 
-## Next
-
-* new tab "Other", with summaries/report/usage statistics/overview (no shows/late cancellation)
-    * report overview like in app: monthly what visited, also show 6x per venue per (calendar! not period) month
-* also sync "plus checkins"
-* notes with rich format text-editor (bold, italic, colors, fontsize)
-
 ## Backlog
 
+* also sync "plus checkins"
+* notes with rich format text-editor (bold, italic, colors, fontsize)
+* display plan (it is now being used by USC)
 * also fetch plan for venue (available in list, but not in detail response!)
-* adaptive layout: depending on window size, change layout (add columns, change formatting)
-* make rating UI a slider with custom renderer
-* enable/disable specific 3rd party sync in prefs (make it city aware)
+* teacher now available via USC activity-detail (also provides description)
+    * ...? ... enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
-* "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 * BUG: DateParser dutch locale doesn't work when packaged as app...?!
 
 ### Low Prio
 
+* "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
+* make rating UI a slider with custom renderer
+* adaptive layout: depending on window size, change layout (add columns, change formatting)
 * system test: book something which can't be booked parse response and show proper message
     * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
 * if rating sorted, then update rating => resort! (just that one which has been updated)

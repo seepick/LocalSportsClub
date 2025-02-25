@@ -26,7 +26,6 @@ fun LongText(label: String? = null, text: String, onShowLongText: ((String) -> U
                 overflow = TextOverflow.Ellipsis,
                 onTextLayout = {
                     isOverflowing = it.hasVisualOverflow
-                    println("isOverflowing=$isOverflowing")
                 },
                 modifier = Modifier.clickable(
                     enabled = isOverflowing && onShowLongText != null

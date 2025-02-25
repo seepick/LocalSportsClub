@@ -73,6 +73,7 @@ object FreetrainingsTable : IntIdTable("FREETRAININGS", "ID") {
 interface FreetrainingRepo {
     fun selectAll(cityId: Int): List<FreetrainingDbo>
     fun selectAllScheduled(cityId: Int): List<FreetrainingDbo>
+    fun selectAllAnywhere(): List<FreetrainingDbo>
     fun selectFutureMostDate(cityId: Int): LocalDate?
     fun selectById(freetrainingId: Int): FreetrainingDbo?
     fun insert(dbo: FreetrainingDbo)
@@ -85,6 +86,8 @@ class InMemoryFreetrainingRepo : FreetrainingRepo {
 
     override fun selectAll(cityId: Int) = stored.values.toList()
     override fun selectAllScheduled(cityId: Int) = stored.values.filter { it.isScheduled }
+    override fun selectAllAnywhere(): List<FreetrainingDbo> = stored.values.toList()
+
     override fun selectFutureMostDate(cityId: Int): LocalDate? = stored.values.maxByOrNull { it.date }?.date
     override fun selectById(freetrainingId: Int): FreetrainingDbo? = stored[freetrainingId]
 
@@ -129,6 +132,10 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
             .map {
                 FreetrainingDbo.fromRow(it)
             }
+    }
+
+    override fun selectAllAnywhere(): List<FreetrainingDbo> = transaction {
+        FreetrainingsTable.selectAll().orderBy(FreetrainingsTable.date).map { FreetrainingDbo.fromRow(it) }
     }
 
     override fun selectFutureMostDate(cityId: Int): LocalDate? = transaction {

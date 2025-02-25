@@ -4,12 +4,21 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -22,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyShortPrint
+import seepick.localsportsclub.view.StatsDialog
 
 private val colorBg = Color(0xFF9B9B9B)
 private val colorPeriod = Color(0xFFFF9300)
@@ -37,39 +47,56 @@ fun UsageView(
     if (!usageStorage.isUsageVisible) {
         return
     }
+    var showStatsDialog by remember { mutableStateOf(false) }
 
+    if (showStatsDialog) {
+        StatsDialog(
+            onClose = { showStatsDialog = false }
+        )
+    }
     val checkedinCount by usageStorage.checkedinCount.collectAsState(0)
     val bookedCount by usageStorage.reservedCount.collectAsState(0)
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)
     val percentageBooked by usageStorage.percentageBooked.collectAsState(0.0)
     val year = clock.today().year
-    Column {
-        Row {
-            Text("Period: ")
-            Text(
-                "${usageStorage.periodFirstDay.prettyShortPrint(year)}-${
-                    usageStorage.periodLastDay.prettyShortPrint(year)
-                }", color = colorPeriod
+    Row {
+        Column {
+            Row {
+                Text("Period: ")
+                Text(
+                    "${usageStorage.periodFirstDay.prettyShortPrint(year)}-${
+                        usageStorage.periodLastDay.prettyShortPrint(year)
+                    }", color = colorPeriod
+                )
+            }
+            Row {
+                Text(buildAnnotatedString {
+                    append("Usage: ")
+                    withStyle(style = SpanStyle(color = colorCheckedin, fontWeight = FontWeight.Bold)) {
+                        append(checkedinCount.toString())
+                    }
+                    append("+")
+                    withStyle(style = SpanStyle(color = colorBooked, fontWeight = FontWeight.Bold)) {
+                        append(bookedCount.toString())
+                    }
+                    append(" / ${usageStorage.maxBookingsForPeriod}")
+                })
+            }
+            UsageIndicator(
+                percentagePeriod = usageStorage.percentagePeriod,
+                percentageCheckedin = percentageCheckedin,
+                percentageBooked = percentageBooked,
             )
         }
-        Row {
-            Text(buildAnnotatedString {
-                append("Usage: ")
-                withStyle(style = SpanStyle(color = colorCheckedin, fontWeight = FontWeight.Bold)) {
-                    append(checkedinCount.toString())
-                }
-                append("+")
-                withStyle(style = SpanStyle(color = colorBooked, fontWeight = FontWeight.Bold)) {
-                    append(bookedCount.toString())
-                }
-                append(" / ${usageStorage.maxBookingsForPeriod}")
-            })
+        TextButton(
+            onClick = { showStatsDialog = true },
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier
+                .padding(0.dp)
+//                .background(Color.Red)
+        ) {
+            Icon(Icons.Default.Info, null, modifier = Modifier.padding(0.dp))
         }
-        UsageIndicator(
-            percentagePeriod = usageStorage.percentagePeriod,
-            percentageCheckedin = percentageCheckedin,
-            percentageBooked = percentageBooked,
-        )
     }
 }
 
