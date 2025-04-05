@@ -6,6 +6,7 @@
     </appender>
 
     <logger name="seepick.localsportsclub" level="TRACE"/>
+    <!--    <logger name="io.ktor.client" level="TRACE"/>-->
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>

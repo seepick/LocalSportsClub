@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 import io.ktor.http.Url
+import io.ktor.http.userAgent
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
@@ -90,6 +91,7 @@ class EversportsFetcher(
             parameter("facilityShortId", request.eversportsId)
             parameter("startDate", dateFormatter.format(date))
             parameter("activeEventType", "universal")
+            userAgent("LocalSportsClub")
         }
         responseStorage.store(response, "${request.logId}-${date.machinePrint()}")
         val json = response.body<EversportRootJson>()

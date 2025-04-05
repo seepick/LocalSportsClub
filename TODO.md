@@ -2,7 +2,12 @@
 
 ## Backlog
 
+* max reservations is more than 6! (or maybe just within a single period?!)
+    * The only limitations that you have are the visit and location limits. And the location limits may differ per
+      partner but average around 6.
 * also sync "plus checkins"
+* reset search button: much smaller; invisible if disabled; make it a round symbol, with a diagonal line throuhg (like "
+  not parking" or "stop")
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * display plan (it is now being used by USC)
 * also fetch plan for venue (available in list, but not in detail response!)
