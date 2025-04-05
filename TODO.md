@@ -2,26 +2,23 @@
 
 ## Backlog
 
-* also sync "plus checkins"
-* reset search button: much smaller; invisible if disabled; make it a round symbol, with a diagonal line throuhg (like "
-  not parking" or "stop")
-* notes with rich format text-editor (bold, italic, colors, fontsize)
-* display plan (it is now being used by USC)
-* also fetch plan for venue (available in list, but not in detail response!)
 * teacher now available via USC activity-detail (also provides description)
     * ...? ... enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
-* BUG: DateParser dutch locale doesn't work when packaged as app...?!
 
 ### Low Prio
 
+* also sync "plus checkins"
+* notes with rich format text-editor (bold, italic, colors, fontsize)
+* display plan (it is now being used by USC)
+* BUG: DateParser dutch locale doesn't work when packaged as app...?!
+* also fetch plan for venue (available in list, but not in detail response!)
 * "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 * make rating UI a slider with custom renderer
 * adaptive layout: depending on window size, change layout (add columns, change formatting)
 * system test: book something which can't be booked parse response and show proper message
     * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
 * if rating sorted, then update rating => resort! (just that one which has been updated)
-* ... no-show for freetraining possible?? try it yourself ;)
 * UI/ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
 * map component: https://wiki.openstreetmap.org/wiki/JMapViewer (compose google map only for android, not desktop)
 * could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
