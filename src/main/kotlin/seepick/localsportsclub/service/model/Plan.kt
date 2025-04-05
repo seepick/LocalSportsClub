@@ -102,6 +102,7 @@ data class UsageInfo(
     val maxPlusCheckins: Int,
     val maxCheckinsInMonthPerVenue: Int,
 ) {
-    val maxReservationsConcurrentlyTotal = 6 // valid for all plans
-    val maxReservationsConcurrentlyPerDay = 6 // valid for all plans
+    // "limits may differ per partner but average is around 6" - by USC support
+    val maxReservationsPerVenue = 6 // valid for all plans
+    val maxReservationsPerDay = 2 // valid for all plans
 }

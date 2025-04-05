@@ -90,7 +90,10 @@ class BookingValidatorTest : DescribeSpec() {
         usageStorage.onStartUp()
     }
 
-    private fun activityForNow(venue: Venue? = null, cancellationLimit: LocalDateTime? = null) =
+    private fun activityForNow(
+        venue: Venue? = null,
+        cancellationLimit: LocalDateTime? = null,
+    ) =
         Arb.activity().next().let {
             val inPeriod = it.copy(
                 copyDateTimeRange = DateTimeRange(
@@ -151,26 +154,45 @@ class BookingValidatorTest : DescribeSpec() {
             it("no - daily reserve limit") {
                 val venue = insertVenueForCity()
                 given {
-                    repeat(usageInfo.maxReservationsConcurrentlyPerDay) { i ->
+                    repeat(usageInfo.maxReservationsPerDay) { i ->
                         activityRepo.insertActivityDbo(i, now, ActivityState.Booked, venueId = venue.id)
                     }
                 }
 
                 val result = validator.canBook(activityForNow())
 
-                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain usageInfo.maxReservationsConcurrentlyPerDay.toString()
+                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain usageInfo.maxReservationsPerDay.toString()
             }
-            it("no - total limit") {
+            it("no - venue limit reached") {
                 val venue = insertVenueForCity()
                 given {
-                    repeat(usageInfo.maxReservationsConcurrentlyTotal) { i ->
+                    repeat(usageInfo.maxReservationsPerVenue) { i ->
                         activityRepo.insertActivityDbo(i, now.plusDays(1), ActivityState.Booked, venueId = venue.id)
                     }
                 }
 
-                val result = validator.canBook(activityForNow())
+                val result = validator.canBook(activityForNow(venue))
 
-                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain usageInfo.maxReservationsConcurrentlyTotal.toString()
+                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain usageInfo.maxReservationsPerVenue.toString()
+            }
+
+            it("yes - limit not reached because different venues") {
+                val venue1 = insertVenueForCity()
+                val venue2 = insertVenueForCity()
+                given {
+                    repeat(usageInfo.maxReservationsPerVenue) { i ->
+                        activityRepo.insertActivityDbo(
+                            i,
+                            now.plusDays(1),
+                            ActivityState.Booked,
+                            venueId = if (i % 2 == 0) venue1.id else venue2.id
+                        )
+                    }
+                }
+
+                val result = validator.canBook(activityForNow(venue1))
+
+                result.shouldBeInstanceOf<BookingValidation.Valid>()
             }
         }
         describe("can cancel") {

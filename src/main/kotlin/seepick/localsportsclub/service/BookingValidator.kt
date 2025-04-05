@@ -27,8 +27,8 @@ class BookingValidator(
     private var checkedinCount = 0
     private val maxCheckinsInPeriod = singlesService.plan?.usageInfo?.maxCheckinsInPeriod
     private val maxCheckinsInMonthPerVenue = singlesService.plan?.usageInfo?.maxCheckinsInMonthPerVenue
-    private val maxReservationsConcurrentlyTotal = singlesService.plan?.usageInfo?.maxReservationsConcurrentlyTotal
-    private val maxReservationsConcurrentlyPerDay = singlesService.plan?.usageInfo?.maxReservationsConcurrentlyPerDay
+    private val maxReservationsPerVenue = singlesService.plan?.usageInfo?.maxReservationsPerVenue
+    private val maxReservationsPerDay = singlesService.plan?.usageInfo?.maxReservationsPerDay
     private val city = singlesService.preferences.city
 
     init {
@@ -65,12 +65,13 @@ class BookingValidator(
         }
 
         val reservedTotal = activityRepo.selectAll(city!!.id).filter { it.isBooked }
-        if (reservedTotal.count() >= maxReservationsConcurrentlyTotal!!) {
-            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsConcurrentlyTotal at the same time!")
+        val reservedForVenue = reservedTotal.filter { it.venueId == activity.venue.id }
+        if (reservedForVenue.count() >= maxReservationsPerVenue!!) {
+            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsPerVenue for the same venue!")
         }
         val reservedToday = reservedTotal.filter { it.from.toLocalDate() == clock.today() }
-        if (reservedToday.count() >= maxReservationsConcurrentlyPerDay!!) {
-            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsConcurrentlyPerDay at the same time per day!")
+        if (reservedToday.count() >= maxReservationsPerDay!!) {
+            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsPerDay at the same time per day!")
         }
 
         return BookingValidation.Valid
