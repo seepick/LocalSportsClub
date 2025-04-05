@@ -97,9 +97,7 @@ object MovementsYogaParser {
                 to = to,
             ),
             teacher = eventDiv.select("span.scheduleInstruc").text().trim(),
-        ).also {
-            println(it)
-        }
+        )
     }
 
     /** @param string e.g.: "day20250124" */

@@ -15,10 +15,12 @@ object EversportsApp {
         )
         val events = runBlocking {
             fetcher.fetch(HotFlowYogaStudio.Zuid)
+            fetcher.fetch(HotFlowYogaStudio.Rivierenbuurt)
+            fetcher.fetch(HotFlowYogaStudio.Jordaan)
         }
         println("Got ${events.size} events:")
         events.forEach {
-            println("- ${it}")
+            println("- $it")
         }
     }
 }

@@ -37,17 +37,18 @@ class ThirdPartySyncerAmsterdam(
         MovementsYogaStudio.entries.forEach {
             syncThirdParty(movementsYogaFetcher::fetch, it)
         }
-        buildList {
-            addAll(HotFlowYogaStudio.entries)
-            add(
-                EversportsFetchRequestImpl(
-                    eversportsId = "J3pkIl",
-                    slug = "movement-amsterdam",
-                )
-            )
-        }.forEach { studio ->
-            syncThirdParty(eversportsFetcher::fetch, studio)
-        }
+        // TODO eversport is disabled (cloudflare+ktor issue!); sync teacher from USC directly instead
+//        buildList {
+//            addAll(HotFlowYogaStudio.entries)
+//            add(
+//                EversportsFetchRequestImpl(
+//                    eversportsId = "J3pkIl",
+//                    slug = "movement-amsterdam",
+//                )
+//            )
+//        }.forEach { studio ->
+//            syncThirdParty(eversportsFetcher::fetch, studio)
+//        }
         syncThirdParty(deNieuweYogaSchoolFetcher::fetch, DeNieuweYogaSchoolFetcherRequest(days))
     }
 

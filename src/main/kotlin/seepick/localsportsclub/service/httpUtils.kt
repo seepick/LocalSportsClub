@@ -26,6 +26,14 @@ val httpClient: HttpClient = HttpClient(Apache) {
     install(ContentNegotiation) {
         json(serializerLenient)
     }
+//    install(createClientPlugin("CloudflareFix") {
+//        on(Send) { request ->
+//            request.headers.remove("Accept-Charset")
+//            request.headers.remove("Accept")
+//            request.headers["User-Agent"] = "xxx"
+//            proceed(request)
+//        }
+//    })
     expectSuccess = false
 }
 
