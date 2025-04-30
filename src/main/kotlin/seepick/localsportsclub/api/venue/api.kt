@@ -66,10 +66,16 @@ class VenueHttpApi(
 
     override suspend fun fetchDetails(session: PhpSessionId, slug: String): VenueDetails {
         log.debug { "Fetching details for: [$slug]" }
-        val response = http.safeGet(Url("$baseUrl/venues/$slug")) {
+        val venueUrl = "$baseUrl/venues/$slug"
+        val response = http.safeGet(Url(venueUrl)) {
             cookie("PHPSESSID", session.value)
         }
         responseStorage.store(response, "VenueDetails-$slug")
-        return VenueDetailsParser.parse(response.bodyAsText())
+        try {
+            return VenueDetailsParser.parse(response.bodyAsText())
+        } catch (e: Exception) {
+            log.error { "Unable to parse response for venue: $venueUrl" }
+            throw e
+        }
     }
 }

@@ -15,6 +15,7 @@ class VenueDetailsParserTest : DescribeSpec() {
         fun read0() = readAndParse("venue_detail-linked0.html")
         fun read1() = readAndParse("venue_detail-linked1.html")
         fun readn() = readAndParse("venue_detail-linkedn.html")
+        fun readH3() = readAndParse("venue_detail-h3_to_h2.html")
 
         describe("Misc") {
             it("title") {
@@ -85,6 +86,10 @@ class VenueDetailsParserTest : DescribeSpec() {
                 read1().importantInfo.shouldBeNull()
             }
         }
-
+        describe("USC backend change") {
+            it("studio-info-section sub elements changed from h3 to h2") {
+                readH3().importantInfo shouldBe "movement important info"
+            }
+        }
     }
 }

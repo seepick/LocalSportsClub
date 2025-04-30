@@ -74,7 +74,7 @@ object VenueDetailsParser {
         val disciplines = body.select("div.disciplines").text().split(",").map { it.trim() }
         val description = body.select("p.description").text()
         body.select("div.studio-info-section").forEach { div ->
-            when (div.select("h3").single().text()) {
+            when (div.select("h2").single().text()) {
                 EnglishLabels.OTHER_LOCATIONS -> {
                     div.select("a").forEach { a ->
                         linkedVenues += a.attr("href").substringAfterLast("/")
