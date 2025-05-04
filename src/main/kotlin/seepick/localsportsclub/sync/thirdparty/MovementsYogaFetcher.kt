@@ -88,7 +88,10 @@ object MovementsYogaParser {
         }
         val from = LocalDateTime.of(date, DateParser.parseTime(timeString))
         val duration =
-            eventDiv.select("span.classlength").text().trim().replace("mins", "").replace("min", "").trim().toLong()
+            eventDiv.select("span.classlength").text().trim()
+                .replace("minutes", "")
+                .replace("mins", "")
+                .replace("min", "").trim().toLong()
         val to = from.plusMinutes(duration)
         return ThirdEvent(
             title = eventDiv.select("span.scheduleClass").text().trim(),

@@ -8,6 +8,7 @@
 
 ### Low Prio
 
+* most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 * also sync "plus checkins"
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * display plan (it is now being used by USC)
