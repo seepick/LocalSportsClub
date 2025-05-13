@@ -2,9 +2,12 @@
 
 ## Backlog
 
+* venue sync bug! not stepping over to next page when actual page count > page hint (showMore logic doesn't work to skip
+  over)
 * teacher now available via USC activity-detail (also provides description)
     * ...? ... enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
+* while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 
 ### Low Prio
 

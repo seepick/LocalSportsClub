@@ -9,8 +9,10 @@ import java.time.LocalDateTime
 
 class MovementsYogaParserTest : StringSpec() {
     init {
+        fun parseResponse(fileName: String) = MovementsYogaParser.parse(readTestResponse("thirdparty/$fileName"))
+
         "When parse Then return" {
-            val events = MovementsYogaParser.parse(readTestResponse("/thirdparty/movementsyoga.html"))
+            val events = parseResponse("movementsyoga.html")
             events.size shouldBe 49
             events.map { it.title } shouldNotContain "HOT CANCELLED"
             events.first() shouldBe ThirdEvent(
@@ -21,6 +23,9 @@ class MovementsYogaParserTest : StringSpec() {
                     to = LocalDateTime.of(2025, 1, 19, 10, 30),
                 ),
             )
+        }
+        "When parse empty time string Then be able to parse" {
+            parseResponse("movementsyoga-empty_day.html")
         }
     }
 }

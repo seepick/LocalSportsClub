@@ -52,5 +52,9 @@ class VenueParserTest : StringSpec() {
             val result = read("venues.noImage.json")
             result.shouldBeSingleton().first().imageUrl.shouldBeNull()
         }
+        "When fetch DE Then parse" {
+            val result = read("venues.de.json")
+            println(result)
+        }
     }
 }

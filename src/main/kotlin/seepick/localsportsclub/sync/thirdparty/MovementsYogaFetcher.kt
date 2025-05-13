@@ -86,6 +86,10 @@ object MovementsYogaParser {
         if (timeString.contains("cancelled")) {
             return null
         }
+        if (eventDiv.classNames().contains("empty")) {
+            // We do not currently have any Classes available this day.
+            return null
+        }
         val from = LocalDateTime.of(date, DateParser.parseTime(timeString))
         val duration =
             eventDiv.select("span.classlength").text().trim()

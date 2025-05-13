@@ -114,7 +114,8 @@ class BookingService(
         canGcal: Boolean,
         shouldGcal: Boolean
     ) {
-        val activityDbo = activityRepo.selectById(subEntity.id)!!
+        val activityDbo =
+            activityRepo.selectById(subEntity.id) ?: error("Cannot find entity by ID from repository: $subEntity")
         require(if (isBooking) activityDbo.isBookable else activityDbo.isCancellable)
         val updatedActivityDbo = activityDbo.copy(state = ActivityDbo.bookingState(isBooking))
         activityRepo.update(updatedActivityDbo)

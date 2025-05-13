@@ -22,8 +22,19 @@ data class StatsCategoryAttributesJson(
 
 @Serializable
 data class StatsDistrictJson(
-    val district: List<String>, // what type is this?
+    val district: List<StatsDistrictDistrictJson>,
     val areas: List<StatsDistrictAreaJson>,
+)
+
+@Serializable
+data class StatsDistrictDistrictJson(
+    val name: String,
+    val attributes: StatsDistrictAreaAtributesValueJson,
+)
+
+@Serializable
+data class StatsDistrictAreaAtributesValueJson(
+    val value: Int,
 )
 
 @Serializable
