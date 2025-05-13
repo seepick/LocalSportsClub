@@ -8,6 +8,7 @@
     * ...? ... enable/disable specific 3rd party sync in prefs (make it city aware)
     * third party syncer for: cosmos-west, balanzcs, white door yoga
 * while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
+* after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 
 ### Low Prio
 
