@@ -12,6 +12,7 @@
 
 ### Low Prio
 
+* in prefs, select sync of teachers for specific venues by slug, comma separated
 * most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 * also sync "plus checkins"
 * notes with rich format text-editor (bold, italic, colors, fontsize)

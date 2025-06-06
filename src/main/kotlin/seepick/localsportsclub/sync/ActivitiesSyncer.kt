@@ -39,7 +39,9 @@ class ActivitiesSyncer(
                 plan,
                 city,
                 day,
-                allStoredActivities.filter { it.from.toLocalDate() == day },
+                allStoredActivities,
+                // filter { it.from.toLocalDate() == day } ...
+                // NO, simply pass ALL of them (duplicate IDs could be _before_ sync range)
                 venuesBySlug,
             )
         }
@@ -58,6 +60,9 @@ class ActivitiesSyncer(
             api.fetchActivities(session, ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
         val storedActivities = stored.associateBy { it.id }
 
+        remoteActivities.filterKeys { storedActivities.containsKey(it) }.forEach {
+            log.warn { "IGNORE: Duplicate remote activity by ID [${it.key}] found (already locally stored in DB): ${it.value}" }
+        }
         val missingActivities = remoteActivities.minus(storedActivities.keys)
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
         val dbos = missingActivities.values.map { activity ->

@@ -2,6 +2,7 @@ package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DatabaseConfig
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
 import java.io.File
@@ -24,13 +25,18 @@ private fun connect(dbDir: File, liquibaseEnabled: Boolean) {
     if (liquibaseEnabled) {
         LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
     }
-    Database.connect(jdbcUrl, setupConnection = ::enableSqliteForeignKeySupport)
+    Database.connect(
+        url = jdbcUrl,
+        setupConnection = ::enableSqliteForeignKeySupport,
+        databaseConfig = DatabaseConfig {
+            defaultMaxAttempts = 1
+        }
+    )
 }
 
 fun enableSqliteForeignKeySupport(connection: Connection) {
-    connection.createStatement().also { stmt ->
+    connection.createStatement().use { statement ->
         log.trace { "Enabling foreign key support for SQLite >> PRAGMA foreign_keys = ON" }
-        stmt.execute("PRAGMA foreign_keys = ON")
-        stmt.close()
+        statement.execute("PRAGMA foreign_keys = ON")
     }
 }

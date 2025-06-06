@@ -3,6 +3,8 @@ package seepick.localsportsclub
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
+import java.time.LocalDate
+import java.time.LocalTime
 
 fun StringValues.toFlatMap(): Map<String, String> =
     toMap().mapValues { it.value.single() }
@@ -17,3 +19,5 @@ val jsonx = Json {
     ignoreUnknownKeys = false
     isLenient = false
 }
+
+fun LocalDate.atAnyTime() = atTime(LocalTime.of(0, 0))

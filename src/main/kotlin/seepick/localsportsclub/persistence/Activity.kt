@@ -152,7 +152,7 @@ class InMemoryActivityRepo(
     }
 
     override fun insert(activity: ActivityDbo) {
-        require(!stored.containsKey(activity.id))
+        require(!stored.containsKey(activity.id)) { "Primary key violation: ${activity.id}" }
         stored[activity.id] = activity
     }
 

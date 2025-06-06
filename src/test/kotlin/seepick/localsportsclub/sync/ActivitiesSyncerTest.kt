@@ -11,13 +11,17 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.api.UscApi
+import seepick.localsportsclub.api.activity.ActivityInfo
 import seepick.localsportsclub.api.activityInfo
 import seepick.localsportsclub.api.phpSessionId
+import seepick.localsportsclub.atAnyTime
 import seepick.localsportsclub.city
 import seepick.localsportsclub.createDaysUntil
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
+import seepick.localsportsclub.persistence.VenueDbo
+import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.plan
 import java.time.LocalDateTime
@@ -62,19 +66,10 @@ class ActivitiesSyncerTest : DescribeSpec() {
     init {
         describe("When full sync") {
             it("Given venue stored and activity fetched Then inserted and dispatched") {
-                val venue = Arb.venueDbo().next().copy(cityId = city.id)
-                val activityInfo = Arb.activityInfo().next().copy(venueSlug = venue.slug)
-                venueRepo.stored[venue.id] = venue
-                coEvery {
-                    api.fetchActivities(any(), any())
-                } returnsMany (1..syncDaysAhead).map {
-                    when (it) {
-                        1 -> listOf(activityInfo)
-                        else -> emptyList()
-                    }
-                }
+                val venue = givenVenueStored()
+                val activityInfo = givenApiReturnsActivities { copy(venueSlug = venue.slug) }
 
-                syncer().sync(anySession, anyPlan, city, clock.today().createDaysUntil(syncDaysAhead))
+                syncWithDefaults()
 
                 activityRepo.stored.values.shouldBeSingleton().first().should {
                     it.id shouldBe activityInfo.id
@@ -85,6 +80,44 @@ class ActivitiesSyncerTest : DescribeSpec() {
                 }
             }
         }
+        describe("Hardening") {
+            it("Given activity exists When remote get activity for another day with same ID Then simply ignore it") {
+                val venue = givenVenueStored()
+                val activityInfo = givenApiReturnsActivities { copy(venueSlug = venue.slug) }
+
+                activityRepo.insert(
+                    Arb.activityDbo().next().copy(
+                        id = activityInfo.id, from = clock.today().minusDays(1).atAnyTime()
+                    )
+                )
+
+                syncWithDefaults()
+
+                activityRepo.stored.size shouldBe 1
+            }
+        }
+    }
+
+    private fun givenVenueStored(): VenueDbo {
+        val venue = Arb.venueDbo().next().copy(cityId = city.id)
+        venueRepo.stored[venue.id] = venue
+        return venue
+    }
+
+    private fun givenApiReturnsActivities(withActivity: ActivityInfo.() -> ActivityInfo): ActivityInfo {
+        val activityInfo = Arb.activityInfo().next().let(withActivity)
+        coEvery {
+            api.fetchActivities(any(), any())
+        } returnsMany (1..syncDaysAhead).map {
+            when (it) {
+                1 -> listOf(activityInfo)
+                else -> emptyList()
+            }
+        }
+        return activityInfo
+    }
+
+    private suspend fun syncWithDefaults() {
+        syncer().sync(anySession, anyPlan, city, clock.today().createDaysUntil(syncDaysAhead))
     }
 }
-
