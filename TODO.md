@@ -2,6 +2,7 @@
 
 ## Backlog
 
+* show "5/6 available this month"
 * venue sync bug! not stepping over to next page when actual page count > page hint (showMore logic doesn't work to skip
   over)
 * teacher now available via USC activity-detail (also provides description)

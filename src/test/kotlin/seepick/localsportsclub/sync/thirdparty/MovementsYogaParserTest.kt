@@ -1,6 +1,7 @@
 package seepick.localsportsclub.sync.thirdparty
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
@@ -26,6 +27,10 @@ class MovementsYogaParserTest : StringSpec() {
         }
         "When parse empty time string Then be able to parse" {
             parseResponse("movementsyoga-empty_day.html")
+        }
+        "When parse empty duration string Then be able to parse" {
+            val events = parseResponse("movementsyoga-empty_duration.html")
+            events.shouldBeEmpty()
         }
     }
 }

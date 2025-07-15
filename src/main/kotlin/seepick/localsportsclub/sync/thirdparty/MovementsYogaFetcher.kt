@@ -90,15 +90,18 @@ object MovementsYogaParser {
             // We do not currently have any Classes available this day.
             return null
         }
+        val title = eventDiv.select("span.scheduleClass").text().trim()
+        val durationText = eventDiv.select("span.classlength").text().trim()
+            .replace("minutes", "")
+            .replace("mins", "")
+            .replace("min", "").trim()
+        if (title.contains("Booking required in another system") && durationText.isEmpty()) {
+            return null
+        }
         val from = LocalDateTime.of(date, DateParser.parseTime(timeString))
-        val duration =
-            eventDiv.select("span.classlength").text().trim()
-                .replace("minutes", "")
-                .replace("mins", "")
-                .replace("min", "").trim().toLong()
-        val to = from.plusMinutes(duration)
+        val to = from.plusMinutes(durationText.toLong())
         return ThirdEvent(
-            title = eventDiv.select("span.scheduleClass").text().trim(),
+            title = title,
             dateTimeRange = DateTimeRange(
                 from = from,
                 to = to,
