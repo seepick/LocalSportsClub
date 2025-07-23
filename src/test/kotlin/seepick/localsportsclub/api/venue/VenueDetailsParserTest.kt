@@ -17,10 +17,16 @@ class VenueDetailsParserTest : DescribeSpec() {
         fun readn() = readAndParse("venue_detail-linkedn.html")
         fun readH3() = readAndParse("venue_detail-h3_to_h2.html")
 
-        describe("Misc") {
-            it("title") {
+        describe("Title") {
+            it("simple") {
                 read0().title shouldBe "Test Venue Title"
             }
+            it("without username") {
+                val detail = readAndParse("venue_detail-title_parse.html")
+                detail.title shouldBe "Trainmore Beethovenstraat"
+            }
+        }
+        describe("Misc") {
             it("slug") {
                 read0().slug shouldBe "aerials-amsterdam-cla"
             }

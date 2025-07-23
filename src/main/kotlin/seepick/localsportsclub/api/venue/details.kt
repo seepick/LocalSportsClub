@@ -63,7 +63,7 @@ object VenueDetailsParser {
     fun parse(htmlString: String): VenueDetails {
         val (head, body) = jsoupHeadAndBody(htmlString)
 
-        val title = body.select("h1").text()
+        val title = body.select("div#studio-info-container h1").text()
         val linkedVenues = mutableListOf<String>()
         var website: String? = null
         var openingTimes: String? = null
