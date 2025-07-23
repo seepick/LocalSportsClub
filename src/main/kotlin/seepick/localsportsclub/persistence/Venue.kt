@@ -165,6 +165,7 @@ object ExposedVenueRepo : VenueRepo {
     }
 
     override fun update(venue: VenueDbo): VenueDbo = transaction {
+        log.debug { "Updating $venue" }
         val updated = VenuesTable.update(where = { VenuesTable.id.eq(venue.id) }) {
             it[notes] = venue.notes
             it[rating] = venue.rating
