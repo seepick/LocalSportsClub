@@ -65,6 +65,9 @@ class MovementsYogaFetcher(
 }
 
 object MovementsYogaParser {
+
+    private val log = logger {}
+
     fun parse(htmlString: String): List<ThirdEvent> {
         val document = Jsoup.parse(htmlString)
         val html = document.childNodes().single { it.nodeName() == "html" }
@@ -95,7 +98,8 @@ object MovementsYogaParser {
             .replace("minutes", "")
             .replace("mins", "")
             .replace("min", "").trim()
-        if (title.contains("Booking required in another system") && durationText.isEmpty()) {
+        if (durationText.isEmpty()) {
+            log.debug { "Skipping entry as duration text is empty: $eventDiv" }
             return null
         }
         val from = LocalDateTime.of(date, DateParser.parseTime(timeString))

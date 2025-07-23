@@ -43,9 +43,9 @@ object ManualSystemTests {
             log.info { "Manual test running..." }
 //            testFreetrainingDetails()
 //            testCheckins()
-//            testVenues()
+            testVenues()
 //            testVenue()
-            testActivities()
+//            testActivities()
 //            testSchedule()
 //            testBook(84737975)
 //            testMembership()
