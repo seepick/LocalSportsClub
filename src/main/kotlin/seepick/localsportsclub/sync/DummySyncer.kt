@@ -97,7 +97,8 @@ class DummySyncer(
         this += DummyGenerator.venue().copy(id = 3, name = "Yoga Studio", slug = "yoga-studio")
         this += DummyGenerator.venue().copy(
             id = 4,
-            name = "All Of It", slug = "aoi",
+            name = "All Of It",
+            slug = "aoi",
             rating = 5, facilities = "",
             officialWebsite = "https://www.allofit.com",
             description = "Some description", importantInfo = "important info", openingTimes = "opening times",

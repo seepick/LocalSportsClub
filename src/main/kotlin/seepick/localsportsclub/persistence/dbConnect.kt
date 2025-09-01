@@ -36,7 +36,7 @@ private fun connect(dbDir: File, liquibaseEnabled: Boolean) {
 
 fun enableSqliteForeignKeySupport(connection: Connection) {
     connection.createStatement().use { statement ->
-        log.trace { "Enabling foreign key support for SQLite >> PRAGMA foreign_keys = ON" }
+//        log.trace { "Enabling foreign key support for SQLite >> PRAGMA foreign_keys = ON" }
         statement.execute("PRAGMA foreign_keys = ON")
     }
 }

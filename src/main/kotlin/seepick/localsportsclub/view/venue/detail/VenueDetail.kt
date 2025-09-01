@@ -53,6 +53,7 @@ import kotlin.math.min
 @Composable
 fun VenueDetail(
     venue: Venue,
+    visitsModel: MonthlyVisitsModel,
     activity: Activity?,
     freetraining: Freetraining?,
     venueEdit: VenueEditModel,
@@ -103,9 +104,9 @@ fun VenueDetail(
                     }
                 }
                 RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
+                MonthlyVisitsPanel(visitsModel)
             }
         }
-
         LongText(text = venue.description, onShowLongText = {
             sharedModel.customDialog.value =
                 CustomDialog(title = "Description", text = it, showDismissButton = false)

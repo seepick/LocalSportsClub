@@ -11,10 +11,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.koinInject
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.venue.detail.VenueDetail
+import seepick.localsportsclub.view.venue.detail.toMonthlyVisitsModel
 
 @Composable
 fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
@@ -22,6 +25,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
     table: @Composable () -> Unit,
     viewModel: ScreenViewModel<ITEM, SEARCH>,
     mainViewModel: MainViewModel,
+    clock: Clock = koinInject(),
 ) {
     val selectedVenue by viewModel.selectedVenue.collectAsState()
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
@@ -46,6 +50,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                     if (selectedVenue != null) {
                         VenueDetail(
                             venue = selectedVenue!!,
+                            visitsModel = selectedVenue!!.activities.toMonthlyVisitsModel(clock.today()),
                             activity = selectedActivity,
                             freetraining = selectedFreetraining,
                             onVenueSelected = viewModel::onVenueSelected,

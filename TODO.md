@@ -2,14 +2,11 @@
 
 ## Backlog
 
-* show "5/6 available this month"
-* venue sync bug! not stepping over to next page when actual page count > page hint (showMore logic doesn't work to skip
-  over)
-* teacher now available via USC activity-detail (also provides description)
-    * ...? ... enable/disable specific 3rd party sync in prefs (make it city aware)
-    * third party syncer for: cosmos-west, balanzcs, white door yoga
+* "fetch teacher" button (per activity); delete custom 3rd party fetcher
+* venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to skip over)
 * while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
+* tooltips for table headers (symbols are not van-zelf-sprekend)
 
 ### Low Prio
 
