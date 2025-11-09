@@ -28,6 +28,7 @@ interface SyncerListener {
 
 sealed interface ActivityFieldUpdate {
     data object Teacher : ActivityFieldUpdate
+    data object Description : ActivityFieldUpdate
     data class State(val oldState: ActivityState) : ActivityFieldUpdate
 }
 

@@ -1,6 +1,7 @@
 package seepick.localsportsclub.api.activity
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.readTestResponse
 import seepick.localsportsclub.service.date.DateTimeRange
@@ -9,6 +10,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class ActivityDetailsParserTest : StringSpec() {
+
+    private val anyYear = 2000
 
     init {
         "Extract date time" {
@@ -27,6 +30,8 @@ class ActivityDetailsParserTest : StringSpec() {
                 spotsLeft = 2,
                 cancellationDateLimit = LocalDateTime.of(2024, 12, 27, 8, 0),
                 plan = Plan.UscPlan.Medium,
+                teacher = "Teacher A.",
+                description = "activity details",
             )
         }
         "When parse old Then return" {
@@ -44,6 +49,8 @@ class ActivityDetailsParserTest : StringSpec() {
                 spotsLeft = 0, // for past, this is actually not available ;)
                 cancellationDateLimit = null,
                 plan = Plan.UscPlan.Small,
+                teacher = "Teacher P.",
+                description = "past description",
             )
         }
         "When parse single freetraining Then return" {
@@ -58,6 +65,15 @@ class ActivityDetailsParserTest : StringSpec() {
                 category = "Wellness",
                 plan = Plan.UscPlan.Small,
             )
+        }
+
+        "When parse without teacher Then ignore it" {
+            ActivityDetailsParser.parseDetails(
+                readTestResponse("activity_detail.teacher_absent.html"),
+                anyYear
+            ).also {
+                it.teacher.shouldBeNull()
+            }
         }
     }
 }

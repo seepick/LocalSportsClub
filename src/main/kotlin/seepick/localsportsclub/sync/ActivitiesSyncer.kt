@@ -107,9 +107,11 @@ class ActivitiesSyncer(
         spotsLeft = spotsLeft,
         from = dateTimeRange.from,
         to = dateTimeRange.to,
-        teacher = null,
         state = ActivityState.Blank,
         cancellationLimit = null,
         planId = plan.id,
+        teacher = null,
+        description = null,
     )
+
 }

@@ -184,6 +184,7 @@ class DummySyncer(
             from = now.plusDays(1),
             to = now.plusDays(1).plusMinutes(75),
             teacher = null,
+            description = null,
             state = ActivityState.Blank,
             cancellationLimit = null,
             planId = Plan.UscPlan.Small.id,

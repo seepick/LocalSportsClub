@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.api.booking.BookingResult
 import seepick.localsportsclub.api.booking.CancelResult
+import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
 import seepick.localsportsclub.service.BookingValidator
@@ -54,6 +55,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val snackbarService: SnackbarService,
     private val sharedModel: SharedModel,
     private val bookingValidator: BookingValidator,
+    private val activityDetailService: ActivityDetailService,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -93,6 +95,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     var isGcalEnabled by mutableStateOf(false)
         private set
     val shouldGcalBeManaged = sharedModel.shouldGcalBeManaged
+    var syncActivityVisible by mutableStateOf(false)
+        private set
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -155,6 +159,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
             _selectedSubEntity.value = null
+            syncActivityVisible = false
         }
     }
 
@@ -162,6 +167,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         launchViewTask("Unable to select activity!") {
             log.trace { "Selected: $activity" }
             _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
+            syncActivityVisible = true
             onItemSelected(ActivitySelected(activity))
         }
     }
@@ -170,6 +176,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         launchViewTask("Unable to select freetraiing!") {
             log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
+            syncActivityVisible = false
             onItemSelected(FreetrainingSelected(freetraining))
         }
     }
@@ -264,6 +271,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
                     },
                 )
             }
+        }
+    }
+
+    fun onSyncActivity() {
+        log.debug { "onSyncActivity()" }
+        val activity = (selectedSubEntity.value as SubEntity.ActivityEntity).activity
+        launchViewTask("Failed to sync details for activity!") {
+            activityDetailService.syncSingle(activity.id)
         }
     }
 

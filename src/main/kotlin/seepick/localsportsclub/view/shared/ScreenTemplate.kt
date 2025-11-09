@@ -72,6 +72,8 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             subEntity = it,
                             onBook = viewModel::onBook,
                             onCancelBooking = viewModel::onCancelBooking,
+                            syncActivityVisible = viewModel.syncActivityVisible,
+                            onSyncActivity = viewModel::onSyncActivity,
                             isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncing,
                             isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             onActivityChangeToCheckedin = viewModel::onActivityChangeToCheckedin,

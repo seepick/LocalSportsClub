@@ -1,15 +1,33 @@
 # TODO
 
-## Backlog
+## v1.5.0
 
-* "fetch teacher" button (per activity); delete custom 3rd party fetcher
+* ! distance km is sorted alphabetically instead of numerically
+    * distance column also for activity table
+* BUG: warning two bookings same venue same day is wrong (booked same class but next week)
+* "fetch teacher" button (per activity)
+    * UI: tooltip for sync button
+    * UI: when click, activate sync progress (block button, waiting sandlooper cursor)
+    * UI: reuse description text component like for venue (max 2 lines with clickable popup)
+    * delete custom 3rd party fetchers
+    * sync per venue (for all activitites)
+    * what about syncing (free) spots?
 * venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to skip over)
 * while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * tooltips for table headers (symbols are not van-zelf-sprekend)
+* make address right-clickable => dropdown: copy to clipboard
+* in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
+* filter for time only (evenings), without specifying day/date
+
+## Backlog
+
+* tooltip when title of activity too long in detail view
+* sync free spots
 
 ### Low Prio
 
+* when navigate with keyboard-arrows, ensure viewport visible, and scroll if necessary
 * in prefs, select sync of teachers for specific venues by slug, comma separated
 * most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 * also sync "plus checkins"

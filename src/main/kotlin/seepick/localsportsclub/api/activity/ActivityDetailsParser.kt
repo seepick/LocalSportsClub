@@ -31,6 +31,8 @@ object ActivityDetailsParser {
             if (it.isEmpty()) null else extractDateTime(it)
         }
         val plan = div.selectPlanFromDetail()
+        val teacher = div.select("span.teacher").parents().first()?.text()?.trim()
+        val description = div.select("span.class-description").text().trim()
         return if (buttonBook.hasAttr("data-book-success")) {
             val json = buttonBook.attr("data-book-success")
             val data = serializerLenient.decodeFromString<ActivityBookDataJson>(json)
@@ -42,6 +44,8 @@ object ActivityDetailsParser {
                 spotsLeft = data.`class`.spots_left.toInt(),
                 cancellationDateLimit = cancellationDateLimit,
                 plan = plan,
+                teacher = teacher,
+                description = description,
             )
         } else {
             val buttonCancel = div.select("button.cancel")
@@ -55,6 +59,8 @@ object ActivityDetailsParser {
                 spotsLeft = 0,
                 cancellationDateLimit = cancellationDateLimit,
                 plan = plan,
+                teacher = teacher,
+                description = description,
             )
         }
     }

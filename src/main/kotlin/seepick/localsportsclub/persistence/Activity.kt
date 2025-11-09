@@ -31,6 +31,7 @@ data class ActivityDbo(
     val planId: Int,
     val spotsLeft: Int, // updateable
     val teacher: String?, // updateable
+    val description: String?, // updateable
     val state: ActivityState, // updateable
 ) {
     val isBooked = state == ActivityState.Booked
@@ -46,6 +47,7 @@ data class ActivityDbo(
         statement[ActivitiesTable.to] = this.to
         statement[ActivitiesTable.state] = this.state
         statement[ActivitiesTable.teacher] = this.teacher
+        statement[ActivitiesTable.description] = this.description
         statement[ActivitiesTable.spotsLeft] = this.spotsLeft
         statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
         statement[ActivitiesTable.planId] = this.planId
@@ -58,6 +60,7 @@ data class ActivityDbo(
         statement[ActivitiesTable.to] = this.to
         statement[ActivitiesTable.state] = this.state
         statement[ActivitiesTable.teacher] = this.teacher
+        statement[ActivitiesTable.description] = this.description
         statement[ActivitiesTable.spotsLeft] = this.spotsLeft
         statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
         statement[ActivitiesTable.planId] = this.planId
@@ -73,6 +76,7 @@ data class ActivityDbo(
             to = row[ActivitiesTable.to].withNano(0),
             state = row[ActivitiesTable.state],
             teacher = row[ActivitiesTable.teacher],
+            description = row[ActivitiesTable.description],
             spotsLeft = row[ActivitiesTable.spotsLeft],
             cancellationLimit = row[ActivitiesTable.cancellationLimit],
             planId = row[ActivitiesTable.planId],
@@ -88,6 +92,7 @@ object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
     val to = datetime("TO_DATETIME")
     val spotsLeft = integer("SPOTS_LEFT")
     val teacher = varchar("TEACHER", 64).nullable()
+    val description = text("DESCRIPTION").nullable()
     val state = enumerationByName<ActivityState>("STATE", 32)
     val cancellationLimit = datetime("CANCELLATION_LIMIT").nullable()
     val planId = integer("PLAN_ID")

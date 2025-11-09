@@ -33,6 +33,7 @@ class Activity(
     val dateTimeRange: DateTimeRange,
     val cancellationLimit: LocalDateTime?,
     teacher: String?,
+    description: String?,
     spotsLeft: Int,
     state: ActivityState,
 ) : HasVenue, TableItemBgColor by venue {
@@ -45,6 +46,7 @@ class Activity(
 
     var state: ActivityState by mutableStateOf(state)
     var teacher: String? by mutableStateOf(teacher)
+    var description: String? by mutableStateOf(description)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
 
     override fun toString() = "Activity[id=$id, name=$name, state=$state teacher=$teacher, venue.slug=${venue.slug}]"

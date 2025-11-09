@@ -22,6 +22,11 @@ data class MonthlyVisitsModel(
     val bookedFuture: Int,
 ) {
     companion object {
+        /*
+        S-members kunnen tot 2x per maand bij deze locatie inchecken
+        M-members kunnen tot 4x per maand bij deze locatie inchecken
+        L & XL-members kunnen tot 6x per maand bij deze locatie inchecken
+         */
         const val MAX_VISITS = 6
     }
 

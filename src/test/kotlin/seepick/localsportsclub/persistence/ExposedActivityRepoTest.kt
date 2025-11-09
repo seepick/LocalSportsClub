@@ -182,6 +182,7 @@ class ExposedActivityRepoTest : DescribeSpec() {
                     id = activity.id,
                     spotsLeft = activity.spotsLeft + 1,
                     teacher = "${activity.teacher} 2",
+                    description = null,
                     state = activity.state.someOther(),
                     name = activity.name + "2",
                     category = activity.category + "2",

@@ -204,10 +204,10 @@ private fun calcTableHeights(
     val maxActivityRows = 20
     val maxFreetrainingRows = 5
     val activitiesCalcRows = calcRows(
-        reducedVSpace, 2, maxActivityRows, SimpleActivitiesTable_rowEstimatedHeight, windowHeight
+        reducedVSpace, 3, maxActivityRows, SimpleActivitiesTable_rowEstimatedHeight, windowHeight
     )
     val freetrainingsCalcRows = calcRows(
-        reducedVSpace, 1, maxFreetrainingRows, SimpleFreetrainingsTable_rowEstimatedHeight, windowHeight
+        reducedVSpace, 2, maxFreetrainingRows, SimpleFreetrainingsTable_rowEstimatedHeight, windowHeight
     )
     val activityLeftovers = if (activitiesCount < activitiesCalcRows) activitiesCalcRows - activitiesCount else 0
     val freetrainingLeftovers =

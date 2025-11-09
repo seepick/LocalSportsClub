@@ -200,9 +200,12 @@ class DataStorage(
             when (field) {
                 is ActivityFieldUpdate.State -> activity.state = activityDbo.state
                 ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
+                ActivityFieldUpdate.Description -> activity.description = activityDbo.description
             }
         } ?: log.warn {
-            "Couldn't find activity in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Activity: $activityDbo"
+            "Couldn't find activity in data storage. " +
+                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
+                    "Activity: $activityDbo"
         }
     }
 
@@ -301,6 +304,7 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     category = category,
     spotsLeft = spotsLeft,
     teacher = teacher,
+    description = description,
     dateTimeRange = DateTimeRange(from, to),
     state = state,
     cancellationLimit = cancellationLimit,

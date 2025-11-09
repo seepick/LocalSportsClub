@@ -6,10 +6,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -37,6 +41,8 @@ fun SubEntityDetail(
     clock: Clock = koinInject(),
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
+    onSyncActivity: () -> Unit,
+    syncActivityVisible: Boolean,
     isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
     onActivityChangeToCheckedin: (Activity) -> Unit,
@@ -62,30 +68,45 @@ fun SubEntityDetail(
         }
     }
 
-
     Column(modifier = modifier) {
-        TitleText(subEntity.name)
-        Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(
-            text = buildString {
-                if (isBooked) {
-                    append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TitleText(subEntity.name)
+            if (syncActivityVisible) {
+                TextButton(
+                    onClick = onSyncActivity,
+                    modifier = Modifier.align(Alignment.CenterVertically).defaultMinSize(20.dp, 20.dp),
+                ) {
+                    Icon(
+                        Icons.Default.Refresh, contentDescription = null,
+                    )
                 }
-                if (isCheckedin) {
-                    "${Icons.Lsc.checkedinEmoji} checked-in "
-                }
-                if (isNoshow) {
-                    Text("${Icons.Lsc.noshowEmoji} no-show")
-                }
-                append(subEntity.category)
-                if (subEntity is SubEntity.ActivityEntity) {
-                    subEntity.activity.teacher?.also { append(" with $it") }
-                }
-            },
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-
+            }
+        }
+        Column {
+            Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                text = buildString {
+                    if (isBooked) {
+                        append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
+                    }
+                    if (isCheckedin) {
+                        "${Icons.Lsc.checkedinEmoji} checked-in "
+                    }
+                    if (isNoshow) {
+                        Text("${Icons.Lsc.noshowEmoji} no-show")
+                    }
+                    append(subEntity.category)
+                    if (subEntity is SubEntity.ActivityEntity) {
+                        subEntity.activity.teacher?.also { append(" with $it") }
+                    }
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        if (subEntity is SubEntity.ActivityEntity && subEntity.activity.description != null) {
+            Text(text = subEntity.activity.description!!)
+        }
         if (subEntity.date >= clock.today()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -102,8 +123,7 @@ fun SubEntityDetail(
                             } else {
                                 onBook(subEntity)
                             }
-                        },
-                        enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress
+                        }, enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress
                     ) {
                         Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                     }
@@ -130,9 +150,7 @@ fun SubEntityDetail(
             }
         }
         if (subEntity is SubEntity.ActivityEntity) {
-            if (subEntity.activity.state == ActivityState.Noshow ||
-                subEntity.activity.state == ActivityState.CancelledLate
-            ) {
+            if (subEntity.activity.state == ActivityState.Noshow || subEntity.activity.state == ActivityState.CancelledLate) {
                 Button(onClick = { onActivityChangeToCheckedin(subEntity.activity) }) {
                     Text("Change to Checked-In")
                 }

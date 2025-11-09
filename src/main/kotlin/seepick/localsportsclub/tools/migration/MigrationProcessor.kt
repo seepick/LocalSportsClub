@@ -113,6 +113,7 @@ object MigrationProcessor {
                     from = parseZonedDateTimeToLocalDateTime(checkin.start),
                     to = parseZonedDateTimeToLocalDateTime(checkin.end),
                     teacher = null,
+                    description = null,
                     state = ActivityState.Checkedin,
                     cancellationLimit = null,
                     planId = Plan.UscPlan.Small.id,

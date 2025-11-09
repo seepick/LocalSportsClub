@@ -43,8 +43,9 @@ object ManualSystemTests {
             log.info { "Manual test running..." }
 //            testFreetrainingDetails()
 //            testCheckins()
-            testVenues()
+//            testVenues()
 //            testVenue()
+            testActivity(92788662)
 //            testActivities()
 //            testSchedule()
 //            testBook(84737975)
@@ -133,6 +134,12 @@ object ManualSystemTests {
             }
     }
 
+    private suspend fun testActivity(activityId: Int) {
+        val activity = activityApi().fetchActivityDetails(phpSessionId, activityId)
+        println(activity)
+
+    }
+
     private suspend fun testSchedule() {
         val booked = ExposedActivityRepo.selectAllBooked(City.Amsterdam.id)
         println("Got ${booked.size} locally booked activities.")
@@ -156,9 +163,11 @@ object ManualSystemTests {
         val syspropUsername = System.getProperty("username")
         val syspropPassword = System.getProperty("password")
         val credentials = if (syspropUsername != null && syspropPassword != null) {
+            println("Using credentials from system property.")
             Credentials(syspropUsername, syspropPassword)
         } else {
             cliConnectToDatabase(isProd = false)
+            println("Using credentials from exposed repository.")
             SinglesServiceImpl(ExposedSinglesRepo).preferences.uscCredentials ?: error("No credentials stored in DB")
         }
         return LoginHttpApi(httpClient, uscConfig.baseUrl).login(credentials)

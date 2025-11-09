@@ -95,6 +95,8 @@ class MockUscApi : UscApi {
             spotsLeft = 2,
             cancellationDateLimit = null,
             plan = Plan.UscPlan.Small,
+            teacher = "Mock T.",
+            description = "Mock description",
         )
 
     override suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo> {

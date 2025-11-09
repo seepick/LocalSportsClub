@@ -52,6 +52,7 @@ fun Arb.Companion.activity() = arbitrary {
         spotsLeft = int(min = 0, max = 20).next(),
         teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().next(),
         state = enum<ActivityState>().next(),
-        cancellationLimit = if (boolean().next()) null else dateTimeRange.from.minusHours(2)
+        cancellationLimit = if (boolean().next()) null else dateTimeRange.from.minusHours(2),
+        description = string().orNull().next()
     )
 }

@@ -124,6 +124,9 @@ class UsageStorage(
 
             ActivityFieldUpdate.Teacher -> { /* no-op*/
             }
+
+            ActivityFieldUpdate.Description -> { /* no-op*/
+            }
         }
     }
 

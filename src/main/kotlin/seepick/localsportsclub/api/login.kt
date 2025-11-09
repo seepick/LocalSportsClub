@@ -42,7 +42,7 @@ class LoginHttpApi(
             )
         ).also {
             when (it) {
-                is LoginResult.Failure -> log.info { "Failed ro log in." }
+                is LoginResult.Failure -> log.info { "Failed to log in." }
                 is LoginResult.Success -> log.info { "Successfully logged in ✅👍🏻" }
             }
         }

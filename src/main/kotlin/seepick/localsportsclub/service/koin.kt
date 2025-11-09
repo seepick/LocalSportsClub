@@ -18,6 +18,7 @@ fun serviceModule(config: AppConfig) = module {
     singleOf(::SinglesServiceImpl) bind SinglesService::class
     singleOf(::BookingService)
     singleOf(::BookingValidator)
+    singleOf(::ActivityDetailService)
     single {
         if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker
     } bind VersionChecker::class

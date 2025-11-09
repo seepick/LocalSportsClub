@@ -78,10 +78,11 @@ class DataSyncRescuerImpl(
         spotsLeft = spotsLeft,
         from = dateTimeRange.from,
         to = dateTimeRange.to,
-        teacher = null,
         state = ActivityState.Blank,
         cancellationLimit = cancellationDateLimit,
         planId = plan.id,
+        teacher = null,
+        description = null,
     )
 
     private suspend fun ensureVenue(

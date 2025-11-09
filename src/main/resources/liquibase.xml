@@ -165,4 +165,7 @@
         <sql>update FREETRAININGS set PLAN_ID = 1</sql>
     </changeSet>
 
+    <changeSet id="4" author="owner" failOnError="true">
+        <sql>alter table ACTIVITIES add column DESCRIPTION longvarchar</sql>
+    </changeSet>
 </databaseChangeLog>

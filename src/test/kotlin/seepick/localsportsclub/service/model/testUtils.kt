@@ -9,15 +9,16 @@ fun Activity.copy(
     copyVenue: Venue = venue,
     copyCancellationLimit: LocalDateTime? = cancellationLimit,
 ) = Activity(
-    id = id,
     venue = copyVenue,
-    name = name,
-    category = category,
-    dateTimeRange = copyDateTimeRange,
-    spotsLeft = spotsLeft,
-    teacher = teacher,
     state = copyState,
     cancellationLimit = copyCancellationLimit,
+    dateTimeRange = copyDateTimeRange,
+    id = id,
+    name = name,
+    category = category,
+    spotsLeft = spotsLeft,
+    teacher = teacher,
+    description = description,
 )
 
 fun ActivityState.someOther() = ActivityState.entries.toSet().minus(this).random()

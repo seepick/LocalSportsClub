@@ -57,6 +57,8 @@ data class ActivityDetails(
     val spotsLeft: Int,
     val cancellationDateLimit: LocalDateTime?,
     val plan: Plan.UscPlan,
+    val teacher: String?,
+    val description: String,
 )
 
 data class FreetrainingDetails(
