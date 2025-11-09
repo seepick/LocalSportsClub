@@ -1,14 +1,8 @@
 # TODO
 
-## v1.5.0
+## v1.6.0
 
-*
 * don't display distance (column/search) if home coordinates not set
-
-## Backlog
-
-## Next Up
-
 * "fetch teacher" button (per activity)
     * UI: tooltip for sync button
     * UI: when click, activate sync progress (block button, waiting sandlooper cursor)
@@ -27,6 +21,8 @@
   s-Graves...")
 * filter for time only (evenings), without specifying day/date
 * tooltip when title of activity too long in detail view
+
+## Backlog
 
 ### Low Prio
 
