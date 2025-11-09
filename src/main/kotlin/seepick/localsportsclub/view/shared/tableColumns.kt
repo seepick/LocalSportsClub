@@ -4,6 +4,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.VisualIndicator
@@ -23,3 +24,10 @@ fun <T : HasVenue> RatingColumn() =
         VisualIndicator.StringIndicator("Rating"),
         WidthOrWeight.Width(90.dp),
         CellRenderer.TextRenderer { it.venue.rating.label })
+
+fun <T : HasDistance> DistanceColumn() =
+    TableColumn<T>(
+        VisualIndicator.StringIndicator("km"),
+        WidthOrWeight.Width(50.dp),
+        CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm ?: -1.0 }
+    )

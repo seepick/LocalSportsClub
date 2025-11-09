@@ -47,7 +47,7 @@ class Venue(
     val street: String,
     val addressLocality: String,
     val location: Location?,
-    val distanceInKm: Double?,
+    override val distanceInKm: Double?,
     val imageFileName: String?,
     val importantInfo: String?,
     val openingTimes: String?,
@@ -61,7 +61,7 @@ class Venue(
     isFavorited: Boolean,
     isWishlisted: Boolean,
     isHidden: Boolean,
-) : HasVenue, HasLabel, TableItemBgColor {
+) : HasVenue, HasLabel, HasDistance, TableItemBgColor {
     override val label = name
     override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
 

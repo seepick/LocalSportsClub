@@ -2,28 +2,31 @@
 
 ## v1.5.0
 
-* ! distance km is sorted alphabetically instead of numerically
-    * distance column also for activity table
-* BUG: warning two bookings same venue same day is wrong (booked same class but next week)
+* distance column also for activity table
+* search for distance
+
+## Backlog
+
+## Next Up
+
 * "fetch teacher" button (per activity)
     * UI: tooltip for sync button
     * UI: when click, activate sync progress (block button, waiting sandlooper cursor)
     * UI: reuse description text component like for venue (max 2 lines with clickable popup)
     * delete custom 3rd party fetchers
     * sync per venue (for all activitites)
-    * what about syncing (free) spots?
-* venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to skip over)
-* while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
-* after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
+    * sync (free) spots
+* BUGFIX: warning two bookings same venue same day is wrong (booked same class but next week)
+* BUGFIX! venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to
+  skip over)
+* UI-FIX: while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
+* BUGFIX: after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * tooltips for table headers (symbols are not van-zelf-sprekend)
 * make address right-clickable => dropdown: copy to clipboard
-* in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
+* UI-FIX in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - '
+  s-Graves...")
 * filter for time only (evenings), without specifying day/date
-
-## Backlog
-
 * tooltip when title of activity too long in detail view
-* sync free spots
 
 ### Low Prio
 
@@ -48,7 +51,7 @@
 * uitest+koin (work in progress)
 * spots left: make updateable (see SubEntityDetail view)
 
-### Public
+### Going Public
 
 * if it is first time started, disable all screens; only prefs. to enter credentials (wizard)
 * maybe period restart day can be fetched via API (it is shown in app...)
@@ -62,34 +65,3 @@
 * (switch to ZonedDate?)
 * maybe use 'net.ricecode:string-similarity:1.0.0'
 * display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
-
-# External
-
-* user tests: go to friends, let them install, observe, get feedback (esp. on windows!)
-* contact someone: is it ok what i'm doing?
-
-## Todos for others
-
-* NOPE: make preferences plan a dropdown, with an option "custom" to custom define the usage limits
-
-## Beta Testers
-
-* serieke
-* jasmin
-
-# Info
-
-## Exposed
-
-* add: `addLogger(StdOutSqlLogger)` in transaction block
-
-## Compose
-
-* material guide: https://m3.material.io/
-* Official: https://developer.android.com/compose
-* Components: https://developer.android.com/develop/ui/compose/components
-    * User Input: https://developer.android.com/develop/ui/compose/text/user-input
-    * Buttons: https://developer.android.com/develop/ui/compose/components/button
-* Forms: https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
-* Text(style = MaterialTheme.typography.subtitle1)
-* Icons = https://fonts.google.com/icons

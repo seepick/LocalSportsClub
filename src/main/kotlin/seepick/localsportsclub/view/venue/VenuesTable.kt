@@ -24,6 +24,7 @@ import seepick.localsportsclub.view.common.table.TableTextCell
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
+import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun venuesTableColumns() = listOf<TableColumn<Venue>>(
@@ -72,10 +73,7 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
             textAlign = TextAlign.Right,
         )
     ),
-    TableColumn(
-        VisualIndicator.StringIndicator("km"),
-        WidthOrWeight.Width(50.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm?.toString() ?: "" }),
+    DistanceColumn(),
     RatingColumn(),
     tableColumnFavorited { it.isFavorited },
     tableColumnWishlisted { it.isWishlisted },
