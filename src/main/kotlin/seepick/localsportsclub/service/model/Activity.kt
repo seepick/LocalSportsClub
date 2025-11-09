@@ -36,7 +36,7 @@ class Activity(
     description: String?,
     spotsLeft: Int,
     state: ActivityState,
-) : HasVenue, TableItemBgColor by venue {
+) : HasVenue, HasDistance by venue, TableItemBgColor by venue {
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
     // not possible due to mixed setup of table columns (doing logic in view/composable together)

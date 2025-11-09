@@ -20,6 +20,7 @@ import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 import seepick.localsportsclub.view.shared.CheckedinColumn
+import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
@@ -55,6 +56,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
             textAlign = TextAlign.Right,
         )
     ),
+    DistanceColumn(),
     CheckedinColumn(paddingRight = true),
     RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },

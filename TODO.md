@@ -2,7 +2,6 @@
 
 ## v1.5.0
 
-* distance column also for activity table
 * search for distance
 
 ## Backlog
