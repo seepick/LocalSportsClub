@@ -7,14 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.service.model.Rating
+import seepick.localsportsclub.service.search.DoubleSearchOption
 import seepick.localsportsclub.service.search.NumericSearchComparator
-import seepick.localsportsclub.service.search.RatingSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.PaddingMode
+import seepick.localsportsclub.view.common.TextFieldSlim
 import seepick.localsportsclub.view.common.WidthOrFill
 
 @Composable
-fun <T> RatingSearchField(searchOption: RatingSearchOption<T>) {
+fun <T> DoubleSearchField(searchOption: DoubleSearchOption<T>) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {
@@ -27,13 +28,21 @@ fun <T> RatingSearchField(searchOption: RatingSearchOption<T>) {
                 useSlimDisplay = true,
             )
             Spacer(Modifier.width(5.dp))
-            DropDownTextField(
-                items = Rating.entries,
-                selectedItem = searchOption.searchRating,
-                onItemSelected = { searchOption.updateSearchRating(it) },
+            TextFieldSlim(
+                value = searchOption.searchDouble?.toString() ?: "",
+                singleLine = true,
+                modifier = Modifier.width(50.dp),
                 enabled = searchOption.enabled,
-                textSize = WidthOrFill.Width(140.dp),
-                useSlimDisplay = true,
+                paddingMode = PaddingMode.Horizontal,
+                onValueChange = { doubleString ->
+                    if (doubleString.isEmpty()) {
+                        searchOption.updateSearchDouble(null)
+                    } else {
+                        doubleString.toDoubleOrNull()?.also {
+                            searchOption.updateSearchDouble(it)
+                        }
+                    }
+                },
             )
         }
     }

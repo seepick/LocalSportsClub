@@ -2,7 +2,8 @@
 
 ## v1.5.0
 
-* search for distance
+*
+* don't display distance (column/search) if home coordinates not set
 
 ## Backlog
 

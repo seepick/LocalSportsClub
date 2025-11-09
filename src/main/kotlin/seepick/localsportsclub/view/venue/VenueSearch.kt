@@ -10,6 +10,9 @@ class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : Abstrac
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
+    val distance = newDoubleSearchOption(
+        "Distance", initialValue = 1.0, visualIndicator = Lsc.icons.distanceEmojiIndicator
+    ) { it.venue.distanceInKm }
     val wishlisted = newBooleanSearchOption(
         "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
     ) { it.isWishlisted }

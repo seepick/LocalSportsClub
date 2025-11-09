@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.view.common.VisualIndicator
 
-class IntSearchOption<T>(
+class DoubleSearchOption<T>(
     label: String,
-    private val extractor: (T) -> Int,
+    private val extractor: (T) -> Double,
     reset: () -> Unit,
-    initialValue: Int? = null,
+    initialValue: Double? = null,
     initiallyEnabled: Boolean = false,
     visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
 ) : SearchOption<T>(
@@ -21,7 +21,7 @@ class IntSearchOption<T>(
 
     var searchComparator: NumericSearchComparator by mutableStateOf(NumericSearchComparator.Equals)
         private set
-    var searchInt: Int? by mutableStateOf(initialValue)
+    var searchDouble: Double? by mutableStateOf(initialValue)
         private set
 
     fun updateSearchComparator(value: NumericSearchComparator) {
@@ -29,13 +29,13 @@ class IntSearchOption<T>(
         reset()
     }
 
-    fun updateSearchInt(value: Int?) {
-        searchInt = value
+    fun updateSearchDouble(value: Double?) {
+        searchDouble = value
         reset()
     }
 
     override fun buildPredicate(): (T) -> Boolean =
-        searchInt?.let { int ->
-            { searchComparator.compareTo(extractor(it), int) }
+        searchDouble?.let { double ->
+            { searchComparator.compareTo(extractor(it), double) }
         } ?: alwaysTruePredicate
 }

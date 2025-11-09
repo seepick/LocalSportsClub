@@ -286,14 +286,12 @@ class DataStorage(
     }
 }
 
-private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location?, Double?> {
-    val location = if (venueDbo.latitude.isEmpty()) null else Location(
+private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location, Double> {
+    val location = Location(
         latitude = venueDbo.latitude.toDouble(),
         longitude = venueDbo.longitude.toDouble(),
     )
-
-    if (location == null) return null to null
-    val home = preferences.home ?: return location to null
+    val home = preferences.home ?: return location to 0.0
     return location to round(distance(home, location), 1)
 }
 
@@ -346,7 +344,7 @@ fun Venue.toDbo() = VenueDbo(
 
 fun VenueDbo.toVenue(
     baseUrl: Url,
-    locationDistance: Pair<Location?, Double?>,
+    locationDistance: Pair<Location, Double>,
 ) = Venue(
     id = id,
     name = name,

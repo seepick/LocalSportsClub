@@ -5,13 +5,19 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
+import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.date.dateTimeRange
 import seepick.localsportsclub.slug
+
+fun Arb.Companion.location() = arbitrary {
+    Location(double(min = 4.0, max = 6.0).next(), double(min = 3.0, max = 4.0).next())
+}
 
 fun Arb.Companion.venue() = arbitrary {
     Venue(
@@ -25,8 +31,8 @@ fun Arb.Companion.venue() = arbitrary {
         postalCode = "",
         addressLocality = "",
         street = "",
-        location = null,
-        distanceInKm = null,
+        location = location().next(),
+        distanceInKm = double(min = 0.1, max = 13.0).next(),
         imageFileName = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().next(),
         importantInfo = null,
         openingTimes = null,

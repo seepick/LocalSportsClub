@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.service.search.IntSearchComparator
 import seepick.localsportsclub.service.search.IntSearchOption
+import seepick.localsportsclub.service.search.NumericSearchComparator
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PaddingMode
 import seepick.localsportsclub.view.common.TextFieldSlim
@@ -20,7 +20,7 @@ fun <T> IntSearchField(searchOption: IntSearchOption<T>) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             DropDownTextField(
-                items = IntSearchComparator.entries,
+                items = NumericSearchComparator.entries,
                 selectedItem = searchOption.searchComparator,
                 onItemSelected = { searchOption.updateSearchComparator(it) },
                 enabled = searchOption.enabled,

@@ -120,6 +120,24 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
+    protected fun newDoubleSearchOption(
+        label: String,
+        initialValue: Double? = null,
+        initiallyEnabled: Boolean = false,
+        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
+        extractor: (T) -> Double,
+    ) =
+        DoubleSearchOption(
+            label = label,
+            reset = ::reset,
+            extractor = extractor,
+            initialValue = initialValue,
+            initiallyEnabled = initiallyEnabled,
+            visualIndicator = visualIndicator,
+        ).also {
+            options += it
+        }
+
     protected fun newRatingSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,

@@ -20,6 +20,9 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
     val booked = newBooleanSearchOption(
         "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedEmojiIndicator
     ) { it.state == ActivityState.Booked }
+    val distance = newDoubleSearchOption(
+        "Distance", initialValue = 1.0, visualIndicator = Lsc.icons.distanceEmojiIndicator
+    ) { it.venue.distanceInKm }
     val favorited = newBooleanSearchOption(
         "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
     ) { it.venue.isFavorited }

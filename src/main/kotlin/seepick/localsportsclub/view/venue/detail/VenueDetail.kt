@@ -97,7 +97,7 @@ fun VenueDetail(
                             displayText = "${venue.street}${if (venue.street.isEmpty()) "" else ", "}${venue.postalCode}",
                         )
                     }
-                    venue.distanceInKm?.also { distance ->
+                    venue.distanceInKm.also { distance ->
                         Text(
                             text = " $distance km away",
                         )

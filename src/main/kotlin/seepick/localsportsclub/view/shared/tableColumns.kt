@@ -29,5 +29,5 @@ fun <T : HasDistance> DistanceColumn() =
     TableColumn<T>(
         VisualIndicator.StringIndicator("km"),
         WidthOrWeight.Width(50.dp),
-        CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm ?: -1.0 }
+        CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm }
     )
