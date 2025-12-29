@@ -132,7 +132,7 @@ class MockUscApi : UscApi {
         delay(1_000)
         bookAlternator = !bookAlternator
         return if (bookAlternator) BookingResult.BookingSuccess
-        else BookingResult.BookingFail("Mock USC API says nope. But next time it will succeed.")
+        else BookingResult.BookingFail("Mock USC API says nope 🤪 but next time it will succeed.")
     }
 
     override suspend fun cancel(session: PhpSessionId, activityOrFreetrainingId: Int): CancelResult {

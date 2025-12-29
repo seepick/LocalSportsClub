@@ -69,9 +69,13 @@ class BookingValidator(
         if (reservedForVenue.count() >= maxReservationsPerVenue!!) {
             return BookingValidation.Invalid("Cannot reserve more than $maxReservationsPerVenue for the same venue!")
         }
-        val reservedToday = reservedTotal.filter { it.from.toLocalDate() == clock.today() }
-        if (reservedToday.count() >= maxReservationsPerDay!!) {
-            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsPerDay at the same time per day!")
+
+        val activityDate = activity.dateTimeRange.from.toLocalDate()
+        val reservedThatDay = reservedTotal.count {
+            it.from.toLocalDate().equals(activityDate)
+        }
+        if (reservedThatDay >= maxReservationsPerDay!!) {
+            return BookingValidation.Invalid("Cannot reserve more than $maxReservationsPerDay activities for a single day!")
         }
 
         return BookingValidation.Valid

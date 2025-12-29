@@ -2,8 +2,6 @@
 
 ## v1.6.0
 
-* BUGFIX: warning two bookings same venue same day is wrong (booked same class but next week)
-
 * update all dependencies/plugins
 * activity single-sync: when click, activate sync progress (block button, waiting sandlooper cursor)
 * activity single-sync: sync for whole venue (all activities)
