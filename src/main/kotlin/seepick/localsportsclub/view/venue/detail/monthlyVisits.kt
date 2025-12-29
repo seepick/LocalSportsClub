@@ -12,7 +12,7 @@ fun MonthlyVisitsPanel(
     model: MonthlyVisitsModel
 ) {
     Text(
-        text = "Monthly visits available: ${model.totalAvailable} / ${MonthlyVisitsModel.MAX_VISITS}",
+        text = "Available visits this month: ${model.totalAvailable} of ${MonthlyVisitsModel.MAX_VISITS}",
         fontSize = 10.sp,
     )
 }
@@ -35,9 +35,10 @@ data class MonthlyVisitsModel(
 }
 
 fun List<Activity>.toMonthlyVisitsModel(today: LocalDate): MonthlyVisitsModel {
-    val thisMonthsActivities = this.filter { it.dateTimeRange.from.month == today.month }
+    val currentMonthsActivities =
+        filter { it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year }
     return MonthlyVisitsModel(
-        checkedinPast = thisMonthsActivities.count { it.state == ActivityState.Checkedin },
-        bookedFuture = thisMonthsActivities.count { it.state == ActivityState.Booked },
+        checkedinPast = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
+        bookedFuture = currentMonthsActivities.count { it.state == ActivityState.Booked },
     )
 }

@@ -3,11 +3,11 @@
 ## v1.6.0
 
 * BUGFIX: warning two bookings same venue same day is wrong (booked same class but next week)
-* BUGFIX: visits count doesn't work correctly (-3/6 instead of 0/6)
 
 * update all dependencies/plugins
 * activity single-sync: when click, activate sync progress (block button, waiting sandlooper cursor)
 * activity single-sync: sync for whole venue (all activities)
+* enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 
 ## Backlog
 

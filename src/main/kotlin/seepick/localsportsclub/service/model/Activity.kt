@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.service.date.DateTimeRange
+import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDateTime
@@ -49,5 +50,6 @@ class Activity(
     var description: String? by mutableStateOf(description)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
 
-    override fun toString() = "Activity[id=$id, name=$name, state=$state teacher=$teacher, venue.slug=${venue.slug}]"
+    override fun toString() =
+        "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"
 }
