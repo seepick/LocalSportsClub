@@ -3,9 +3,9 @@
 ## v1.6.0
 
 * update all dependencies/plugins
-* activity single-sync: when click, activate sync progress (block button, waiting sandlooper cursor)
 * activity single-sync: sync for whole venue (all activities)
 * enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
+* every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
 
 ## Backlog
 
@@ -15,7 +15,7 @@
 * search for activity teacher and description (free text search)
 * don't display distance (column/search) if home coordinates not set
 * delete custom 3rd party fetchers
-* activity single-sync: tooltip for sync button;
+* activity single-sync: tooltip for sync button
 * activity single-sync: sync per venue (for all activitites)
 * BUGFIX! venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to
   skip over)

@@ -86,8 +86,9 @@ class MockUscApi : UscApi {
         return emptyList()
     }
 
-    override suspend fun fetchActivityDetails(session: PhpSessionId, activityId: Int): ActivityDetails =
-        ActivityDetails(
+    override suspend fun fetchActivityDetails(session: PhpSessionId, activityId: Int): ActivityDetails {
+        delay(500)
+        return ActivityDetails(
             name = "Cruz Sheppard",
             dateTimeRange = DateTimeRange(from = LocalDateTime.now(), to = LocalDateTime.now().plusHours(1)),
             venueName = "Hubert Welch",
@@ -98,6 +99,7 @@ class MockUscApi : UscApi {
             teacher = "Mock T.",
             description = "Mock description",
         )
+    }
 
     override suspend fun fetchFreetrainings(session: PhpSessionId, filter: ActivitiesFilter): List<FreetrainingInfo> {
         log.debug { "Mock returning empty freetrainings list." }

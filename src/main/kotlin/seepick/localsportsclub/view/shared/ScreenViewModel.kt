@@ -94,9 +94,10 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         private set
     var isGcalEnabled by mutableStateOf(false)
         private set
-    val shouldGcalBeManaged = sharedModel.shouldGcalBeManaged
-    var syncActivityVisible by mutableStateOf(false)
+    val isGcalManaged = sharedModel.shouldGcalBeManaged
+    var isSyncActivityPossible by mutableStateOf(false)
         private set
+    var isSyncActivityInProgress by mutableStateOf(false)
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -159,7 +160,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             venueEdit.init(venue)
             onItemSelected(VenueSelected(venue))
             _selectedSubEntity.value = null
-            syncActivityVisible = false
+            isSyncActivityPossible = false
         }
     }
 
@@ -167,7 +168,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         launchViewTask("Unable to select activity!") {
             log.trace { "Selected: $activity" }
             _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
-            syncActivityVisible = true
+            isSyncActivityPossible = true
             onItemSelected(ActivitySelected(activity))
         }
     }
@@ -176,7 +177,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         launchViewTask("Unable to select freetraiing!") {
             log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
-            syncActivityVisible = false
+            isSyncActivityPossible = false
             onItemSelected(FreetrainingSelected(freetraining))
         }
     }
@@ -277,7 +278,15 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     fun onSyncActivity() {
         log.debug { "onSyncActivity()" }
         val activity = (selectedSubEntity.value as SubEntity.ActivityEntity).activity
-        launchViewTask("Failed to sync details for activity!") {
+        launchBackgroundTask(
+            "Sync activity details failed!",
+            doBefore = {
+                isSyncActivityInProgress = true
+            },
+            doFinally = {
+                isSyncActivityInProgress = false
+            },
+        ) {
             activityDetailService.syncSingle(activity.id)
         }
     }
@@ -315,7 +324,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
                 isBookingOrCancelInProgress = false
             },
         ) {
-            val result = bookingService.bookingOperation(subEntity, isGcalEnabled, shouldGcalBeManaged.value)
+            val result = bookingService.bookingOperation(subEntity, isGcalEnabled, isGcalManaged.value)
             snackbarService.show(resultHandler(result))
         }
     }

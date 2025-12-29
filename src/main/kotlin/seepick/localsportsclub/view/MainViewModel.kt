@@ -32,7 +32,7 @@ class MainViewModel(
 
     var selectedScreen = mutableStateOf(Screen.Activities)
         private set
-    var isSyncing: Boolean by mutableStateOf(false)
+    var isSyncInProgress: Boolean by mutableStateOf(false)
         private set
     var isSyncPossible: Boolean by mutableStateOf(false)
         private set
@@ -73,7 +73,7 @@ class MainViewModel(
 
     override fun onSyncStart() {
         log.info { "sync START" }
-        isSyncing = true
+        isSyncInProgress = true
         currentSyncJobCancelled = false
     }
 
@@ -91,7 +91,7 @@ class MainViewModel(
 
     override fun onSyncFinish(isError: Boolean) {
         log.info { "onSyncFinish(isError=$isError)" }
-        isSyncing = false
+        isSyncInProgress = false
         currentSyncJob = null
 
         if (!currentSyncJobCancelled) {

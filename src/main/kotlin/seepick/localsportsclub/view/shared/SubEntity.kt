@@ -14,6 +14,7 @@ sealed interface SubEntity : HasVenue {
     fun dateFormatted(year: Int): String
     val category: String
     val date: LocalDate
+    /** Either "Book" (activity) or "Schedule" (freetraining) */
     val bookLabel: String
     val bookedLabel: String
 

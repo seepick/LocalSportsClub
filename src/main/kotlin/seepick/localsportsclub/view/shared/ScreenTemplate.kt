@@ -61,7 +61,7 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             venueEdit = viewModel.venueEdit,
                             onUpdateVenue = viewModel::updateVenue,
                             showLinkedVenues = viewModel.showLinkedVenues,
-                            isSyncing = mainViewModel.isSyncing,
+                            isSyncing = mainViewModel.isSyncInProgress,
                             configuredCity = viewModel.configuredCity,
                             modifier = Modifier.weight(1.0f),
                             reducedVSpace = selectedSubEntity != null,
@@ -70,15 +70,17 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                     selectedSubEntity?.also {
                         SubEntityDetail(
                             subEntity = it,
+                            isSyncButtonVisible = viewModel.isSyncActivityPossible,
+                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncInProgress,
+                            isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
+                            isGcalEnabled = viewModel.isGcalEnabled,
+                            isGcalManaged = viewModel.isGcalManaged,
+                            isSyncActivityInProgress = viewModel.isSyncActivityInProgress,
+
                             onBook = viewModel::onBook,
                             onCancelBooking = viewModel::onCancelBooking,
-                            isSyncButtonVisible = viewModel.syncActivityVisible,
                             onSyncActivity = viewModel::onSyncActivity,
-                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncing,
-                            isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             onActivityChangeToCheckedin = viewModel::onActivityChangeToCheckedin,
-                            isGcalEnabled = viewModel.isGcalEnabled,
-                            isGcalManaged = viewModel.shouldGcalBeManaged,
                         )
                     }
                 }

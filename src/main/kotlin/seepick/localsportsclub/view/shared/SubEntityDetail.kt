@@ -4,9 +4,11 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -46,6 +48,7 @@ fun SubEntityDetail(
     isBookingOrCancelInProgress: Boolean,
     isGcalEnabled: Boolean,
     isGcalManaged: MutableState<Boolean>,
+    isSyncActivityInProgress: Boolean,
 
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
@@ -62,15 +65,22 @@ fun SubEntityDetail(
 
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (isSyncButtonVisible) {
-                Tooltip("Sync details (description, teacher) of this activity") {
-                    TextButton(
-                        onClick = onSyncActivity,
-                        modifier = Modifier.align(Alignment.CenterVertically).defaultMinSize(20.dp, 20.dp),
-                    ) {
-                        Icon(
-                            Icons.Default.Refresh, contentDescription = null,
+            val syncSize = 30
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
+                if (isSyncButtonVisible) {
+                    if (isSyncActivityInProgress) {
+                        val progressSize = syncSize - 10
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(progressSize.dp).height(progressSize.dp)
                         )
+                    } else {
+                        Tooltip("Sync details (description, teacher) of this activity") {
+                            TextButton(onClick = onSyncActivity) {
+                                Icon(
+                                    Icons.Default.Refresh, contentDescription = null,
+                                )
+                            }
+                        }
                     }
                 }
             }

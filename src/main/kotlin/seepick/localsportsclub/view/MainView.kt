@@ -174,7 +174,7 @@ fun SyncPanel(
         !viewModel.isSyncPossible, tooltipTextVerifyUscFirst
     ) {
         Button(
-            enabled = viewModel.isSyncPossible && !viewModel.isSyncing,
+            enabled = viewModel.isSyncPossible && !viewModel.isSyncInProgress,
             onClick = { viewModel.startSync() },
         ) {
             Icon(Icons.Default.Refresh, contentDescription = null)
@@ -182,7 +182,7 @@ fun SyncPanel(
         }
     }
     AnimatedVisibility(
-        visible = viewModel.isSyncing, enter = fadeIn(), exit = fadeOut()
+        visible = viewModel.isSyncInProgress, enter = fadeIn(), exit = fadeOut()
     ) {
         BoxWithConstraints(
             contentAlignment = Alignment.Center, modifier = Modifier.width(60.dp)
