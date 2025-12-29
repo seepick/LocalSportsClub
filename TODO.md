@@ -1,14 +1,12 @@
 # TODO
 
-## v1.6.0
-
-* update all dependencies/plugins
-* activity single-sync: sync for whole venue (all activities)
-* enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
-* every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
+## v1.7.0
 
 ## Backlog
 
+* activity single-sync: sync for whole venue (all activities)
+* enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
+* every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
 * when search/filter for distance, provide only < and > (no =)
 * when cancel, get sure cancellation time window is considered
 * BUG: when do big sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
