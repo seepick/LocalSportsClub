@@ -60,7 +60,7 @@ enum class GcalMode {
 enum class UscLang(val urlCode: String) {
     English("en"),
     Dutch("nl"),
-    German("de"),
-    French("fr"),
+//    German("de"),
+//    French("fr"),
     // PT, ES
 }

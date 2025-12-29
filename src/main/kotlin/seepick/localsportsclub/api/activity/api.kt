@@ -41,7 +41,8 @@ data class ActivitiesFilter(
 )
 
 enum class ActivityType(val apiValue: String) {
-    OnSite("onsite"), OnlineLive("live")
+    OnSite("onsite"),
+//    OnlineLive("live"),
 }
 
 enum class ServiceType(val apiValue: Int) {

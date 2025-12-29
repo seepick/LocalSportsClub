@@ -94,6 +94,7 @@ fun Arb.Companion.singlesDbo() = arbitrary {
     )
 }
 
+@Suppress("unused")
 fun Arb.Companion.windowPref() = arbitrary {
     WindowPref(
         width = int(min = 0).next(),

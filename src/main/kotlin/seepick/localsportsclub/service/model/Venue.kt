@@ -192,7 +192,6 @@ class Venue(
         notes: String = this.notes,
         rating: Rating = this.rating,
         isFavorited: Boolean = this.isFavorited,
-        linkedVenues: List<Venue> = this.linkedVenues,
         plan: Plan.UscPlan = this.plan,
     ) = Venue(
         id = id,

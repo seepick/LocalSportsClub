@@ -2,15 +2,26 @@
 
 ## v1.6.0
 
-* don't display distance (column/search) if home coordinates not set
-* "fetch teacher" button (per activity)
-    * UI: tooltip for sync button
-    * UI: when click, activate sync progress (block button, waiting sandlooper cursor)
-    * UI: reuse description text component like for venue (max 2 lines with clickable popup)
-    * delete custom 3rd party fetchers
-    * sync per venue (for all activitites)
-    * sync (free) spots
+* BUGFIX: too long activity title pushes out sync button (set max)
+* BUGFIX: limit vertical space (set max) of fetched activity detail, so venue details text still visible
+    * limit the vspace for description, just as did with activity.info/times (clickable popup)
+    * reuse description text component like for venue (max 2 lines with clickable popup)
 * BUGFIX: warning two bookings same venue same day is wrong (booked same class but next week)
+* BUGFIX: visits count doesn't work correctly (-3/6 instead of 0/6)
+
+* activity single-sync: when click, activate sync progress (block button, waiting sandlooper cursor)
+* activity single-sync: sync for whole venue (all activities)
+
+## Backlog
+
+* when search/filter for distance, provide only < and > (no =)
+* when cancel, get sure cancellation time window is considered
+* BUG: when do big sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
+* search for activity teacher and description (free text search)
+* don't display distance (column/search) if home coordinates not set
+* delete custom 3rd party fetchers
+* activity single-sync: tooltip for sync button;
+* activity single-sync: sync per venue (for all activitites)
 * BUGFIX! venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to
   skip over)
 * UI-FIX: while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
@@ -22,10 +33,9 @@
 * filter for time only (evenings), without specifying day/date
 * tooltip when title of activity too long in detail view
 
-## Backlog
-
 ### Low Prio
 
+* activity single-sync: sync (free) spots
 * when navigate with keyboard-arrows, ensure viewport visible, and scroll if necessary
 * in prefs, select sync of teachers for specific venues by slug, comma separated
 * most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)

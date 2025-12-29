@@ -16,7 +16,7 @@ data class VenueDbo(
     val name: String,
     val slug: String,
     val facilities: String, // categories "," separated
-    /** @see [seepick.localsportsclub.api.City] */
+    /** @see [seepick.localsportsclub.service.model.City] */
     val cityId: Int,
     val officialWebsite: String?,
     val rating: Int,

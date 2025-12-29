@@ -12,9 +12,9 @@ plugins {
 
 val appVersion = project.properties["lsc_version"]?.toString() ?: "1.0.0"
 println("Gradle appVersion=[$appVersion]")
+version = appVersion
 
 group = "com.github.seepick.localsportsclub"
-version = appVersion
 
 repositories {
     mavenCentral()

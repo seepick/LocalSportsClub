@@ -26,7 +26,8 @@ object LscIcons {
     const val distanceEmoji = "🚌"
     val distanceEmojiIndicator = VisualIndicator.EmojiIndicator(distanceEmoji)
     const val noshowEmoji = "🚷"
-    val noshowEmojiIndicator = VisualIndicator.EmojiIndicator(noshowEmoji)
+
+    //    val noshowEmojiIndicator = VisualIndicator.EmojiIndicator(noshowEmoji)
     const val cancelledLateEmoji = "🚯"
     const val hiddenEmoji = "🙈"
     val hiddenIndicator = VisualIndicator.EmojiIndicator(hiddenEmoji)

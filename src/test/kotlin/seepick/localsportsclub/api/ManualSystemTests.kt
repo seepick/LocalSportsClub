@@ -26,6 +26,7 @@ import seepick.localsportsclub.tools.cliConnectToDatabase
 import java.time.Duration
 import java.time.LocalDate
 
+@Suppress("unused")
 object ManualSystemTests {
 
     private val log = logger {}

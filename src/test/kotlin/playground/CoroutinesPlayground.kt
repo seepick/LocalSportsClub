@@ -1,9 +1,12 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package playground
 
 import ch.qos.logback.classic.Level
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
