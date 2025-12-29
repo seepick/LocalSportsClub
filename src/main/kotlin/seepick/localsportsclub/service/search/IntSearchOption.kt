@@ -36,6 +36,6 @@ class IntSearchOption<T>(
 
     override fun buildPredicate(): (T) -> Boolean =
         searchInt?.let { int ->
-            { searchComparator.compareTo(extractor(it), int) }
+            { searchComparator.compareThose(extractor(it), int) }
         } ?: alwaysTruePredicate
 }

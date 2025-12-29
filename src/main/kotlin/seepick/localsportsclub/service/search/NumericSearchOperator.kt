@@ -4,7 +4,7 @@ import seepick.localsportsclub.view.common.HasLabel
 
 enum class NumericSearchComparator(
     override val label: String,
-    val compareTo: (Number, Number) -> Boolean
+    val compareThose: (Number, Number) -> Boolean
 ) : HasLabel {
     Equals("=", { x, y -> x == y }),
     Not("!=", { x, y -> x != y }),

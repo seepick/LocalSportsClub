@@ -35,6 +35,6 @@ class RatingSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean = {
-        searchComparator.compareTo(extractor(it).value, searchRating.value)
+        searchComparator.compareThose(extractor(it).value, searchRating.value)
     }
 }

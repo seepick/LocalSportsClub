@@ -36,6 +36,6 @@ class DoubleSearchOption<T>(
 
     override fun buildPredicate(): (T) -> Boolean =
         searchDouble?.let { double ->
-            { searchComparator.compareTo(extractor(it), double) }
+            { searchComparator.compareThose(extractor(it), double) }
         } ?: alwaysTruePredicate
 }
