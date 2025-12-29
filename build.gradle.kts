@@ -4,7 +4,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("jvm") version "2.3.0"
-    id("org.jetbrains.compose") version "1.9.3"
+    id("org.jetbrains.compose") version "1.7.1" // NO! 1.9.3 NoSuchMethodError: SkiaLayer.<init>
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
     id("com.github.ben-manes.versions") version "0.53.0"
@@ -23,24 +23,20 @@ repositories {
 }
 
 dependencies {
-    val ktorVersion = "3.3.3"
-
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0") // or "2.0.0"? enforce version for Exposed NoSuchMethodError
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2")
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2") // when "Module with the Main dispatcher is missing"
-
     implementation(compose.desktop.currentOs)
     implementation(compose.components.resources)
     implementation(compose.material3)
-    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.6")
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4") // NO! 2.9.6 UnsatisfiedLinkError
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0") // enforce version for Exposed NoSuchMethodError
+//    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2") // when "Module with the Main dispatcher is missing"
 //    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-    implementation("androidx.compose.material:material-icons-core:1.7.6")
+    implementation("net.coobird:thumbnailator:0.4.21") // resize images
     // NO, as this will break compose (?!). enable, then "inline" the code by copy'n'paste into DuplicateIcons.kt
 //    implementation("androidx.compose.material:material-icons-extended:1.7.6")
-    implementation("net.coobird:thumbnailator:0.4.21") // resize images
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
-    val versionKoin = "4.1.1"
+    val versionKoin = "4.0.2" // NO! 4.1.1 UnsatisfiedLinkError
     listOf("compose", "compose-viewmodel").forEach {
         implementation("io.insert-koin:koin-$it:$versionKoin")
     }
@@ -54,6 +50,7 @@ dependencies {
     implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
 
     // WEB
+    val ktorVersion = "3.3.3"
     listOf(
         "client-core",
         // JVM engines: java, apache, jetty, okhttp, cio
