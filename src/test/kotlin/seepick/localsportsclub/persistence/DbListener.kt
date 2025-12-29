@@ -3,7 +3,7 @@ package seepick.localsportsclub.persistence
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager

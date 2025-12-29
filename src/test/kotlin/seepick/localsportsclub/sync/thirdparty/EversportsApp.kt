@@ -1,6 +1,6 @@
 package seepick.localsportsclub.sync.thirdparty
 
-import io.kotest.common.runBlocking
+import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.api.NoopResponseStorage
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.httpClient

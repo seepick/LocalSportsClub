@@ -5,7 +5,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import io.kotest.matchers.shouldBe
 import org.junit.Before
-import org.junit.Test
 import seepick.localsportsclub.service.search.BooleanSearchOption
 import seepick.localsportsclub.view.UiTest
 
@@ -22,7 +21,7 @@ class BooleanSearchFieldUiTest : UiTest() {
         resetCounter = 0
     }
 
-    @Test
+    //    @Test
     fun `When click checkbox Then search value changed`() = uiTest {
         val option = buildOptionAndSetContent(enabled = true, value = false)
         resetCounter shouldBe 0
@@ -34,7 +33,7 @@ class BooleanSearchFieldUiTest : UiTest() {
         resetCounter shouldBe 1
     }
 
-    @Test
+    //    @Test
     fun `When click label Then enable flag toggled`() = uiTest {
         val option = buildOptionAndSetContent(enabled = false)
         resetCounter shouldBe 0

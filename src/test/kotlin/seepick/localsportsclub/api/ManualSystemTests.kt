@@ -1,8 +1,8 @@
 package seepick.localsportsclub.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import io.kotest.common.runBlocking
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.api.activity.ActivitiesFilter
 import seepick.localsportsclub.api.activity.ActivitiesParser
 import seepick.localsportsclub.api.activity.ActivityHttpApi
