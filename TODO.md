@@ -2,13 +2,13 @@
 
 ## v1.6.0
 
-* BUGFIX: too long activity title pushes out sync button (set max)
 * BUGFIX: limit vertical space (set max) of fetched activity detail, so venue details text still visible
     * limit the vspace for description, just as did with activity.info/times (clickable popup)
     * reuse description text component like for venue (max 2 lines with clickable popup)
 * BUGFIX: warning two bookings same venue same day is wrong (booked same class but next week)
 * BUGFIX: visits count doesn't work correctly (-3/6 instead of 0/6)
 
+* update all dependencies/plugins
 * activity single-sync: when click, activate sync progress (block button, waiting sandlooper cursor)
 * activity single-sync: sync for whole venue (all activities)
 

@@ -24,7 +24,7 @@ data class AppConfig(
 //            gcal = GcalMode.Real,
             gcal = GcalMode.Noop,
 
-            versionCheckEnabled = true,
+            versionCheckEnabled = false,
             database = DatabaseMode.Exposed,
 //            database = DatabaseMode.InMemory,
             logFileEnabled = false,

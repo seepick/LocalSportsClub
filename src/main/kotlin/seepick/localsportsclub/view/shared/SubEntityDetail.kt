@@ -32,6 +32,7 @@ import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
+import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 
 @Composable
@@ -50,36 +51,24 @@ fun SubEntityDetail(
     shouldGcalBeManaged: MutableState<Boolean>,
 ) {
     val year = clock.today().year
-    val (isBooked, isCheckedin, isNoshow) = when (subEntity) {
-        is SubEntity.ActivityEntity -> {
-            Triple(
-                subEntity.activity.state == ActivityState.Booked,
-                subEntity.activity.state == ActivityState.Checkedin,
-                subEntity.activity.state == ActivityState.Noshow
-            )
-        }
-
-        is SubEntity.FreetrainingEntity -> {
-            Triple(
-                subEntity.freetraining.state == FreetrainingState.Scheduled,
-                subEntity.freetraining.state == FreetrainingState.Checkedin,
-                false
-            )
-        }
-    }
+    val (isBooked, isCheckedin, isNoshow) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TitleText(subEntity.name)
             if (syncActivityVisible) {
-                TextButton(
-                    onClick = onSyncActivity,
-                    modifier = Modifier.align(Alignment.CenterVertically).defaultMinSize(20.dp, 20.dp),
-                ) {
-                    Icon(
-                        Icons.Default.Refresh, contentDescription = null,
-                    )
+                Tooltip("Sync details (description, teacher) of this activity") {
+                    TextButton(
+                        onClick = onSyncActivity,
+                        modifier = Modifier.align(Alignment.CenterVertically).defaultMinSize(20.dp, 20.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Refresh, contentDescription = null,
+                        )
+                    }
                 }
+            }
+            Tooltip(subEntity.name) {
+                TitleText(subEntity.name)
             }
         }
         Column {
@@ -156,5 +145,23 @@ fun SubEntityDetail(
                 }
             }
         }
+    }
+}
+
+private fun extractStatesOf(subEntity: SubEntity) = when (subEntity) {
+    is SubEntity.ActivityEntity -> {
+        Triple(
+            subEntity.activity.state == ActivityState.Booked,
+            subEntity.activity.state == ActivityState.Checkedin,
+            subEntity.activity.state == ActivityState.Noshow
+        )
+    }
+
+    is SubEntity.FreetrainingEntity -> {
+        Triple(
+            subEntity.freetraining.state == FreetrainingState.Scheduled,
+            subEntity.freetraining.state == FreetrainingState.Checkedin,
+            false
+        )
     }
 }
