@@ -19,7 +19,7 @@ fun LongText(label: String? = null, text: String, onShowLongText: ((String) -> U
         if (label != null) {
             Text("$label: ", fontWeight = FontWeight.Bold)
         }
-        Tooltip(text) {
+        Tooltip("Click to show full text") {
             Text(
                 text = text,
                 maxLines = 2,

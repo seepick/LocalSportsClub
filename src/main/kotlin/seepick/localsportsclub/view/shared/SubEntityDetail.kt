@@ -30,6 +30,8 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.ConditionalTooltip
+import seepick.localsportsclub.view.common.CustomDialog
+import seepick.localsportsclub.view.common.LongText
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
@@ -38,24 +40,29 @@ import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 @Composable
 fun SubEntityDetail(
     subEntity: SubEntity,
-    modifier: Modifier = Modifier,
-    clock: Clock = koinInject(),
+
+    isSyncButtonVisible: Boolean,
+    isBookOrCancelPossible: Boolean,
+    isBookingOrCancelInProgress: Boolean,
+    isGcalEnabled: Boolean,
+    isGcalManaged: MutableState<Boolean>,
+
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
     onSyncActivity: () -> Unit,
-    syncActivityVisible: Boolean,
-    isBookOrCancelPossible: Boolean,
-    isBookingOrCancelInProgress: Boolean,
     onActivityChangeToCheckedin: (Activity) -> Unit,
-    isGcalEnabled: Boolean,
-    shouldGcalBeManaged: MutableState<Boolean>,
+
+    clock: Clock = koinInject(),
+    sharedModel: SharedModel = koinInject(),
+
+    modifier: Modifier = Modifier,
 ) {
     val year = clock.today().year
     val (isBooked, isCheckedin, isNoshow) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (syncActivityVisible) {
+            if (isSyncButtonVisible) {
                 Tooltip("Sync details (description, teacher) of this activity") {
                     TextButton(
                         onClick = onSyncActivity,
@@ -94,7 +101,12 @@ fun SubEntityDetail(
             )
         }
         if (subEntity is SubEntity.ActivityEntity && subEntity.activity.description != null) {
-            Text(text = subEntity.activity.description!!)
+            val description = subEntity.activity.description!!
+//            Text(text = subEntity.activity.description!!)
+            LongText(label = "Description", text = description, onShowLongText = {
+                sharedModel.customDialog.value =
+                    CustomDialog(title = "Activity Description", text = description, showDismissButton = false)
+            })
         }
         if (subEntity.date >= clock.today()) {
             Row(
@@ -127,7 +139,7 @@ fun SubEntityDetail(
                 if (isGcalEnabled) {
                     CheckboxTexted(
                         label = "Manage Calendar",
-                        checked = shouldGcalBeManaged,
+                        checked = isGcalManaged,
                         enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress,
                     )
                 }
