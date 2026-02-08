@@ -15,7 +15,6 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
@@ -31,6 +30,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.Properties
 import java.util.TimeZone
 
 fun SinglesService.readCalendarIdOrThrow() =
@@ -107,20 +107,38 @@ sealed interface GcalEntry {
     }
 }
 
+object RuntimeGcalConfigLoader {
+    private val log = logger {}
+    fun load(): RuntimeGcalConfig {
+        val gcalCredsPropFile = FileResolver.resolve(FileEntry.GoogleCalendarCredsProperties)
+        require(gcalCredsPropFile.exists()) {
+            "GCal credentials file not found at: ${gcalCredsPropFile.absolutePath}! Please create it."
+        }
+        log.debug { "Loading GCal credentials file: ${gcalCredsPropFile.absolutePath}" }
+        val props = Properties()
+        props.load(gcalCredsPropFile.inputStream())
+        return RuntimeGcalConfig(
+            clientId = props.getProperty("clientId"),
+            clientSecret = props.getProperty("clientSecret"),
+        )
+    }
+}
+
+data class RuntimeGcalConfig(
+    val clientId: String,
+    val clientSecret: String,
+)
+
 object GcalCredentials {
     private val log = logger {}
     private val credentialsJsonFile = FileResolver.resolve(FileEntry.GoogleCredentials)
 
     fun reader(): Reader = if (credentialsJsonFile.exists()) {
-        log.debug { "Reading GCal credentials from local file." }
+        log.debug { "Reading GCal credentials from local file: ${credentialsJsonFile.absolutePath}" }
         credentialsJsonFile.inputStream().reader()
     } else {
-        val appProperties = AppPropertiesProvider.provide()
-        val errorMessageSuffix =
-            "must not be empty! Define either as property via build or create file at ${credentialsJsonFile.absolutePath}"
-        require(appProperties.gcalClientId.isNotEmpty()) { "Google Calendar ID $errorMessageSuffix" }
-        require(appProperties.gcalClientSecret.isNotEmpty()) { "Google Calendar Secret $errorMessageSuffix" }
-        StringReader(buildJson(clientId = appProperties.gcalClientId, clientSecret = appProperties.gcalClientSecret))
+        val gcalApiConfig = RuntimeGcalConfigLoader.load()
+        StringReader(buildJson(clientId = gcalApiConfig.clientId, clientSecret = gcalApiConfig.clientSecret))
     }
 
     private fun buildJson(clientId: String, clientSecret: String) = """
