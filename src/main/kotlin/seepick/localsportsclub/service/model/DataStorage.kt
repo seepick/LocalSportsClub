@@ -338,6 +338,7 @@ fun Venue.toDbo() = VenueDbo(
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
     isHidden = isHidden,
+    isAutoSync = isAutoSync,
     isDeleted = isDeleted,
     planId = plan.id,
 )
@@ -368,5 +369,6 @@ fun VenueDbo.toVenue(
     isHidden = isHidden,
     imageFileName = imageFileName,
     isDeleted = isDeleted,
+    isAutoSync = isAutoSync,
     plan = Plan.UscPlan.byId(planId),
 )

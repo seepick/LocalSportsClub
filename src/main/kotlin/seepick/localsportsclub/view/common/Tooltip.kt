@@ -42,10 +42,9 @@ fun Tooltip(
                     )
                 }
             },
-            delayMillis = 600,
             tooltipPlacement = TooltipPlacement.CursorPoint(
                 alignment = Alignment.BottomEnd,
-                offset = if (offset) DpOffset(3.dp, 3.dp) else DpOffset.Zero,
+                offset = if (offset) DpOffset(5.dp, 5.dp) else DpOffset.Zero,
             ),
         ) {
             content()

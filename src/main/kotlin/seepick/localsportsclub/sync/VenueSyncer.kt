@@ -53,7 +53,7 @@ class VenueSyncer(
 }
 
 class VenueSlugLink(
-    val slug1: String, val slug2: String
+    val slug1: String, val slug2: String,
 ) {
     override fun toString() = "VenueSlugLink[$slug1/$slug2]"
     override fun hashCode() = slug1.hashCode() + slug2.hashCode()
@@ -174,7 +174,7 @@ class VenueSyncInserterImpl(
         session: PhpSessionId,
         city: City,
         meta: VenueMeta,
-        venueSlugLinks: MutableSet<VenueSlugLink>
+        venueSlugLinks: MutableSet<VenueSlugLink>,
     ): VenueDbo {
         progress.onProgressVenueItem()
         val details = api.fetchVenueDetail(session, meta.slug)
@@ -226,5 +226,6 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int) = VenueDbo(
     isWishlisted = false,
     isHidden = false,
     isDeleted = false,
+    isAutoSync = false,
     planId = planId,
 )

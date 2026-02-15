@@ -73,6 +73,7 @@ object MigrationProcessor {
             isWishlisted = partner.isWishlisted,
             isHidden = partner.isHidden,
             isDeleted = true,
+            isAutoSync = false,
             planId = Plan.UscPlan.Small.id,
         )
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id

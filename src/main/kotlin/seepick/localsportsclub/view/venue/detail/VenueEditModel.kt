@@ -13,6 +13,7 @@ class VenueEditModel {
     var isFavorited = mutableStateOf(false)
     var isWishlisted = mutableStateOf(false)
     var isHidden = mutableStateOf(false)
+    var isAutoSync = mutableStateOf(false)
     var currentVenue: Venue? = null
 
     fun init(venue: Venue) {
@@ -23,6 +24,7 @@ class VenueEditModel {
         isFavorited.value = venue.isFavorited
         isWishlisted.value = venue.isWishlisted
         isHidden.value = venue.isHidden
+        isAutoSync.value = venue.isAutoSync
     }
 
     fun updatePropertiesOf(venue: Venue) {
@@ -31,6 +33,7 @@ class VenueEditModel {
         venue.isFavorited = isFavorited.value
         venue.isWishlisted = isWishlisted.value
         venue.isHidden = isHidden.value
+        venue.isAutoSync = isAutoSync.value
         venue.officialWebsite = officialWebsite.value?.let { it.ifEmpty { null } }
     }
 
@@ -41,6 +44,7 @@ class VenueEditModel {
                     rating.value == venue.rating &&
                     isFavorited.value == venue.isFavorited &&
                     isWishlisted.value == venue.isWishlisted &&
-                    isHidden.value == venue.isHidden
+                    isHidden.value == venue.isHidden &&
+                    isAutoSync.value == venue.isAutoSync
         } ?: false
 }

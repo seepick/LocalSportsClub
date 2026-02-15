@@ -61,6 +61,7 @@ class Venue(
     isFavorited: Boolean,
     isWishlisted: Boolean,
     isHidden: Boolean,
+    isAutoSync: Boolean,
 ) : HasVenue, HasLabel, HasDistance, TableItemBgColor {
     override val label = name
     override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
@@ -72,6 +73,7 @@ class Venue(
     var isFavorited: Boolean by mutableStateOf(isFavorited)
     var isWishlisted: Boolean by mutableStateOf(isWishlisted)
     var isHidden: Boolean by mutableStateOf(isHidden)
+    var isAutoSync: Boolean by mutableStateOf(isAutoSync)
     var officialWebsite: String? by mutableStateOf(officialWebsite)
     val linkedVenues = mutableStateListOf<Venue>()
 
@@ -159,6 +161,7 @@ class Venue(
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
+            isAutoSync = false,
             isDeleted = false,
             postalCode = "1001",
             street = "Street",
@@ -188,6 +191,7 @@ class Venue(
         uscWebsite: String = this.uscWebsite,
         isWishlisted: Boolean = this.isWishlisted,
         isHidden: Boolean = this.isHidden,
+        isAutoSync: Boolean = this.isAutoSync,
         isDeleted: Boolean = this.isDeleted,
         notes: String = this.notes,
         rating: Rating = this.rating,
@@ -212,6 +216,7 @@ class Venue(
         uscWebsite = uscWebsite,
         isWishlisted = isWishlisted,
         isHidden = isHidden,
+        isAutoSync = isAutoSync,
         isDeleted = isDeleted,
         notes = notes,
         rating = rating,

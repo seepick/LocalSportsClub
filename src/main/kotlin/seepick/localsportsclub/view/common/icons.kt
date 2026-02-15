@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,6 +42,8 @@ object LscIcons {
     val venues = Icons.Default.HolidayVillage
     val notes = Icons.Default.Description
     val preferences = Icons.Default.Settings
+
+    val syncActivityDetails = Icons.Default.Refresh
 }
 
 @Suppress("UnusedReceiverParameter")

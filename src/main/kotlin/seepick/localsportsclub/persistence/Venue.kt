@@ -34,6 +34,7 @@ data class VenueDbo(
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
     val isHidden: Boolean,
+    val isAutoSync: Boolean,
     val isDeleted: Boolean,
 ) {
     companion object {
@@ -59,7 +60,8 @@ data class VenueDbo(
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
-            isDeleted = false
+            isAutoSync = false,
+            isDeleted = false,
         )
     }
 
@@ -98,6 +100,7 @@ object VenuesTable : IntIdTable("VENUES", "ID") {
     val isWishlisted = bool("IS_WISHLISTED") // custom
     val isHidden = bool("IS_HIDDEN") // custom
     val isDeleted = bool("IS_DELETED") // custom
+    val isAutoSync = bool("IS_AUTO_SYNC")
     val planId = integer("PLAN_ID") // custom
 }
 
@@ -157,6 +160,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isFavorited] = venue.isFavorited
             it[isWishlisted] = venue.isWishlisted
             it[isHidden] = venue.isHidden
+            it[isAutoSync] = venue.isAutoSync
             it[isDeleted] = venue.isDeleted
             it[planId] = venue.planId
         }
@@ -174,6 +178,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isWishlisted] = venue.isWishlisted
             it[isFavorited] = venue.isFavorited
             it[isDeleted] = venue.isDeleted
+            it[isAutoSync] = venue.isAutoSync
             it[officialWebsite] = venue.officialWebsite
             it[street] = venue.street
             it[facilities] = venue.facilities
@@ -211,6 +216,7 @@ object ExposedVenueRepo : VenueRepo {
         isFavorited = row[VenuesTable.isFavorited],
         isWishlisted = row[VenuesTable.isWishlisted],
         isHidden = row[VenuesTable.isHidden],
+        isAutoSync = row[VenuesTable.isAutoSync],
         isDeleted = row[VenuesTable.isDeleted],
         planId = row[VenuesTable.planId],
     )

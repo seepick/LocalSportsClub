@@ -28,6 +28,7 @@ object DummyGenerator {
         isWishlisted = false,
         isHidden = false,
         isDeleted = false,
+        isAutoSync = false,
         planId = Plan.UscPlan.Small.id,
     )
 }

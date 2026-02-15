@@ -5,8 +5,10 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import seepick.localsportsclub.api.PhpSessionProvider
 import seepick.localsportsclub.api.PlanProvider
 import seepick.localsportsclub.api.UscConfig
+import seepick.localsportsclub.persistence.ActivityRepo
+import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 import java.time.LocalDate
@@ -27,6 +29,7 @@ class SyncerFacade(
     private val phpSessionProvider: PhpSessionProvider,
     private val planProvider: PlanProvider,
     private val progress: SyncProgress,
+    private val venueAutoSyncer: VenueAutoSyncer,
 ) : Syncer {
 
     private val log = logger {}
@@ -87,12 +90,45 @@ class SyncerFacade(
         scheduleSyncer.sync(session, city)
         checkinSyncer.sync(session, city)
         if (isFullSync) {
-            if (city == City.Amsterdam) {
-                thirdPartySyncerAmsterdam.sync(days)
-            }
+            // disabled; not needed; for now enough info from USC directly
+//            if (city == City.Amsterdam) {
+//                thirdPartySyncerAmsterdam.sync(days)
+//            }
             cleanupPostSync.cleanup()
+            venueAutoSyncer.syncAllDetails() // after cleanup
+        }
+        singlesService.setLastSyncFor(city, now)
+    }
+
+}
+
+class VenueAutoSyncer(
+    private val singlesService: SinglesService,
+    private val venueRepo: VenueRepo,
+    private val activityRepo: ActivityRepo,
+    private val activityDetailService: ActivityDetailService,
+    private val progress: SyncProgress,
+    private val clock: Clock,
+) {
+    private val log = logger {}
+
+    suspend fun syncAllDetails() {
+        progress.onProgress("Auto-Sync")
+        val city = singlesService.preferences.city ?: error("No city defined!")
+        val autoSyncedVenues = venueRepo.selectAllByCity(city.id).filter { it.isAutoSync }
+
+        val toBeSyncedActivities = autoSyncedVenues.flatMap { venue ->
+            log.debug { "auto-sync for all activities w/o teacher for: [${venue.name}]" }
+            activityRepo.selectAllForVenueId(venue.id)
+                .filter {
+                    it.from.toLocalDate() >= clock.today() && // only future activities
+                            // TODO better way to check just teacher null
+                            it.teacher == null
+                    // because if sync doesn't return teacher, will always be resynced.
+                    // also: maybe want to resync for spots left...?
+                }
         }
 
-        singlesService.setLastSyncFor(city, now)
+        activityDetailService.syncBulk(toBeSyncedActivities.map { it.id })
     }
 }

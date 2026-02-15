@@ -15,7 +15,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -24,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.firstUpper
@@ -42,22 +42,18 @@ import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 @Composable
 fun SubEntityDetail(
     subEntity: SubEntity,
-
     isSyncButtonVisible: Boolean,
     isBookOrCancelPossible: Boolean,
     isBookingOrCancelInProgress: Boolean,
     isGcalEnabled: Boolean,
     isGcalManaged: MutableState<Boolean>,
     isSyncActivityInProgress: Boolean,
-
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
     onSyncActivity: () -> Unit,
     onActivityChangeToCheckedin: (Activity) -> Unit,
-
     clock: Clock = koinInject(),
     sharedModel: SharedModel = koinInject(),
-
     modifier: Modifier = Modifier,
 ) {
     val year = clock.today().year
@@ -77,7 +73,7 @@ fun SubEntityDetail(
                         Tooltip("Sync details (description, teacher) of this activity") {
                             TextButton(onClick = onSyncActivity) {
                                 Icon(
-                                    Icons.Default.Refresh, contentDescription = null,
+                                    Lsc.icons.syncActivityDetails, contentDescription = null,
                                 )
                             }
                         }

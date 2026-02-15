@@ -2,6 +2,10 @@
 
 ## v1.7.0
 
+* upgrade dependency versions
+* remove all task tags (resolve or put in here)
+* store more data from `ActivityDetails` (spots left, etc.)
+
 ## Backlog
 
 * activity single-sync: sync for whole venue (all activities)

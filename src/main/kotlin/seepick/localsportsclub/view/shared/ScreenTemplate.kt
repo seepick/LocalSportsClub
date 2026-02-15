@@ -31,22 +31,17 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
     val selectedActivity = selectedSubEntity?.maybeActivity
     val selectedFreetraining = selectedSubEntity?.maybeFreetraining
-
     Column {
         searchPanel()
-
         Row(Modifier.weight(1.0f, fill = true)) {
             Box(Modifier.weight(1.0f)) {
                 table()
             }
             Spacer(Modifier.width(10.dp))
             Box {
-//                val tableScrollState = rememberLazyListState()
                 Column(
-//                    state = tableScrollState,
                     modifier = Modifier.width(500.dp).fillMaxHeight(1.0f)
                 ) {
-//                    item {
                     if (selectedVenue != null) {
                         VenueDetail(
                             venue = selectedVenue!!,
@@ -84,12 +79,6 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                         )
                     }
                 }
-//                }
-//                VerticalScrollbar(
-//                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(), adapter = rememberScrollbarAdapter(
-//                        scrollState = tableScrollState
-//                    )
-//                )
             }
         }
     }

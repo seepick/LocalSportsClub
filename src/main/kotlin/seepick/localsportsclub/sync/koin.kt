@@ -38,6 +38,7 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::ThirdPartySyncerAmsterdam)
             singleOf(::CleanupPostSync)
             singleOf(::SyncerFacade) bind Syncer::class
+            singleOf(::VenueAutoSyncer)
         }
     }
 }

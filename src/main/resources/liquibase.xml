@@ -168,4 +168,8 @@
     <changeSet id="4" author="owner" failOnError="true">
         <sql>alter table ACTIVITIES add column DESCRIPTION longvarchar</sql>
     </changeSet>
+
+    <changeSet id="5" author="owner" failOnError="true">
+        <sql>alter table VENUES add column IS_AUTO_SYNC boolean NOT NULL DEFAULT false</sql>
+    </changeSet>
 </databaseChangeLog>

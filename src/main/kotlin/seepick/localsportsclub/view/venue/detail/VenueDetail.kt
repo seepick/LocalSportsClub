@@ -86,7 +86,6 @@ fun VenueDetail(
                     Text(venue.categories.joinToString(", "))
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
-//                Row(verticalAlignment = Alignment.Bottom) {
                     Tooltip("Open Google Maps") {
                         UrlText(
                             url = "https://www.google.com/maps/search/?api=1&query=${
@@ -133,6 +132,14 @@ fun VenueDetail(
             CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.favorited2)
             CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.wishlisted2)
             CheckboxTexted("Hidden ${LscIcons.hiddenEmoji}", venueEdit.isHidden, modifier = Modifier.height(30.dp))
+            Spacer(Modifier.width(10.dp))
+            CheckboxTexted(
+                label = "Auto-Sync",
+                tooltipText = "Automatically sync activity details on global sync",
+                checked = venueEdit.isAutoSync,
+                modifier = Modifier.height(30.dp),
+                icon = Icons.Lsc.syncActivityDetails,
+            )
         }
         Spacer(Modifier.height(2.dp))
         Row {
@@ -199,7 +206,7 @@ fun VenueDetail(
 }
 
 private fun calcTableHeights(
-    reducedVSpace: Boolean, windowHeight: Int, activitiesCount: Int, freetrainingsCount: Int
+    reducedVSpace: Boolean, windowHeight: Int, activitiesCount: Int, freetrainingsCount: Int,
 ): Pair<Dp, Dp> {
     val maxActivityRows = 20
     val maxFreetrainingRows = 5
