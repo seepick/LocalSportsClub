@@ -29,6 +29,7 @@ import seepick.localsportsclub.view.common.ColorOrBrush
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.background
+import seepick.localsportsclub.view.common.bottomBorder
 import seepick.localsportsclub.view.common.brighter
 import seepick.localsportsclub.view.common.composeIt
 import seepick.localsportsclub.view.common.darker
@@ -38,10 +39,12 @@ fun <T> LazyListScope.renderTableHeader(
     columns: List<TableColumn<T>>,
     sortColumn: TableColumn<T>?,
     sortDirection: SortDirection,
-    onHeaderClicked: (TableColumn<T>) -> Unit
+    onHeaderClicked: (TableColumn<T>) -> Unit,
 ) {
     stickyHeader {
-        Row(modifier = Modifier.height(30.dp)) {
+        Row(
+            modifier = Modifier.height(30.dp)
+        ) {
             columns.forEach { col ->
                 TableHeader(
                     header = col.header,
@@ -74,6 +77,7 @@ fun RowScope.TableHeader(
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
             .background(background)
+            .bottomBorder(1.dp, Lsc.colors.primary)
             .padding(top = 5.dp, bottom = 5.dp) // after bg color!
             .fillMaxHeight(1f)
             .let {
@@ -111,7 +115,7 @@ private fun tableHeaderBgColor(
     isSortEnabled: Boolean,
     isSortActive: Boolean,
     isHovered: Boolean,
-    sortDirection: SortDirection
+    sortDirection: SortDirection,
 ): ColorOrBrush = if (isSortActive) {
     val gradient1 = if (isHovered) Lsc.colors.primaryBrighter.brighter() else Lsc.colors.primary.brighter()
     val gradient2 = if (isHovered) Lsc.colors.primaryBrighter else Lsc.colors.primary

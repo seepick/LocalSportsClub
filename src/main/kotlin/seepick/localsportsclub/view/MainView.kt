@@ -4,11 +4,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
@@ -116,10 +118,6 @@ fun MainView(
                     Text(customDialog!!.text)
                 }
             },
-//        shape =,
-//        backgroundColor =,
-//        contentColor =,
-//        properties =,
         )
     }
     Scaffold(snackbarHost = {
@@ -145,7 +143,9 @@ fun MainView(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.background(Lsc.colors.backgroundVariant).fillMaxWidth(1.0f)
+                modifier = Modifier
+                    .background(Lsc.colors.backgroundVariant)
+                    .fillMaxWidth(1.0f)
                     .bottomBorder(2.dp, Lsc.colors.primary)
             ) {
                 val (selectedScreenValue, setSelectedScreen) = viewModel.selectedScreen
@@ -155,12 +155,14 @@ fun MainView(
                 Spacer(Modifier.width(10.dp))
                 UsageView()
             }
-            when (viewModel.selectedScreen.value) {
-                Screen.Activities -> ActivitiesScreen()
-                Screen.Freetrainings -> FreetrainingsScreen()
-                Screen.Venues -> VenueScreen()
-                Screen.Notes -> NotesScreen()
-                Screen.Preferefences -> PreferencesScreen()
+            Box(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+                when (viewModel.selectedScreen.value) {
+                    Screen.Activities -> ActivitiesScreen()
+                    Screen.Freetrainings -> FreetrainingsScreen()
+                    Screen.Venues -> VenueScreen()
+                    Screen.Notes -> NotesScreen()
+                    Screen.Preferefences -> PreferencesScreen()
+                }
             }
         }
     }

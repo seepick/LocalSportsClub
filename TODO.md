@@ -25,6 +25,7 @@
   s-Graves...")
 * filter for time only (evenings), without specifying day/date
 * tooltip when title of activity too long in detail view
+* tooltip/notification message: make it away-clickable (maybe close button, maybe just click on it to dismiss)
 
 ### Low Prio
 

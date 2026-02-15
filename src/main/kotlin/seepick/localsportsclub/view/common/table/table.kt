@@ -2,7 +2,6 @@ package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.rowBgColor
@@ -83,24 +81,24 @@ fun <T> Table(
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier
-        .focusRequester(focusRequester)
-        .onFocusChanged { state ->
-            isFocused = state.isFocused
-        }
-        .onKeyEvent {
-            if (selectedItem != null && onItemNavigation != null && isFocused && it.type == KeyEventType.KeyUp) {
-                if (it.key == Key.DirectionUp) {
-                    onItemNavigation(TableNavigation.Up, selectedItem)
-                } else if (it.key == Key.DirectionDown) {
-                    onItemNavigation(TableNavigation.Down, selectedItem)
-                }
+    Box(
+        modifier = Modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged { state ->
+                isFocused = state.isFocused
             }
-            false
-        }
-        .focusProperties { canFocus = true }
-        .border(1.dp, if (isFocused) Lsc.colors.primary else Color.Gray)
-        .then(boxModifier)) {
+            .onKeyEvent {
+                if (selectedItem != null && onItemNavigation != null && isFocused && it.type == KeyEventType.KeyUp) {
+                    if (it.key == Key.DirectionUp) {
+                        onItemNavigation(TableNavigation.Up, selectedItem)
+                    } else if (it.key == Key.DirectionDown) {
+                        onItemNavigation(TableNavigation.Down, selectedItem)
+                    }
+                }
+                false
+            }
+            .focusProperties { canFocus = true }
+            .then(boxModifier)) {
 
         val tableScrollState = rememberLazyListState()
         LazyColumn(
@@ -128,17 +126,19 @@ fun <T> Table(
                     primaryColor = if (customTableItemBgColorEnabled && item is TableItemBgColor) item.tableBgColor else null
                 )
 
-                Row(Modifier.background(color = bgColor)
-                    .onPointerEvent(PointerEventType.Enter) { isHovered = true }
-                    .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-                    // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
-                    .let {
-                        if (onItemClicked == null) it
-                        else it.onClick {
-                            focusRequester.requestFocus()
-                            onItemClicked(item)
-                        }
-                    }) {
+                Row(
+                    Modifier
+                        .background(color = bgColor)
+                        .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                        .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+                        // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
+                        .let {
+                            if (onItemClicked == null) it
+                            else it.onClick {
+                                focusRequester.requestFocus()
+                                onItemClicked(item)
+                            }
+                        }) {
                     columns.forEach { col ->
                         when (col.renderer) {
                             is CellRenderer.CustomRenderer -> {

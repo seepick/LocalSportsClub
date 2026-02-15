@@ -1,6 +1,5 @@
 package seepick.localsportsclub.view.venue.detail
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Icon
@@ -52,7 +51,6 @@ fun SimpleActivitiesTable(
             onItemClicked = onActivitySelected,
             onItemNavigation = onItemNavigation,
             boxModifier = Modifier
-                .border(1.dp, Lsc.colors.onSurface)
                 .height(height)
                 .then(modifier),
             columns = listOf(
