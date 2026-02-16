@@ -13,6 +13,7 @@ import kotlin.reflect.full.isSuperclassOf
 
 private val log = logger {}
 
+@Deprecated("use usc-client")
 suspend fun <T, R> workParallel(
     coroutineCount: Int,
     data: List<T>,
@@ -55,6 +56,7 @@ fun <T> retry(
 ): T =
     doRetry(maxAttempts = maxAttempts, suppressExceptions, currentAttempt = 1, code)
 
+@Deprecated("use usc-client")
 suspend fun <T> retrySuspended(
     maxAttempts: Int,
     suppressExceptions: List<Class<out Exception>>,
@@ -90,6 +92,7 @@ private suspend fun <T> doRetrySuspend(
         } else throw e
     }
 
+@Deprecated("use usc-client")
 fun String.unescape(): String = replace("\\\"", "\"").replace("\\n", "\n")
 
 fun String.firstUpper() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }

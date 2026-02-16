@@ -14,6 +14,7 @@ import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Plan
 
+@Deprecated("use usc-client")
 fun Arb.Companion.uscConfig() = arbitrary {
     UscConfig(
         baseUrl = url().bind(),

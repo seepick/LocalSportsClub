@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoField
 import java.util.Locale
 
+@Deprecated("use usc-client")
 object DateParser {
 
     private val dayMonthFormatter = DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.ENGLISH)

@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.long
 import java.time.LocalTime
 
+@Deprecated("use usc-client")
 fun Arb.Companion.dateTimeRange() = arbitrary {
     val from = localDateTime().bind()
     DateTimeRange(

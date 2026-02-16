@@ -19,6 +19,7 @@ import seepick.localsportsclub.service.workParallel
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
+@Deprecated("use usc-client")
 fun SyncProgress.onProgressVenues(detail: String?) {
     onProgress("Venues", detail)
 }

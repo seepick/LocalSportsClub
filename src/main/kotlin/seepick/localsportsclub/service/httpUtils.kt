@@ -22,6 +22,7 @@ import java.net.SocketException
 
 private val log = logger {}
 
+@Deprecated("use usc-client")
 val httpClient: HttpClient = HttpClient(Apache) {
     install(ContentNegotiation) {
         json(serializerLenient)
@@ -37,21 +38,26 @@ val httpClient: HttpClient = HttpClient(Apache) {
     expectSuccess = false
 }
 
+@Deprecated("use usc-client")
 val HttpResponse.phpSessionId: PhpSessionId
     get() = setCookie().singleOrNull { it.name == "PHPSESSID" }?.value?.let { PhpSessionId(it) }
         ?: error("PHPSESSID cookie is not set!")
 
+@Deprecated("use usc-client")
 suspend fun HttpResponse.requireStatusOk(message: suspend () -> String = { "" }) {
     if (status != HttpStatusCode.OK) {
         throw ApiException("Expected status 200 OK but was [$status] for: ${request.url}. ${message()}")
     }
 }
 
+@Deprecated("use usc-client")
 class ApiException(message: String, cause: Exception? = null) : Exception(message, cause)
 
+@Deprecated("use usc-client")
 suspend fun HttpClient.safeGet(url: Url, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse =
     safeRetry(HttpMethod.Get, url, block)
 
+@Deprecated("use usc-client")
 suspend fun HttpClient.safePost(url: Url, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse =
     safeRetry(HttpMethod.Post, url, block)
 
@@ -67,7 +73,7 @@ private suspend fun HttpClient.safeRetry(
 private suspend fun HttpClient.safeAny(
     method: HttpMethod,
     url: Url,
-    block: HttpRequestBuilder.() -> Unit = {}
+    block: HttpRequestBuilder.() -> Unit = {},
 ): HttpResponse {
     val response = try {
         request(url) {

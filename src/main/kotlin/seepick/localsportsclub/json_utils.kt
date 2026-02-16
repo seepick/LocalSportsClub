@@ -1,8 +1,8 @@
 package seepick.localsportsclub
 
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+@Deprecated("use usc-client")
 val serializerLenient = Json {
     isLenient = true
     allowSpecialFloatingPointValues = true
@@ -12,5 +12,6 @@ val serializerLenient = Json {
     ignoreUnknownKeys = true
 }
 
+@Deprecated("use usc-client")
 fun Json.toPrettyString(jsonString: String) =
     encodeToString(parseToJsonElement(jsonString))

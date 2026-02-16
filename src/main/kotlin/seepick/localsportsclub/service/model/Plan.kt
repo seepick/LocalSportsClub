@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service.model
 
+@Deprecated("use usc-client")
 sealed interface Plan {
 
     companion object {
@@ -82,7 +83,7 @@ sealed interface Plan {
     }
 
     enum class OnefitPlan(
-        private val uscPlan: UscPlan
+        private val uscPlan: UscPlan,
     ) : Plan by uscPlan {
         Premium(UscPlan.Large) {
             override val internalId = "onefitPremium"
@@ -96,6 +97,7 @@ sealed interface Plan {
     }
 }
 
+@Deprecated("use usc-client")
 data class UsageInfo(
     val maxCheckinsInPeriod: Int, // max monthly, real-life
     val maxOnlineCheckins: Int, // max monthly, internet videostream

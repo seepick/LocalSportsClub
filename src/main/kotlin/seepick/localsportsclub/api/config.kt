@@ -3,6 +3,7 @@ package seepick.localsportsclub.api
 import io.ktor.http.Url
 import seepick.localsportsclub.UscLang
 
+@Deprecated("use usc-client")
 data class UscConfig(
     val baseUrl: Url = Url("https://urbansportsclub.com/${UscLang.English.urlCode}"),
     val storeResponses: Boolean = true,

@@ -45,6 +45,7 @@ enum class DatabaseMode {
     Exposed, InMemory
 }
 
+@Deprecated("use usc-client")
 enum class ApiMode {
     Mock, RealHttp
 }
@@ -57,6 +58,7 @@ enum class GcalMode {
     Noop, Real
 }
 
+@Deprecated("use usc-client")
 enum class UscLang(val urlCode: String) {
     English("en"),
     Dutch("nl"),

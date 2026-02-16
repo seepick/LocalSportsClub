@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 import seepick.localsportsclub.view.common.HasLabel
 
+@Deprecated("use usc-client")
 data class Country(
     override val label: String,
     val cities: List<City>,
@@ -18,6 +19,7 @@ data class Country(
     override fun toString() = "City[label=$label, cities.size=${cities.size}]"
 }
 
+@Deprecated("use usc-client")
 data class City(
     val id: Int,
     override val label: String,

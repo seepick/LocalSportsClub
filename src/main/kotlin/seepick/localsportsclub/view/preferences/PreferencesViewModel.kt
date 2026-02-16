@@ -60,7 +60,8 @@ class PreferencesViewModel(
     }
 
     fun verifyUscConnection() {
-        launchBackgroundTask("Failed to verify the USC connection.",
+        launchBackgroundTask(
+            "Failed to verify the USC connection.",
             doBefore = { isUscConnectionVerifying = true },
             doFinally = { isUscConnectionVerifying = false }) {
             log.info { "Verifying USC connection ..." }
@@ -97,6 +98,7 @@ class PreferencesViewModel(
                 entity.city = membership.city
             }
             if (singlesService.plan == null) {
+                // TODO what if plan changes?! then it needs to overwritten here, and not null-checked-out
                 singlesService.plan = membership.plan
                 plan = membership.plan
             }
@@ -104,7 +106,8 @@ class PreferencesViewModel(
     }
 
     fun verifyGcalConnection() {
-        launchBackgroundTask("Error during testing the Google Calendar connection.",
+        launchBackgroundTask(
+            "Error during testing the Google Calendar connection.",
             doBefore = { isGcalConnectionVerifying = true },
             doFinally = { isGcalConnectionVerifying = false }) {
             log.info { "Testing GCal connection ..." }
