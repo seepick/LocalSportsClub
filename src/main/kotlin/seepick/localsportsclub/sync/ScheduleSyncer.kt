@@ -1,7 +1,8 @@
 package seepick.localsportsclub.sync
 
 import com.github.seepick.uscclient.UscApi
-import com.github.seepick.uscclient.schedule.ScheduleEntityType
+import com.github.seepick.uscclient.schedule.BookedActivity
+import com.github.seepick.uscclient.schedule.ScheduledFreetraining
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -26,11 +27,9 @@ class ScheduleSyncer(
     suspend fun sync(city: com.github.seepick.uscclient.model.City) {
         log.debug { "Syncing scheduled activities." }
         progress.onProgress("Schedule")
-        val scheduleRows = uscApi.fetchScheduleRows()
-        val scheduleActivities = scheduleRows.filter { it.entityType == ScheduleEntityType.Activity }
-            .associateBy { it.activityOrFreetrainingId }
-        val scheduleFreetrainings = scheduleRows.filter { it.entityType == ScheduleEntityType.Freetraining }
-            .associateBy { it.activityOrFreetrainingId }
+        val scheduleds = uscApi.fetchScheduleds()
+        val scheduleActivities = scheduleds.filterIsInstance<BookedActivity>().associateBy { it.id }
+        val scheduleFreetrainings = scheduleds.filterIsInstance<ScheduledFreetraining>().associateBy { it.id }
         val localBookedActivities = activityRepo.selectAllBooked(city.id).associateBy { it.id }
         val localScheduledFreetrainings = freetrainingRepo.selectAllScheduled(city.id).associateBy { it.id }
 
@@ -39,23 +38,23 @@ class ScheduleSyncer(
         val freetrainingsYes = scheduleFreetrainings.minus(localScheduledFreetrainings.keys)
         val freetrainingsNo = localScheduledFreetrainings.minus(scheduleFreetrainings.keys)
 
-        updateAndDispatchActivities(activitiesYes.values.toList(), toBeBooked = true) { schedule ->
-            activityRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
+        updateAndDispatchActivities(activitiesYes.values.toList(), toBeBooked = true) { bookedActivity ->
+            activityRepo.selectById(bookedActivity.activityId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
-                    city,
-                    schedule.activityOrFreetrainingId,
-                    schedule.venueSlug,
-                    "[SYNC] refetch due to missing from booked activity"
+                    city = city,
+                    activityId = bookedActivity.activityId,
+                    venueSlug = bookedActivity.venueSlug,
+                    prefilledVenueNotes = "[SYNC] refetch due to missing from booked activity"
                 )
             }()
         }
         updateAndDispatchActivities(activitiesNo.values.toList(), toBeBooked = false) { it }
 
         updateAndDispatchFreetrainings(freetrainingsYes.values.toList(), toBeScheduled = true) { schedule ->
-            freetrainingRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
+            freetrainingRepo.selectById(schedule.freetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchFreetraining(
                     city,
-                    schedule.activityOrFreetrainingId,
+                    schedule.freetrainingId,
                     schedule.venueSlug,
                     "[SYNC] refetch due to missing from scheduled freetraining"
                 )
