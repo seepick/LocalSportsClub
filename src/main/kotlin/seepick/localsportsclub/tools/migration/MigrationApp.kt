@@ -1,8 +1,8 @@
 package seepick.localsportsclub.tools.migration
 
-import org.jetbrains.exposed.sql.transactions.transaction
+import com.github.seepick.uscclient.model.City
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.tools.cliConnectToDatabase
 import java.io.File
 

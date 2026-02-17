@@ -22,10 +22,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
 import seepick.localsportsclub.MainWindowState
 import seepick.localsportsclub.service.model.Activity
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxTexted

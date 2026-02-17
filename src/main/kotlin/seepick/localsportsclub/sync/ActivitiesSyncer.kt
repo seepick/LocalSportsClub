@@ -1,17 +1,16 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activity.ActivitiesFilter
+import com.github.seepick.uscclient.activity.ActivityInfo
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activity.ActivitiesFilter
-import seepick.localsportsclub.api.activity.ActivityInfo
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 fun SyncProgress.onProgressActivities(detail: String?) {
@@ -28,14 +27,17 @@ class ActivitiesSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(session: PhpSessionId, plan: Plan, city: City, days: List<LocalDate>) {
+    suspend fun sync(
+        plan: com.github.seepick.uscclient.plan.Plan,
+        city: com.github.seepick.uscclient.model.City,
+        days: List<LocalDate>,
+    ) {
         log.info { "Syncing activities for: $days" }
         val allStoredActivities = activityRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
         days.forEachIndexed { index, day ->
             progress.onProgressActivities("Day ${index + 1}/${days.size}")
             syncForDay(
-                session,
                 plan,
                 city,
                 day,
@@ -48,16 +50,15 @@ class ActivitiesSyncer(
     }
 
     private suspend fun syncForDay(
-        session: PhpSessionId,
         plan: Plan,
         city: City,
         day: LocalDate,
         stored: List<ActivityDbo>,
-        venuesBySlug: MutableMap<String, VenueDbo>
+        venuesBySlug: MutableMap<String, VenueDbo>,
     ) {
         log.debug { "Sync for day: $day" }
         val remoteActivities =
-            api.fetchActivities(session, ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
+            api.fetchActivities(ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
         val storedActivities = stored.associateBy { it.id }
 
         remoteActivities.filterKeys { storedActivities.containsKey(it) }.forEach {
@@ -66,32 +67,30 @@ class ActivitiesSyncer(
         val missingActivities = remoteActivities.minus(storedActivities.keys)
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
         val dbos = missingActivities.values.map { activity ->
-            syncMissingActivity(session, city, activity, venuesBySlug)
+            syncMissingActivity(city, activity, venuesBySlug)
         }
         dispatcher.dispatchOnActivityDbosAdded(dbos)
     }
 
     private suspend fun syncMissingActivity(
-        session: PhpSessionId,
         city: City,
         activity: ActivityInfo,
-        venuesBySlug: MutableMap<String, VenueDbo>
+        venuesBySlug: MutableMap<String, VenueDbo>,
     ): ActivityDbo {
-        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(session, city, activity, venuesBySlug)
+        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(city, activity, venuesBySlug)
         val dbo = activity.toDbo(venueId)
         activityRepo.insert(dbo)
         return dbo
     }
 
     private suspend fun rescueVenue(
-        session: PhpSessionId,
         city: City,
         activity: ActivityInfo,
-        venuesBySlug: MutableMap<String, VenueDbo>
+        venuesBySlug: MutableMap<String, VenueDbo>,
     ): Int {
         log.debug { "Trying to rescue venue for missing: $activity" }
         venueSyncInserter.fetchInsertAndDispatch(
-            session, city, listOf(VenueMeta(slug = activity.venueSlug, plan = null)),
+            city, listOf(VenueMeta(slug = activity.venueSlug, plan = null)),
             "[SYNC] fetched through activity ${activity.name}"
         )
         return venueRepo.selectBySlug(activity.venueSlug)?.also {

@@ -1,5 +1,7 @@
 package seepick.localsportsclub.service.model
 
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.arbitrary
@@ -43,6 +45,7 @@ fun Arb.Companion.venue() = arbitrary {
         isHidden = boolean().bind(),
         rating = Rating.entries.random(),
         plan = enum<Plan.UscPlan>().bind(),
+        isAutoSync = boolean().bind(),
     )
 }
 

@@ -1,11 +1,12 @@
 package seepick.localsportsclub.view.preferences
 
+import com.github.seepick.uscclient.UscApiMock
+import com.github.seepick.uscclient.UscConnectorMock
 import org.junit.Before
 import org.koin.compose.KoinApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import seepick.localsportsclub.api.MockUscApi
 import seepick.localsportsclub.view.TestableSnackbarService
 import seepick.localsportsclub.view.UiTest
 import seepick.localsportsclub.view.shared.SharedModel
@@ -23,9 +24,10 @@ class PreferencesScreenUiTest : UiTest(), KoinTest {
     fun `When foo`() = uiTest {
         val vm = PreferencesViewModel(
             singlesService = InMemorySinglesService(),
-            uscApi = MockUscApi(),
+            api = UscApiMock(),
             snackbarService = snackbarService,
-            sharedModel = SharedModel()
+            sharedModel = SharedModel(),
+            uscConnector = UscConnectorMock(),
         )
         // LocalViewModelStoreOwner
 //        startKoin {

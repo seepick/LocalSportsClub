@@ -1,6 +1,9 @@
 package seepick.localsportsclub.view.usage
 
 import app.cash.turbine.test
+import com.github.seepick.uscclient.city
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.doubles.shouldBeBetween
@@ -8,7 +11,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import seepick.localsportsclub.StaticClock
-import seepick.localsportsclub.city
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
@@ -16,9 +18,7 @@ import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.freetrainingDbo
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import java.time.LocalDate
@@ -38,7 +38,7 @@ class UsageStorageTest : DescribeSpec() {
     }
 
     private fun usage(
-        today: String = "1.5.", city: City? = anyCity, periodFirstDay: Int? = null, plan: Plan? = null
+        today: String = "1.5.", city: City? = anyCity, periodFirstDay: Int? = null, plan: Plan? = null,
     ) = UsageStorage(
         clock = StaticClock(today.parseDateWithFixedTime()),
         activityRepo = activityRepo,

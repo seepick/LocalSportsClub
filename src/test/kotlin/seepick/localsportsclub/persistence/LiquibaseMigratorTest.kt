@@ -5,7 +5,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.v1.jdbc.Database
 import java.sql.DriverManager
 
 class LiquibaseMigratorTest : StringSpec() {

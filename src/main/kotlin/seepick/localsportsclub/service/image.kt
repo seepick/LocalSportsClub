@@ -2,7 +2,7 @@ package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import net.coobird.thumbnailator.Thumbnails
-import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.LscConfig
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -25,7 +25,7 @@ class FileSystemImageStorage(
     private val log = logger {}
 
     override fun saveAndResizeVenueImage(fileName: String, bytes: ByteArray) {
-        val resizedBytes = resizeImage(bytes, AppConfig.downloadImageSize)
+        val resizedBytes = resizeImage(bytes, LscConfig.downloadImageSize)
         val target = File(venueImagesFolder, fileName)
         log.debug { "Saving image to: ${target.absolutePath}" }
         if (target.exists()) {

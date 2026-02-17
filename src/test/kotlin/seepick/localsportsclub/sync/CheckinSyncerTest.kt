@@ -1,5 +1,11 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activityCheckinEntry
+import com.github.seepick.uscclient.checkin.ActivityCheckinEntryType
+import com.github.seepick.uscclient.checkin.CheckinEntry
+import com.github.seepick.uscclient.checkin.CheckinsPage
+import com.github.seepick.uscclient.city
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -9,13 +15,6 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activityCheckinEntry
-import seepick.localsportsclub.api.checkin.ActivityCheckinEntryType
-import seepick.localsportsclub.api.checkin.CheckinEntry
-import seepick.localsportsclub.api.checkin.CheckinsPage
-import seepick.localsportsclub.api.phpSessionId
-import seepick.localsportsclub.city
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
 import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
@@ -37,7 +36,6 @@ class CheckinSyncerTest : StringSpec() {
     private lateinit var testRepo: TestRepoFacade
     private val now = SystemClock.now()
     private val today = now.toLocalDate()
-    private val phpSessionId = Arb.phpSessionId().next()
     private val city = Arb.city().next()
 
 
@@ -63,6 +61,7 @@ class CheckinSyncerTest : StringSpec() {
             dispatcher = syncerListenerDispatcher,
             dataSyncRescuer = dataSyncRescuer,
             progress = DummySyncProgress,
+            clock = SystemClock,
         )
     }
 
@@ -71,7 +70,7 @@ class CheckinSyncerTest : StringSpec() {
         pageNr: Int,
         date: LocalDate,
         activityId: Int,
-        type: ActivityCheckinEntryType = ActivityCheckinEntryType.Checkedin
+        type: ActivityCheckinEntryType = ActivityCheckinEntryType.Checkedin,
     ): CheckinEntry {
         val entry = Arb.activityCheckinEntry().next()
             .copy(
@@ -79,12 +78,12 @@ class CheckinSyncerTest : StringSpec() {
                 date = date,
                 type = type,
             )
-        coEvery { uscApi.fetchCheckinsPage(phpSessionId, pageNr) } returns CheckinsPage(listOf(entry))
+        coEvery { uscApi.fetchCheckinsPage(pageNr, today) } returns CheckinsPage(listOf(entry))
         return entry
     }
 
-    private fun mockCheckinsEmptyPage(pageNr: Int) {
-        coEvery { uscApi.fetchCheckinsPage(any(), pageNr) } returns CheckinsPage.empty
+    private fun mockCheckinsEmptyPage(pageNr: Int, today: LocalDate) {
+        coEvery { uscApi.fetchCheckinsPage(pageNr, today) } returns CheckinsPage.empty
     }
 
     init {
@@ -92,10 +91,10 @@ class CheckinSyncerTest : StringSpec() {
             val activity = testRepo.insertActivity(state = ActivityState.Blank)
             val entry = Arb.activityCheckinEntry().next()
                 .copy(activityId = activity.id, type = ActivityCheckinEntryType.Checkedin)
-            coEvery { uscApi.fetchCheckinsPage(phpSessionId, 1) } returns CheckinsPage(listOf(entry))
-            mockCheckinsEmptyPage(2)
+            coEvery { uscApi.fetchCheckinsPage(1, today) } returns CheckinsPage(listOf(entry))
+            mockCheckinsEmptyPage(2, today)
 
-            syncer.sync(phpSessionId, city)
+            syncer.sync(city)
 
             val expected = activity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(activity.id) shouldBe expected
@@ -114,16 +113,15 @@ class CheckinSyncerTest : StringSpec() {
             mockCheckinsPage(3, today.minusDays(2), activity3.id)
             // no further mocking of pages as interrupted by pivot activity
 
-            syncer.sync(phpSessionId, city)
+            syncer.sync(city)
         }
         "Given checkin for locally non-existing activity Then refetch and rescue it" {
             val nonExistingActivityId = 42
             val checkinEntry = mockCheckinsPage(1, today, nonExistingActivityId)
-            mockCheckinsEmptyPage(2)
+            mockCheckinsEmptyPage(2, today)
             val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
             coEvery {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
-                    phpSessionId,
                     city,
                     nonExistingActivityId,
                     checkinEntry.venueSlug,
@@ -134,7 +132,7 @@ class CheckinSyncerTest : StringSpec() {
                 rescuedActivity
             }
 
-            syncer.sync(phpSessionId, city)
+            syncer.sync(city)
 
             val expected = rescuedActivity.copy(state = ActivityState.Checkedin)
             activityRepo.selectById(expected.id) shouldBe expected
@@ -150,9 +148,9 @@ class CheckinSyncerTest : StringSpec() {
             "Given activity already ${state.name} When get it again Then do nothing" {
                 val activity = testRepo.insertActivity(state = state)
                 mockCheckinsPage(1, today, activity.id, type)
-                mockCheckinsEmptyPage(2)
+                mockCheckinsEmptyPage(2, today)
 
-                syncer.sync(phpSessionId, city)
+                syncer.sync(city)
 
                 activityRepo.selectById(activity.id) shouldBe activity
                 syncActivityDbosUpdated.shouldBeEmpty()

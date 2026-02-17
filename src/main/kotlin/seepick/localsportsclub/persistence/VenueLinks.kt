@@ -1,13 +1,14 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.alias
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.JoinType
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 // a.k.a. "other locations"
 object VenueLinksTable : Table("VENUE_LINKS") {
@@ -22,7 +23,7 @@ interface VenueLinksRepo {
 }
 
 data class VenueIdLink(
-    val id1: Int, val id2: Int
+    val id1: Int, val id2: Int,
 ) {
     init {
         require(id1 != id2) { "id1[$id1] == id2[$id2]" }

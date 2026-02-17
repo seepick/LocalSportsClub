@@ -1,16 +1,14 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import seepick.localsportsclub.api.PhpSessionProvider
-import seepick.localsportsclub.api.PlanProvider
-import seepick.localsportsclub.api.UscConfig
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.singles.SinglesService
-import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -20,16 +18,14 @@ class SyncerFacade(
     private val freetrainingSyncer: FreetrainingSyncer,
     private val scheduleSyncer: ScheduleSyncer,
     private val checkinSyncer: CheckinSyncer,
-    private val thirdPartySyncerAmsterdam: ThirdPartySyncerAmsterdam,
     private val cleanupPostSync: CleanupPostSync,
     private val dispatcher: SyncerListenerDispatcher,
     private val singlesService: SinglesService,
     private val clock: Clock,
-    private val uscConfig: UscConfig,
-    private val phpSessionProvider: PhpSessionProvider,
-    private val planProvider: PlanProvider,
     private val progress: SyncProgress,
     private val venueAutoSyncer: VenueAutoSyncer,
+    private val api: UscApi,
+    private val syncDaysAhead: Int,
 ) : Syncer {
 
     private val log = logger {}
@@ -63,7 +59,7 @@ class SyncerFacade(
         progress.start()
         var successfullyFinished = false
         try {
-            newSuspendedTransaction {
+            suspendTransaction {
                 safeSync()
                 successfullyFinished = true
             }
@@ -72,28 +68,28 @@ class SyncerFacade(
         }
     }
 
+    private val plan by lazy {
+        runBlocking {
+            api.fetchMembership().plan
+        }
+    }
+
     private suspend fun safeSync() {
         val now = clock.now()
         val city = singlesService.preferences.city ?: error("No city defined!")
         val lastSync = singlesService.getLastSyncFor(city)
-        val days = calculateDaysToSync(clock.today(), uscConfig.syncDaysAhead, lastSync)
-        val session = phpSessionProvider.provide()
-        val plan = planProvider.provide(session)
+        val days = calculateDaysToSync(clock.today(), syncDaysAhead, lastSync)
         val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
         log.debug { "isFullSync=$isFullSync, lastSync=$lastSync, days=$days" }
 
         if (isFullSync) {
-            venueSyncer.sync(session, plan, city)
-            activitiesSyncer.sync(session, plan, city, days)
-            freetrainingSyncer.sync(session, plan, city, days)
+            venueSyncer.sync(plan, city)
+            activitiesSyncer.sync(plan, city, days)
+            freetrainingSyncer.sync(plan, city, days)
         }
-        scheduleSyncer.sync(session, city)
-        checkinSyncer.sync(session, city)
+        scheduleSyncer.sync(city)
+        checkinSyncer.sync(city)
         if (isFullSync) {
-            // disabled; not needed; for now enough info from USC directly
-//            if (city == City.Amsterdam) {
-//                thirdPartySyncerAmsterdam.sync(days)
-//            }
             cleanupPostSync.cleanup()
             venueAutoSyncer.syncAllDetails() // after cleanup
         }
@@ -119,14 +115,13 @@ class VenueAutoSyncer(
 
         val toBeSyncedActivities = autoSyncedVenues.flatMap { venue ->
             log.debug { "auto-sync for all activities w/o teacher for: [${venue.name}]" }
-            activityRepo.selectAllForVenueId(venue.id)
-                .filter {
-                    it.from.toLocalDate() >= clock.today() && // only future activities
-                            // TODO better way to check just teacher null
-                            it.teacher == null
-                    // because if sync doesn't return teacher, will always be resynced.
-                    // also: maybe want to resync for spots left...?
-                }
+            activityRepo.selectAllForVenueId(venue.id).filter {
+                it.from.toLocalDate() >= clock.today() && // only future activities
+                        // TODO better way to check just teacher null
+                        it.teacher == null
+                // because if sync doesn't return teacher, will always be resynced.
+                // also: maybe want to resync for spots left...?
+            }
         }
 
         activityDetailService.syncBulk(toBeSyncedActivities.map { it.id })

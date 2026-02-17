@@ -1,21 +1,20 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VenueDetails
+import com.github.seepick.uscclient.venue.VenuesFilter
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import io.ktor.http.Url
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.venue.VenueDetails
-import seepick.localsportsclub.api.venue.VenuesFilter
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
+import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
@@ -25,7 +24,7 @@ fun SyncProgress.onProgressVenues(detail: String?) {
 }
 
 class VenueSyncer(
-    private val api: UscApi,
+    private val uscApi: UscApi,
     private val venueRepo: VenueRepo,
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
@@ -33,10 +32,10 @@ class VenueSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(session: PhpSessionId, plan: Plan, city: City) {
+    suspend fun sync(plan: com.github.seepick.uscclient.plan.Plan, city: City) {
         log.info { "Syncing venues ..." }
         progress.onProgressVenues(null)
-        val remoteVenuesBySlug = api.fetchVenues(session, VenuesFilter(city, plan)).associateBy { it.slug }
+        val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenues = venueRepo.selectAllByCity(city.id)
         val markDeleted = localVenues.filter { !it.isDeleted }.associateBy { it.slug }.minus(remoteVenuesBySlug.keys)
@@ -49,7 +48,7 @@ class VenueSyncer(
 
         val missingVenues = remoteVenuesBySlug.minus(localVenues.associateBy { it.slug }.keys)
         venueSyncInserter.fetchInsertAndDispatch(
-            session, city, missingVenues.values.map { VenueMeta(slug = it.slug, plan = it.plan) })
+            city, missingVenues.values.map { VenueMeta(slug = it.slug, plan = it.plan) })
     }
 }
 
@@ -60,8 +59,7 @@ class VenueSlugLink(
     override fun hashCode() = slug1.hashCode() + slug2.hashCode()
     override fun equals(other: Any?): Boolean {
         if (other !is VenueSlugLink) return false
-        return (slug1 == other.slug1 && slug2 == other.slug2) ||
-                (slug1 == other.slug2 && slug2 == other.slug1)
+        return (slug1 == other.slug1 && slug2 == other.slug2) || (slug1 == other.slug2 && slug2 == other.slug1)
     }
 }
 
@@ -72,7 +70,6 @@ data class VenueMeta(
 
 interface VenueSyncInserter {
     suspend fun fetchInsertAndDispatch(
-        session: PhpSessionId,
         city: City,
         venueMeta: List<VenueMeta>,
         prefilledNotes: String = "",
@@ -99,7 +96,6 @@ class VenueSyncInserterImpl(
     }
 
     override suspend fun fetchInsertAndDispatch(
-        session: PhpSessionId,
         city: City,
         venueMeta: List<VenueMeta>,
         prefilledNotes: String,
@@ -111,7 +107,6 @@ class VenueSyncInserterImpl(
         val newLinks = mutableSetOf<VenueSlugLink>()
         progress.onProgressVenues("Load ${venueMeta.size}")
         fetchAllInsertDispatch(
-            session = session,
             city = city,
             venueMeta = venueMeta,
             prefilledNotes = prefilledNotes,
@@ -131,7 +126,6 @@ class VenueSyncInserterImpl(
     }
 
     private suspend fun fetchAllInsertDispatch(
-        session: PhpSessionId,
         city: City,
         venueMeta: List<VenueMeta>,
         prefilledNotes: String = "",
@@ -140,15 +134,14 @@ class VenueSyncInserterImpl(
     ) {
         log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
         newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
-            fetchDetailsDownloadImage(session, city, meta, newLinks).copy(notes = prefilledNotes)
+            fetchDetailsDownloadImage(city, meta, newLinks).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
-        linkVenues(session, city, newDbos, newLinks)
+        linkVenues(city, newDbos, newLinks)
     }
 
     private suspend fun linkVenues(
-        session: PhpSessionId,
         city: City,
         newDbos: MutableList<VenueDbo>,
         newLinks: MutableSet<VenueSlugLink>,
@@ -161,7 +154,6 @@ class VenueSyncInserterImpl(
             log.debug { "Fetching additional ${missingVenuesBySlug.size} missing venues (by linking)." }
             venueCount.addAndGet(missingVenuesBySlug.size)
             fetchAllInsertDispatch(
-                session,
                 city,
                 missingVenuesBySlug.map { VenueMeta(slug = it, plan = null) },
                 prefilledNotes = "[SYNC] refetch due to missing venue link",
@@ -172,18 +164,16 @@ class VenueSyncInserterImpl(
     }
 
     private suspend fun fetchDetailsDownloadImage(
-        session: PhpSessionId,
         city: City,
         meta: VenueMeta,
         venueSlugLinks: MutableSet<VenueSlugLink>,
     ): VenueDbo {
         progress.onProgressVenueItem()
-        val details = api.fetchVenueDetail(session, meta.slug)
+        val details = api.fetchVenueDetail(meta.slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details
-            .toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id)
+        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id)
             .ensureHasImageIfPresent(details)
     }
 
@@ -193,13 +183,13 @@ class VenueSyncInserterImpl(
             if (FileResolver.resolveVenueImage(fileName).exists()) {
                 log.trace { "Venue image [$fileName] already exists, skip downloading it." }
             } else {
-                downloadAndSaveImage(fileName, details.originalImageUrl)
+                downloadAndSaveImage(fileName, details.originalImageUrl!!)
             }
             this.copy(imageFileName = fileName)
         }
     }
 
-    private suspend fun downloadAndSaveImage(fileName: String, originalImageUrl: Url) {
+    private suspend fun downloadAndSaveImage(fileName: String, originalImageUrl: URL) {
         val downloadedBytes = downloader.downloadVenueImage(originalImageUrl)
         imageStorage.saveAndResizeVenueImage(fileName, downloadedBytes)
     }

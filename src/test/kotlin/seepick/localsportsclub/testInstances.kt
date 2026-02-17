@@ -5,40 +5,11 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
-import io.kotest.property.arbitrary.boolean
-import io.kotest.property.arbitrary.enum
-import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string
-import io.ktor.http.Url
-import seepick.localsportsclub.api.UscConfig
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Plan
-
-@Deprecated("use usc-client")
-fun Arb.Companion.uscConfig() = arbitrary {
-    UscConfig(
-        baseUrl = url().bind(),
-        storeResponses = boolean().bind(),
-    )
-}
-
-fun Arb.Companion.city() = arbitrary {
-    City(
-        id = int().bind(),
-        label = string().bind(),
-    )
-}
-
-fun Arb.Companion.plan(): Arb<Plan> = arbitrary {
-    if (boolean().bind()) {
-        enum<Plan.UscPlan>().bind()
-    } else {
-        enum<Plan.OnefitPlan>().bind()
-    }
-}
+import java.net.URL
 
 fun Arb.Companion.url() = arbitrary {
-    Url(
+    URL(
         "https://${
             string(
                 minSize = 5,
@@ -52,7 +23,7 @@ fun Arb.Companion.url() = arbitrary {
 fun Arb.Companion.imageUrl() = arbitrary {
     val fileName =
         string(minSize = 3, maxSize = 15, codepoints = Codepoint.az()).bind() + ".png"
-    Url("${url().bind()}/${fileName}")
+    URL("${url().bind()}/${fileName}")
 }
 
 fun Arb.Companion.slug() = arbitrary {

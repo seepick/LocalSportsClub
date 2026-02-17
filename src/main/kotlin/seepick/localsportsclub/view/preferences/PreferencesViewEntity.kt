@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.github.seepick.uscclient.login.Credentials
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.model.Country
 import seepick.localsportsclub.service.Location
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Country
-import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Gcal
 import seepick.localsportsclub.service.model.Preferences
 

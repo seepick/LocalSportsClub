@@ -1,8 +1,8 @@
 package seepick.localsportsclub.service.model
 
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import io.ktor.http.Url
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -19,6 +19,7 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
+import java.net.URL
 
 interface DataStorageListener {
     fun onVenuesAdded(venues: List<Venue>)
@@ -58,11 +59,10 @@ class DataStorage(
     private val freetrainingRepo: FreetrainingRepo,
     private val clock: Clock,
     private val singlesService: SinglesService,
-    uscConfig: UscConfig,
+    private val baseUrl: URL,
 ) : SyncerListener {
 
     private val log = logger {}
-    private val baseUrl = uscConfig.baseUrl
     private val listeners = mutableListOf<DataStorageListener>()
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
@@ -344,7 +344,7 @@ fun Venue.toDbo() = VenueDbo(
 )
 
 fun VenueDbo.toVenue(
-    baseUrl: Url,
+    baseUrl: URL,
     locationDistance: Pair<Location, Double>,
 ) = Venue(
     id = id,

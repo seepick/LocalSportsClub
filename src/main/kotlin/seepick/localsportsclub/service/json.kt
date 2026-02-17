@@ -11,7 +11,12 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = LocalDateTime::class)
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
+
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    override val descriptor = kotlinx.serialization.descriptors.PrimitiveSerialDescriptor(
+        "java.time.LocalDateTime",
+        kotlinx.serialization.descriptors.PrimitiveKind.STRING
+    )
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
         encoder.encodeString(value.format(formatter))

@@ -1,9 +1,8 @@
 package seepick.localsportsclub.service
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activity.ActivityDetails
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionProvider
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activity.ActivityDetails
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress
@@ -13,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger
 class ActivityDetailService(
     private val api: UscApi,
     private val activityRepo: ActivityRepo,
-    private val phpSessionProvider: PhpSessionProvider,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
 ) {
@@ -22,17 +20,15 @@ class ActivityDetailService(
     suspend fun syncSingle(activityId: Int) {
         log.debug { "syncSingle(activityId=$activityId)" }
 
-        val session = phpSessionProvider.provide()
-        val details = api.fetchActivityDetails(session, activityId)
+        val details = api.fetchActivityDetails(activityId)
         updateDboAndDispatch(activityId, details)
     }
 
     suspend fun syncBulk(activityIds: List<Int>) {
         val activitiesDone = AtomicInteger(0)
-        val session = phpSessionProvider.provide()
 
         val idAndDetails = workParallel(5, activityIds) { activityId ->
-            val details = api.fetchActivityDetails(session, activityId)
+            val details = api.fetchActivityDetails(activityId)
             val soFarDone = activitiesDone.incrementAndGet()
             if (soFarDone % 10 == 0) {
                 val percentageDone = (activitiesDone.get() * 100.0 / activityIds.size).toInt()

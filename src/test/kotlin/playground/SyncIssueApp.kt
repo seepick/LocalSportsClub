@@ -21,9 +21,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.dsl.singleOf
@@ -50,7 +50,7 @@ private class MySyncer {
     private val log = logger {}
     suspend fun sync() {
         log.debug { "sync() START" }
-        newSuspendedTransaction {
+        suspendTransaction {
 //        transaction {
 //        runBlocking { // !!! this one here is/was the problem !!!
             coroutineScope {

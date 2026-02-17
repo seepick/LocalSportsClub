@@ -1,5 +1,10 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activity.ActivityInfo
+import com.github.seepick.uscclient.activityInfo
+import com.github.seepick.uscclient.city
+import com.github.seepick.uscclient.plan
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -10,12 +15,7 @@ import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
 import seepick.localsportsclub.StaticClock
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activity.ActivityInfo
-import seepick.localsportsclub.api.activityInfo
-import seepick.localsportsclub.api.phpSessionId
 import seepick.localsportsclub.atAnyTime
-import seepick.localsportsclub.city
 import seepick.localsportsclub.createDaysUntil
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.InMemoryActivityRepo
@@ -23,7 +23,6 @@ import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
-import seepick.localsportsclub.plan
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
@@ -37,7 +36,6 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private val clock = StaticClock(todayNow)
     private val syncProgress = DummySyncProgress
     private val syncDaysAhead = 4
-    private val anySession = Arb.phpSessionId().next()
     private val city = Arb.city().next()
     private val anyPlan = Arb.plan().next()
 
@@ -107,7 +105,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private fun givenApiReturnsActivities(withActivity: ActivityInfo.() -> ActivityInfo): ActivityInfo {
         val activityInfo = Arb.activityInfo().next().let(withActivity)
         coEvery {
-            api.fetchActivities(any(), any())
+            api.fetchActivities(any())
         } returnsMany (1..syncDaysAhead).map {
             when (it) {
                 1 -> listOf(activityInfo)
@@ -118,6 +116,6 @@ class ActivitiesSyncerTest : DescribeSpec() {
     }
 
     private suspend fun syncWithDefaults() {
-        syncer().sync(anySession, anyPlan, city, clock.today().createDaysUntil(syncDaysAhead))
+        syncer().sync(anyPlan, city, clock.today().createDaysUntil(syncDaysAhead))
     }
 }

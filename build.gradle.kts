@@ -3,10 +3,10 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "2.3.0"
+    kotlin("jvm") version "2.3.10"
     id("org.jetbrains.compose") version "1.7.1" // NO! 1.9.3 NoSuchMethodError: SkiaLayer.<init>
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
-    kotlin("plugin.serialization") version "2.3.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10"
+    kotlin("plugin.serialization") version "2.3.10"
     id("com.github.ben-manes.versions") version "0.53.0"
 }
 
@@ -17,8 +17,9 @@ version = appVersion
 group = "com.github.seepick.localsportsclub"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0") // enforce version for Exposed NoSuchMethodError
-    implementation("com.github.seepick:usc-client:2026.1.2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
+    val versionUscClient = "2000.0.SNAPSHOT" // "2026.1.2"
+    implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
     implementation(compose.desktop.currentOs)
@@ -40,18 +41,18 @@ dependencies {
 
     // PERSISTENCE
     listOf("core", "dao", "jdbc", "java-time").forEach {
-        implementation("org.jetbrains.exposed:exposed-$it:0.61.0")
+        implementation("org.jetbrains.exposed:exposed-$it:1.0.0")
     }
-    implementation("org.xerial:sqlite-jdbc:3.51.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.51.2.0")
     implementation("org.liquibase:liquibase-core:5.0.1")
     implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
 
     // WEB
-    val ktorVersion = "3.3.3"
+    implementation("org.jsoup:jsoup:1.22.1")
+    val ktorVersion = "3.4.0"
     listOf(
         "client-core",
-        // JVM engines: java, apache, jetty, okhttp, cio
-        // 'cio' had some issues... 'java' too: SocketException
+        // 'cio' and 'java' engines had some networking issues...
         "client-apache",
         "client-logging",
         "client-content-negotiation",
@@ -59,7 +60,6 @@ dependencies {
     ).forEach {
         implementation("io.ktor:ktor-$it:$ktorVersion")
     }
-    implementation("org.jsoup:jsoup:1.21.2")
 
     // GCAL
     implementation("com.google.api-client:google-api-client:2.8.1")
@@ -67,19 +67,20 @@ dependencies {
     implementation("com.google.apis:google-api-services-calendar:v3-rev20251207-2.0.0")
 
     // LOGGING
-    implementation("io.github.oshai:kotlin-logging:7.0.13")
-    implementation("ch.qos.logback:logback-classic:1.5.23")
+    implementation("io.github.oshai:kotlin-logging:8.0.01")
+    implementation("ch.qos.logback:logback-classic:1.5.32")
 
     // TEST
     testImplementation(compose.desktop.uiTestJUnit4)
     listOf("runner-junit5-jvm", "assertions-core", "property").forEach {
-        testImplementation("io.kotest:kotest-$it:6.0.7")
+        testImplementation("io.kotest:kotest-$it:6.1.3")
     }
-    testImplementation("org.junit.vintage:junit-vintage-engine:6.0.1") // to run JUnit4 with JUnit5
+    testImplementation("org.junit.vintage:junit-vintage-engine:6.0.3") // to run JUnit4 with JUnit5
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
-    testImplementation("io.mockk:mockk:1.14.7")
+    testImplementation("io.mockk:mockk:1.14.9")
     testImplementation("io.insert-koin:koin-test:$versionKoin")
     testImplementation("app.cash.turbine:turbine:1.2.1") // testing flows
+    testImplementation(testFixtures("com.github.seepick:usc-client:$versionUscClient"))
 }
 
 //tasks.withType<KotlinCompile> {

@@ -1,17 +1,14 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activity.ActivitiesFilter
+import com.github.seepick.uscclient.activity.FreetrainingInfo
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activity.ActivitiesFilter
-import seepick.localsportsclub.api.activity.FreetrainingInfo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 fun SyncProgress.onProgressFreetrainings(detail: String?) {
@@ -28,27 +25,30 @@ class FreetrainingSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(session: PhpSessionId, plan: Plan, city: City, days: List<LocalDate>) {
+    suspend fun sync(
+        plan: com.github.seepick.uscclient.plan.Plan,
+        city: com.github.seepick.uscclient.model.City,
+        days: List<LocalDate>,
+    ) {
         log.info { "Syncing freetrainiings for: $days" }
         val allStoredFreetrainings = freetrainingRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
         days.forEachIndexed { index, day ->
             progress.onProgressFreetrainings("Day ${index + 1}/${days.size}")
-            syncForDay(session, plan, city, day, allStoredFreetrainings.filter { it.date == day }, venuesBySlug)
+            syncForDay(plan, city, day, allStoredFreetrainings.filter { it.date == day }, venuesBySlug)
         }
     }
 
     private suspend fun syncForDay(
-        session: PhpSessionId,
-        plan: Plan,
-        city: City,
+        plan: com.github.seepick.uscclient.plan.Plan,
+        city: com.github.seepick.uscclient.model.City,
         day: LocalDate,
         stored: List<FreetrainingDbo>,
-        venuesBySlug: MutableMap<String, VenueDbo>
+        venuesBySlug: MutableMap<String, VenueDbo>,
     ) {
         log.debug { "Sync for day: $day" }
         val remoteFreetrainings =
-            api.fetchFreetrainings(session, ActivitiesFilter(city = city, plan = plan, date = day))
+            api.fetchFreetrainings(ActivitiesFilter(city = city, plan = plan, date = day))
                 .associateBy { it.id }
         val storedFreetrainings = stored.associateBy { it.id }
 
@@ -58,7 +58,7 @@ class FreetrainingSyncer(
             val venueId = venuesBySlug[freetraining.venueSlug]?.id ?: suspend {
                 log.debug { "Trying to rescue venue for missing: $freetraining" }
                 venueSyncInserter.fetchInsertAndDispatch(
-                    session, city, listOf(VenueMeta(slug = freetraining.venueSlug, plan = null)),
+                    city, listOf(VenueMeta(slug = freetraining.venueSlug, plan = null)),
                     "[SYNC] fetched through freetraining ${freetraining.name}"
                 )
                 venueRepo.selectBySlug(freetraining.venueSlug)?.also {

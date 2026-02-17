@@ -1,8 +1,9 @@
 package seepick.localsportsclub.tools
 
-import org.jetbrains.exposed.sql.transactions.transaction
-import seepick.localsportsclub.api.activity.cleanActivityFreetrainingName
-import seepick.localsportsclub.api.venue.cleanVenueInfo
+import com.github.seepick.uscclient.activity.cleanActivityFreetrainingName
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.venue.cleanVenueInfo
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
@@ -13,7 +14,6 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.unescape
 
 object DataCleaner {
@@ -100,7 +100,6 @@ object DataCleaner {
             }
         }
     }
-
 
     private fun cleanActivityNames() = transaction {
         activityRepo.selectAll(City.Amsterdam.id).forEach {

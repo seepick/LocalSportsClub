@@ -13,9 +13,9 @@ class AppStartupKoinTest : StringSpec() {
             startKoin {
                 modules(
                     allModules(
-                        AppConfig(
+                        LscConfig(
                             database = DatabaseMode.InMemory,
-                            api = ApiMode.Mock,
+                            apiMode = ApiMode.Mock,
                             sync = SyncMode.Noop,
                             gcal = GcalMode.Noop,
                         )

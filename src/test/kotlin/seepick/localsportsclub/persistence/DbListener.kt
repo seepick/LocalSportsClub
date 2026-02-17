@@ -4,10 +4,10 @@ import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.TransactionManager
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
 import java.sql.DriverManager
 

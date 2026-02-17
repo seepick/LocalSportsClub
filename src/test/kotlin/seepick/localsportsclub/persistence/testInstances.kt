@@ -1,5 +1,8 @@
 package seepick.localsportsclub.persistence
 
+import com.github.seepick.uscclient.credentials
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -17,11 +20,8 @@ import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 
 fun Arb.Companion.venueDbo() = arbitrary {
@@ -49,6 +49,7 @@ fun Arb.Companion.venueDbo() = arbitrary {
         longitude = double(0.0, 5.0, false).bind().toString().take(5),
         latitude = double(0.0, 5.0, false).bind().toString().take(5),
         planId = enum<Plan.UscPlan>().bind().id,
+        isAutoSync = boolean().bind()
     )
 }
 
@@ -128,9 +129,3 @@ fun Arb.Companion.location() = arbitrary {
     )
 }
 
-fun Arb.Companion.credentials() = arbitrary {
-    Credentials(
-        username = string(minSize = 3, maxSize = 64).bind(),
-        password = string(minSize = 3, maxSize = 50).bind(), // 128 max, but will be encrypted
-    )
-}

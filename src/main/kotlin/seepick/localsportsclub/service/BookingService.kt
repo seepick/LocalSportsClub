@@ -1,10 +1,9 @@
 package seepick.localsportsclub.service
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.booking.BookingResult
+import com.github.seepick.uscclient.booking.CancelResult
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionProvider
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.booking.BookingResult
-import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
 import seepick.localsportsclub.gcal.GcalService
@@ -32,7 +31,6 @@ class BookingService(
     private val freetrainingRepo: FreetrainingRepo,
     private val gcalService: GcalService,
     private val singlesService: SinglesService,
-    private val phpSessionProvider: PhpSessionProvider,
 ) {
     private val log = logger {}
 
@@ -48,7 +46,7 @@ class BookingService(
         isBooking = true,
         canGcal = canGcal,
         shouldGcal = shouldGcal,
-        apiOperation = { uscApi.book(phpSessionProvider.provide(), it) },
+        apiOperation = { uscApi.book(it) },
         operationSucceeded = { it is BookingResult.BookingSuccess },
     )
 
@@ -57,7 +55,7 @@ class BookingService(
         isBooking = false,
         canGcal = canGcal,
         shouldGcal = shouldGcal,
-        apiOperation = { uscApi.cancel(phpSessionProvider.provide(), it) },
+        apiOperation = { uscApi.cancel(it) },
         operationSucceeded = { it is CancelResult.CancelSuccess },
     )
 
@@ -112,7 +110,7 @@ class BookingService(
         subEntity: SubEntity.ActivityEntity,
         isBooking: Boolean,
         canGcal: Boolean,
-        shouldGcal: Boolean
+        shouldGcal: Boolean,
     ) {
         val activityDbo =
             activityRepo.selectById(subEntity.id) ?: error("Cannot find entity by ID from repository: $subEntity")
@@ -142,7 +140,8 @@ class BookingService(
 
     private fun createCalendarActivity(activityDbo: ActivityDbo) {
         val venue = venueRepo.selectById(activityDbo.venueId) ?: error("Venue not found for: $activityDbo")
-        gcalService.create(singlesService.readCalendarIdOrThrow(),
+        gcalService.create(
+            singlesService.readCalendarIdOrThrow(),
             GcalEntry.GcalActivity(
                 activityId = activityDbo.id,
                 title = activityDbo.nameWithTeacherIfPresent,
@@ -157,7 +156,7 @@ class BookingService(
     private fun bookOrCancelFreetraining(
         subEntity: SubEntity.FreetrainingEntity,
         isBooking: Boolean,
-        manageGcal: Boolean
+        manageGcal: Boolean,
     ) {
         val freetrainingDbo = freetrainingRepo.selectById(subEntity.id)!!
         require(if (isBooking) freetrainingDbo.isSchedulable else freetrainingDbo.isCancellable)
@@ -183,7 +182,8 @@ class BookingService(
 
     private fun createCalendarFreetraining(freetrainingDbo: FreetrainingDbo) {
         val venue = venueRepo.selectById(freetrainingDbo.venueId) ?: error("Venue not found for: $freetrainingDbo")
-        gcalService.create(singlesService.readCalendarIdOrThrow(),
+        gcalService.create(
+            singlesService.readCalendarIdOrThrow(),
             GcalEntry.GcalFreetraining(
                 freetrainingId = freetrainingDbo.id,
                 title = freetrainingDbo.name,

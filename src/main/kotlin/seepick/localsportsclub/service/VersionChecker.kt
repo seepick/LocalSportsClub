@@ -1,10 +1,10 @@
 package seepick.localsportsclub.service
 
+import com.github.seepick.uscclient.shared.safeGet
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.Url
-import kotlinx.coroutines.runBlocking
+import java.net.URL
 
 interface VersionChecker {
     suspend fun check(currentVersion: String): VersionResult
@@ -23,17 +23,8 @@ class OnlineVersionChecker(
     private val httpClient: HttpClient,
 ) : VersionChecker {
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            runBlocking {
-                println(OnlineVersionChecker(httpClient).check("1.0.0"))
-            }
-        }
-    }
-
     private val log = logger {}
-    private val versionFileUrl = Url("https://raw.githubusercontent.com/seepick/LocalSportsClub/main/version.txt")
+    private val versionFileUrl = URL("https://raw.githubusercontent.com/seepick/LocalSportsClub/main/version.txt")
 
     override suspend fun check(currentVersion: String): VersionResult {
         if (currentVersion == VersionResult.SNAPSHOT_VERSION) {

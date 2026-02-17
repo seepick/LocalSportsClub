@@ -1,8 +1,8 @@
 package seepick.localsportsclub.service
 
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Plan
 
 object DummyGenerator {
 

@@ -1,20 +1,23 @@
 package seepick.localsportsclub.persistence
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.statements.InsertStatement
-import org.jetbrains.exposed.sql.statements.UpdateStatement
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.v1.core.JoinType
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.core.statements.InsertStatement
+import org.jetbrains.exposed.v1.core.statements.UpdateStatement
+import org.jetbrains.exposed.v1.javatime.datetime
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 import seepick.localsportsclub.service.model.ActivityState
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -87,7 +90,7 @@ data class ActivityDbo(
 object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
     val name = varchar("NAME", 256) // sync list
     val category = varchar("CATEGORY", 64) // sync list
-    val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
+    val venueId = reference(name = "VENUE_ID", foreign = VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
     val from = datetime("FROM_DATETIME")
     val to = datetime("TO_DATETIME")
     val spotsLeft = integer("SPOTS_LEFT")
@@ -112,7 +115,7 @@ interface ActivityRepo {
 }
 
 class InMemoryActivityRepo(
-    private val venueRepo: VenueRepo? = null
+    private val venueRepo: VenueRepo? = null,
 ) : ActivityRepo {
 
     val stored = mutableMapOf<Int, ActivityDbo>()

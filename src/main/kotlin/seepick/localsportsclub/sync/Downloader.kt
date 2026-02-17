@@ -1,21 +1,17 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.shared.safeGet
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.Url
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import seepick.localsportsclub.serializerLenient
-import seepick.localsportsclub.service.FileSystemImageStorage
-import seepick.localsportsclub.service.httpClient
-import seepick.localsportsclub.service.safeGet
-import java.io.File
+import seepick.localsportsclub.service.jsonSerializer
+import java.net.URL
 
 interface Downloader {
-    suspend fun downloadVenueImage(url: Url): ByteArray
+    suspend fun downloadVenueImage(url: URL): ByteArray
 }
 
 class HttpDownloader(
@@ -23,32 +19,24 @@ class HttpDownloader(
 ) : Downloader {
     private val log = logger {}
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            runBlocking {
-                val imageUrl =
-//                    Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FvenueCatalog_311x175_bmrtjlmxbveot0zlvwuj_1727358338834864.png?generation=1727358339345039&alt=media")
-                    Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2Foriginal_1680x945_e1cbnfnj6zdwdi2kght3_1727428109645212.png?generation=1727428109770038&amp;alt=media")
-                val bytes = HttpDownloader(httpClient).downloadVenueImage(imageUrl)
-                FileSystemImageStorage(File(".")).saveAndResizeVenueImage("foo.png", bytes)
-            }
-        }
-    }
-
-    override suspend fun downloadVenueImage(url: Url): ByteArray {
+    //                val imageUrl =
+////                    Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2FvenueCatalog_311x175_bmrtjlmxbveot0zlvwuj_1727358338834864.png?generation=1727358339345039&alt=media")
+//                    Url("https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/de-live%2Foriginal_1680x945_e1cbnfnj6zdwdi2kght3_1727428109645212.png?generation=1727428109770038&amp;alt=media")
+//                val bytes = HttpDownloader(httpClient).downloadVenueImage(imageUrl)
+//                FileSystemImageStorage(File(".")).saveAndResizeVenueImage("foo.png", bytes)
+    override suspend fun downloadVenueImage(url: URL): ByteArray {
         val realUrl = ensureGoogleStorageLink(url)
         val response = httpClient.safeGet(realUrl)
         return response.body<ByteArray>()
     }
 
-    private suspend fun ensureGoogleStorageLink(url: Url): Url =
+    private suspend fun ensureGoogleStorageLink(url: URL): URL =
         if (url.toString().contains("/download/")) {
             log.debug { "Getting alternative Google storage download URL for: $url" }
             val cleanedUrl = url.toString().replace("/download/", "/")
-            val response = httpClient.safeGet(Url(cleanedUrl))
-            val json = serializerLenient.parseToJsonElement(response.bodyAsText())
-            Url(json.jsonObject["mediaLink"]!!.jsonPrimitive.content)
+            val response = httpClient.safeGet(cleanedUrl)
+            val json = jsonSerializer.parseToJsonElement(response.bodyAsText())
+            URL(json.jsonObject["mediaLink"]!!.jsonPrimitive.content)
         } else url
 
 }

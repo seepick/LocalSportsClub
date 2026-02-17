@@ -1,15 +1,13 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.schedule.ScheduleEntityType
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.EntityType
 import seepick.localsportsclub.service.model.FreetrainingState
 
 /**
@@ -25,13 +23,13 @@ class ScheduleSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(session: PhpSessionId, city: City) {
+    suspend fun sync(city: com.github.seepick.uscclient.model.City) {
         log.debug { "Syncing scheduled activities." }
         progress.onProgress("Schedule")
-        val scheduleRows = uscApi.fetchScheduleRows(session)
-        val scheduleActivities = scheduleRows.filter { it.entityType == EntityType.Activity }
+        val scheduleRows = uscApi.fetchScheduleRows()
+        val scheduleActivities = scheduleRows.filter { it.entityType == ScheduleEntityType.Activity }
             .associateBy { it.activityOrFreetrainingId }
-        val scheduleFreetrainings = scheduleRows.filter { it.entityType == EntityType.Freetraining }
+        val scheduleFreetrainings = scheduleRows.filter { it.entityType == ScheduleEntityType.Freetraining }
             .associateBy { it.activityOrFreetrainingId }
         val localBookedActivities = activityRepo.selectAllBooked(city.id).associateBy { it.id }
         val localScheduledFreetrainings = freetrainingRepo.selectAllScheduled(city.id).associateBy { it.id }
@@ -44,7 +42,6 @@ class ScheduleSyncer(
         updateAndDispatchActivities(activitiesYes.values.toList(), toBeBooked = true) { schedule ->
             activityRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
-                    session,
                     city,
                     schedule.activityOrFreetrainingId,
                     schedule.venueSlug,
@@ -57,7 +54,6 @@ class ScheduleSyncer(
         updateAndDispatchFreetrainings(freetrainingsYes.values.toList(), toBeScheduled = true) { schedule ->
             freetrainingRepo.selectById(schedule.activityOrFreetrainingId) ?: suspend {
                 dataSyncRescuer.fetchInsertAndDispatchFreetraining(
-                    session,
                     city,
                     schedule.activityOrFreetrainingId,
                     schedule.venueSlug,
@@ -71,7 +67,7 @@ class ScheduleSyncer(
     private suspend fun <T> updateAndDispatchActivities(
         activities: List<T>,
         toBeBooked: Boolean,
-        extractor: suspend (T) -> ActivityDbo
+        extractor: suspend (T) -> ActivityDbo,
     ) {
         log.debug { "Marking ${activities.size} activities as booked=$toBeBooked" }
         val targetState = if (toBeBooked) ActivityState.Booked else ActivityState.Blank
@@ -90,7 +86,7 @@ class ScheduleSyncer(
     private suspend fun <T> updateAndDispatchFreetrainings(
         freetrainings: List<T>,
         toBeScheduled: Boolean,
-        extractor: suspend (T) -> FreetrainingDbo
+        extractor: suspend (T) -> FreetrainingDbo,
     ) {
         log.debug { "Marking ${freetrainings.size} freetrainings as scheduled=$toBeScheduled" }
         val targetState = if (toBeScheduled) FreetrainingState.Scheduled else FreetrainingState.Blank

@@ -1,5 +1,6 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.plan.Plan
 import kotlinx.coroutines.delay
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -13,7 +14,6 @@ import seepick.localsportsclub.service.DummyGenerator
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDate
 
 class DummySyncer(

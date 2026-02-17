@@ -11,7 +11,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
 import org.sqlite.SQLiteException
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.FreetrainingState

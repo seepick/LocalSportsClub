@@ -5,16 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.github.seepick.uscclient.ConnectionVerificationResult
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.UscConnector
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.api.LoginResult
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.SnackbarType
@@ -24,9 +24,10 @@ import seepick.localsportsclub.view.shared.SharedModel
 
 class PreferencesViewModel(
     private val singlesService: SinglesService,
-    private val uscApi: UscApi,
     private val snackbarService: SnackbarService,
     private val sharedModel: SharedModel,
+    private val uscConnector: UscConnector,
+    private val api: UscApi,
 ) : ViewModel(), ApplicationLifecycleListener {
 
     private val gcalService = RealGcalService()
@@ -65,34 +66,35 @@ class PreferencesViewModel(
             doBefore = { isUscConnectionVerifying = true },
             doFinally = { isUscConnectionVerifying = false }) {
             log.info { "Verifying USC connection ..." }
-            val credentials = entity.buildCredentials()!!
-            when (val result = uscApi.login(credentials)) {
-                is LoginResult.Failure -> {
+            val credentials = entity.buildCredentials()
+            require(credentials != null) { "Credentials cannot be null here!" }
+            when (val loginResult = uscConnector.verifyConnection(credentials)) {
+                ConnectionVerificationResult.Success -> {
+                    singlesService.verifiedUscCredentials = credentials
+                    sharedModel.verifiedUscUsername.value = credentials.username
+                    sharedModel.verifiedUscPassword.value = credentials.password
+                    initialUscInfoOnLoginSuccess()
+                    snackbarService.show("USC login was successful 🔐✅")
+                }
+
+                is ConnectionVerificationResult.Failure -> {
                     singlesService.verifiedUscCredentials = null
                     sharedModel.verifiedUscUsername.value = null
                     sharedModel.verifiedUscPassword.value = null
                     snackbarService.show(
-                        message = "${result.message} 🔐❌",
+                        message = "${loginResult.message} 🔐❌",
                         type = SnackbarType.Warn,
                         duration = SnackbarDuration.Long,
                     )
-                }
-
-                is LoginResult.Success -> {
-                    singlesService.verifiedUscCredentials = credentials
-                    sharedModel.verifiedUscUsername.value = credentials.username
-                    sharedModel.verifiedUscPassword.value = credentials.password
-                    initialUscInfoOnLoginSuccess(result.phpSessionId)
-                    snackbarService.show("USC login was successful 🔐✅")
                 }
             }
         }
     }
 
-    private suspend fun initialUscInfoOnLoginSuccess(phpSessionId: PhpSessionId) {
+    private suspend fun initialUscInfoOnLoginSuccess() {
         if (entity.country == null && entity.city == null || singlesService.plan == null) {
             log.debug { "Fetching additional membership data for pre-fill-in." }
-            val membership = uscApi.fetchMembership(phpSessionId)
+            val membership = api.fetchMembership()
             if (entity.country == null && entity.city == null) {
                 entity.country = membership.country
                 entity.city = membership.city

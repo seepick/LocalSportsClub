@@ -41,9 +41,9 @@ object LocalSportsClub {
     @JvmStatic
     fun main(args: Array<String>) {
         val config = if (Environment.current == Environment.Development) {
-            AppConfig.development
+            LscConfig.development
         } else {
-            AppConfig.production
+            LscConfig.production
         }
         reconfigureLog(
             useFileAppender = config.logFileEnabled, packageSettings = mapOf(

@@ -1,7 +1,6 @@
 package seepick.localsportsclub.view.freetraining
 
 import kotlinx.coroutines.flow.map
-import seepick.localsportsclub.api.UscConfig
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
@@ -19,12 +18,12 @@ class FreetrainingViewModel(
     clock: Clock,
     private val dataStorage: DataStorage,
     bookingService: BookingService,
-    uscConfig: UscConfig,
     singlesService: SinglesService,
     snackbarService: SnackbarService,
     sharedModel: SharedModel,
     bookingValidator: BookingValidator,
     activityDetailService: ActivityDetailService,
+    syncDaysAhead: Int,
 ) : ScreenViewModel<Freetraining, FreetrainingSearch>(
     dataStorage,
     bookingService,
@@ -45,7 +44,7 @@ class FreetrainingViewModel(
 
     init {
         val today = clock.today()
-        syncDates = (0..<uscConfig.syncDaysAhead).map { today.plusDays(it.toLong()) }
+        syncDates = (0..<syncDaysAhead).map { today.plusDays(it.toLong()) }
     }
 
     override fun buildSearch(resetItems: () -> Unit) =

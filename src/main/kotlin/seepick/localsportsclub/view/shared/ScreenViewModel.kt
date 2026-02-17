@@ -7,6 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.seepick.uscclient.booking.BookingResult
+import com.github.seepick.uscclient.booking.CancelResult
+import com.github.seepick.uscclient.model.City
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.api.booking.BookingResult
-import seepick.localsportsclub.api.booking.CancelResult
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
@@ -25,7 +26,6 @@ import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
 import seepick.localsportsclub.service.model.Freetraining

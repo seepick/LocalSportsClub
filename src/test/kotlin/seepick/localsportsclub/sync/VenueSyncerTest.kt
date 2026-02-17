@@ -1,5 +1,11 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.city
+import com.github.seepick.uscclient.plan
+import com.github.seepick.uscclient.venue.VenuesFilter
+import com.github.seepick.uscclient.venueDetails
+import com.github.seepick.uscclient.venueInfo
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -12,12 +18,6 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.phpSessionId
-import seepick.localsportsclub.api.venue.VenuesFilter
-import seepick.localsportsclub.api.venueDetails
-import seepick.localsportsclub.api.venueInfo
-import seepick.localsportsclub.city
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.persistence.DbListener
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
@@ -25,14 +25,12 @@ import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
-import seepick.localsportsclub.plan
 import seepick.localsportsclub.service.MemorizableImageStorage
 
 class VenueSyncerTest : StringSpec() {
 
     private val remoteVenue = Arb.venueInfo().next()
     private val remoteDetails = Arb.venueDetails().next()
-    private val session = Arb.phpSessionId().next()
     private val city = Arb.city().next()
     private val plan = Arb.plan().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
@@ -63,7 +61,7 @@ class VenueSyncerTest : StringSpec() {
             }
         })
         syncer = VenueSyncer(
-            api = api,
+            uscApi = api,
             venueRepo = venueRepo,
             dispatcher = syncerListenerDispatcher,
             venueSyncInserter = VenueSyncInserterImpl(
@@ -85,12 +83,12 @@ class VenueSyncerTest : StringSpec() {
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
-                api.fetchVenues(session, VenuesFilter(city, plan))
+                api.fetchVenues(VenuesFilter(city, plan))
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
-            coEvery { api.fetchVenueDetail(any(), eq(remoteVenue.slug)) } returns
+            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
                     remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
 
-            syncer.sync(session, plan, city)
+            syncer.sync(plan, city)
 
             venueRepo.stored.should {
                 val stored = it.values.shouldBeSingleton().first()
@@ -105,23 +103,23 @@ class VenueSyncerTest : StringSpec() {
             syncVenueDbosMarkedDeleted.shouldBeEmpty()
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
-            coEvery { api.fetchVenues(session, VenuesFilter(city, plan)) } returns emptyList()
+            coEvery { api.fetchVenues(VenuesFilter(city, plan)) } returns emptyList()
             val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
 
-            syncer.sync(session, plan, city)
+            syncer.sync(plan, city)
 
             venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
             syncVenueDbosMarkedDeleted.shouldBeSingleton().first().id shouldBe stored.id
         }
         "Given 1 stored And api returns it and one linked to it When sync Then link them" {
             val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
-            coEvery { api.fetchVenues(session, VenuesFilter(city, plan)) } returns listOf(
+            coEvery { api.fetchVenues(VenuesFilter(city, plan)) } returns listOf(
                 remoteVenue.copy(slug = stored.slug), remoteVenue
             )
-            coEvery { api.fetchVenueDetail(session, remoteVenue.slug) } returns remoteDetails
+            coEvery { api.fetchVenueDetail(remoteVenue.slug) } returns remoteDetails
                 .copy(slug = remoteVenue.slug, linkedVenueSlugs = listOf(stored.slug))
 
-            syncer.sync(session, plan, city)
+            syncer.sync(plan, city)
 
             venueLinksRepo.stored.also {
                 it.shouldHaveSize(1)

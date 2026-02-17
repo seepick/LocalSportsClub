@@ -1,22 +1,24 @@
 package seepick.localsportsclub.persistence
 
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Plan
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 
 data class VenueDbo(
     val id: Int,
     val name: String,
     val slug: String,
     val facilities: String, // categories "," separated
-    /** @see [seepick.localsportsclub.service.model.City] */
+    /** @see [City] */
     val cityId: Int,
     val officialWebsite: String?,
     val rating: Int,

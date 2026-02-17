@@ -1,5 +1,7 @@
 package seepick.localsportsclub.service.model
 
+import com.github.seepick.uscclient.login.Credentials
+import com.github.seepick.uscclient.model.City
 import seepick.localsportsclub.service.Location
 
 data class Preferences(

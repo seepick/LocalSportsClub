@@ -1,17 +1,17 @@
 package seepick.localsportsclub.service.singles
 
+import com.github.seepick.uscclient.login.Credentials
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.model.City.Companion.byId
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.SinglesDbo
 import seepick.localsportsclub.persistence.SinglesRepo
 import seepick.localsportsclub.service.Encrypter
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.WindowPref
-import seepick.localsportsclub.service.model.City
-import seepick.localsportsclub.service.model.Credentials
 import seepick.localsportsclub.service.model.Gcal
-import seepick.localsportsclub.service.model.Plan
 import seepick.localsportsclub.service.model.Preferences
 import java.time.LocalDateTime
 
@@ -101,7 +101,7 @@ class SinglesServiceImpl(
 
             return Preferences(
                 uscCredentials = single.prefUscCredentials?.toCredentials(),
-                city = single.prefCityId?.let { City.byId(it) },
+                city = single.prefCityId?.let { byId(it) },
                 gcal = single.prefGoogleCalendarId?.let { Gcal.GcalEnabled(it) } ?: Gcal.GcalDisabled,
                 home = single.prefHomeLat?.let {
                     Location(

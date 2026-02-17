@@ -1,5 +1,7 @@
 package seepick.localsportsclub.tools.migration
 
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
@@ -9,9 +11,7 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.service.model.Plan
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

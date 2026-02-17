@@ -1,20 +1,33 @@
 package seepick.localsportsclub
 
-import seepick.localsportsclub.api.UscConfig
+import com.github.seepick.uscclient.baseUrl
+import com.github.seepick.uscclient.model.UscLang
+import java.io.File
+import java.net.URL
+import java.time.LocalDate
 
-data class AppConfig(
+data class LscConfig(
     val database: DatabaseMode,
-    val api: ApiMode,
     val sync: SyncMode,
-    val usc: UscConfig = UscConfig(),
+    val syncDaysAhead: Int = 14, // including today
     val logFileEnabled: Boolean = false,
     val gcal: GcalMode,
     val versionCheckEnabled: Boolean = true,
+    val currentYear: Int = LocalDate.now().year,
+    val responseLogFolder: File? = null, // FIXME enable File(),
+    val apiMode: ApiMode,
+    val apiLang: UscLang = UscLang.English,
+    val baseUrl: URL = apiLang.baseUrl,
 ) {
+
+    init {
+        require(syncDaysAhead >= 1) { "sync days ahead must be >= 1 but was: $syncDaysAhead" }
+    }
+
     companion object {
-        val development = AppConfig(
+        val development = LscConfig(
 //            api = ApiMode.Mock,
-            api = ApiMode.RealHttp,
+            apiMode = ApiMode.RealHttp,
 
 //            sync = SyncMode.Dummy,
             sync = SyncMode.Real,
@@ -29,9 +42,9 @@ data class AppConfig(
 //            database = DatabaseMode.InMemory,
             logFileEnabled = false,
         )
-        val production = AppConfig(
+        val production = LscConfig(
             database = DatabaseMode.Exposed,
-            api = ApiMode.RealHttp,
+            apiMode = ApiMode.RealHttp,
             gcal = GcalMode.Real,
             sync = SyncMode.Real,
             logFileEnabled = true,
@@ -45,11 +58,6 @@ enum class DatabaseMode {
     Exposed, InMemory
 }
 
-@Deprecated("use usc-client")
-enum class ApiMode {
-    Mock, RealHttp
-}
-
 enum class SyncMode {
     Noop, Delayed, Dummy, Real
 }
@@ -58,11 +66,6 @@ enum class GcalMode {
     Noop, Real
 }
 
-@Deprecated("use usc-client")
-enum class UscLang(val urlCode: String) {
-    English("en"),
-    Dutch("nl"),
-//    German("de"),
-//    French("fr"),
-    // PT, ES
+enum class ApiMode {
+    Mock, RealHttp
 }

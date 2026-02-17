@@ -1,10 +1,10 @@
 package seepick.localsportsclub.sync
 
+import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.activity.ActivityDetails
+import com.github.seepick.uscclient.activity.FreetrainingDetails
+import com.github.seepick.uscclient.model.City
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.api.PhpSessionId
-import seepick.localsportsclub.api.UscApi
-import seepick.localsportsclub.api.activity.ActivityDetails
-import seepick.localsportsclub.api.activity.FreetrainingDetails
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -13,25 +13,22 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.City
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.Month
 
 interface DataSyncRescuer {
     suspend fun fetchInsertAndDispatchActivity(
-        session: PhpSessionId,
         city: City,
         activityId: Int,
         venueSlug: String,
-        prefilledVenueNotes: String
+        prefilledVenueNotes: String,
     ): ActivityDbo
 
     suspend fun fetchInsertAndDispatchFreetraining(
-        session: PhpSessionId,
         city: City,
         freetrainingId: Int,
         venueSlug: String,
-        prefilledNotes: String
+        prefilledNotes: String,
     ): FreetrainingDbo
 }
 
@@ -47,7 +44,6 @@ class DataSyncRescuerImpl(
     private val log = logger {}
 
     override suspend fun fetchInsertAndDispatchActivity(
-        session: PhpSessionId,
         city: City,
         activityId: Int,
         venueSlug: String,
@@ -55,9 +51,9 @@ class DataSyncRescuerImpl(
     ): ActivityDbo {
         log.debug { "Trying to rescue locally non-existing activity with ID $activityId for venue [$venueSlug]" }
         require(activityRepo.selectById(activityId) == null)
-        val activityDetails = uscApi.fetchActivityDetails(session, activityId).let(::adjustDate)
+        val activityDetails = uscApi.fetchActivityDetails(activityId).let(::adjustDate)
 
-        val venue = ensureVenue(session, city, venueSlug, prefilledVenueNotes)
+        val venue = ensureVenue(city, venueSlug, prefilledVenueNotes)
         val dbo = activityDetails.toActivityDbo(activityId, venue.id)
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))
@@ -86,30 +82,28 @@ class DataSyncRescuerImpl(
     )
 
     private suspend fun ensureVenue(
-        session: PhpSessionId,
         city: City,
         venueSlug: String,
-        prefilledNotes: String
+        prefilledNotes: String,
     ): VenueDbo =
         venueRepo.selectBySlug(venueSlug) ?: suspend {
             venueSyncInserter.fetchInsertAndDispatch(
-                session, city, listOf(VenueMeta(slug = venueSlug, plan = null)), prefilledNotes
+                city, listOf(VenueMeta(slug = venueSlug, plan = null)), prefilledNotes
             )
             venueRepo.selectBySlug(venueSlug)
                 ?: error("Terribly failed rescuing venue: [$venueSlug]")
         }()
 
     override suspend fun fetchInsertAndDispatchFreetraining(
-        session: PhpSessionId,
         city: City,
         freetrainingId: Int,
         venueSlug: String,
-        prefilledNotes: String
+        prefilledNotes: String,
     ): FreetrainingDbo {
         log.debug { "Trying to rescue locally non-existing freetraining $freetrainingId for venue [$venueSlug]" }
         require(freetrainingRepo.selectById(freetrainingId) == null)
-        val freetrainingDetail = uscApi.fetchFreetrainingDetails(session, freetrainingId).let(::adjustDate)
-        val venue = ensureVenue(session, city, venueSlug, prefilledNotes)
+        val freetrainingDetail = uscApi.fetchFreetrainingDetails(freetrainingId).let(::adjustDate)
+        val venue = ensureVenue(city, venueSlug, prefilledNotes)
         val dbo = freetrainingDetail.toFreetrainingDbo(freetrainingId = freetrainingId, venueId = venue.id)
         freetrainingRepo.insert(dbo)
         dispatcher.dispatchOnFreetrainingDbosAdded(listOf(dbo))

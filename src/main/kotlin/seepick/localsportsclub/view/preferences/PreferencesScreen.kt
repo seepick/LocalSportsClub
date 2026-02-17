@@ -31,8 +31,8 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.seepick.uscclient.model.Country
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.service.model.Country
 import seepick.localsportsclub.view.common.DoubleField
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PasswordField
@@ -45,7 +45,7 @@ const val tooltipTextVerifyUscFirst = "Please enter and verify your USC login da
 
 @Composable
 fun PreferencesScreen(
-    viewModel: PreferencesViewModel = koinViewModel()
+    viewModel: PreferencesViewModel = koinViewModel(),
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(30.dp),
@@ -82,7 +82,7 @@ fun PreferencesScreen(
 
 @Composable
 private fun PreferencesItem(
-    label: String, content: @Composable () -> Unit
+    label: String, content: @Composable () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -96,7 +96,7 @@ private fun PreferencesItem(
 
 @Composable
 private fun CredentialsRow(
-    viewModel: PreferencesViewModel = koinViewModel()
+    viewModel: PreferencesViewModel = koinViewModel(),
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -133,7 +133,7 @@ private fun CredentialsRow(
 
 @Composable
 fun UscInfoRow(
-    viewModel: PreferencesViewModel = koinViewModel()
+    viewModel: PreferencesViewModel = koinViewModel(),
 ) {
     DropDownTextField(
         label = "Country",
@@ -167,7 +167,8 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
     var periodFirstDayString by remember { mutableStateOf(periodFirstDay.value?.toString() ?: "") }
 
     Tooltip("The day of the month when the check-in period starts (between 1 and 28)", offset = true) {
-        TextField(value = periodFirstDayString,
+        TextField(
+            value = periodFirstDayString,
             label = { Text("Period") },
             modifier = Modifier.width(120.dp),
             isError = if (periodFirstDayString.isEmpty()) {
@@ -194,7 +195,7 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
 
 @Composable
 fun GCalRow(
-    viewModel: PreferencesViewModel = koinViewModel()
+    viewModel: PreferencesViewModel = koinViewModel(),
 ) {
     Switch(checked = viewModel.entity.calendarEnabled, onCheckedChange = {
         viewModel.entity.calendarEnabled = it

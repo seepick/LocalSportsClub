@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
@@ -42,7 +44,7 @@ class Venue(
     val slug: String,
     val description: String,
     val categories: List<String>,
-    val city: City,
+    val city: com.github.seepick.uscclient.model.City,
     val postalCode: String,
     val street: String,
     val addressLocality: String,
@@ -149,7 +151,7 @@ class Venue(
             name = "Dummy Venue",
             slug = "dummy-venue",
             categories = listOf("Gym"),
-            city = City.Amsterdam,
+            city = com.github.seepick.uscclient.model.City.Amsterdam,
             rating = Rating.R4,
             notes = "no notes",
             officialWebsite = null,

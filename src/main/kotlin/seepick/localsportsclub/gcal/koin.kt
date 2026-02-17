@@ -2,10 +2,10 @@ package seepick.localsportsclub.gcal
 
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import seepick.localsportsclub.AppConfig
 import seepick.localsportsclub.GcalMode
+import seepick.localsportsclub.LscConfig
 
-fun gcalModule(config: AppConfig) = module {
+fun gcalModule(config: LscConfig) = module {
     single {
         when (config.gcal) {
             GcalMode.Noop -> NoopGcalService

@@ -33,6 +33,7 @@ object DummySyncProgress : SyncProgress {
 
 }
 
+// FIXME fix this
 @Deprecated("use usc-client")
 interface SyncProgress {
     fun register(listener: SyncProgressListener)

@@ -1,9 +1,9 @@
 package seepick.localsportsclub.service.singles
 
+import com.github.seepick.uscclient.model.City
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.json.Json
 import seepick.localsportsclub.persistence.SinglesDbo
-import seepick.localsportsclub.service.model.City
 
 object SinglesMigrator {
 

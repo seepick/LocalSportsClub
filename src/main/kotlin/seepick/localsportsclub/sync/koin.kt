@@ -4,16 +4,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import seepick.localsportsclub.AppConfig
+import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.SyncMode
-import seepick.localsportsclub.sync.thirdparty.DeNieuweYogaSchoolFetcher
-import seepick.localsportsclub.sync.thirdparty.EversportsFetcher
-import seepick.localsportsclub.sync.thirdparty.MovementsYogaFetcher
-import seepick.localsportsclub.sync.thirdparty.ThirdPartySyncerAmsterdam
 
 private val log = logger {}
 
-fun syncModule(config: AppConfig) = module {
+fun syncModule(config: LscConfig) = module {
     log.debug { "Configuring sync mode: ${config.sync}" }
     singleOf(::SyncerListenerDispatcher)
     singleOf(::SyncReporter)
@@ -32,12 +28,24 @@ fun syncModule(config: AppConfig) = module {
             singleOf(::FreetrainingSyncer)
             singleOf(::ScheduleSyncer)
             singleOf(::CheckinSyncer)
-            singleOf(::MovementsYogaFetcher)
-            singleOf(::EversportsFetcher)
-            singleOf(::DeNieuweYogaSchoolFetcher)
-            singleOf(::ThirdPartySyncerAmsterdam)
             singleOf(::CleanupPostSync)
-            singleOf(::SyncerFacade) bind Syncer::class
+            single {
+                SyncerFacade(
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    get(),
+                    syncDaysAhead = config.syncDaysAhead,
+                )
+            } bind Syncer::class
             singleOf(::VenueAutoSyncer)
         }
     }
