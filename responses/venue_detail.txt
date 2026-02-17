@@ -976,7 +976,7 @@ Volg eenmaal op de rotonde de borden voor Aerials Amsterdam</span>
                  data-service-type-id="1">
 
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="83846104"
      data-address-id="25091">
 

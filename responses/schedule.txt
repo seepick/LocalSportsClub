@@ -750,7 +750,7 @@ https://urbansportsclub.com/en/profile/schedule
                         <div class="table-date">
                     Tuesday, 24 December                </div>
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="84742854"
      data-address-id="25100">
 
@@ -837,7 +837,7 @@ https://urbansportsclub.com/en/profile/schedule
 
 
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="84726253"
      data-address-id="25144">
 
@@ -926,7 +926,7 @@ https://urbansportsclub.com/en/profile/schedule
                 <div class="table-date">
                     Friday, 27 December                </div>
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="84810748"
      data-address-id="25336">
 
@@ -1015,7 +1015,7 @@ https://urbansportsclub.com/en/profile/schedule
                 <div class="table-date">
                     Saturday, 28 December                </div>
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="84507769"
      data-address-id="25546">
 
@@ -1104,7 +1104,7 @@ https://urbansportsclub.com/en/profile/schedule
                 <div class="table-date">
                     Sunday, 29 December                </div>
 
-<div class="smm-class-snippet row"
+<div class="smm-class-snippet  row"
      data-appointment-id="84843703"
      data-address-id="25640">
 

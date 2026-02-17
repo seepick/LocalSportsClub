@@ -5,6 +5,9 @@ build/
 !**/src/test/**/build/
 .kotlin/
 
+### LSC Specific ###
+.local-usc-credentials.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iml
