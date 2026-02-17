@@ -7,6 +7,7 @@ import com.github.seepick.uscclient.UscConfig
 import com.github.seepick.uscclient.UscConnector
 import com.github.seepick.uscclient.UscConnectorMock
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.runBlocking
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -23,16 +24,24 @@ fun uscClientModule(config: LscConfig) = module {
     } else if (config.apiMode == ApiMode.RealHttp) {
         single { UscConnector.Companion() } bind UscConnector::class
         single {
-            UscApiDeferred({
-                log.info { "Deferred UscApi access; accessing runtime configured credentials." }
-                val singlesService: SinglesService by inject()
-                UscConfig(
-                    credentials = singlesService.verifiedUscCredentials
-                        ?: error("No (verified) USC credentials stored!"),
-                    responseLogFolder = config.responseLogFolder,
-                    currentYear = config.currentYear,
-                )
-            })
+            UscApiDeferred(
+                configProvider = {
+                    val singlesService: SinglesService by inject()
+                    log.info { "Deferred UscApi access; accessing runtime configured credentials." }
+                    UscConfig(
+                        credentials = singlesService.verifiedUscCredentials
+                            ?: error("No (verified) USC credentials stored!"),
+                        responseLogFolder = config.responseLogFolder,
+                        currentYear = config.currentYear,
+                    )
+                },
+                onConnected = { api ->
+                    runBlocking {
+                        val singlesService: SinglesService by inject()
+                        singlesService.plan = api.fetchMembership().plan
+                    }
+                }
+            )
         } bind UscApi::class
     }
 }

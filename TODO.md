@@ -2,11 +2,20 @@
 
 ## v1.7.0
 
-* upgrade dependency versions
 * remove all task tags (resolve or put in here)
 * store more data from `ActivityDetails` (spots left, etc.)
 
 ## Backlog
+
+* ad autoSync: sync details only new (inserted) activities
+* show spots left (resync for whole venue; remove button for resync for single activity)
+* incorporate cancellation_limit (fetch hour setting per venue; remove from activity; infer)
+* what to do with 3rd party syncer?
+  fixbug: 21:09:45.574 s.l.v.c.Utils.51@[DefaultDispatcher-worker-43] ERROR-Executing task failed! java.lang.IllegalStateException: Invalid time string [8:00 cancelled]
+  at seepick.localsportsclub.service.date.DateParser.parseTime(parsing.kt:79)
+  at seepick.localsportsclub.sync.thirdparty.MovementsYogaParser.parseSingle(MovementsYogaFetcher.kt:85)
+  at seepick.localsportsclub.sync.thirdparty.MovementsYogaParser.parse(MovementsYogaFetcher.kt:75)
+
 
 * activity single-sync: sync for whole venue (all activities)
 * enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)

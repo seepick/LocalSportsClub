@@ -36,6 +36,7 @@ class SinglesServiceImpl(
     override var notes
         get() = cachedOrSelect().notes
         set(value) {
+            log.debug { "set notes: $value" }
             update { copy(notes = value) }
         }
 
@@ -44,6 +45,7 @@ class SinglesServiceImpl(
 
     override fun setLastSyncFor(city: City, timestamp: LocalDateTime) {
         update {
+            log.debug { "set lastSyncs: $city / $timestamp" }
             copy(lastSyncs = lastSyncs.toMutableMap().also {
                 it[city.id] = timestamp
             })
@@ -61,6 +63,7 @@ class SinglesServiceImpl(
             )
         }
         set(value) {
+            log.debug { "set windowPref: $value" }
             update {
                 if (value == null) copy(windowWidth = null, windowHeight = null, windowPosX = null, windowPosY = null)
                 else copy(
@@ -75,6 +78,7 @@ class SinglesServiceImpl(
     override var plan: Plan?
         get() = cachedOrSelect().planInternalId?.let { Plan.byInternalId(it) }
         set(value) {
+            log.debug { "set plan: $value" }
             update {
                 if (value == null) copy(planInternalId = null)
                 else copy(planInternalId = value.internalId)
@@ -83,6 +87,7 @@ class SinglesServiceImpl(
     override var verifiedUscCredentials: Credentials?
         get() = cachedOrSelect().verifiedUscCredentials?.toCredentials()
         set(value) {
+            log.debug { "set creds: $value" }
             update {
                 copy(verifiedUscCredentials = value?.toJsonCredentials())
             }
@@ -90,6 +95,7 @@ class SinglesServiceImpl(
     override var verifiedGcalId: String?
         get() = cachedOrSelect().verifiedGcalId
         set(value) {
+            log.debug { "set gcal ID: $value" }
             update {
                 copy(verifiedGcalId = value)
             }
@@ -98,7 +104,6 @@ class SinglesServiceImpl(
     override var preferences: Preferences
         get() {
             val single = cachedOrSelect()
-
             return Preferences(
                 uscCredentials = single.prefUscCredentials?.toCredentials(),
                 city = single.prefCityId?.let { byId(it) },
@@ -113,6 +118,7 @@ class SinglesServiceImpl(
             )
         }
         set(value) {
+            log.debug { "set prefs: $value" }
             update {
                 copy(
                     prefUscCredentials = value.uscCredentials?.toJsonCredentials(),

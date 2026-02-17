@@ -37,7 +37,7 @@ class ThirdPartySyncerAmsterdam(
         MovementsYogaStudio.entries.forEach {
             syncThirdParty(movementsYogaFetcher::fetch, it)
         }
-        // TODO eversport is disabled (cloudflare+ktor issue!); sync teacher from USC directly instead
+        // eversport is disabled (cloudflare+ktor issue!); sync teacher from USC directly instead
 //        buildList {
 //            addAll(HotFlowYogaStudio.entries)
 //            add(

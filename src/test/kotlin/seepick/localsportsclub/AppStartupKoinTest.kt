@@ -1,5 +1,6 @@
 package seepick.localsportsclub
 
+import com.github.seepick.uscclient.model.UscLang
 import io.kotest.core.spec.style.StringSpec
 import org.koin.core.context.startKoin
 import seepick.localsportsclub.persistence.VenueRepo
@@ -18,6 +19,11 @@ class AppStartupKoinTest : StringSpec() {
                             apiMode = ApiMode.Mock,
                             sync = SyncMode.Noop,
                             gcal = GcalMode.Noop,
+                            syncDaysAhead = 1,
+                            responseLogFolder = null,
+                            apiLang = UscLang.English,
+                            logbackFileEnabled = false,
+                            versionCheckEnabled = false,
                         )
                     )
                 )
