@@ -1,4 +1,4 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.checkin.ActivityCheckinEntry
@@ -12,6 +12,11 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.sync.ActivityFieldUpdate
+import seepick.localsportsclub.sync.DataSyncRescuer
+import seepick.localsportsclub.sync.FreetrainingFieldUpdate
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
 
 fun SyncProgress.onProgressCheckins(detail: String?) {

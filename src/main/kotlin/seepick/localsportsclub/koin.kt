@@ -13,7 +13,7 @@ import seepick.localsportsclub.view.viewModule
 private val log = logger {}
 
 fun allModules(config: LscConfig) = listOf(
-    rootModule(config),
+    rootModule(),
     persistenceModule(config.database),
     uscClientModule(config),
     serviceModule(config),
@@ -22,7 +22,7 @@ fun allModules(config: LscConfig) = listOf(
     viewModule(config),
 )
 
-fun rootModule(config: LscConfig): Module = module {
+fun rootModule(): Module = module {
     singleOf(::GlobalKeyboard)
     singleOf(::ApplicationLifecycle)
     singleOf(::MainWindowState)

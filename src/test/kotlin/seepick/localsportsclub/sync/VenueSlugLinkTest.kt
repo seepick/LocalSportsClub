@@ -3,6 +3,7 @@ package seepick.localsportsclub.sync
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
+import seepick.localsportsclub.sync.domain.VenueSlugLink
 
 class VenueSlugLinkTest : StringSpec({
     "equals" {

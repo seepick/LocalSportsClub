@@ -16,13 +16,10 @@ import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.DirectoryEntry
-import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.retry
 import seepick.localsportsclub.service.singles.SinglesService
-import java.io.Reader
-import java.io.StringReader
 import java.net.SocketException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -30,7 +27,6 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.Properties
 import java.util.TimeZone
 
 fun SinglesService.readCalendarIdOrThrow() =
@@ -71,92 +67,6 @@ object NoopGcalService : GcalService {
     }
 }
 
-data class GcalDeletion(
-    val day: LocalDate,
-    val activityOrFreetrainingId: Int,
-    val isActivity: Boolean,
-)
-
-sealed interface GcalEntry {
-    val title: String
-    val location: String
-    val notes: String
-    val isActivity: Boolean
-    val activityOrFreetrainingId: Int
-
-    data class GcalActivity(
-        override val title: String,
-        override val location: String,
-        override val notes: String,
-        val activityId: Int,
-        val dateTimeRange: DateTimeRange,
-    ) : GcalEntry {
-        override val isActivity = true
-        override val activityOrFreetrainingId = activityId
-    }
-
-    data class GcalFreetraining(
-        override val title: String,
-        override val location: String,
-        override val notes: String,
-        val freetrainingId: Int,
-        val date: LocalDate,
-    ) : GcalEntry {
-        override val isActivity = false
-        override val activityOrFreetrainingId = freetrainingId
-    }
-}
-
-object RuntimeGcalConfigLoader {
-    private val log = logger {}
-    fun load(): RuntimeGcalConfig {
-        val gcalCredsPropFile = FileResolver.resolve(FileEntry.GoogleCalendarCredsProperties)
-        require(gcalCredsPropFile.exists()) {
-            "GCal credentials file not found at: ${gcalCredsPropFile.absolutePath}! Please create it."
-        }
-        log.debug { "Loading GCal credentials file: ${gcalCredsPropFile.absolutePath}" }
-        val props = Properties()
-        props.load(gcalCredsPropFile.inputStream())
-        return RuntimeGcalConfig(
-            clientId = props.getProperty("clientId"),
-            clientSecret = props.getProperty("clientSecret"),
-        )
-    }
-}
-
-data class RuntimeGcalConfig(
-    val clientId: String,
-    val clientSecret: String,
-)
-
-object GcalCredentials {
-    private val log = logger {}
-    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GoogleCredentials)
-
-    fun reader(): Reader = if (credentialsJsonFile.exists()) {
-        log.debug { "Reading GCal credentials from local file: ${credentialsJsonFile.absolutePath}" }
-        credentialsJsonFile.inputStream().reader()
-    } else {
-        val gcalApiConfig = RuntimeGcalConfigLoader.load()
-        StringReader(buildJson(clientId = gcalApiConfig.clientId, clientSecret = gcalApiConfig.clientSecret))
-    }
-
-    private fun buildJson(clientId: String, clientSecret: String) = """
-        {
-          "installed": {
-            "client_id": "$clientId",
-            "project_id": "localsportsclub",
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_secret": "$clientSecret",
-            "redirect_uris": [
-              "http://localhost"
-            ]
-          }
-        }
-    """.trimIndent()
-}
 
 class RealGcalService : GcalService {
     private val log = logger {}
@@ -169,7 +79,7 @@ class RealGcalService : GcalService {
     private val zoneId = ZoneId.systemDefault()
 
     private val credentials: Credential by lazy {
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, GcalCredentials.reader())
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, GcalCredentialsLoader.buildReader())
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
             .setDataStoreFactory(FileDataStoreFactory(datastoreDir)).setAccessType("offline").build()
         val receiver = LocalServerReceiver.Builder().setPort(8888).build()
@@ -182,42 +92,6 @@ class RealGcalService : GcalService {
     }
 
     companion object {
-        private fun GcalService.createDummy(calendarId: String) {
-            val start = LocalDateTime.now().plusHours(2).withMinute(0).withSecond(0).withNano(0)
-            create(
-                calendarId,
-                GcalEntry.GcalActivity(
-                    activityId = 1337,
-                    title = "from LSC",
-                    dateTimeRange = DateTimeRange(
-                        from = start,
-                        to = start.plusHours(1),
-                    ),
-                    location = "location",
-                    notes = "some notes",
-                )
-            )
-        }
-
-        private fun GcalService.deleteDummy(calendarId: String) {
-            delete(
-                calendarId,
-                GcalDeletion(
-                    day = LocalDate.now(),
-                    activityOrFreetrainingId = 1337,
-                    isActivity = true,
-                )
-            )
-        }
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val calendarId = args[0]
-            RealGcalService()
-                .testConnection(calendarId)
-//                .createDummy("wrong")
-//                .deleteDummy(calendarId)
-        }
 
         private const val PROP_IS_ACTIVITY = "isActivity"
         private const val PROP_ENTITY_ID = "activityOrFreetrainingId"

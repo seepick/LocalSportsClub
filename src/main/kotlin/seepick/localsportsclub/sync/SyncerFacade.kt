@@ -9,6 +9,11 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.sync.domain.ActivitiesSyncer
+import seepick.localsportsclub.sync.domain.CheckinSyncer
+import seepick.localsportsclub.sync.domain.FreetrainingSyncer
+import seepick.localsportsclub.sync.domain.ScheduleSyncer
+import seepick.localsportsclub.sync.domain.VenueSyncer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -117,7 +122,7 @@ class VenueAutoSyncer(
             log.debug { "auto-sync for all activities w/o teacher for: [${venue.name}]" }
             activityRepo.selectAllForVenueId(venue.id).filter {
                 it.from.toLocalDate() >= clock.today() && // only future activities
-                        // TODO better way to check just teacher null
+                        // FIXME better way to check just teacher null
                         it.teacher == null
                 // because if sync doesn't return teacher, will always be resynced.
                 // also: maybe want to resync for spots left...?

@@ -45,7 +45,7 @@ fun DateSelector(
     selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit,
     dates: List<LocalDate>,
-    clock: Clock = SystemClock, // FIXME koinInject()
+    clock: Clock = SystemClock, // TODO koinInject()
 ) {
     val today = clock.today()
     var currentDateIndex by mutableStateOf(dates.indexOf(selectedDate))

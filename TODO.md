@@ -3,29 +3,25 @@
 ## v1.7.0
 
 * remove all task tags (resolve or put in here)
+* !!BUG in PAGEABLE.kt: not going beyond 20 pages!
+
+* ad autoSync: sync details only new (inserted) activities
 * store more data from `ActivityDetails` (spots left, etc.)
+    * show spots left
+    * resync for whole venue; remove button for resync for single activity
 
 ## Backlog
 
-* ad autoSync: sync details only new (inserted) activities
-* show spots left (resync for whole venue; remove button for resync for single activity)
-* incorporate cancellation_limit (fetch hour setting per venue; remove from activity; infer)
-* what to do with 3rd party syncer?
-  fixbug: 21:09:45.574 s.l.v.c.Utils.51@[DefaultDispatcher-worker-43] ERROR-Executing task failed! java.lang.IllegalStateException: Invalid time string [8:00 cancelled]
-  at seepick.localsportsclub.service.date.DateParser.parseTime(parsing.kt:79)
-  at seepick.localsportsclub.sync.thirdparty.MovementsYogaParser.parseSingle(MovementsYogaFetcher.kt:85)
-  at seepick.localsportsclub.sync.thirdparty.MovementsYogaParser.parse(MovementsYogaFetcher.kt:75)
-
-
-* activity single-sync: sync for whole venue (all activities)
-* enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
+* incorporate cancellation_limit (fetch hour setting per venue; remove from activity; infer)
+* rework `workParallel` as service with interface, so can be mocked out easily during testing (?)
+* enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * when search/filter for distance, provide only < and > (no =)
 * when cancel, get sure cancellation time window is considered
+
 * BUG: when do big sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * search for activity teacher and description (free text search)
 * don't display distance (column/search) if home coordinates not set
-* delete custom 3rd party fetchers
 * activity single-sync: tooltip for sync button
 * activity single-sync: sync per venue (for all activitites)
 * BUGFIX! venue sync bug! not stepping over to next page when: page count > page hint (showMore logic doesn't work to

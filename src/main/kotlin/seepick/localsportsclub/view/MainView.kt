@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -55,7 +55,7 @@ import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
-private val log = KotlinLogging.logger {}
+private val log = logger {}
 
 @Composable
 fun MainView(

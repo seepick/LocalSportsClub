@@ -1,4 +1,4 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.activity.ActivitiesFilter
@@ -11,6 +11,8 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
 
 fun SyncProgress.onProgressActivities(detail: String?) {
@@ -28,8 +30,8 @@ class ActivitiesSyncer(
     private val log = logger {}
 
     suspend fun sync(
-        plan: com.github.seepick.uscclient.plan.Plan,
-        city: com.github.seepick.uscclient.model.City,
+        plan: Plan,
+        city: City,
         days: List<LocalDate>,
     ) {
         log.info { "Syncing activities for: $days" }

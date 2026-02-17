@@ -19,7 +19,7 @@ fun uscClientModule(config: LscConfig) = module {
     if (config.apiMode == ApiMode.Mock) {
         log.debug { "Wiring mocked USC API." }
         singleOf(::UscApiMock) bind UscApi::class
-        single { UscConnectorMock() } bind UscConnector::class
+        single { UscConnectorMock() } bind UscConnector::class // to verify login credentials only
 
     } else if (config.apiMode == ApiMode.RealHttp) {
         single { UscConnector.Companion() } bind UscConnector::class

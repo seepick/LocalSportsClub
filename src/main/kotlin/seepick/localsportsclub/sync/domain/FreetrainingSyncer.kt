@@ -1,14 +1,18 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.activity.ActivitiesFilter
 import com.github.seepick.uscclient.activity.FreetrainingInfo
+import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
 
 fun SyncProgress.onProgressFreetrainings(detail: String?) {
@@ -26,8 +30,8 @@ class FreetrainingSyncer(
     private val log = logger {}
 
     suspend fun sync(
-        plan: com.github.seepick.uscclient.plan.Plan,
-        city: com.github.seepick.uscclient.model.City,
+        plan: Plan,
+        city: City,
         days: List<LocalDate>,
     ) {
         log.info { "Syncing freetrainiings for: $days" }
@@ -40,8 +44,8 @@ class FreetrainingSyncer(
     }
 
     private suspend fun syncForDay(
-        plan: com.github.seepick.uscclient.plan.Plan,
-        city: com.github.seepick.uscclient.model.City,
+        plan: Plan,
+        city: City,
         day: LocalDate,
         stored: List<FreetrainingDbo>,
         venuesBySlug: MutableMap<String, VenueDbo>,

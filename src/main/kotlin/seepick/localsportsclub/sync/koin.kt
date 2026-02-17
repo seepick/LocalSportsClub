@@ -5,9 +5,19 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
-import seepick.localsportsclub.SyncMode
+import seepick.localsportsclub.sync.domain.ActivitiesSyncer
+import seepick.localsportsclub.sync.domain.CheckinSyncer
+import seepick.localsportsclub.sync.domain.FreetrainingSyncer
+import seepick.localsportsclub.sync.domain.ScheduleSyncer
+import seepick.localsportsclub.sync.domain.VenueSyncInserter
+import seepick.localsportsclub.sync.domain.VenueSyncInserterImpl
+import seepick.localsportsclub.sync.domain.VenueSyncer
 
 private val log = logger {}
+
+enum class SyncMode {
+    Noop, Delayed, Dummy, Real
+}
 
 fun syncModule(config: LscConfig) = module {
     log.debug { "Configuring sync mode: ${config.sync}" }

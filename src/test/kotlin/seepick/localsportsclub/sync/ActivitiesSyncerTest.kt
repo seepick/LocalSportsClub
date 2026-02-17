@@ -23,6 +23,8 @@ import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
+import seepick.localsportsclub.sync.domain.ActivitiesSyncer
+import seepick.localsportsclub.sync.domain.VenueSyncInserter
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {

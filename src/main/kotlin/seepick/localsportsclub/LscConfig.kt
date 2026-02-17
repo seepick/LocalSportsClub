@@ -62,9 +62,6 @@ enum class DatabaseMode {
     Exposed, InMemory
 }
 
-enum class SyncMode {
-    Noop, Delayed, Dummy, Real
-}
 
 enum class GcalMode {
     Noop, Real

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.model.City
@@ -14,6 +14,9 @@ import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
+import seepick.localsportsclub.sync.Downloader
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
@@ -32,7 +35,7 @@ class VenueSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(plan: com.github.seepick.uscclient.plan.Plan, city: City) {
+    suspend fun sync(plan: Plan, city: City) {
         log.info { "Syncing venues ..." }
         progress.onProgressVenues(null)
         val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }

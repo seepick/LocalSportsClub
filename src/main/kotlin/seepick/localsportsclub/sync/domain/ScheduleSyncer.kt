@@ -1,6 +1,7 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
+import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.schedule.BookedActivity
 import com.github.seepick.uscclient.schedule.ScheduledFreetraining
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -10,6 +11,11 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.sync.ActivityFieldUpdate
+import seepick.localsportsclub.sync.DataSyncRescuer
+import seepick.localsportsclub.sync.FreetrainingFieldUpdate
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 
 /**
  * For booked activities and scheduled freetrainings.
@@ -24,7 +30,7 @@ class ScheduleSyncer(
 ) {
     private val log = logger {}
 
-    suspend fun sync(city: com.github.seepick.uscclient.model.City) {
+    suspend fun sync(city: City) {
         log.debug { "Syncing scheduled activities." }
         progress.onProgress("Schedule")
         val scheduleds = uscApi.fetchScheduleds()

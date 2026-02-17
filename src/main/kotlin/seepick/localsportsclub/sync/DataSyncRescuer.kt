@@ -14,6 +14,8 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.sync.domain.VenueMeta
+import seepick.localsportsclub.sync.domain.VenueSyncInserter
 import java.time.Month
 
 interface DataSyncRescuer {
