@@ -46,8 +46,9 @@ object LocalSportsClub {
             LscConfig.production
         }
         reconfigureLog(
-            useFileAppender = config.logFileEnabled, packageSettings = mapOf(
+            useFileAppender = config.logbackFileEnabled, packageSettings = mapOf(
                 "seepick.localsportsclub" to Level.TRACE,
+                "com.github.seepick.uscclient" to Level.DEBUG,
                 "liquibase" to Level.INFO,
                 "Exposed" to Level.INFO,
             )
