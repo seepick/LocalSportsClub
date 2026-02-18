@@ -33,11 +33,11 @@ class ActivitiesSyncer(
         plan: Plan,
         city: City,
         days: List<LocalDate>,
-    ) {
+    ): List<ActivityDbo> {
         log.info { "Syncing activities for: $days" }
         val allStoredActivities = activityRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
-        days.forEachIndexed { index, day ->
+        return days.flatMapIndexed { index, day ->
             progress.onProgressActivities("Day ${index + 1}/${days.size}")
             syncForDay(
                 plan,
@@ -57,7 +57,7 @@ class ActivitiesSyncer(
         day: LocalDate,
         stored: List<ActivityDbo>,
         venuesBySlug: MutableMap<String, VenueDbo>,
-    ) {
+    ): List<ActivityDbo> {
         log.debug { "Sync for day: $day" }
         val remoteActivities =
             api.fetchActivities(ActivitiesFilter(city = city, plan = plan, date = day)).associateBy { it.id }
@@ -72,6 +72,7 @@ class ActivitiesSyncer(
             syncMissingActivity(city, activity, venuesBySlug)
         }
         dispatcher.dispatchOnActivityDbosAdded(dbos)
+        return dbos
     }
 
     private suspend fun syncMissingActivity(

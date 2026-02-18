@@ -3,7 +3,7 @@ package seepick.localsportsclub.tools.migration
 import com.github.seepick.uscclient.model.City
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.tools.cliConnectToDatabase
+import seepick.localsportsclub.persistence.cliConnectToDatabase
 import java.io.File
 
 object MigrationApp {

@@ -96,8 +96,8 @@ fun RowScope.TableHeader(
                     VisualIndicator.NoIndicator -> ""
                     is VisualIndicator.StringIndicator -> header.label
                     is VisualIndicator.EmojiIndicator -> header.emoji
-                    is VisualIndicator.BitmapIndicator -> TODO("bitmap indicator not implemented, lol")
-                    is VisualIndicator.VectorIndicator -> TODO("vector indicator not implemented, lol")
+                    is VisualIndicator.BitmapIndicator -> error("bitmap indicator not implemented, lol")
+                    is VisualIndicator.VectorIndicator -> error("vector indicator not implemented, lol")
                 }
                 TableTextCell(
                     text = headerText,

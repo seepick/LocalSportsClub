@@ -2,8 +2,10 @@ package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.SyncProgress
@@ -76,6 +78,10 @@ class SyncerFacade(
     }
 
     private suspend fun safeSync() {
+        progress.onProgress("short", "long123456789longSuper1234long123456789long123456789long123456789")
+        delay(10_000)
+        return
+
         val now = clock.now()
         val city = singlesService.preferences.city ?: error("No city defined!")
         val lastSync = singlesService.getLastSyncFor(city)
@@ -83,16 +89,17 @@ class SyncerFacade(
         val isFullSync = lastSync == null || lastSync.toLocalDate() != now.toLocalDate()
         log.debug { "isFullSync=$isFullSync, lastSync=$lastSync, days=$days" }
 
+        var insertedActivities = emptyList<ActivityDbo>()
         if (isFullSync) {
             venueSyncer.sync(plan, city)
-            activitiesSyncer.sync(plan, city, days)
+            insertedActivities = activitiesSyncer.sync(plan, city, days)
             freetrainingSyncer.sync(plan, city, days)
         }
         scheduleSyncer.sync(city)
         checkinSyncer.sync(city)
         if (isFullSync) {
             cleanupPostSync.cleanup()
-            venueAutoSyncer.syncAllDetails() // after cleanup
+            venueAutoSyncer.syncAllDetails(insertedActivities) // after cleanup
         }
         singlesService.setLastSyncFor(city, now)
     }

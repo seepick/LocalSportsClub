@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyPrint
@@ -45,7 +46,7 @@ fun DateSelector(
     selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit,
     dates: List<LocalDate>,
-    clock: Clock = SystemClock, // TODO koinInject()
+    clock: Clock = koinInject(),
 ) {
     val today = clock.today()
     var currentDateIndex by mutableStateOf(dates.indexOf(selectedDate))

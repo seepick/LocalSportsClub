@@ -14,6 +14,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.persistence.cliConnectToDatabase
 import seepick.localsportsclub.service.unescape
 
 object DataCleaner {

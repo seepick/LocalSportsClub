@@ -1,5 +1,3 @@
-package seepick.localsportsclub.service
-
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
@@ -18,3 +16,16 @@ class UtilsKtTest : DescribeSpec() {
         }
     }
 }
+
+private fun String.ensureMaxLength(maxLength: Int): String =
+    lines().joinToString("\n") { line ->
+        var leftOver = line
+        val tmp = StringBuilder()
+        do {
+            val eat = leftOver.take(maxLength)
+            leftOver = leftOver.drop(eat.length)
+            tmp.append(eat)
+            if (leftOver.isNotEmpty()) tmp.appendLine()
+        } while (leftOver.isNotEmpty())
+        tmp
+    }

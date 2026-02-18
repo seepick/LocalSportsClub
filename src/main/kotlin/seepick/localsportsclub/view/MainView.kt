@@ -197,7 +197,6 @@ fun SyncPanel(
 //                    modifier = Modifier.background(Color.Green),
                 ) {
                     Text(it.section, fontSize = 9.sp)
-                    // TODO enforce max width!
                     Text(it.detail ?: "", fontSize = 8.sp, color = Color.Gray)
                 }
             }

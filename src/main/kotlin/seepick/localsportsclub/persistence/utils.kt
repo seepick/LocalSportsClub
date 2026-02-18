@@ -1,6 +1,4 @@
-package seepick.localsportsclub.tools
-
-import seepick.localsportsclub.persistence.connectToDatabaseEnvAware
+package seepick.localsportsclub.persistence
 
 class ProdAbortedException : Exception("User aborted the process to execute DB prod connection.")
 

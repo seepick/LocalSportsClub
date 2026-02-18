@@ -100,7 +100,6 @@ class PreferencesViewModel(
                 entity.city = membership.city
             }
             if (singlesService.plan == null) {
-                // TODO what if plan changes?! then it needs to overwritten here, and not null-checked-out
                 singlesService.plan = membership.plan
                 plan = membership.plan
             }
