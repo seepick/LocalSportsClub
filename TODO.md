@@ -16,6 +16,7 @@
     * showMore logic doesn't work to skip over...
 * 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
     * 🖋️when cancel booking, get sure cancellation time window is considered
+* 🎨when use keys up/down for navigation, scrolling along if move outside of view
 * 🎨make address right-clickable => dropdown: copy to clipboard
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync

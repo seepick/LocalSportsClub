@@ -199,14 +199,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onSubActivityNavigated(navigation: TableNavigation, item: Activity) {
         log.trace { "onSubActivityNavigated($navigation, $item)" }
-        selectedVenue.value!!.activities.navigate(item, navigation)?.also { newItem ->
+        selectedVenue.value!!.sortedActivities.toList().navigate(item, navigation)?.also { newItem ->
             onActivitySelected(newItem)
         }
     }
 
     fun onSubFreetrainingNavigated(navigation: TableNavigation, item: Freetraining) {
         log.trace { "onSubFreetrainingNavigated($navigation, $item)" }
-        selectedVenue.value!!.freetrainings.navigate(item, navigation)?.also { newItem ->
+        selectedVenue.value!!.sortedFreetrainings.toList().navigate(item, navigation)?.also { newItem ->
             onFreetrainingSelected(newItem)
         }
     }
