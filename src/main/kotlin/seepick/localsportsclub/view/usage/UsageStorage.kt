@@ -127,6 +127,9 @@ class UsageStorage(
 
             ActivityFieldUpdate.Description -> { /* no-op*/
             }
+
+            ActivityFieldUpdate.SpotsLeft -> { /* no-op*/
+            }
         }
     }
 

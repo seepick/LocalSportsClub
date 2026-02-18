@@ -115,5 +115,4 @@ class ActivitiesSyncer(
         teacher = null,
         description = null,
     )
-
 }

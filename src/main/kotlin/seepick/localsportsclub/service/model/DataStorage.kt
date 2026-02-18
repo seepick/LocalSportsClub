@@ -201,6 +201,7 @@ class DataStorage(
                 is ActivityFieldUpdate.State -> activity.state = activityDbo.state
                 ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
                 ActivityFieldUpdate.Description -> activity.description = activityDbo.description
+                ActivityFieldUpdate.SpotsLeft -> activity.spotsLeft = activityDbo.spotsLeft
             }
         } ?: log.warn {
             "Couldn't find activity in data storage. " +

@@ -100,6 +100,7 @@ fun SubEntityDetail(
                     append(subEntity.category)
                     if (subEntity is SubEntity.ActivityEntity) {
                         subEntity.activity.teacher?.also { append(" with $it") }
+                        append(" (${subEntity.activity.spotsLeft} spots)")
                     }
                 },
                 maxLines = 1,
@@ -135,14 +136,6 @@ fun SubEntityDetail(
                         Text(if (isBooked) "Cancel ${subEntity.bookLabel}ing" else subEntity.bookLabel)
                     }
                 }
-                if (isBooked && subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
-                    Text(
-                        maxLines = 2,
-                        // TODO always display cancel limit
-                        text = "Free cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint(clock.today().year)}",
-                        fontSize = 10.sp,
-                    )
-                }
                 if (isGcalEnabled) {
                     CheckboxTexted(
                         label = "Manage Calendar",
@@ -150,9 +143,14 @@ fun SubEntityDetail(
                         enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress,
                     )
                 }
-                AnimatedVisibility(
-                    visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()
-                ) {
+                if (subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
+                    Text(
+                        maxLines = 2,
+                        text = "Cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint(clock.today().year)}",
+                        fontSize = 10.sp,
+                    )
+                }
+                AnimatedVisibility(visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()) {
                     CircularProgressIndicator()
                 }
             }

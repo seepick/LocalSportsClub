@@ -46,7 +46,7 @@ class ActivityDetailService(
         val newActivityDbo = oldActivityDbo.copy(
             teacher = details.teacher,
             description = details.description,
-//            spotsLeft = details.spotsLeft, // FIXME implement spots left update; render in UI
+            spotsLeft = details.spotsLeft,
         )
         activityRepo.update(newActivityDbo)
 
@@ -58,6 +58,9 @@ class ActivityDetailService(
                 activityDbo = newActivityDbo,
                 field = ActivityFieldUpdate.Description
             )
+        }
+        if (oldActivityDbo.spotsLeft != details.spotsLeft) {
+            dispatcher.dispatchOnActivityDboUpdated(activityDbo = newActivityDbo, field = ActivityFieldUpdate.SpotsLeft)
         }
     }
 }
