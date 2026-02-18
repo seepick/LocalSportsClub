@@ -8,19 +8,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.search.DoubleSearchOption
-import seepick.localsportsclub.service.search.NumericSearchComparator
+import seepick.localsportsclub.service.search.NumericComparator
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PaddingMode
 import seepick.localsportsclub.view.common.TextFieldSlim
 import seepick.localsportsclub.view.common.WidthOrFill
 
 @Composable
-fun <T> DoubleSearchField(searchOption: DoubleSearchOption<T>) {
+fun <T, C : NumericComparator> DoubleSearchField(
+    searchOption: DoubleSearchOption<T, C>, comparators: List<C>,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             DropDownTextField(
-                items = NumericSearchComparator.entries,
+                items = comparators,
                 selectedItem = searchOption.searchComparator,
                 onItemSelected = { searchOption.updateSearchComparator(it) },
                 enabled = searchOption.enabled,

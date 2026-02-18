@@ -5,14 +5,13 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Venue>(resetItems) {
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
-    val distance = newDoubleSearchOption(
-        "Distance", initialValue = 1.0, visualIndicator = Lsc.icons.distanceEmojiIndicator
-    ) { it.venue.distanceInKm }
+    val distance = newDistanceSearchOption()
     val wishlisted = newBooleanSearchOption(
         "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
     ) { it.isWishlisted }

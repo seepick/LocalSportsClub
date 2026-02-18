@@ -19,12 +19,12 @@ class IntSearchOption<T>(
     visualIndicator = visualIndicator,
 ) {
 
-    var searchComparator: NumericSearchComparator by mutableStateOf(NumericSearchComparator.Equals)
+    var searchComparator: FullNumericComparator by mutableStateOf(FullNumericComparator.Equals)
         private set
     var searchInt: Int? by mutableStateOf(initialValue)
         private set
 
-    fun updateSearchComparator(value: NumericSearchComparator) {
+    fun updateSearchComparator(value: FullNumericComparator) {
         searchComparator = value
         reset()
     }

@@ -120,14 +120,16 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
-    protected fun newDoubleSearchOption(
+    fun <C : NumericComparator> newDoubleSearchOption(
+        initialComparator: C,
         label: String,
         initialValue: Double? = null,
         initiallyEnabled: Boolean = false,
         visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Double,
     ) =
-        DoubleSearchOption(
+        DoubleSearchOption<T, C>(
+            initialComparator = initialComparator,
             label = label,
             reset = ::reset,
             extractor = extractor,

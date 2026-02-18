@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.Rating
-import seepick.localsportsclub.service.search.NumericSearchComparator
+import seepick.localsportsclub.service.search.FullNumericComparator
 import seepick.localsportsclub.service.search.RatingSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.WidthOrFill
@@ -19,7 +19,7 @@ fun <T> RatingSearchField(searchOption: RatingSearchOption<T>) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {
             DropDownTextField(
-                items = NumericSearchComparator.entries,
+                items = FullNumericComparator.entries,
                 selectedItem = searchOption.searchComparator,
                 onItemSelected = { searchOption.updateSearchComparator(it) },
                 enabled = searchOption.enabled,

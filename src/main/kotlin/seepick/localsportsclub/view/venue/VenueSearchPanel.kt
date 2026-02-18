@@ -2,6 +2,7 @@ package seepick.localsportsclub.view.venue
 
 import androidx.compose.runtime.Composable
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.search.ComparingNumericComparator
 import seepick.localsportsclub.view.search.BooleanSearchField
 import seepick.localsportsclub.view.search.DoubleSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
@@ -23,7 +24,7 @@ fun VenueSearchPanel(
         IntSearchField(viewModel.searching.reservations)
         IntSearchField(viewModel.searching.checkins)
         BooleanSearchField(viewModel.searching.hidden)
-        DoubleSearchField(viewModel.searching.distance)
+        DoubleSearchField(viewModel.searching.distance, ComparingNumericComparator.entries)
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
         RatingSearchField(viewModel.searching.rating)

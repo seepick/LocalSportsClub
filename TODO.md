@@ -2,7 +2,6 @@
 
 ## v1.8.0
 
-* 🖋️when search/filter for distance, provide only < and > (no =)
 * 🎨every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
 * 🎨tooltip when title of activity too long in detail view
 * 🖋️store more data from `ActivityDetails` (spots left, etc.)
@@ -11,6 +10,8 @@
 
 ## Backlog
 
+* new venue search filter: deleted (venues with title strike through)
+* double search input; parser is weird; typing is weird
 * 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
     * while venue sync: not stepping over to next page when: page count > page hint
     * showMore logic doesn't work to skip over...
@@ -26,7 +27,7 @@
 * 🤖replace release script with github workflow
 * 🖋️filter for time only (evenings), without specifying day/date
 
-### Low Prio
+## Low Prio
 
 * 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
 * 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
@@ -50,13 +51,6 @@
 * 🤖system test: book something which can't be booked parse response and show proper message
     * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
 * 🖋️what if the membership.plan changes?! needs to be overwritten (startup, or pref change)
-
-### Going Public
-
-* if it is first time started, disable all screens; only prefs. to enter credentials (wizard)
-* maybe period restart day can be fetched via API (it is shown in app...)
-* support custom plan; define everything yourself (as so many other plans are there; think of B2B)
-* tooltips for table headers (some are not self-explanatory)
 
 ## Nope
 

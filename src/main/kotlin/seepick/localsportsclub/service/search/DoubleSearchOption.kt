@@ -5,7 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import seepick.localsportsclub.view.common.VisualIndicator
 
-class DoubleSearchOption<T>(
+class DoubleSearchOption<T, C : NumericComparator>(
+    initialComparator: C,
     label: String,
     private val extractor: (T) -> Double,
     reset: () -> Unit,
@@ -19,12 +20,12 @@ class DoubleSearchOption<T>(
     visualIndicator = visualIndicator,
 ) {
 
-    var searchComparator: NumericSearchComparator by mutableStateOf(NumericSearchComparator.Equals)
+    var searchComparator: C by mutableStateOf(initialComparator)
         private set
     var searchDouble: Double? by mutableStateOf(initialValue)
         private set
 
-    fun updateSearchComparator(value: NumericSearchComparator) {
+    fun updateSearchComparator(value: C) {
         searchComparator = value
         reset()
     }

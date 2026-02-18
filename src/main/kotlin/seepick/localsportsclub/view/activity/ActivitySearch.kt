@@ -4,6 +4,7 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
     val hidden = newBooleanSearchOption(
@@ -11,8 +12,7 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
     ) { it.venue.isHidden }
 
     val name = newStringSearchOption(
-        "Name", initiallyEnabled = true,
-        extractors = listOf({ it.name }, { it.teacher }, { it.venue.name })
+        "Name", initiallyEnabled = true, extractors = listOf({ it.name }, { it.teacher }, { it.venue.name })
     )
     val date = newDateTimeRangeSearchOption(
         "Date", visualIndicator = Lsc.icons.dateIndicator
@@ -20,11 +20,9 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
     val booked = newBooleanSearchOption(
         "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedEmojiIndicator
     ) { it.state == ActivityState.Booked }
-    val distance = newDoubleSearchOption(
-        "Distance", initialValue = 1.0, visualIndicator = Lsc.icons.distanceEmojiIndicator
-    ) { it.venue.distanceInKm }
+    val distance = newDistanceSearchOption()
     val favorited = newBooleanSearchOption(
-        "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
+        label = "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator,
     ) { it.venue.isFavorited }
     val wishlisted = newBooleanSearchOption(
         "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
