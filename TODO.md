@@ -2,33 +2,33 @@
 
 ## v1.8.0
 
-## Backlog
-
-* 🤖replace release script with github workflow
-* 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
-* 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
-    * while venue sync: not stepping over to next page when: page count > page hint (showMore logic doesn't work to skip over)
-* 🖋️activity single-sync: sync per venue (for all activitites, not single); add tooltip
 * 🖋️when search/filter for distance, provide only < and > (no =)
 * 🎨every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
-* 🎨tooltips for table headers (symbols are not van-zelf-sprekend)
-* 🎨make address right-clickable => dropdown: copy to clipboard
 * 🎨tooltip when title of activity too long in detail view
-* 🎨tooltip/notification message: make it away-clickable (maybe close button, maybe just click on it to dismiss)
 * 🖋️store more data from `ActivityDetails` (spots left, etc.)
 * 🖋️ (ALREADY DONE?!) search for activity teacher and description (free text search)
+* 🎨tooltips for table headers (symbols are not van-zelf-sprekend)
+
+## Backlog
+
+* 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
+    * while venue sync: not stepping over to next page when: page count > page hint
+    * showMore logic doesn't work to skip over...
+* 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
+    * 🖋️when cancel booking, get sure cancellation time window is considered
+* 🎨make address right-clickable => dropdown: copy to clipboard
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
-* 🖋️filter for time only (evenings), without specifying day/date
-* 🖋️when cancel, get sure cancellation time window is considered
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
-* 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
-* 🖋️incorporate cancellation_limit (fetch hour setting per venue; remove from activity; infer)
+* 🤖replace release script with github workflow
+* 🖋️filter for time only (evenings), without specifying day/date
 
 ### Low Prio
 
+* 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
+* 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
 * 🤖move all mock/dev/dummy things in src/test/kotlin; create LocalSportsClubDevApp as entry point
 * 🤖rework `workParallel` as service with interface, so can be mocked out easily during testing (?)

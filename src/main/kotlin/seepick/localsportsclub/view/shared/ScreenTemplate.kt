@@ -57,6 +57,8 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                             onUpdateVenue = viewModel::updateVenue,
                             showLinkedVenues = viewModel.showLinkedVenues,
                             isSyncing = mainViewModel.isSyncInProgress,
+                            isSyncVenueInProgress = viewModel.isSyncVenueInProgress,
+                            onSyncVenue = viewModel::onSyncVenue,
                             configuredCity = viewModel.configuredCity,
                             modifier = Modifier.weight(1.0f),
                             reducedVSpace = selectedSubEntity != null,
@@ -65,17 +67,16 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                     selectedSubEntity?.also {
                         SubEntityDetail(
                             subEntity = it,
-                            isSyncButtonVisible = viewModel.isSyncActivityPossible,
-                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncInProgress,
-                            isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             isGcalEnabled = viewModel.isGcalEnabled,
                             isGcalManaged = viewModel.isGcalManaged,
-                            isSyncActivityInProgress = viewModel.isSyncActivityInProgress,
-
+                            isBookOrCancelPossible = viewModel.isBookOrCancelPossible && !mainViewModel.isSyncInProgress,
+                            isBookingOrCancelInProgress = viewModel.isBookingOrCancelInProgress,
                             onBook = viewModel::onBook,
                             onCancelBooking = viewModel::onCancelBooking,
-                            onSyncActivity = viewModel::onSyncActivity,
                             onActivityChangeToCheckedin = viewModel::onActivityChangeToCheckedin,
+                            isSyncButtonVisible = viewModel.isSyncActivityPossible,
+                            isSyncActivityInProgress = viewModel.isSyncActivityInProgress,
+                            onSyncActivity = viewModel::onSyncActivity,
                         )
                     }
                 }

@@ -43,7 +43,11 @@ class ActivityDetailService(
 
     private fun updateDboAndDispatch(activityId: Int, details: ActivityDetails) {
         val oldActivityDbo = activityRepo.selectById(activityId)!!
-        val newActivityDbo = oldActivityDbo.copy(teacher = details.teacher, description = details.description)
+        val newActivityDbo = oldActivityDbo.copy(
+            teacher = details.teacher,
+            description = details.description,
+//            spotsLeft = details.spotsLeft, // FIXME implement spots left update; render in UI
+        )
         activityRepo.update(newActivityDbo)
 
         if (oldActivityDbo.teacher != details.teacher) {

@@ -1,9 +1,14 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +21,7 @@ import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
@@ -33,6 +39,8 @@ fun SimpleActivitiesTable(
     onActivitySelected: ((Activity) -> Unit)?,
     clock: Clock = koinInject(),
     height: Dp,
+    isSyncVenueInProgress: Boolean,
+    onSyncVenue: () -> Unit,
     modifier: Modifier = Modifier,
     onItemNavigation: (TableNavigation, Activity) -> Unit,
 ) {
@@ -41,6 +49,23 @@ fun SimpleActivitiesTable(
     } else {
         val currentYear = clock.today().year
         Row(verticalAlignment = Alignment.Bottom) {
+            val syncSize = 30
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
+                val progressSize = syncSize - 10
+                if (isSyncVenueInProgress) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(progressSize.dp)
+                    )
+                } else {
+                    Tooltip("Sync activity details") {
+                        TextButton(onClick = onSyncVenue) {
+                            Icon(
+                                Lsc.icons.syncActivityDetails, contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
             Icon(Lsc.icons.activities, contentDescription = null)
             Text("${activities.size} Activities:")
         }

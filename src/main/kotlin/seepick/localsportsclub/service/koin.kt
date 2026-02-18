@@ -19,6 +19,7 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::SinglesServiceImpl) bind SinglesService::class
     singleOf(::BookingService)
     singleOf(::BookingValidator)
+    singleOf(::VenueService)
     singleOf(::ActivityDetailService)
     single {
         if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker

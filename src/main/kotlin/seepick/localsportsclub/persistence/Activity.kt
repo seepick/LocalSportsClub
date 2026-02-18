@@ -32,6 +32,7 @@ data class ActivityDbo(
     val to: LocalDateTime,
     val cancellationLimit: LocalDateTime?,
     val planId: Int,
+
     val spotsLeft: Int, // updateable
     val teacher: String?, // updateable
     val description: String?, // updateable

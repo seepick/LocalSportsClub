@@ -47,9 +47,9 @@ fun SubEntityDetail(
     isBookingOrCancelInProgress: Boolean,
     isGcalEnabled: Boolean,
     isGcalManaged: MutableState<Boolean>,
-    isSyncActivityInProgress: Boolean,
     onBook: (SubEntity) -> Unit,
     onCancelBooking: (SubEntity) -> Unit,
+    isSyncActivityInProgress: Boolean,
     onSyncActivity: () -> Unit,
     onActivityChangeToCheckedin: (Activity) -> Unit,
     clock: Clock = koinInject(),
@@ -138,6 +138,7 @@ fun SubEntityDetail(
                 if (isBooked && subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
                     Text(
                         maxLines = 2,
+                        // TODO always display cancel limit
                         text = "Free cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint(clock.today().year)}",
                         fontSize = 10.sp,
                     )

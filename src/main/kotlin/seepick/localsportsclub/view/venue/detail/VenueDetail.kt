@@ -66,6 +66,8 @@ fun VenueDetail(
     reducedVSpace: Boolean,
     isSyncing: Boolean,
     configuredCity: City?,
+    isSyncVenueInProgress: Boolean,
+    onSyncVenue: () -> Unit,
     sharedModel: SharedModel = koinInject(),
     mainWindowState: MainWindowState = koinInject(),
     onActivityNavigated: (TableNavigation, Activity) -> Unit,
@@ -193,6 +195,8 @@ fun VenueDetail(
             onItemNavigation = onActivityNavigated,
             height = heights.first,
             modifier = Modifier.fillMaxWidth(),
+            isSyncVenueInProgress = isSyncVenueInProgress,
+            onSyncVenue = onSyncVenue,
         )
         SimpleFreetrainingsTable(
             freetrainings = venue.sortedFreetrainings.toList(),

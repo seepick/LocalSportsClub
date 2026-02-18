@@ -24,6 +24,7 @@ import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
 import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.SortingDelegate
+import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -56,6 +57,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val sharedModel: SharedModel,
     private val bookingValidator: BookingValidator,
     private val activityDetailService: ActivityDetailService,
+    private val venueService: VenueService,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -98,6 +100,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     var isSyncActivityPossible by mutableStateOf(false)
         private set
     var isSyncActivityInProgress by mutableStateOf(false)
+    var isSyncVenueInProgress by mutableStateOf(false)
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -275,17 +278,25 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         }
     }
 
+    fun onSyncVenue() {
+        log.debug { "onSyncVenue()" }
+        val venue = selectedVenue.value!!.venue
+        launchBackgroundTask(
+            errorMessage = "Sync activity details failed!",
+            doBefore = { isSyncVenueInProgress = true },
+            doFinally = { isSyncVenueInProgress = false },
+        ) {
+            venueService.syncActivityDetails(venue.id)
+        }
+    }
+
     fun onSyncActivity() {
         log.debug { "onSyncActivity()" }
         val activity = (selectedSubEntity.value as SubEntity.ActivityEntity).activity
         launchBackgroundTask(
-            "Sync activity details failed!",
-            doBefore = {
-                isSyncActivityInProgress = true
-            },
-            doFinally = {
-                isSyncActivityInProgress = false
-            },
+            errorMessage = "Sync activity details failed!",
+            doBefore = { isSyncActivityInProgress = true },
+            doFinally = { isSyncActivityInProgress = false },
         ) {
             activityDetailService.syncSingle(activity.id)
         }
