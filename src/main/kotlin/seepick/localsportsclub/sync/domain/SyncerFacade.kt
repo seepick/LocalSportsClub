@@ -2,7 +2,6 @@ package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -78,10 +77,6 @@ class SyncerFacade(
     }
 
     private suspend fun safeSync() {
-        progress.onProgress("short", "long123456789longSuper1234long123456789long123456789long123456789")
-        delay(10_000)
-        return
-
         val now = clock.now()
         val city = singlesService.preferences.city ?: error("No city defined!")
         val lastSync = singlesService.getLastSyncFor(city)
