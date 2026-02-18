@@ -130,6 +130,9 @@ class UsageStorage(
 
             ActivityFieldUpdate.SpotsLeft -> { /* no-op*/
             }
+
+            ActivityFieldUpdate.CancellationLimit -> { /* no-op*/
+            }
         }
     }
 

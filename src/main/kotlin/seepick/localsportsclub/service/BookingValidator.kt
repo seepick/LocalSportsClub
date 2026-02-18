@@ -82,9 +82,9 @@ class BookingValidator(
     }
 
     fun canCancel(activity: Activity): BookingValidation {
-        if (activity.cancellationLimit == null) return BookingValidation.Valid
-        return if (activity.cancellationLimit < clock.now()) {
-            log.debug { "Cancellation limit of ${activity.cancellationLimit} is exceed, as now is: ${clock.now()}" }
+        val cancellationLimit = activity.cancellationLimit ?: return BookingValidation.Valid
+        return if (cancellationLimit < clock.now()) {
+            log.debug { "Cancellation limit of $cancellationLimit is exceed, as now is: ${clock.now()}" }
             BookingValidation.Invalid("Cancellation limit exceeded. Fees will be charged if you cancel.")
         } else BookingValidation.Valid
     }

@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,7 +111,7 @@ fun SubEntityDetail(
         if (subEntity is SubEntity.ActivityEntity && subEntity.activity.description != null) {
             val description = subEntity.activity.description!!
 //            Text(text = subEntity.activity.description!!)
-            LongText(label = "Description", text = description, onShowLongText = {
+            LongText(label = "Descr.", text = description, onShowLongText = {
                 sharedModel.customDialog.value =
                     CustomDialog(title = "Activity Description", text = description, showDismissButton = false)
             })
@@ -143,12 +144,16 @@ fun SubEntityDetail(
                         enabled = isBookOrCancelPossible && !isBookingOrCancelInProgress,
                     )
                 }
-                if (subEntity is SubEntity.ActivityEntity && subEntity.activity.cancellationLimit != null) {
-                    Text(
-                        maxLines = 2,
-                        text = "Cancel until:\n${subEntity.activity.cancellationLimit.prettyPrint(clock.today().year)}",
-                        fontSize = 10.sp,
-                    )
+                if (subEntity is SubEntity.ActivityEntity) {
+                    val cancellationLimit = subEntity.activity.cancellationLimit
+                    if (cancellationLimit != null) {
+                        Text(
+                            maxLines = 2,
+                            text = "Cancel until:\n${cancellationLimit.prettyPrint(clock.today().year)}",
+                            fontSize = 10.sp,
+                            color = if (clock.now() > cancellationLimit) Color.Red else Color.Green,
+                        )
+                    }
                 }
                 AnimatedVisibility(visible = isBookingOrCancelInProgress, enter = fadeIn(), exit = fadeOut()) {
                     CircularProgressIndicator()

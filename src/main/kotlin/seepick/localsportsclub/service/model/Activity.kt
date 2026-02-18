@@ -32,11 +32,11 @@ class Activity(
     val name: String,
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
-    val cancellationLimit: LocalDateTime?,
     teacher: String?,
     description: String?,
     spotsLeft: Int,
     state: ActivityState,
+    cancellationLimit: LocalDateTime?,
 ) : HasVenue, HasDistance by venue, TableItemBgColor by venue {
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
@@ -49,6 +49,7 @@ class Activity(
     var teacher: String? by mutableStateOf(teacher)
     var description: String? by mutableStateOf(description)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
+    var cancellationLimit: LocalDateTime? by mutableStateOf(cancellationLimit)
 
     override fun toString() =
         "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"

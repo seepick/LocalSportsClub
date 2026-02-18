@@ -30,6 +30,7 @@ sealed interface ActivityFieldUpdate {
     data object Teacher : ActivityFieldUpdate
     data object Description : ActivityFieldUpdate
     data object SpotsLeft : ActivityFieldUpdate
+    data object CancellationLimit : ActivityFieldUpdate
     data class State(val oldState: ActivityState) : ActivityFieldUpdate
 }
 

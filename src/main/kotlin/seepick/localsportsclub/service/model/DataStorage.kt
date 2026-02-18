@@ -202,6 +202,7 @@ class DataStorage(
                 ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
                 ActivityFieldUpdate.Description -> activity.description = activityDbo.description
                 ActivityFieldUpdate.SpotsLeft -> activity.spotsLeft = activityDbo.spotsLeft
+                ActivityFieldUpdate.CancellationLimit -> activity.cancellationLimit = activityDbo.cancellationLimit
             }
         } ?: log.warn {
             "Couldn't find activity in data storage. " +

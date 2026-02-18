@@ -47,6 +47,7 @@ class ActivityDetailService(
             teacher = details.teacher,
             description = details.description,
             spotsLeft = details.spotsLeft,
+            cancellationLimit = details.cancellationDateLimit,
         )
         activityRepo.update(newActivityDbo)
 
@@ -61,6 +62,12 @@ class ActivityDetailService(
         }
         if (oldActivityDbo.spotsLeft != details.spotsLeft) {
             dispatcher.dispatchOnActivityDboUpdated(activityDbo = newActivityDbo, field = ActivityFieldUpdate.SpotsLeft)
+        }
+        if (oldActivityDbo.cancellationLimit != details.cancellationDateLimit) {
+            dispatcher.dispatchOnActivityDboUpdated(
+                activityDbo = newActivityDbo,
+                field = ActivityFieldUpdate.CancellationLimit
+            )
         }
     }
 }
