@@ -1,7 +1,6 @@
 package seepick.localsportsclub.view.usage
 
 import app.cash.turbine.test
-import com.github.seepick.uscclient.city
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import io.kotest.core.spec.style.DescribeSpec
@@ -21,6 +20,7 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Preferences
 import seepick.localsportsclub.sync.ActivityFieldUpdate
+import testfixtUsc.city
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

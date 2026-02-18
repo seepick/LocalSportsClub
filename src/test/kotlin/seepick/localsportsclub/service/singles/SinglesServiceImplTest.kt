@@ -1,6 +1,5 @@
 package seepick.localsportsclub.service.singles
 
-import com.github.seepick.uscclient.credentials
 import com.github.seepick.uscclient.model.City
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -16,6 +15,7 @@ import seepick.localsportsclub.persistence.SinglesDbo
 import seepick.localsportsclub.persistence.location
 import seepick.localsportsclub.persistence.preferences
 import seepick.localsportsclub.service.Encrypter
+import testfixtUsc.credentials
 import java.time.LocalDateTime
 
 class SinglesServiceImplTest : StringSpec() {

@@ -6,6 +6,7 @@ import org.koin.core.context.startKoin
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Downloader
+import seepick.localsportsclub.sync.SyncMode
 import seepick.localsportsclub.sync.Syncer
 
 class AppStartupKoinTest : StringSpec() {

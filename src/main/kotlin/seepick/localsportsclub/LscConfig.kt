@@ -4,17 +4,20 @@ import com.github.seepick.uscclient.baseUrl
 import com.github.seepick.uscclient.model.UscLang
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.sync.SyncMode
 import java.io.File
 import java.net.URL
 import java.time.LocalDate
 
 data class LscConfig(
+    val versionCheckEnabled: Boolean = true,
     val database: DatabaseMode,
+    val gcal: GcalMode,
+    val logbackFileEnabled: Boolean = false,
+
     val sync: SyncMode,
     val syncDaysAhead: Int = 14, // including today
-    val logbackFileEnabled: Boolean = false,
-    val gcal: GcalMode,
-    val versionCheckEnabled: Boolean = true,
+
     val currentYear: Int = LocalDate.now().year,
     val responseLogFolder: File?,
     val apiMode: ApiMode,

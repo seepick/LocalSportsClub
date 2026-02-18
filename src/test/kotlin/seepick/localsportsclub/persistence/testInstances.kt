@@ -1,6 +1,5 @@
 package seepick.localsportsclub.persistence
 
-import com.github.seepick.uscclient.credentials
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import io.kotest.property.Arb
@@ -23,6 +22,7 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
 import seepick.localsportsclub.service.model.Preferences
+import testfixtUsc.credentials
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).bind()

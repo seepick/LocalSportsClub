@@ -1,11 +1,7 @@
 package seepick.localsportsclub.sync
 
 import com.github.seepick.uscclient.UscApi
-import com.github.seepick.uscclient.city
-import com.github.seepick.uscclient.plan
 import com.github.seepick.uscclient.venue.VenuesFilter
-import com.github.seepick.uscclient.venueDetails
-import com.github.seepick.uscclient.venueInfo
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -28,6 +24,10 @@ import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.sync.domain.VenueSyncInserterImpl
 import seepick.localsportsclub.sync.domain.VenueSyncer
+import testfixtUsc.city
+import testfixtUsc.plan
+import testfixtUsc.venueDetails
+import testfixtUsc.venueInfo
 
 class VenueSyncerTest : StringSpec() {
 
@@ -62,6 +62,7 @@ class VenueSyncerTest : StringSpec() {
                 syncVenueDbosMarkedDeleted += venueDbos
             }
         })
+        val syncProgress = DummySyncProgress()
         syncer = VenueSyncer(
             uscApi = api,
             venueRepo = venueRepo,
@@ -73,9 +74,9 @@ class VenueSyncerTest : StringSpec() {
                 NoopDownloader,
                 imageStorage,
                 syncerListenerDispatcher,
-                DummySyncProgress,
+                syncProgress,
             ),
-            progress = DummySyncProgress,
+            progress = syncProgress,
         )
     }
 

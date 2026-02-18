@@ -18,7 +18,9 @@ group = "com.github.seepick.localsportsclub"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
-    val versionUscClient = "2000.0.SNAPSHOT" // "2026.1.2"
+
+//    val versionUscClient = "2000.0.SNAPSHOT"
+    val versionUscClient = "2026.2.3"
     implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
@@ -80,7 +82,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.14.9")
     testImplementation("io.insert-koin:koin-test:$versionKoin")
     testImplementation("app.cash.turbine:turbine:1.2.1") // testing flows
-    testImplementation(testFixtures("com.github.seepick:usc-client:$versionUscClient"))
+//    testImplementation(testFixtures("com.github.seepick:usc-client:$versionUscClient")) // doesn't work; jitpack?!
 }
 
 //tasks.withType<KotlinCompile> {

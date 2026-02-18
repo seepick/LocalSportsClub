@@ -2,9 +2,6 @@ package seepick.localsportsclub.sync
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.activity.ActivityInfo
-import com.github.seepick.uscclient.activityInfo
-import com.github.seepick.uscclient.city
-import com.github.seepick.uscclient.plan
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -25,6 +22,9 @@ import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.sync.domain.ActivitiesSyncer
 import seepick.localsportsclub.sync.domain.VenueSyncInserter
+import testfixtUsc.activityInfo
+import testfixtUsc.city
+import testfixtUsc.plan
 import java.time.LocalDateTime
 
 class ActivitiesSyncerTest : DescribeSpec() {
@@ -36,7 +36,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
     private lateinit var venueSyncInserter: VenueSyncInserter
     private val todayNow = LocalDateTime.of(2024, 12, 5, 12, 0, 0)
     private val clock = StaticClock(todayNow)
-    private val syncProgress = DummySyncProgress
+    private val syncProgress = DummySyncProgress()
     private val syncDaysAhead = 4
     private val city = Arb.city().next()
     private val anyPlan = Arb.plan().next()

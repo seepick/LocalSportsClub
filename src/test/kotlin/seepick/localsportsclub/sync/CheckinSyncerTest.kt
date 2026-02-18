@@ -1,11 +1,9 @@
 package seepick.localsportsclub.sync
 
 import com.github.seepick.uscclient.UscApi
-import com.github.seepick.uscclient.activityCheckinEntry
 import com.github.seepick.uscclient.checkin.ActivityCheckinEntryType
 import com.github.seepick.uscclient.checkin.CheckinEntry
 import com.github.seepick.uscclient.checkin.CheckinsPage
-import com.github.seepick.uscclient.city
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -23,6 +21,8 @@ import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.sync.domain.CheckinSyncer
+import testfixtUsc.activityCheckinEntry
+import testfixtUsc.city
 import java.time.LocalDate
 
 class CheckinSyncerTest : StringSpec() {
@@ -61,7 +61,7 @@ class CheckinSyncerTest : StringSpec() {
             freetrainingRepo = freetrainingRepo,
             dispatcher = syncerListenerDispatcher,
             dataSyncRescuer = dataSyncRescuer,
-            progress = DummySyncProgress,
+            progress = DummySyncProgress(),
             clock = SystemClock,
         )
     }

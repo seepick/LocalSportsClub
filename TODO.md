@@ -1,10 +1,9 @@
 # TODO
 
-## v1.7.0
+## v1.8.0
 
 * remove all task tags (resolve or put in here)
 * !!BUG in PAGEABLE.kt: not going beyond 20 pages!
-
 * ad autoSync: sync details only new (inserted) activities
 * store more data from `ActivityDetails` (spots left, etc.)
     * show spots left
@@ -12,6 +11,8 @@
 
 ## Backlog
 
+* test fixtures from usc-client don't work; right now copy'n'pasted all
+* move all mock/dev/dummy things in src/test/kotlin; create LocalSportsClubDevApp as entry point
 * every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
 * incorporate cancellation_limit (fetch hour setting per venue; remove from activity; infer)
 * rework `workParallel` as service with interface, so can be mocked out easily during testing (?)
