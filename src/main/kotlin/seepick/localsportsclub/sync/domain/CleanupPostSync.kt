@@ -1,8 +1,10 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 
 class CleanupPostSync(
     private val activityRepo: ActivityRepo,

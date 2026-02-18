@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.delay
 import seepick.localsportsclub.service.DummyGenerator
 
-class DelayedSyncer(
+class SyncerDelayed(
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
 ) : Syncer {

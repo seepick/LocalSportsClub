@@ -12,7 +12,7 @@ import seepick.localsportsclub.view.UiTest
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.usage.InMemorySinglesService
 
-// FIXME UiTests not working anymore... NoSuchMethodError :-/
+// TODO UiTests not working anymore... NoSuchMethodError :-/
 class PreferencesScreenUiTest : UiTest(), KoinTest {
     private var snackbarService = TestableSnackbarService()
 

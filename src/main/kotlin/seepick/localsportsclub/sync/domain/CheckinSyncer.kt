@@ -13,7 +13,6 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
-import seepick.localsportsclub.sync.DataSyncRescuer
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher

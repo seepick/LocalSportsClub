@@ -1,4 +1,4 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.activity.ActivityDetails
@@ -14,8 +14,7 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
-import seepick.localsportsclub.sync.domain.VenueMeta
-import seepick.localsportsclub.sync.domain.VenueSyncInserter
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.Month
 
 interface DataSyncRescuer {

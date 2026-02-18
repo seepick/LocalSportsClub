@@ -1,19 +1,15 @@
-package seepick.localsportsclub.sync
+package seepick.localsportsclub.sync.domain
 
 import com.github.seepick.uscclient.UscApi
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.singles.SinglesService
-import seepick.localsportsclub.sync.domain.ActivitiesSyncer
-import seepick.localsportsclub.sync.domain.CheckinSyncer
-import seepick.localsportsclub.sync.domain.FreetrainingSyncer
-import seepick.localsportsclub.sync.domain.ScheduleSyncer
-import seepick.localsportsclub.sync.domain.VenueSyncer
+import seepick.localsportsclub.sync.SyncProgress
+import seepick.localsportsclub.sync.Syncer
+import seepick.localsportsclub.sync.SyncerListener
+import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -103,32 +99,3 @@ class SyncerFacade(
 
 }
 
-class VenueAutoSyncer(
-    private val singlesService: SinglesService,
-    private val venueRepo: VenueRepo,
-    private val activityRepo: ActivityRepo,
-    private val activityDetailService: ActivityDetailService,
-    private val progress: SyncProgress,
-    private val clock: Clock,
-) {
-    private val log = logger {}
-
-    suspend fun syncAllDetails() {
-        progress.onProgress("Auto-Sync")
-        val city = singlesService.preferences.city ?: error("No city defined!")
-        val autoSyncedVenues = venueRepo.selectAllByCity(city.id).filter { it.isAutoSync }
-
-        val toBeSyncedActivities = autoSyncedVenues.flatMap { venue ->
-            log.debug { "auto-sync for all activities w/o teacher for: [${venue.name}]" }
-            activityRepo.selectAllForVenueId(venue.id).filter {
-                it.from.toLocalDate() >= clock.today() && // only future activities
-                        // FIXME better way to check just teacher null
-                        it.teacher == null
-                // because if sync doesn't return teacher, will always be resynced.
-                // also: maybe want to resync for spots left...?
-            }
-        }
-
-        activityDetailService.syncBulk(toBeSyncedActivities.map { it.id })
-    }
-}

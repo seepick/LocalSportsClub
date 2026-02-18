@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import seepick.localsportsclub.createDaysUntil
 import seepick.localsportsclub.date
+import seepick.localsportsclub.sync.domain.SyncerFacade
 import seepick.localsportsclub.toLocalDateTime
 
 class SyncerFacadeTest : DescribeSpec() {

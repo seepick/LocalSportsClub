@@ -21,6 +21,7 @@ import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.sync.domain.CheckinSyncer
+import seepick.localsportsclub.sync.domain.DataSyncRescuer
 import testfixtUsc.activityCheckinEntry
 import testfixtUsc.city
 import java.time.LocalDate

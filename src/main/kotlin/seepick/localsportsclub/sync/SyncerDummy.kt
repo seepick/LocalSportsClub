@@ -16,7 +16,7 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
-class DummySyncer(
+class SyncerDummy(
     private val venueRepo: VenueRepo,
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
