@@ -86,7 +86,7 @@ class VenueSyncerTest : StringSpec() {
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
             coEvery {
-                api.fetchVenues(VenuesFilter(city, plan))
+                api.fetchVenues(VenuesFilter(city, plan), any())
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
             coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
                     remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
@@ -106,7 +106,7 @@ class VenueSyncerTest : StringSpec() {
             syncVenueDbosMarkedDeleted.shouldBeEmpty()
         }
         "Given api returns 0 and db has 1 When sync Then mark as deleted" {
-            coEvery { api.fetchVenues(VenuesFilter(city, plan)) } returns emptyList()
+            coEvery { api.fetchVenues(VenuesFilter(city, plan), any()) } returns emptyList()
             val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
 
             syncer.sync(plan, city)
@@ -116,7 +116,7 @@ class VenueSyncerTest : StringSpec() {
         }
         "Given 1 stored And api returns it and one linked to it When sync Then link them" {
             val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
-            coEvery { api.fetchVenues(VenuesFilter(city, plan)) } returns listOf(
+            coEvery { api.fetchVenues(VenuesFilter(city, plan), any()) } returns listOf(
                 remoteVenue.copy(slug = stored.slug), remoteVenue
             )
             coEvery { api.fetchVenueDetail(remoteVenue.slug) } returns remoteDetails

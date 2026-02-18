@@ -3,6 +3,7 @@ package seepick.localsportsclub.sync.domain
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.shared.PageProgressListener
 import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenuesFilter
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -21,11 +22,6 @@ import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
-@Deprecated("use usc-client")
-fun SyncProgress.onProgressVenues(detail: String?) {
-    onProgress("Venues", detail)
-}
-
 class VenueSyncer(
     private val uscApi: UscApi,
     private val venueRepo: VenueRepo,
@@ -38,7 +34,8 @@ class VenueSyncer(
     suspend fun sync(plan: Plan, city: City) {
         log.info { "Syncing venues ..." }
         progress.onProgressVenues(null)
-        val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan)).associateBy { it.slug }
+        val listener = PageProgressListener { pageNr -> progress.onProgressVenues("Page $pageNr") }
+        val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan), listener).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenues = venueRepo.selectAllByCity(city.id)
         val markDeleted = localVenues.filter { !it.isDeleted }.associateBy { it.slug }.minus(remoteVenuesBySlug.keys)
@@ -64,6 +61,10 @@ class VenueSlugLink(
         if (other !is VenueSlugLink) return false
         return (slug1 == other.slug1 && slug2 == other.slug2) || (slug1 == other.slug2 && slug2 == other.slug1)
     }
+}
+
+private fun SyncProgress.onProgressVenues(detail: String?) {
+    onProgress("Venues", detail)
 }
 
 data class VenueMeta(
