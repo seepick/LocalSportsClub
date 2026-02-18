@@ -1,5 +1,6 @@
 package seepick.localsportsclub.gcal
 
+import com.github.seepick.uscclient.utils.DateTimeRange
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -17,7 +18,6 @@ import com.google.api.services.calendar.model.EventDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
-import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.retry
 import seepick.localsportsclub.service.singles.SinglesService
 import java.net.SocketException

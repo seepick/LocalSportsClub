@@ -13,8 +13,8 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.service.Location
-import seepick.localsportsclub.service.date.dateTimeRange
 import seepick.localsportsclub.slug
+import testfixtUsc.dateTimeRange
 
 fun Arb.Companion.location() = arbitrary {
     Location(double(min = 4.0, max = 6.0).bind(), double(min = 3.0, max = 4.0).bind())

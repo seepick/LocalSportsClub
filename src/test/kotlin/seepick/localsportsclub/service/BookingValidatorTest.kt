@@ -2,6 +2,7 @@ package seepick.localsportsclub.service
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.utils.DateTimeRange
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.string.shouldContain
@@ -16,7 +17,6 @@ import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
 import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.persistence.activityDbo
-import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.activity

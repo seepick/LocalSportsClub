@@ -1,8 +1,7 @@
 package seepick.localsportsclub.gcal
 
-import seepick.localsportsclub.service.date.DateTimeRange
+import com.github.seepick.uscclient.utils.DateTimeRange
 import java.time.LocalDate
-
 
 data class GcalDeletion(
     val day: LocalDate,

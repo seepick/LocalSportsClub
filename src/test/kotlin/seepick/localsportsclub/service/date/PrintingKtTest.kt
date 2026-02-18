@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service.date
 
+import com.github.seepick.uscclient.utils.DateTimeRange
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import java.time.LocalDate

@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.utils.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
@@ -12,7 +13,6 @@ import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.distance
 import seepick.localsportsclub.service.round
 import seepick.localsportsclub.service.singles.SinglesService

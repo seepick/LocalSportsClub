@@ -3,8 +3,8 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.github.seepick.uscclient.utils.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate

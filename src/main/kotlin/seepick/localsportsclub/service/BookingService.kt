@@ -3,6 +3,7 @@ package seepick.localsportsclub.service
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.booking.BookingResult
 import com.github.seepick.uscclient.booking.CancelResult
+import com.github.seepick.uscclient.utils.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
@@ -14,7 +15,6 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.date.DateTimeRange
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState

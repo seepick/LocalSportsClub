@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.service.date.DateTimeRange
+import com.github.seepick.uscclient.utils.DateTimeRange
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
