@@ -17,6 +17,7 @@ import androidx.compose.material.TextFieldDefaults.textFieldWithoutLabelPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
@@ -51,6 +52,7 @@ fun TextFieldSlim(
     shape: Shape = TextFieldDefaults.TextFieldShape,
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     paddingMode: PaddingMode = PaddingMode.Default,
+    onFocusLost: (() -> Unit)? = null,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -68,6 +70,11 @@ fun TextFieldSlim(
                 it.defaultMinSize(minHeight = 1.dp).height(26.dp)
             } else it
         }
+            .onFocusChanged { focusState ->
+                if (!focusState.isFocused) {
+                    onFocusLost?.invoke()
+                }
+            }
             .indicatorLine(enabled, isError, interactionSource, colors)
             //.defaultErrorSemantics(isError, getString(Strings.DefaultErrorMessage))
             .defaultMinSize(

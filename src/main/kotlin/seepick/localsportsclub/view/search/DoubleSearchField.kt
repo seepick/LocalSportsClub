@@ -31,20 +31,15 @@ fun <T, C : NumericComparator> DoubleSearchField(
             )
             Spacer(Modifier.width(5.dp))
             TextFieldSlim(
-                value = searchOption.searchDouble?.toString() ?: "",
+                value = searchOption.searchString,
                 singleLine = true,
                 modifier = Modifier.width(50.dp),
                 enabled = searchOption.enabled,
-                paddingMode = PaddingMode.Horizontal,
-                onValueChange = { doubleString ->
-                    if (doubleString.isEmpty()) {
-                        searchOption.updateSearchDouble(null)
-                    } else {
-                        doubleString.toDoubleOrNull()?.also {
-                            searchOption.updateSearchDouble(it)
-                        }
-                    }
+                onFocusLost = {
+                    searchOption.reinitializeState()
                 },
+                paddingMode = PaddingMode.Horizontal,
+                onValueChange = { searchOption.updateSearchString(it) },
             )
         }
     }

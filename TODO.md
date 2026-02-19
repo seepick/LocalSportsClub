@@ -1,9 +1,5 @@
 # TODO
 
-## v1.9.0
-
-* 🎨double search input; parser is weird; typing is weird
-
 ## v1.10.0
 
 * 🖋 new venue search filter: is-auto-sync, is-deleted

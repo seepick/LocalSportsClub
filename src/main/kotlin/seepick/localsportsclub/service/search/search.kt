@@ -128,7 +128,7 @@ abstract class AbstractSearch<T>(
         visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Double,
     ) =
-        DoubleSearchOption<T, C>(
+        DoubleSearchOption(
             initialComparator = initialComparator,
             label = label,
             reset = ::reset,

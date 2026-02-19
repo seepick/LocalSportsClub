@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
@@ -61,6 +62,7 @@ fun <T> List<T>.navigate(currentlySelected: T, navigation: TableNavigation): T? 
     }
 }
 
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun <T> Table(
@@ -83,46 +85,22 @@ fun <T> Table(
     var isFocused by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.focusRequester(focusRequester).onFocusChanged { state ->
-            isFocused = state.isFocused
-        }.onKeyEvent {
-            if (selectedItem != null && onItemNavigation != null && isFocused && it.type == KeyEventType.KeyUp) {
-                if (it.key == Key.DirectionUp) {
-                    onItemNavigation(TableNavigation.Up, selectedItem)
-                } else if (it.key == Key.DirectionDown) {
-                    onItemNavigation(TableNavigation.Down, selectedItem)
-                }
+        isFocused = state.isFocused
+    }.onKeyEvent {
+        if (selectedItem != null && onItemNavigation != null && isFocused && it.type == KeyEventType.KeyUp) {
+            if (it.key == Key.DirectionUp) {
+                onItemNavigation(TableNavigation.Up, selectedItem)
+            } else if (it.key == Key.DirectionDown) {
+                onItemNavigation(TableNavigation.Down, selectedItem)
             }
-            false
-        }.focusProperties { canFocus = true }.then(boxModifier)) {
+        }
+        false
+    }.focusProperties { canFocus = true }.then(boxModifier)) {
 
         val tableScrollState = rememberLazyListState()
         LaunchedEffect(items, selectedItem) {
-            val idx = selectedItem?.let { items.indexOf(it) } ?: -1
-            if (idx < 0) return@LaunchedEffect
-
-            val layoutInfo = tableScrollState.layoutInfo
-            val visible = layoutInfo.visibleItemsInfo
-            if (visible.isEmpty()) return@LaunchedEffect
-
-            val viewportStart = layoutInfo.viewportStartOffset
-            val viewportEnd = layoutInfo.viewportEndOffset
-
-            val itemInfo = visible.firstOrNull { it.index == idx }
-            if (itemInfo == null) {
-                // Not visible at all \-\> bring it into view
-                tableScrollState.animateScrollToItem(idx)
-                return@LaunchedEffect
-            }
-
-            val itemStart = itemInfo.offset
-            val itemEnd = itemInfo.offset + itemInfo.size
-            val fullyVisible = itemStart >= viewportStart && itemEnd <= viewportEnd
-
-            if (!fullyVisible) {
-                tableScrollState.animateScrollToItem(idx)
-            }
+            autoScroll(tableScrollState, items, selectedItem)
         }
-
         LazyColumn(
             state = tableScrollState,
             modifier = Modifier.padding(
@@ -196,3 +174,23 @@ fun <T> Table(
     }
 }
 
+suspend fun <T> autoScroll(tableScrollState: LazyListState, items: List<T>, selectedItem: T?) {
+    val idx = selectedItem?.let { items.indexOf(it) } ?: -1
+    if (idx < 0) return
+    val layoutInfo = tableScrollState.layoutInfo
+    val visibleItems = layoutInfo.visibleItemsInfo
+    if (visibleItems.isEmpty()) return
+    val itemInfo = visibleItems.firstOrNull { it.index == idx }
+    if (itemInfo == null) { // not visible at all; scroll
+        tableScrollState.animateScrollToItem(idx)
+        return
+    }
+    val viewportStart = layoutInfo.viewportStartOffset
+    val viewportEnd = layoutInfo.viewportEndOffset
+    val itemStart = itemInfo.offset
+    val itemEnd = itemInfo.offset + itemInfo.size
+    val fullyVisible = itemStart >= viewportStart && itemEnd <= viewportEnd
+    if (!fullyVisible) {
+        tableScrollState.animateScrollToItem(idx)
+    }
+}
