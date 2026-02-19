@@ -3,9 +3,7 @@
 ## v1.8.0
 
 * 🎨tooltip when title of activity too long in detail view
-* 🖋️store more data from `ActivityDetails` (spots left, etc.)
 * 🖋️ (ALREADY DONE?!) search for activity teacher and description (free text search)
-* 🎨tooltips for table headers (symbols are not van-zelf-sprekend)
 
 ## Backlog
 

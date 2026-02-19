@@ -43,29 +43,39 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     TableColumn(
         Lsc.icons.activitiesIndicator,
         WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.activities.size }),
+        TextRenderer(textAlign = TextAlign.Right) { it.activities.size },
+        tooltip = "Activities",
+    ),
     TableColumn(
         Lsc.icons.freetrainingsIndicator,
         WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size }),
+        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size },
+        tooltip = "Freetrainings",
+    ),
     TableColumn(
         VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
         WidthOrWeight.Width(30.dp),
         TextRenderer(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
-        }),
+        },
+        tooltip = "Check-ins",
+    ),
     TableColumn(
         VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
         WidthOrWeight.Width(30.dp),
         TextRenderer(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
-        }),
+        },
+        tooltip = "Booked",
+    ),
     TableColumn(
         VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
         WidthOrWeight.Width(40.dp),
         TextRenderer(textAlign = TextAlign.Center) {
             if (it.isHidden) LscIcons.hiddenEmoji else ""
-        }),
+        },
+        tooltip = "Hidden",
+    ),
     TableColumn(
         VisualIndicator.StringIndicator("Last Visit"), WidthOrWeight.Width(80.dp), TextRenderer(
             extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },

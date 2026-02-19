@@ -28,17 +28,18 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.6f),
-        CellRenderer.TextRenderer(extractor = { activity ->
-            buildString {
-                if (activity.state == ActivityState.Booked) {
-                    append("${Lsc.icons.reservedEmoji} ")
+        CellRenderer.TextRenderer(
+            extractor = { activity ->
+                buildString {
+                    if (activity.state == ActivityState.Booked) {
+                        append("${Lsc.icons.reservedEmoji} ")
+                    }
+                    append(activity.name)
+                    if (activity.teacher != null) {
+                        append(" /${activity.teacher}")
+                    }
                 }
-                append(activity.name)
-                if (activity.teacher != null) {
-                    append(" /${activity.teacher}")
-                }
-            }
-        },
+            },
             sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
     TableColumn(
@@ -50,7 +51,9 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         WidthOrWeight.Width(120.dp),
         CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
+        VisualIndicator.StringIndicator("Date"),
+        WidthOrWeight.Width(100.dp),
+        CellRenderer.TextRenderer(
             extractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,

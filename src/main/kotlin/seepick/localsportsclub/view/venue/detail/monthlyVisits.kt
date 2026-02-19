@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 @Composable
 fun MonthlyVisitsPanel(
-    model: MonthlyVisitsModel
+    model: MonthlyVisitsModel,
 ) {
     Text(
         text = "Available visits this month: ${model.totalAvailable} of ${MonthlyVisitsModel.MAX_VISITS}",
@@ -18,8 +18,8 @@ fun MonthlyVisitsPanel(
 }
 
 data class MonthlyVisitsModel(
-    val checkedinPast: Int,
-    val bookedFuture: Int,
+    val checkedinThisMonth: Int,
+    val bookedThisMonth: Int,
 ) {
     companion object {
         /*
@@ -30,7 +30,7 @@ data class MonthlyVisitsModel(
         const val MAX_VISITS = 6
     }
 
-    val totalUsed = checkedinPast + bookedFuture
+    val totalUsed = checkedinThisMonth + bookedThisMonth
     val totalAvailable = MAX_VISITS - totalUsed
 }
 
@@ -38,7 +38,7 @@ fun List<Activity>.toMonthlyVisitsModel(today: LocalDate): MonthlyVisitsModel {
     val currentMonthsActivities =
         filter { it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year }
     return MonthlyVisitsModel(
-        checkedinPast = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
-        bookedFuture = currentMonthsActivities.count { it.state == ActivityState.Booked },
+        checkedinThisMonth = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
+        bookedThisMonth = currentMonthsActivities.count { it.state == ActivityState.Booked },
     )
 }

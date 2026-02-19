@@ -111,7 +111,7 @@ fun SubEntityDetail(
         if (subEntity is SubEntity.ActivityEntity && subEntity.activity.description != null) {
             val description = subEntity.activity.description!!
 //            Text(text = subEntity.activity.description!!)
-            LongText(label = "Descr.", text = description, onShowLongText = {
+            LongText(label = "Info", text = description, onShowLongText = {
                 sharedModel.customDialog.value =
                     CustomDialog(title = "Activity Description", text = description, showDismissButton = false)
             })

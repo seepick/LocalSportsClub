@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.ColorOrBrush
+import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.background
@@ -48,6 +49,7 @@ fun <T> LazyListScope.renderTableHeader(
             columns.forEach { col ->
                 TableHeader(
                     header = col.header,
+                    tooltip = col.tooltip,
                     size = col.size,
                     isSortEnabled = col.sortingEnabled,
                     isSortActive = col == sortColumn,
@@ -63,6 +65,7 @@ fun <T> LazyListScope.renderTableHeader(
 @Composable
 fun RowScope.TableHeader(
     header: VisualIndicator,
+    tooltip: String?,
     size: WidthOrWeight,
     isSortEnabled: Boolean,
     isSortActive: Boolean,
@@ -71,40 +74,42 @@ fun RowScope.TableHeader(
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val background: ColorOrBrush = tableHeaderBgColor(isSortEnabled, isSortActive, isHovered, sortDirection)
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = applyColSize(Modifier, size)
-            .onPointerEvent(PointerEventType.Enter) { isHovered = true }
-            .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-            .background(background)
-            .bottomBorder(1.dp, Lsc.colors.primary)
-            .padding(top = 5.dp, bottom = 5.dp) // after bg color!
-            .fillMaxHeight(1f)
-            .let {
-                if (!isSortEnabled) it else {
-                    it.onClick { onClick() }
+    Tooltip(tooltip) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = applyColSize(Modifier, size)
+                .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+                .background(background)
+                .bottomBorder(1.dp, Lsc.colors.primary)
+                .padding(top = 5.dp, bottom = 5.dp) // after bg color!
+                .fillMaxHeight(1f)
+                .let {
+                    if (!isSortEnabled) it else {
+                        it.onClick { onClick() }
+                    }
                 }
-            }
-    ) {
-        when (header) {
-            is VisualIndicator.BitmapIndicator, is VisualIndicator.VectorIndicator -> {
-                header.composeIt(1.0f)
-            }
+        ) {
+            when (header) {
+                is VisualIndicator.BitmapIndicator, is VisualIndicator.VectorIndicator -> {
+                    header.composeIt(1.0f)
+                }
 
-            VisualIndicator.NoIndicator, is VisualIndicator.StringIndicator, is VisualIndicator.EmojiIndicator -> {
-                val headerText = when (header) {
-                    VisualIndicator.NoIndicator -> ""
-                    is VisualIndicator.StringIndicator -> header.label
-                    is VisualIndicator.EmojiIndicator -> header.emoji
-                    is VisualIndicator.BitmapIndicator -> error("bitmap indicator not implemented, lol")
-                    is VisualIndicator.VectorIndicator -> error("vector indicator not implemented, lol")
+                VisualIndicator.NoIndicator, is VisualIndicator.StringIndicator, is VisualIndicator.EmojiIndicator -> {
+                    val headerText = when (header) {
+                        VisualIndicator.NoIndicator -> ""
+                        is VisualIndicator.StringIndicator -> header.label
+                        is VisualIndicator.EmojiIndicator -> header.emoji
+                        is VisualIndicator.BitmapIndicator -> error("bitmap indicator not implemented, lol")
+                        is VisualIndicator.VectorIndicator -> error("vector indicator not implemented, lol")
+                    }
+                    TableTextCell(
+                        text = headerText,
+                        size = size,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
                 }
-                TableTextCell(
-                    text = headerText,
-                    size = size,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }

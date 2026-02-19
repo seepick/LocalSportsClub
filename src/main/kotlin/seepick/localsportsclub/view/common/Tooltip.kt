@@ -20,7 +20,6 @@ import seepick.localsportsclub.Lsc
 @Composable
 fun Tooltip(
     text: String?,
-    offset: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     if (text == null) {
@@ -44,7 +43,7 @@ fun Tooltip(
             },
             tooltipPlacement = TooltipPlacement.CursorPoint(
                 alignment = Alignment.BottomEnd,
-                offset = if (offset) DpOffset(5.dp, 5.dp) else DpOffset.Zero,
+                offset = DpOffset(5.dp, 5.dp),
             ),
         ) {
             content()

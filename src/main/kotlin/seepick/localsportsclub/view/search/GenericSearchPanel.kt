@@ -36,7 +36,7 @@ fun GenericSearchPanel(
                 .padding(bottom = 10.dp) // gap for the scrollbar
         ) {
             if (clearSearchEnabled) {
-                Tooltip("Reset search criteria", offset = true) {
+                Tooltip("Reset search criteria") {
                     TextButton(
                         onClick = clearSearch,
                         modifier = Modifier

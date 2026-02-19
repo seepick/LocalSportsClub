@@ -145,7 +145,7 @@ fun VenueDetail(
         }
         Spacer(Modifier.height(2.dp))
         Row {
-            Tooltip(venue.uscWebsite, offset = true) {
+            Tooltip(venue.uscWebsite) {
                 Button(
                     onClick = { uriHandler.openUri(venue.uscWebsite) },
                     modifier = Modifier.height(56.dp),

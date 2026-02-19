@@ -19,6 +19,7 @@ data class TableColumn<T>(
     val size: WidthOrWeight,
     val renderer: CellRenderer<T>,
     val sortingEnabled: Boolean = true,
+    val tooltip: String? = null,
     var sortValueExtractor: ((T) -> Any?)? = null,
 ) {
     init {
@@ -31,29 +32,33 @@ data class TableColumn<T>(
     }
 }
 
-fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> =
-    TableColumn(
-        VisualIndicator.StringIndicator("Image"), WidthOrWeight.Width(70.dp),
-        CellRenderer.CustomRenderer { item, col ->
-            Row(ModifierWith(col.size).height(30.dp)) {
-                VenueImage(imageFileName(item))
-            }
-        }, sortingEnabled = false
-    )
+fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> = TableColumn(
+    VisualIndicator.StringIndicator("Image"), WidthOrWeight.Width(70.dp), CellRenderer.CustomRenderer { item, col ->
+        Row(ModifierWith(col.size).height(30.dp)) {
+            VenueImage(imageFileName(item))
+        }
+    }, sortingEnabled = false
+)
 
 fun <T> tableColumnFavorited(isFavorited: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn(Lsc.icons.favoritedIndicator, isFavorited, Icons.Lsc.favorited2)
+    iconImageColumn(Lsc.icons.favoritedIndicator, isFavorited, Icons.Lsc.favorited2, "Favorited")
 
 fun <T> tableColumnWishlisted(isWishlisted: (T) -> Boolean): TableColumn<T> =
-    iconImageColumn(Lsc.icons.wishlistedIndicator, isWishlisted, Icons.Lsc.wishlisted2)
+    iconImageColumn(Lsc.icons.wishlistedIndicator, isWishlisted, Icons.Lsc.wishlisted2, "Wishlisted")
 
 private fun <T> iconImageColumn(
     header: VisualIndicator,
     flagExtractor: (T) -> Boolean,
-    icons: Pair<ImageBitmap, ImageBitmap>
-): TableColumn<T> =
-    TableColumn(header, WidthOrWeight.Width(50.dp), CellRenderer.CustomRenderer { item, col ->
+    icons: Pair<ImageBitmap, ImageBitmap>,
+    tooltip: String?,
+): TableColumn<T> = TableColumn(
+    header = header,
+    size = WidthOrWeight.Width(50.dp),
+    renderer = CellRenderer.CustomRenderer { item, col ->
         Row(ModifierWith(col.size).height(30.dp), horizontalArrangement = Arrangement.Center) {
             Image(if (flagExtractor(item)) icons.first else icons.second, null)
         }
-    }, sortValueExtractor = { flagExtractor(it) })
+    },
+    sortValueExtractor = { flagExtractor(it) },
+    tooltip = tooltip,
+)

@@ -81,7 +81,7 @@ fun SimpleActivitiesTable(
             columns = listOf(
                 TableColumn(
                     header = VisualIndicator.NoIndicator,
-                    size = WidthOrWeight.Width(170.dp),
+                    size = WidthOrWeight.Width(190.dp),
                     renderer = CellRenderer.TextRenderer(
                         textAlign = TextAlign.Right,
                         paddingRight = true,

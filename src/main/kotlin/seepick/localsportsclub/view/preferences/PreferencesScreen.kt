@@ -166,7 +166,7 @@ fun UscInfoRow(
 private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
     var periodFirstDayString by remember { mutableStateOf(periodFirstDay.value?.toString() ?: "") }
 
-    Tooltip("The day of the month when the check-in period starts (between 1 and 28)", offset = true) {
+    Tooltip("The day of the month when the check-in period starts (between 1 and 28)") {
         TextField(
             value = periodFirstDayString,
             label = { Text("Period") },
@@ -226,10 +226,7 @@ fun GCalRow(
 
     // GCal trash creds file if: com.google.api.client.auth.oauth2.TokenResponseException: 400 Bad Request
     // { "error": "invalid_grant", "error_description": "Token has been expired or revoked." }
-    Tooltip(
-        text = "Do this when you get an error message saying that your token has been expired/revoked.",
-        offset = true
-    ) {
+    Tooltip("Do this when you get an error message saying that your token has been expired/revoked.") {
         Button(
             enabled = viewModel.entity.calendarEnabled,
             onClick = { viewModel.resetTokenCache() },
