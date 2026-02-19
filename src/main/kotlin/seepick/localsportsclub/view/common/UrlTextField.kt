@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -21,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -28,12 +27,14 @@ import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.Lsc
 
 @Preview
@@ -57,41 +58,31 @@ fun UrlText(url: String, displayText: String = url) {
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 fun CopyTextToClipboard(text: String, content: @Composable () -> Unit) {
-    var isExpanded by remember { mutableStateOf(false) }
+    val isExpanded = remember { mutableStateOf(false) }
     val clipboard = androidx.compose.ui.platform.LocalClipboardManager.current
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
     Box(
         modifier = Modifier
+            .onGloballyPositioned { coordinates ->
+                textFieldSize = coordinates.size.toSize()
+            }
             .onPointerEvent(PointerEventType.Press) { event ->
                 if (event.buttons.isSecondaryPressed) {
                     println("right click: $text")
-                    isExpanded = true
+                    isExpanded.value = true
                 }
             }) {
-        DropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
-        ) {
-            DropdownMenuItem(
-                onClick = {
-                    clipboard.setText(AnnotatedString(text))
-                    isExpanded = false
-                }
-            ) {
-                Text("Copy to clipboard", fontSize = 11.sp)
-            }
-        }
-        // TODO fix mutable isExpanded
-//        DropdownMenuX(
-//            items = listOf("Copy to clipboard"),
-//            isMenuExpanded = isExpanded,
-//            textFieldSize = androidx.compose.ui.geometry.Size.Zero,
-//            itemFormatter = { it },
-//            onItemClicked = {
-//                clipboard.setText(AnnotatedString(text))
-//                isExpanded.value = false
-//            },
-//            selectedItem = null,
-//        )
+        DropdownMenuX(
+            items = listOf("Copy address to clipboard"),
+            isMenuExpanded = isExpanded,
+            textFieldSize = textFieldSize,
+            itemFormatter = { it },
+            onItemClicked = {
+                clipboard.setText(AnnotatedString(text))
+                isExpanded.value = false
+            },
+            selectedItem = null,
+        )
         content()
     }
 }

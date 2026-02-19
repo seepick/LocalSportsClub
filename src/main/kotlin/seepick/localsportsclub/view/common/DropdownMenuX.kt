@@ -61,7 +61,7 @@ fun <T> DropdownMenuX(
 fun <T> _DropdownMenuX(
     items: List<T>,
     itemFormatter: ((T) -> String)? = null,
-    isMenuExpanded: MutableState<Boolean>, // TODO try refactor to simple boolean
+    isMenuExpanded: MutableState<Boolean>,
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
@@ -77,9 +77,9 @@ fun <T> _DropdownMenuX(
             index++
             DropdownMenuItem(
                 onClick = {
-                onItemClicked(item)
-                isMenuExpanded.value = false
-            },
+                    onItemClicked(item)
+                    isMenuExpanded.value = false
+                },
                 modifier = Modifier.onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }.background(
                         rowBgColor(
