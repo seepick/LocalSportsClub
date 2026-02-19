@@ -2,13 +2,14 @@
 
 ## v1.9.0
 
-* 🎨when use keys up/down for navigation, scrolling along if outside of displayed content
-    * maybe also when e.g. selecting in master, then also select in venue.detail
 * 🎨double search input; parser is weird; typing is weird
+
+## v1.10.0
+
+* 🖋 new venue search filter: is-auto-sync, is-deleted
 
 ## Backlog
 
-* 🖋 new venue search filter: deleted (venues with title strike through)
 * 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
     * 🖋️when cancel booking, get sure cancellation time window is considered
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
@@ -17,9 +18,6 @@
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
 * 🖋️filter for time only (evenings), without specifying day/date
-
-## Low Prio
-
 * 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
 * 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
