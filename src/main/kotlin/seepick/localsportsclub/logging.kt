@@ -13,6 +13,10 @@ import ch.qos.logback.core.spi.FilterReply
 import org.slf4j.LoggerFactory
 import java.io.File
 
+private const val logFileName = "app_logs.log"
+private fun buildLogFileName(suffix: String) = "app_logs$suffix.log"
+private fun buildLogFilePattern(suffix: String) = "app_logs$suffix-%d{yyyy-MM-dd}.log"
+
 fun prelog(message: String) {
     println("[LSC] $message")
 }
@@ -23,7 +27,7 @@ fun reconfigureLog(logsDirForFileAppender: File?, packageSettings: Map<String, L
     rootLogger.detachAndStopAllAppenders()
     rootLogger.level = Level.WARN
 
-    rootLogger.addAppender(buildConsoleAppender(context, Level.TRACE))
+    rootLogger.addAppender(buildConsoleAppender(context))
 
     if (logsDirForFileAppender != null) {
         rootLogger.addAppender(buildFileAppender(logsDirForFileAppender, context, Level.DEBUG))
@@ -39,12 +43,12 @@ fun readRecentLogEntries(
     logsDir: File, // = FileResolver.resolve(DirectoryEntry.Logs)
     linesToRead: Int = 30,
 ): String? {
-    val targetLogFile = File(logsDir, "app_logs.log") // TODO extract string constant
+    val targetLogFile = File(logsDir, logFileName)
     if (!targetLogFile.exists()) return null
 
     return buildString {
-        targetLogFile.bufferedReader().use {
-            val lines = it.readLines()
+        targetLogFile.bufferedReader().use { reader ->
+            val lines = reader.readLines()
             val linesCount = lines.count()
             appendLine("LOG:")
             lines.drop(if (linesCount > linesToRead) linesCount - linesToRead else 0)
@@ -61,7 +65,7 @@ private fun buildFileAppender(
     level: Level,
     suffix: String = "",
 ): RollingFileAppender<ILoggingEvent> {
-    val targetLogFile = File(logsDir, "app_logs$suffix.log")
+    val targetLogFile = File(logsDir, buildLogFileName(suffix))
     prelog("Writing logs to: ${targetLogFile.absolutePath}")
     return RollingFileAppender<ILoggingEvent>().also { appender ->
         appender.context = context
@@ -73,7 +77,7 @@ private fun buildFileAppender(
         appender.rollingPolicy = TimeBasedRollingPolicy<ILoggingEvent>().also { policy ->
             policy.context = context
             policy.setParent(appender)
-            policy.fileNamePattern = "${logsDir.absolutePath}/app_logs$suffix-%d{yyyy-MM-dd}.log"
+            policy.fileNamePattern = "${logsDir.absolutePath}/${buildLogFilePattern(suffix)}"
             policy.maxHistory = 3
             policy.start()
         }
@@ -84,7 +88,7 @@ private fun buildFileAppender(
 
 private fun buildConsoleAppender(
     context: LoggerContext,
-    level: Level,
+    level: Level = Level.TRACE,
 ): ConsoleAppender<ILoggingEvent> {
     return ConsoleAppender<ILoggingEvent>().also { appender ->
         appender.context = context

@@ -4,24 +4,28 @@
 
 * 🎨tooltip when title of activity too long in detail view
 * 🖋️ (ALREADY DONE?!) search for activity teacher and description (free text search)
+* 🤖replace release script with github workflow
 
-## Backlog
+## v1.9.0
 
-* new venue search filter: deleted (venues with title strike through)
-* double search input; parser is weird; typing is weird
+* 🖋 new venue search filter: deleted (venues with title strike through)
+* 🎨double search input; parser is weird; typing is weird
 * 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
     * while venue sync: not stepping over to next page when: page count > page hint
     * showMore logic doesn't work to skip over...
+* 🎨when use keys up/down for navigation, scrolling along if outside of displayed content
+    * maybe also when e.g. selecting in master, then also select in venue.detail
+* 🎨make address right-clickable => dropdown: copy to clipboard
+
+## Backlog
+
 * 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
     * 🖋️when cancel booking, get sure cancellation time window is considered
-* 🎨when use keys up/down for navigation, scrolling along if move outside of view
-* 🎨make address right-clickable => dropdown: copy to clipboard
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
-* 🤖replace release script with github workflow
 * 🖋️filter for time only (evenings), without specifying day/date
 
 ## Low Prio
