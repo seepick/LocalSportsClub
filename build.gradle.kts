@@ -11,16 +11,15 @@ plugins {
 }
 
 val appVersion = project.properties["lsc_version"]?.toString() ?: "1.0.0"
-println("Gradle appVersion=[$appVersion]")
+logger.info("lsc_version=[$appVersion]")
 version = appVersion
 
 group = "com.github.seepick.localsportsclub"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
-
-    val versionUscClient = "2000.0.SNAPSHOT"
-//    val versionUscClient = "2026.2.4"
+//    val versionUscClient = "2000.0.SNAPSHOT"
+    val versionUscClient = "2026.2.5"
     implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
@@ -84,9 +83,13 @@ dependencies {
 //    testImplementation(testFixtures("com.github.seepick:usc-client:$versionUscClient")) // doesn't work; jitpack?!
 }
 
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions.jvmTarget = "16"
-//}
+
+kotlin {
+    jvmToolchain(17)
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+}
 
 compose.desktop {
     // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html
@@ -111,7 +114,6 @@ compose.desktop {
 }
 
 tasks.withType<Test>().configureEach { // to be able to run kotests
-//    useJUnit()
     useJUnitPlatform()
 }
 
