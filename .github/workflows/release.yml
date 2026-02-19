@@ -1,23 +1,50 @@
-name: Create releases on tags
+name: Release
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version ("1.8.0")'
+        required: true
+        type: string
 
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
-    name: Creating GitHub Release
+    name: Release Job
     steps:
-      - name: Create Release # https://github.com/marketplace/actions/create-tag-release
+      - name: Checkout Code
+        uses: actions/checkout@v6
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+      - name: Verify Build
+        run: ./gradlew test check
+
+      - name: Update Version
+        run: echo ${{ inputs.version }} > version.txt
+      - name: Commit Change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.txt
+          git commit -m "Update version to ${{ inputs.version }}"
+          git push origin HEAD:main
+      - name: Create Tag
+        uses: negz/create-tag@v1
+        with:
+          version: ${{ inputs.version }}
+          message: tag version ${{ inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release # https://github.com/marketplace/actions/create-tag-release
         id: create_release
         uses: actions/create-release@latest
+        #        OR: uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ inputs.version }}
+          release_name: Release ${{ inputs.version }}
           body: No changelog provided
           draft: false
           prerelease: false
@@ -33,18 +60,13 @@ jobs:
     name: Building and uploading compose artifact
     steps:
       - name: Log Info
-        run: echo "This job is now running on a ${{ runner.os }} / ${{ matrix.os }}; ref is ${{ github.ref }} and ref_name is ${{ github.ref_name }}"
+        run: echo "Job running with ${{ runner.os }}/${{ matrix.os }}; inputs.version=[${{ inputs.version }}], ref=[${{ github.ref }}], ref_name=[${{ github.ref_name }}]"
       - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-      - uses: gradle/actions/setup-gradle@v4
-
+        uses: actions/checkout@v6
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
       - name: Execute Gradle
-        run: ./gradlew packageDistributionForCurrentOS -Plsc_version="${{ github.ref_name }}"
+        run: ./gradlew packageDistributionForCurrentOS -Plsc_version="${{ inputs.version }}"
 
       - name: Upload Release Asset for Windows
         if: runner.os == 'Windows'
@@ -53,7 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.prepare-release.outputs.upload-url }}
-          asset_path: build/compose/binaries/main/exe/LocalSportsClub-${{ github.ref_name }}.exe
+          asset_path: build/compose/binaries/main/exe/LocalSportsClub-${{ inputs.version }}.exe
           asset_name: LocalSportsClub.exe
           asset_content_type: application/vnd.microsoft.portable-executable
 
@@ -64,6 +86,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.prepare-release.outputs.upload-url }}
-          asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ github.ref_name }}.dmg
+          asset_path: build/compose/binaries/main/dmg/LocalSportsClub-${{ inputs.version }}.dmg
           asset_name: LocalSportsClub.dmg
           asset_content_type: application/x-apple-diskimage

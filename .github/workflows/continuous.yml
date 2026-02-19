@@ -1,0 +1,15 @@
+name: Continuous Integration
+on:
+  push:
+    branches: [ "**" ]
+jobs:
+  continuous:
+    name: Execute CI Pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+      - name: Verify Build
+        run: ./gradlew test check

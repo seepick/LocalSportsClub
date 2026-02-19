@@ -1,11 +1,5 @@
 # TODO
 
-## v1.8.0
-
-* 🎨tooltip when title of activity too long in detail view
-* 🖋️ (ALREADY DONE?!) search for activity teacher and description (free text search)
-* 🤖replace release script with github workflow
-
 ## v1.9.0
 
 * 🖋 new venue search filter: deleted (venues with title strike through)
