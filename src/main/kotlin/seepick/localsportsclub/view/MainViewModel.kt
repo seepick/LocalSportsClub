@@ -11,6 +11,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.SyncProgressListener
 import seepick.localsportsclub.sync.SyncReporter
@@ -26,6 +27,7 @@ class MainViewModel(
     private val snackbarService: SnackbarService,
     private val syncReporter: SyncReporter,
     private val sharedModel: SharedModel,
+    private val fileResolver: FileResolver,
 ) : ViewModel(), GlobalKeyboardListener, ApplicationLifecycleListener, SyncProgressListener {
 
     private val log = logger {}
@@ -79,7 +81,7 @@ class MainViewModel(
 
     fun startSync() {
         syncReporter.clear()
-        currentSyncJob = launchBackgroundTask("Synchronisation of data failed!") {
+        currentSyncJob = launchBackgroundTask("Synchronisation of data failed!", fileResolver) {
             currentSyncStep = null
             syncer.sync()
         }
@@ -95,7 +97,7 @@ class MainViewModel(
         currentSyncJob = null
 
         if (!currentSyncJobCancelled) {
-            launchViewTask("Failed to show snackbar!") {
+            launchViewTask("Failed to show snackbar!", fileResolver) {
                 snackbarService.show(
                     SnackbarEvent(
                         content = if (isError) SnackbarContent.TextContent("See error dialog for details...") else SnackbarContent.CustomContent(

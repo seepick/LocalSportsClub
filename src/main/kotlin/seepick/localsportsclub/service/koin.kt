@@ -16,6 +16,7 @@ fun serviceModule(config: LscConfig) = module {
     single {
         DataStorage(get(), get(), get(), get(), get(), get(), config.baseUrl)
     }
+    single { FileResolverImpl(config.appDirectory) } bind FileResolver::class
     singleOf(::SinglesServiceImpl) bind SinglesService::class
     singleOf(::BookingService)
     singleOf(::BookingValidator)
@@ -25,8 +26,9 @@ fun serviceModule(config: LscConfig) = module {
         if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker
     } bind VersionChecker::class
     single {
+        val resolver = get<FileResolver>()
         FileSystemImageStorage(
-            venueImagesFolder = FileResolver.resolve(DirectoryEntry.VenueImages),
+            venueImagesFolder = resolver.resolve(DirectoryEntry.VenueImages),
         )
     } bind (ImageStorage::class)
 }

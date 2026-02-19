@@ -2,6 +2,7 @@ package seepick.localsportsclub.view
 
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.DataStorageListener
@@ -12,6 +13,7 @@ import seepick.localsportsclub.view.common.launchViewTask
 
 class SyncerViewModel(
     private val dataStorage: DataStorage,
+    private val fileResolver: FileResolver,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener {
 
     private val log = logger {}
@@ -27,9 +29,9 @@ class SyncerViewModel(
     private fun addOrRemoveActivities(
         logPrompt: String,
         activities: List<Activity>,
-        addOrRemove: (Venue, List<Activity>) -> Unit
+        addOrRemove: (Venue, List<Activity>) -> Unit,
     ) {
-        launchViewTask("Unable to add/remove activities!") {
+        launchViewTask("Unable to add/remove activities!", fileResolver) {
             log.debug { "$logPrompt ${activities.size} activities from/to their corresponding venues." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             activities.groupBy { it.venue.id }.forEach { (venueId, venueActivities) ->
@@ -49,9 +51,9 @@ class SyncerViewModel(
     private fun removeOrAddFretraining(
         logPrompt: String,
         freetrainings: List<Freetraining>,
-        addOrRemove: (Venue, Set<Freetraining>) -> Unit
+        addOrRemove: (Venue, Set<Freetraining>) -> Unit,
     ) {
-        launchViewTask("Unable to add/remove freetraining") {
+        launchViewTask("Unable to add/remove freetraining", fileResolver) {
             log.debug { "$logPrompt ${freetrainings.size} freetrainings from/to their corresponding venue." }
             val venuesById = dataStorage.selectVisibleVenues().associateBy { it.id }
             freetrainings.groupBy { it.venue.id }.forEach { (venueId, venueFreetraining) ->

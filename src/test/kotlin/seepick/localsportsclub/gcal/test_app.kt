@@ -1,12 +1,14 @@
 package seepick.localsportsclub.gcal
 
 import com.github.seepick.uscclient.utils.DateTimeRange
+import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.development
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
     val calendarId = args[0]
-    RealGcalService()
+    RealGcalService(LscConfig.development.fileResolver)
         .testConnection(calendarId)
 //                .createDummy("wrong")
 //                .deleteDummy(calendarId)

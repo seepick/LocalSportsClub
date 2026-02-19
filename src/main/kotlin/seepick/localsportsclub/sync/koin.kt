@@ -25,13 +25,13 @@ enum class SyncMode {
 }
 
 fun syncModule(config: LscConfig) = module {
-    log.debug { "Configuring sync mode: ${config.sync}" }
+    log.debug { "Configuring sync mode: ${config.syncMode}" }
     singleOf(::SyncerListenerDispatcher)
     singleOf(::SyncReporter)
     singleOf(::SyncProgressThreaded) bind SyncProgress::class
     singleOf(::HttpDownloader) bind Downloader::class
 
-    when (config.sync) {
+    when (config.syncMode) {
         SyncMode.Noop -> singleOf(::NoopSyncer) bind Syncer::class
         SyncMode.Delayed -> singleOf(::SyncerDelayed) bind Syncer::class
         SyncMode.Dummy -> singleOf(::SyncerDummy) bind Syncer::class

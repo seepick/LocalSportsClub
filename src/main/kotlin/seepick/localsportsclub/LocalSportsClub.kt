@@ -15,9 +15,11 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.BookingService
+import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.sync.SyncMode
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.Syncer
@@ -36,137 +38,154 @@ import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.io.File
 
 object LocalSportsClub {
     @JvmStatic
     fun main(args: Array<String>) {
-        val config = if (Environment.current == Environment.Development) {
-            LscConfig.development
-        } else {
-            LscConfig.production
-        }
-        reconfigureLog(
-            useFileAppender = config.logbackFileEnabled, packageSettings = mapOf(
-                "seepick.localsportsclub" to Level.TRACE,
-                "com.github.seepick.uscclient" to Level.DEBUG,
-                "liquibase" to Level.INFO,
-                "Exposed" to Level.INFO,
-            )
+        startApplication(LscConfig.production())
+    }
+}
+
+fun LscConfig.Companion.production(): LscConfig {
+    val appDirectory = File(File(System.getProperty("user.home")), ".lsc")
+    return LscConfig(
+        databaseMode = DatabaseMode.Exposed,
+        apiMode = ApiMode.RealHttp,
+        gcalMode = GcalMode.Real,
+        syncMode = SyncMode.Real,
+        logbackFileEnabled = true,
+        appDirectory = appDirectory,
+    )
+}
+
+fun startApplication(config: LscConfig) {
+    reconfigureLog(
+        logsDirForFileAppender = config.fileResolver.resolve(DirectoryEntry.Logs),
+        packageSettings = mapOf(
+            "seepick.localsportsclub" to Level.TRACE,
+            "com.github.seepick.uscclient" to Level.DEBUG,
+            "liquibase" to Level.INFO,
+            "Exposed" to Level.INFO,
         )
-        val log = logger {}
-        log.info { "Starting up application for environment: ${Environment.current.name}" }
-        try {
-            application {
-                KoinApplication(application = {
-                    modules(allModules(config))
-                }) {
-                    val keyboard: GlobalKeyboard = koinInject()
-                    val applicationLifecycle: ApplicationLifecycle = koinInject()
-                    applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
+    )
+    val log = logger {}
+    log.info { "Starting up application ($config)" }
+    log.debug {
+        val heapSize = Runtime.getRuntime().totalMemory().toDouble()
+        "heapSize = ${(heapSize / 1024.0 / 1024.0).toInt()}MB"
+    }
+    try {
+        application {
+            KoinApplication(application = {
+                modules(allModules(config))
+            }) {
+                val keyboard: GlobalKeyboard = koinInject()
+                val applicationLifecycle: ApplicationLifecycle = koinInject()
+                applicationLifecycle.attachMacosQuitHandler() // when CMD+Q is executed (or from menubar)
 
-                    val singlesService: SinglesService = koinInject()
-                    val mainWindowState: MainWindowState = koinInject()
-                    val windowPref = singlesService.windowPref ?: WindowPref.default
-                    mainWindowState.update(windowPref.width, windowPref.height)
-                    Window(
-                        title = "LocalSportsClub v${AppPropertiesProvider.provide().version} ${if (Environment.current == Environment.Development) " - DEV 🤓" else ""}",
-                        state = rememberWindowState(
-                            width = windowPref.width.dp, height = windowPref.height.dp,
-                            position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
-                        ),
-                        onKeyEvent = { keyboard.process(it); false },
-                        onCloseRequest = {
-                            applicationLifecycle.onExit() // when the window close button is clicked
-                            exitApplication()
+                val singlesService: SinglesService = koinInject()
+                val mainWindowState: MainWindowState = koinInject()
+                val windowPref = singlesService.windowPref ?: WindowPref.default
+                mainWindowState.update(windowPref.width, windowPref.height)
+                Window(
+                    title = "LocalSportsClub v${AppPropertiesProvider.provide().version}${config.windowTitleSuffix}",
+                    state = rememberWindowState(
+                        width = windowPref.width.dp, height = windowPref.height.dp,
+                        position = WindowPosition(windowPref.posX.dp, windowPref.posY.dp),
+                    ),
+                    onKeyEvent = { keyboard.process(it); false },
+                    onCloseRequest = {
+                        applicationLifecycle.onExit() // when the window close button is clicked
+                        exitApplication()
+                    },
+                ) {
+                    window.addComponentListener(object : java.awt.event.ComponentAdapter() {
+                        override fun componentResized(e: ComponentEvent) {
+                            mainWindowState.update(window.width, window.height)
+                        }
+                    })
+
+                    val mainViewModel = koinViewModel<MainViewModel>()
+                    val desktop = java.awt.Desktop.getDesktop()
+                    if (desktop.isSupported(java.awt.Desktop.Action.APP_PREFERENCES)) {
+                        log.debug { "Registering preferences handler" }
+                        desktop.setPreferencesHandler {
+                            mainViewModel.changeScreen(Screen.Preferefences)
+                        }
+                    }
+
+                    val syncer = koinInject<Syncer>()
+                    val dataStorage = koinInject<DataStorage>()
+                    val usageStorage = koinInject<UsageStorage>()
+                    val bookingService = koinInject<BookingService>()
+                    val syncerListeners = listOf(dataStorage, usageStorage, koinInject<SyncReporter>())
+                    syncerListeners.forEach {
+                        syncer.registerListener(it)
+                        if (it.alsoRegisterForBooking()) {
+                            bookingService.registerListener(it)
+                        }
+                    }
+
+                    val syncProgress = koinInject<SyncProgress>()
+                    syncProgress.register(koinViewModel<MainViewModel>())
+
+                    val dataStorageListeners = listOf(
+                        koinViewModel<SyncerViewModel>(),
+                        koinViewModel<ActivityViewModel>(),
+                        koinViewModel<FreetrainingViewModel>(),
+                        koinViewModel<VenueViewModel>(),
+                    )
+                    dataStorageListeners.forEach {
+                        dataStorage.registerListener(it)
+                    }
+
+                    val applicationLifecycleListeners = listOf(
+                        mainViewModel, // has to be first ;)
+                        usageStorage,
+                        koinInject<VersionNotifier>(),
+                        koinViewModel<ActivityViewModel>(),
+                        koinViewModel<FreetrainingViewModel>(),
+                        koinViewModel<VenueViewModel>(),
+                        koinViewModel<NotesViewModel>(),
+                        koinViewModel<PreferencesViewModel>(),
+                        object : ApplicationLifecycleListener {
+                            override fun onExit() {
+                                singlesService.windowPref = WindowPref(
+                                    width = window.width,
+                                    height = window.height,
+                                    posX = window.x,
+                                    posY = window.y,
+                                )
+                            }
                         },
-                    ) {
-                        window.addComponentListener(object : java.awt.event.ComponentAdapter() {
-                            override fun componentResized(e: ComponentEvent) {
-                                mainWindowState.update(window.width, window.height)
-                            }
-                        })
+                    )
+                    applicationLifecycleListeners.forEach {
+                        applicationLifecycle.registerListener(it)
+                    }
 
-                        val mainViewModel = koinViewModel<MainViewModel>()
-                        val desktop = java.awt.Desktop.getDesktop()
-                        if (desktop.isSupported(java.awt.Desktop.Action.APP_PREFERENCES)) {
-                            log.debug { "Registering preferences handler" }
-                            desktop.setPreferencesHandler {
-                                mainViewModel.changeScreen(Screen.Preferefences)
-                            }
+                    window.addWindowListener(object : WindowAdapter() {
+                        // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
+                        override fun windowOpened(e: WindowEvent?) {
+                            applicationLifecycle.onStartUp()
                         }
+                    })
 
-                        val syncer = koinInject<Syncer>()
-                        val dataStorage = koinInject<DataStorage>()
-                        val usageStorage = koinInject<UsageStorage>()
-                        val bookingService = koinInject<BookingService>()
-                        val syncerListeners = listOf(dataStorage, usageStorage, koinInject<SyncReporter>())
-                        syncerListeners.forEach {
-                            syncer.registerListener(it)
-                            if (it.alsoRegisterForBooking()) {
-                                bookingService.registerListener(it)
-                            }
-                        }
+                    keyboard.registerListener(mainViewModel)
 
-                        val syncProgress = koinInject<SyncProgress>()
-                        syncProgress.register(koinViewModel<MainViewModel>())
-
-                        val dataStorageListeners = listOf(
-                            koinViewModel<SyncerViewModel>(),
-                            koinViewModel<ActivityViewModel>(),
-                            koinViewModel<FreetrainingViewModel>(),
-                            koinViewModel<VenueViewModel>(),
-                        )
-                        dataStorageListeners.forEach {
-                            dataStorage.registerListener(it)
-                        }
-
-                        val applicationLifecycleListeners = listOf(
-                            mainViewModel, // has to be first ;)
-                            usageStorage,
-                            koinInject<VersionNotifier>(),
-                            koinViewModel<ActivityViewModel>(),
-                            koinViewModel<FreetrainingViewModel>(),
-                            koinViewModel<VenueViewModel>(),
-                            koinViewModel<NotesViewModel>(),
-                            koinViewModel<PreferencesViewModel>(),
-                            object : ApplicationLifecycleListener {
-                                override fun onExit() {
-                                    singlesService.windowPref = WindowPref(
-                                        width = window.width,
-                                        height = window.height,
-                                        posX = window.x,
-                                        posY = window.y,
-                                    )
-                                }
-                            },
-                        )
-                        applicationLifecycleListeners.forEach {
-                            applicationLifecycle.registerListener(it)
-                        }
-
-                        window.addWindowListener(object : WindowAdapter() {
-                            // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
-                            override fun windowOpened(e: WindowEvent?) {
-                                applicationLifecycle.onStartUp()
-                            }
-                        })
-
-                        keyboard.registerListener(mainViewModel)
-
-                        LscTheme {
-                            Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = MaterialTheme.colors.background,
-                            ) {
-                                MainView()
-                            }
+                    LscTheme {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colors.background,
+                        ) {
+                            MainView()
                         }
                     }
                 }
             }
-        } catch (e: Exception) {
-            log.error(e) { "Startup Error!" }
-            showErrorDialog("Failed to start up the application. Shutting down.", e)
         }
+    } catch (e: Exception) {
+        log.error(e) { "Startup Error!" }
+        showErrorDialog("Failed to start up the application. Shutting down.", e, config.fileResolver)
     }
 }

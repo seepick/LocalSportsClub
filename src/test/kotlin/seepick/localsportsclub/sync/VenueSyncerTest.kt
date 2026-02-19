@@ -21,6 +21,7 @@ import seepick.localsportsclub.persistence.InMemoryVenueRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
+import seepick.localsportsclub.service.DummyFileResolver
 import seepick.localsportsclub.service.MemorizableImageStorage
 import seepick.localsportsclub.sync.domain.VenueSyncInserterImpl
 import seepick.localsportsclub.sync.domain.VenueSyncer
@@ -75,6 +76,7 @@ class VenueSyncerTest : StringSpec() {
                 imageStorage,
                 syncerListenerDispatcher,
                 syncProgress,
+                DummyFileResolver,
             ),
             progress = syncProgress,
         )

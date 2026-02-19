@@ -17,7 +17,21 @@ import seepick.localsportsclub.view.venue.VenueViewModel
 fun viewModule(config: LscConfig) = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::VenueViewModel)
-    viewModel { ActivityViewModel(config.syncDaysAhead, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel {
+        ActivityViewModel(
+            config.syncDaysAhead,
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    }
     viewModel {
         FreetrainingViewModel(
             config.syncDaysAhead,
@@ -29,7 +43,8 @@ fun viewModule(config: LscConfig) = module {
             get(),
             get(),
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     viewModelOf(::NotesViewModel)

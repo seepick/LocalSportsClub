@@ -5,7 +5,6 @@ import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedVenueRepo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.persistence.cliConnectToDatabase
 
 object BugfixDataCleaner {
 

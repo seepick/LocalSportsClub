@@ -7,9 +7,9 @@ import seepick.localsportsclub.LscConfig
 
 fun gcalModule(config: LscConfig) = module {
     single {
-        when (config.gcal) {
+        when (config.gcalMode) {
             GcalMode.Noop -> NoopGcalService
-            GcalMode.Real -> PrefsEnabledGcalService(get())
+            GcalMode.Real -> PrefsEnabledGcalService(get(), get())
         }
     } bind GcalService::class
 }

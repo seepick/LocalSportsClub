@@ -11,15 +11,13 @@ import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.spi.FilterReply
 import org.slf4j.LoggerFactory
-import seepick.localsportsclub.service.DirectoryEntry
-import seepick.localsportsclub.service.FileResolver
 import java.io.File
 
 fun prelog(message: String) {
     println("[LSC] $message")
 }
 
-fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>) {
+fun reconfigureLog(logsDirForFileAppender: File?, packageSettings: Map<String, Level>) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext
     val rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME)
     rootLogger.detachAndStopAllAppenders()
@@ -27,9 +25,9 @@ fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>
 
     rootLogger.addAppender(buildConsoleAppender(context, Level.TRACE))
 
-    if (useFileAppender) {
-        rootLogger.addAppender(buildFileAppender(context, Level.DEBUG))
-        rootLogger.addAppender(buildFileAppender(context, Level.WARN, "-warn"))
+    if (logsDirForFileAppender != null) {
+        rootLogger.addAppender(buildFileAppender(logsDirForFileAppender, context, Level.DEBUG))
+        rootLogger.addAppender(buildFileAppender(logsDirForFileAppender, context, Level.WARN, "-warn"))
     }
 
     packageSettings.forEach { (packageName, logLevel) ->
@@ -37,9 +35,11 @@ fun reconfigureLog(useFileAppender: Boolean, packageSettings: Map<String, Level>
     }
 }
 
-fun readRecentLogEntries(linesToRead: Int = 30): String? {
-    val logsDir = FileResolver.resolve(DirectoryEntry.Logs)
-    val targetLogFile = File(logsDir, "app_logs.log")
+fun readRecentLogEntries(
+    logsDir: File, // = FileResolver.resolve(DirectoryEntry.Logs)
+    linesToRead: Int = 30,
+): String? {
+    val targetLogFile = File(logsDir, "app_logs.log") // TODO extract string constant
     if (!targetLogFile.exists()) return null
 
     return buildString {
@@ -56,11 +56,11 @@ fun readRecentLogEntries(linesToRead: Int = 30): String? {
 }
 
 private fun buildFileAppender(
+    logsDir: File, // = FileResolver.resolve(DirectoryEntry.Logs)
     context: LoggerContext,
     level: Level,
-    suffix: String = ""
+    suffix: String = "",
 ): RollingFileAppender<ILoggingEvent> {
-    val logsDir = FileResolver.resolve(DirectoryEntry.Logs)
     val targetLogFile = File(logsDir, "app_logs$suffix.log")
     prelog("Writing logs to: ${targetLogFile.absolutePath}")
     return RollingFileAppender<ILoggingEvent>().also { appender ->

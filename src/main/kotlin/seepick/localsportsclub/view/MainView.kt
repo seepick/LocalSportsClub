@@ -71,7 +71,7 @@ fun MainView(
             snackbarEvent = event
             snackbarHostState.showSnackbar(
                 message = if (event.content is SnackbarContent.TextContent) event.content.message else "",
-                actionLabel = event.actionLabel,
+                actionLabel = event.actionLabel ?: "Close",
                 duration = event.duration,
             )
         }

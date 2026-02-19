@@ -88,6 +88,7 @@ class VenueSyncInserterImpl(
     private val imageStorage: ImageStorage,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
+    private val fileResolver: FileResolver,
 ) : VenueSyncInserter {
     private val log = logger {}
 
@@ -184,7 +185,7 @@ class VenueSyncInserterImpl(
     private suspend fun VenueDbo.ensureHasImageIfPresent(details: VenueDetails): VenueDbo {
         return if (details.originalImageUrl == null) this else {
             val fileName = "${details.slug}.png"
-            if (FileResolver.resolveVenueImage(fileName).exists()) {
+            if (fileResolver.resolveVenueImage(fileName).exists()) {
                 log.trace { "Venue image [$fileName] already exists, skip downloading it." }
             } else {
                 downloadAndSaveImage(fileName, details.originalImageUrl!!)

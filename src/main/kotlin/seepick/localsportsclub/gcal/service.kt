@@ -17,6 +17,7 @@ import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.service.DirectoryEntry
+import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.retry
 import seepick.localsportsclub.service.singles.SinglesService
@@ -39,12 +40,13 @@ interface GcalService {
 
 class PrefsEnabledGcalService(
     private val singlesService: SinglesService,
+    private val fileResolver: FileResolver,
 ) : GcalService {
 
     private val delegate by lazy {
         val calendarId = singlesService.preferences.gcal.maybeCalendarId
         if (calendarId == null) NoopGcalService
-        else RealGcalService()
+        else RealGcalService(fileResolver)
     }
 
     override fun create(calendarId: String, entry: GcalEntry) {
@@ -67,23 +69,35 @@ object NoopGcalService : GcalService {
     }
 }
 
-
-class RealGcalService : GcalService {
+class RealGcalService(
+    private val fileResolver: FileResolver,
+) : GcalService {
     private val log = logger {}
     private val applicationName = "LocalSportsClub"
     private val scopes = setOf(CalendarScopes.CALENDAR, CalendarScopes.CALENDAR_EVENTS)
-    private val datastoreDir = FileResolver.resolve(DirectoryEntry.Gcal)
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
     private val timeZone = TimeZone.getDefault().id
     private val zoneId = ZoneId.systemDefault()
 
     private val credentials: Credential by lazy {
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, GcalCredentialsLoader.buildReader())
-        val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
-            .setDataStoreFactory(FileDataStoreFactory(datastoreDir)).setAccessType("offline").build()
-        val receiver = LocalServerReceiver.Builder().setPort(8888).build()
-        AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
+        val reader = GcalCredentialsLoader.buildReader(
+            credentialsJsonFile = fileResolver.resolve(FileEntry.GoogleCredentials),
+            gcalCredsPropFile = fileResolver.resolve(FileEntry.GoogleCalendarCredsProperties),
+        )
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, reader)
+        val datastoreDir = fileResolver.resolve(DirectoryEntry.Gcal)
+        val flow = GoogleAuthorizationCodeFlow
+            .Builder(httpTransport, jsonFactory, clientSecrets, scopes)
+            .setDataStoreFactory(FileDataStoreFactory(datastoreDir))
+            .setAccessType("offline")
+            .build()
+        val receiver = LocalServerReceiver
+            .Builder()
+            .setPort(8888)
+            .build()
+        AuthorizationCodeInstalledApp(flow, receiver)
+            .authorize("user")
     }
 
     private val calendar: Calendar by lazy {

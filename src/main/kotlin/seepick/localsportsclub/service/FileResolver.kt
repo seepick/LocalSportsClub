@@ -1,30 +1,25 @@
 package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.Environment
 import java.io.File
 
 private val log = logger {}
 
-object FileResolver {
+interface FileResolver {
+    fun resolve(entry: FileEntry): File
+    fun resolve(entry: DirectoryEntry): File
+}
 
-    private val homeDirectory = File(System.getProperty("user.home"))
-    val appDirectoryProd = File(homeDirectory, ".lsc")
-    val appDirectoryDev = File(homeDirectory, ".lsc-dev")
-    private val appDirectory =
-        when (Environment.current) {
-            Environment.Production -> appDirectoryProd
-            Environment.Development -> appDirectoryDev
-        }
-
+class FileResolverImpl(private val appDirectory: File) : FileResolver {
     init {
         appDirectory.createIfNeededOrFail()
     }
 
-    fun resolve(entry: FileEntry) =
+    override fun resolve(entry: FileEntry) =
         File(if (entry.directory == null) appDirectory else resolve(entry.directory), entry.fileName)
 
-    fun resolve(entry: DirectoryEntry) = File(appDirectory, entry.directoryName).createIfNeededOrFail()
+    override fun resolve(entry: DirectoryEntry) =
+        File(appDirectory, entry.directoryName).createIfNeededOrFail()
 }
 
 private fun File.createIfNeededOrFail() = apply {

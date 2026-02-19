@@ -93,7 +93,7 @@ compose.desktop {
     // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html
     application {
         mainClass = "seepick.localsportsclub.LocalSportsClub"
-        jvmArgs += listOf("-Dlsc.env=PROD", "-Xmx1G", "--add-exports", "java.desktop/com.apple.eawt=ALL-UNNAMED")
+        jvmArgs += listOf("-Xmx1G", "--add-exports", "java.desktop/com.apple.eawt=ALL-UNNAMED")
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe)
             packageName = "LocalSportsClub"

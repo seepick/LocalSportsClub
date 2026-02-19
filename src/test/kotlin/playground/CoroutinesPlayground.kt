@@ -31,7 +31,7 @@ object CoroutinesPlayground {
     private val log: KLogger
 
     init {
-        reconfigureLog(false, mapOf("playground" to Level.DEBUG))
+        reconfigureLog(null, mapOf("playground" to Level.DEBUG))
         log = logger {}
     }
 

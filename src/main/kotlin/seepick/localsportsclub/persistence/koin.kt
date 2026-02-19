@@ -4,11 +4,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.DatabaseMode
+import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.service.DirectoryEntry
 
-fun persistenceModule(databaseMode: DatabaseMode) = module {
-    when (databaseMode) {
+fun persistenceModule(config: LscConfig) = module {
+    when (config.databaseMode) {
         DatabaseMode.Exposed -> {
-            connectToDatabaseAndMigrate()
+            connectToDatabaseAndMigrate(config.fileResolver.resolve(DirectoryEntry.Database))
             single { ExposedVenueRepo } bind VenueRepo::class
             single { ExposedVenueLinksRepo } bind VenueLinksRepo::class
             single { ExposedActivityRepo } bind ActivityRepo::class

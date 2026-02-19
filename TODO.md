@@ -2,7 +2,6 @@
 
 ## v1.8.0
 
-* 🎨every toast message should it closable (otherwise annoying); click on it to dismiss (no button needed)
 * 🎨tooltip when title of activity too long in detail view
 * 🖋️store more data from `ActivityDetails` (spots left, etc.)
 * 🖋️ (ALREADY DONE?!) search for activity teacher and description (free text search)
@@ -32,7 +31,7 @@
 * 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
 * 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
-* 🤖move all mock/dev/dummy things in src/test/kotlin; create LocalSportsClubDevApp as entry point
+* 🤖move all mock/dev/dummy things in src/test/kotlin (leftovers?)
 * 🤖rework `workParallel` as service with interface, so can be mocked out easily during testing (?)
 * 🎨don't display distance (column/search) if home coordinates not set
 * 🤖test fixtures from usc-client don't work; right now copy'n'pasted all

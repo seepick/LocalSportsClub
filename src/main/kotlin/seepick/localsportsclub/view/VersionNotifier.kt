@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VersionChecker
 import seepick.localsportsclub.service.VersionResult
 import seepick.localsportsclub.view.common.launchBackgroundTask
@@ -17,13 +18,14 @@ import java.net.UnknownHostException
 class VersionNotifier(
     private val versionChecker: VersionChecker,
     private val snackbarService: SnackbarService,
+    private val fileResolver: FileResolver,
 ) : ViewModel(), ApplicationLifecycleListener {
 
     private val log = logger {}
 
     override fun onStartUp() {
         val version = AppPropertiesProvider.provide().version
-        launchBackgroundTask("Failed to get latest application version from the web.") {
+        launchBackgroundTask("Failed to get latest application version from the web.", fileResolver) {
             try {
                 val result = versionChecker.check(version)
                 when (result) {

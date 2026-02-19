@@ -2,6 +2,8 @@ package seepick.localsportsclub.view.common
 
 import seepick.localsportsclub.AppPropertiesProvider
 import seepick.localsportsclub.readRecentLogEntries
+import seepick.localsportsclub.service.DirectoryEntry
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.view.common.swing.SwingImage
 import seepick.localsportsclub.view.common.swing.SwingImageFactory
 import seepick.localsportsclub.view.common.swing.SwingUtil
@@ -28,25 +30,24 @@ import javax.swing.event.HyperlinkEvent
 fun showErrorDialog(
     message: String,
     exception: Throwable?,
+    fileResolver: FileResolver,
     imageType: SwingImage = SwingImage.Error,
 ) {
-    ErrorDialog("Error", message, exception, imageType).isVisible = true
+    ErrorDialog(
+        title = "Error",
+        message = message,
+        exception = exception,
+        imageType = imageType,
+        logLines = readRecentLogEntries(linesToRead = 30, logsDir = fileResolver.resolve(DirectoryEntry.Logs)),
+    ).isVisible = true
 }
 
-fun main() {
-    val cause = Exception("ganz unten")
-    val cause2 = Exception("rums", cause)
-    val ex = Exception("bla blu", cause2)
-    val message = "This is a longer message explaining what it is."
-//    val message = (1..20).fold("") { acc, i -> "$acc #$i: This is my very long text." }
-    showErrorDialog(message, ex)
-}
-
-private class ErrorDialog(
+class ErrorDialog(
     title: String,
     message: String,
     exception: Throwable?,
     imageType: SwingImage,
+    logLines: String?,
 ) : JDialog(null as JDialog?, title, true) {
 
     private val labelDetailsShow = "Details >>"
@@ -84,7 +85,7 @@ private class ErrorDialog(
                 appendLine()
                 append(exception.stackTraceToString())
             }
-            readRecentLogEntries()?.also {
+            logLines?.also {
                 appendLine()
                 appendLine(it)
             }

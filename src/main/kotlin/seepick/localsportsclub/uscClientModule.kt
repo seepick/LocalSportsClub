@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.singles.SinglesService
 
 private val log = logger {}
@@ -31,7 +32,7 @@ fun uscClientModule(config: LscConfig) = module {
                     UscConfig(
                         credentials = singlesService.verifiedUscCredentials
                             ?: error("No (verified) USC credentials stored!"),
-                        responseLogFolder = config.responseLogFolder,
+                        responseLogFolder = config.fileResolver.resolve(DirectoryEntry.ApiLogs),
                         currentYear = config.currentYear,
                     )
                 },

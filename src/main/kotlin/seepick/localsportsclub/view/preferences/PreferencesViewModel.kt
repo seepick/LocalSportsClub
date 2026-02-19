@@ -28,9 +28,10 @@ class PreferencesViewModel(
     private val sharedModel: SharedModel,
     private val uscConnector: UscConnector,
     private val api: UscApi,
+    private val fileResolver: FileResolver,
 ) : ViewModel(), ApplicationLifecycleListener {
 
-    private val gcalService = RealGcalService()
+    private val gcalService = RealGcalService(fileResolver) // need our custom one, not from koin context!
     private val log = logger {}
     val entity = PreferencesViewEntity()
     var isUscConnectionVerifying: Boolean by mutableStateOf(false)
@@ -63,6 +64,7 @@ class PreferencesViewModel(
     fun verifyUscConnection() {
         launchBackgroundTask(
             "Failed to verify the USC connection.",
+            fileResolver,
             doBefore = { isUscConnectionVerifying = true },
             doFinally = { isUscConnectionVerifying = false }) {
             log.info { "Verifying USC connection ..." }
@@ -109,6 +111,7 @@ class PreferencesViewModel(
     fun verifyGcalConnection() {
         launchBackgroundTask(
             "Error during testing the Google Calendar connection.",
+            fileResolver,
             doBefore = { isGcalConnectionVerifying = true },
             doFinally = { isGcalConnectionVerifying = false }) {
             log.info { "Testing GCal connection ..." }
@@ -134,7 +137,7 @@ class PreferencesViewModel(
     }
 
     fun resetTokenCache() {
-        val file = FileResolver.resolve(FileEntry.GoogleCredentialsCache)
+        val file = fileResolver.resolve(FileEntry.GoogleCredentialsCache)
         val snackbarMessage = if (file.exists()) {
             log.debug { "About to delete google cache at: ${file.absolutePath}" }
             file.delete()
@@ -143,7 +146,7 @@ class PreferencesViewModel(
         } else {
             "Nothing to delete, token cache is already empty 🤷🏻‍♂️"
         }
-        launchViewTask("Failed to show snackbar") {
+        launchViewTask("Failed to show snackbar", fileResolver) {
             snackbarService.show(snackbarMessage)
         }
     }

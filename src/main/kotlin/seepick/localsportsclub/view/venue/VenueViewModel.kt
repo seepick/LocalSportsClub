@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
@@ -23,6 +24,7 @@ class VenueViewModel(
     bookingValidator: BookingValidator,
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
+    fileResolver: FileResolver,
 ) : ScreenViewModel<Venue, VenueSearch>(
     dataStorage,
     bookingService,
@@ -32,6 +34,7 @@ class VenueViewModel(
     bookingValidator,
     activityDetailService,
     venueService,
+    fileResolver,
 ) {
 
     override val tableColumns = venuesTableColumns()

@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.map
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.DataStorage
@@ -26,6 +27,7 @@ class FreetrainingViewModel(
     bookingValidator: BookingValidator,
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
+    fileResolver: FileResolver,
 ) : ScreenViewModel<Freetraining, FreetrainingSearch>(
     dataStorage,
     bookingService,
@@ -35,6 +37,7 @@ class FreetrainingViewModel(
     bookingValidator,
     activityDetailService,
     venueService,
+    fileResolver,
 ) {
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }

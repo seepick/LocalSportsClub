@@ -1,6 +1,7 @@
 package seepick.localsportsclub
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.view.common.showErrorDialog
 import java.awt.desktop.QuitHandler
 
@@ -9,7 +10,9 @@ interface ApplicationLifecycleListener {
     fun onExit() {}
 }
 
-class ApplicationLifecycle {
+class ApplicationLifecycle(
+    private val fileResolver: FileResolver,
+) {
 
     private val log = logger {}
     private val listeners = mutableListOf<ApplicationLifecycleListener>()
@@ -29,7 +32,7 @@ class ApplicationLifecycle {
             listeners.forEach(ApplicationLifecycleListener::onExit)
         } catch (e: Exception) {
             log.error(e) { "Error during exiting." }
-            showErrorDialog("Failed to exit the application.", e)
+            showErrorDialog("Failed to exit the application.", e, fileResolver)
         }
     }
 

@@ -1,21 +1,23 @@
 package seepick.localsportsclub.gcal
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.service.FileEntry
-import seepick.localsportsclub.service.FileResolver
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import java.util.Properties
 
 object GcalCredentialsLoader {
-    private val log = logger {}
-    private val credentialsJsonFile = FileResolver.resolve(FileEntry.GoogleCredentials)
 
-    fun buildReader(): Reader = if (credentialsJsonFile.exists()) {
+    private val log = logger {}
+
+    fun buildReader(
+        credentialsJsonFile: File, // = fileResolver.resolve(FileEntry.GoogleCredentials)
+        gcalCredsPropFile: File, //  = fileResolver.resolve(FileEntry.GoogleCalendarCredsProperties)
+    ): Reader = if (credentialsJsonFile.exists()) {
         log.debug { "Reading GCal credentials from local file: ${credentialsJsonFile.absolutePath}" }
         credentialsJsonFile.inputStream().reader()
     } else {
-        val gcalApiConfig = RuntimeGcalConfigLoader.load()
+        val gcalApiConfig = RuntimeGcalConfigLoader.load(gcalCredsPropFile)
         StringReader(buildJson(clientId = gcalApiConfig.clientId, clientSecret = gcalApiConfig.clientSecret))
     }
 
@@ -38,8 +40,7 @@ object GcalCredentialsLoader {
 
 object RuntimeGcalConfigLoader {
     private val log = logger {}
-    fun load(): RuntimeGcalConfig {
-        val gcalCredsPropFile = FileResolver.resolve(FileEntry.GoogleCalendarCredsProperties)
+    fun load(gcalCredsPropFile: File): RuntimeGcalConfig {
         require(gcalCredsPropFile.exists()) {
             "GCal credentials file not found at: ${gcalCredsPropFile.absolutePath}! Please create it."
         }

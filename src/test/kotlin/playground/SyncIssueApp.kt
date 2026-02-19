@@ -30,9 +30,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import seepick.localsportsclub.persistence.SinglesTable
-import seepick.localsportsclub.persistence.connectToDatabaseEnvAware
 import seepick.localsportsclub.reconfigureLog
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.workParallel
+import seepick.localsportsclub.tools.connectToDatabaseEnvAware
 import seepick.localsportsclub.view.common.launchBackgroundTask
 
 private class ExitHandler {
@@ -77,12 +78,12 @@ private fun fib(n: Int): Long {
     else fib(n - 1) + fib(n - 2)
 }
 
-private class MyViewModel(private val syncer: MySyncer) : ViewModel() {
+private class MyViewModel(private val syncer: MySyncer, private val fileResolver: FileResolver) : ViewModel() {
     private val log = logger {}
     private var job: Job? = null
     fun onStartSync() {
         log.debug { "onStartSync()" }
-        job = launchBackgroundTask("Synchronisation of data failed!") {
+        job = launchBackgroundTask("Synchronisation of data failed!", fileResolver) {
             syncer.sync()
         }
     }
@@ -101,7 +102,7 @@ object SyncIssueApp {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        reconfigureLog(false, mapOf("playground" to Level.DEBUG))
+        reconfigureLog(null, mapOf("playground" to Level.DEBUG))
         application {
             KoinApplication(application = {
                 modules(module {

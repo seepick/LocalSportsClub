@@ -16,15 +16,15 @@ class AppStartupKoinTest : StringSpec() {
                 modules(
                     allModules(
                         LscConfig(
-                            database = DatabaseMode.InMemory,
+                            databaseMode = DatabaseMode.InMemory,
                             apiMode = ApiMode.Mock,
-                            sync = SyncMode.Noop,
-                            gcal = GcalMode.Noop,
+                            syncMode = SyncMode.Noop,
+                            gcalMode = GcalMode.Noop,
                             syncDaysAhead = 1,
-                            responseLogFolder = null,
                             apiLang = UscLang.English,
                             logbackFileEnabled = false,
                             versionCheckEnabled = false,
+                            appDirectory = LscConfig.development.appDirectory,
                         )
                     )
                 )

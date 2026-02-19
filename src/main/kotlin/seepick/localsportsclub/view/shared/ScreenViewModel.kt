@@ -23,6 +23,7 @@ import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
 import seepick.localsportsclub.service.BookingValidator
+import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.findIndexFor
@@ -58,6 +59,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val bookingValidator: BookingValidator,
     private val activityDetailService: ActivityDetailService,
     private val venueService: VenueService,
+    private val fileResolver: FileResolver,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -155,7 +157,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onVenueSelected(venue: Venue) {
-        launchViewTask("Unable to select venue!") {
+        launchViewTask("Unable to select venue!", fileResolver) {
             log.trace { "Selected: $venue" }
             require(this::class == VenueViewModel::class) { "venue can only be clicked in VenueViewModel" }
             @Suppress("UNCHECKED_CAST")
@@ -168,7 +170,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onActivitySelected(activity: Activity) {
-        launchViewTask("Unable to select activity!") {
+        launchViewTask("Unable to select activity!", fileResolver) {
             log.trace { "Selected: $activity" }
             _selectedSubEntity.value = SubEntity.ActivityEntity(activity)
             isSyncActivityPossible = true
@@ -177,7 +179,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun onFreetrainingSelected(freetraining: Freetraining) {
-        launchViewTask("Unable to select freetraiing!") {
+        launchViewTask("Unable to select freetraiing!", fileResolver) {
             log.trace { "Selected: $freetraining" }
             _selectedSubEntity.value = SubEntity.FreetrainingEntity(freetraining)
             isSyncActivityPossible = false
@@ -283,6 +285,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         val venue = selectedVenue.value!!.venue
         launchBackgroundTask(
             errorMessage = "Sync activity details failed!",
+            fileResolver = fileResolver,
             doBefore = { isSyncVenueInProgress = true },
             doFinally = { isSyncVenueInProgress = false },
         ) {
@@ -295,6 +298,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         val activity = (selectedSubEntity.value as SubEntity.ActivityEntity).activity
         launchBackgroundTask(
             errorMessage = "Sync activity details failed!",
+            fileResolver = fileResolver,
             doBefore = { isSyncActivityInProgress = true },
             doFinally = { isSyncActivityInProgress = false },
         ) {
@@ -328,6 +332,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     ) {
         launchBackgroundTask(
             "Booking/Canceling activity/freetraining failed!",
+            fileResolver,
             doBefore = {
                 isBookingOrCancelInProgress = true
             },

@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import seepick.localsportsclub.openFromClasspath
+import seepick.localsportsclub.service.FileResolver
 import java.io.File
 
 private val log = logger {}
@@ -33,26 +34,29 @@ fun readImageBitmapFromFile(file: File): ImageBitmap = file.inputStream().readAl
 
 fun ViewModel.launchBackgroundTask(
     errorMessage: String,
+    fileResolver: FileResolver,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-): Job = executeTask(Dispatchers.IO, errorMessage, doBefore, doFinally, doTask)
+): Job = executeTask(Dispatchers.IO, errorMessage, fileResolver, doBefore, doFinally, doTask)
 
 fun ViewModel.launchViewTask(
     errorMessage: String,
+    fileResolver: FileResolver,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
-): Job = executeTask(Dispatchers.Main, errorMessage, doBefore, doFinally, doTask)
+): Job = executeTask(Dispatchers.Main, errorMessage, fileResolver, doBefore, doFinally, doTask)
 
 private fun ViewModel.executeTask(
     dispatcher: CoroutineDispatcher,
     errorMessage: String,
+    fileResolver: FileResolver,
     doBefore: () -> Unit = {},
     doFinally: () -> Unit = {},
     doTask: suspend () -> Unit,
 ): Job =
-    viewModelScope.launch(dispatcher + exceptionHandler(errorMessage)) {
+    viewModelScope.launch(dispatcher + exceptionHandler(errorMessage, fileResolver)) {
         log.debug { "Executing task..." }
         doBefore()
         try {
@@ -62,22 +66,24 @@ private fun ViewModel.executeTask(
         }
     }
 
-private fun exceptionHandler(errorMessage: String) = CoroutineExceptionHandler { _, throwable ->
-    when (throwable) {
-        is Exception, is NoClassDefFoundError -> {
-            log.error(throwable) { "Executing task failed!" }
-            showErrorDialog(
-                message = errorMessage,
-                exception = throwable,
-            )
-        }
+private fun exceptionHandler(errorMessage: String, fileResolver: FileResolver) =
+    CoroutineExceptionHandler { _, throwable ->
+        when (throwable) {
+            is Exception, is NoClassDefFoundError -> {
+                log.error(throwable) { "Executing task failed!" }
+                showErrorDialog(
+                    message = errorMessage,
+                    exception = throwable,
+                    fileResolver = fileResolver,
+                )
+            }
 
-        else -> { // let application crash on Error
-            log.error(throwable) { "Unhandled error thrown during task! ($errorMessage)" }
-            throw throwable
+            else -> { // let application crash on Error
+                log.error(throwable) { "Unhandled error thrown during task! ($errorMessage)" }
+                throw throwable
+            }
         }
     }
-}
 
 fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(factory = {
     val density = LocalDensity.current

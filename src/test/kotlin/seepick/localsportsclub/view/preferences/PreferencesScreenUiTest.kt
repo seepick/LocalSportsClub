@@ -7,6 +7,7 @@ import org.koin.compose.KoinApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.test.KoinTest
+import seepick.localsportsclub.service.DummyFileResolver
 import seepick.localsportsclub.view.TestableSnackbarService
 import seepick.localsportsclub.view.UiTest
 import seepick.localsportsclub.view.shared.SharedModel
@@ -27,6 +28,7 @@ class PreferencesScreenUiTest : UiTest(), KoinTest {
             snackbarService = snackbarService,
             sharedModel = SharedModel(),
             uscConnector = UscConnectorMock(),
+            fileResolver = DummyFileResolver,
         )
         // LocalViewModelStoreOwner
 //        startKoin {
