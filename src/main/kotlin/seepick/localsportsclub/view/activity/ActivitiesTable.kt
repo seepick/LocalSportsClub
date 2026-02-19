@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -16,6 +17,7 @@ import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableTextCell
 import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
@@ -45,7 +47,15 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         VisualIndicator.StringIndicator("Venue"),
         WidthOrWeight.Weight(0.4f),
-        CellRenderer.TextRenderer { it.venue.name }),
+        sortValueExtractor = { it.venue.name },
+        renderer = CellRenderer.CustomRenderer { activity, col ->
+            TableTextCell(
+                text = activity.venue.name,
+                size = col.size,
+                textDecoration = if (activity.venue.isDeleted) TextDecoration.LineThrough else null,
+            )
+        },
+    ),
     TableColumn(
         VisualIndicator.StringIndicator("Category"),
         WidthOrWeight.Width(120.dp),
