@@ -19,8 +19,8 @@ group = "com.github.seepick.localsportsclub"
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
 
-//    val versionUscClient = "2000.0.SNAPSHOT"
-    val versionUscClient = "2026.2.4"
+    val versionUscClient = "2000.0.SNAPSHOT"
+//    val versionUscClient = "2026.2.4"
     implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
@@ -54,8 +54,7 @@ dependencies {
     val ktorVersion = "3.4.0"
     listOf(
         "client-core",
-        // 'cio' and 'java' engines had some networking issues...
-        "client-apache",
+        "client-apache5", // 'cio' and 'java' engines had some networking issues...
         "client-logging",
         "client-content-negotiation",
         "serialization-kotlinx-json"

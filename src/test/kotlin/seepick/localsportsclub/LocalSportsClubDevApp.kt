@@ -19,14 +19,17 @@ val LscConfig.Companion.development
         logbackFileEnabled = false,
         versionCheckEnabled = false,
 
-        apiMode = ApiMode.Mock,
-//        apiMode = ApiMode.RealHttp,
+        apiMode = ApiMode.RealHttp,
+//        apiMode = ApiMode.Mock,
+
         syncMode = SyncMode.Real,
 //        syncMode = SyncMode.Dummy,
 //        syncMode = SyncMode.Noop,
 //        syncMode = SyncMode.Delayed,
-        gcalMode = GcalMode.Noop,
+
 //        gcalMode = GcalMode.Real,
+        gcalMode = GcalMode.Noop,
+
         databaseMode = DatabaseMode.Exposed,
 //        databaseMode = DatabaseMode.InMemory,
     )
