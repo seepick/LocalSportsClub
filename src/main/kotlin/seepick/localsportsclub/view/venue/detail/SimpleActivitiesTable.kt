@@ -67,7 +67,11 @@ fun SimpleActivitiesTable(
                 }
             }
             Icon(Lsc.icons.activities, contentDescription = null)
-            Text("${activities.size} Activities:")
+            val today = clock.today()
+            val upcomingCount = activities.count { !it.isInPast(today) }
+            val pastCount = activities.size - upcomingCount
+            val pastText = if (pastCount > 0) " ($pastCount past)" else ""
+            Text("$upcomingCount Activities$pastText:")
         }
         Table(
             items = activities,

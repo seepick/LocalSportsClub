@@ -79,7 +79,6 @@ class DataStorage(
             }
             venues.toMutableMap()
         } ?: mutableMapOf()
-
     }
 
     val venuesCategories: List<String> by lazy {
@@ -142,9 +141,9 @@ class DataStorage(
         return allFreetrainingsByVenueId.values.toList().flatten().filter { it.date >= today }
     }
 
-    override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        log.debug { "onVenueDbosAdded(venueDbos.size=${venueDbos.size})" }
-        val venues = venueDbos.map { venueDbo ->
+    override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
+        log.debug { "onVenueDbosAdded(venueDbos.size=${addedVenues.size})" }
+        val venues = addedVenues.map { venueDbo ->
             val venue = venueDbo.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(venueDbo))
             venuesById[venue.id] = venue
             venue
@@ -167,12 +166,20 @@ class DataStorage(
         dispatchOnVenuesAdded(venues)
     }
 
-    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        // no op
+    override fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
+        deletedVenues.mapNotNull { venuesById[it.id] }.forEach { venue ->
+            venue.isDeleted = true
+        }
     }
 
-    override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        val activities = activityDbos.map { activityDbo ->
+    override fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
+        undeletedVenues.mapNotNull { venuesById[it.id] }.forEach { venue ->
+            venue.isDeleted = false
+        }
+    }
+
+    override fun onActivityDbosAdded(addedActivities: List<ActivityDbo>) {
+        val activities = addedActivities.map { activityDbo ->
             val venue = venuesById[activityDbo.venueId]
                 ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
             val activity = activityDbo.toActivity(venue)
@@ -183,10 +190,10 @@ class DataStorage(
         dispatchOnActivitiesAdded(activities)
     }
 
-    override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
-        val freetrainings = freetrainingDbos.map { freetrainingDbo ->
+    override fun onFreetrainingDbosAdded(addedFreetrainings: List<FreetrainingDbo>) {
+        val freetrainings = addedFreetrainings.map { freetrainingDbo ->
             val venue = venuesById[freetrainingDbo.venueId]
-                ?: error("Failed to add freetraining! Could not find venue by ID for: $freetrainingDbos")
+                ?: error("Failed to add freetraining! Could not find venue by ID for: $addedFreetrainings")
             val freetraining = freetrainingDbo.toFreetraining(venue)
             // venue.freetrainings += freetraining // NO! do it in SyncerViewModel
             allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
@@ -195,29 +202,32 @@ class DataStorage(
         dispatchOnFreetrainingsAdded(freetrainings)
     }
 
-    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        allActivitiesByVenueId[activityDbo.venueId]?.singleOrNull { it.id == activityDbo.id }?.also { activity ->
-            when (field) {
-                is ActivityFieldUpdate.State -> activity.state = activityDbo.state
-                ActivityFieldUpdate.Teacher -> activity.teacher = activityDbo.teacher
-                ActivityFieldUpdate.Description -> activity.description = activityDbo.description
-                ActivityFieldUpdate.SpotsLeft -> activity.spotsLeft = activityDbo.spotsLeft
-                ActivityFieldUpdate.CancellationLimit -> activity.cancellationLimit = activityDbo.cancellationLimit
-            }
-        } ?: log.warn {
+    override fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
+        allActivitiesByVenueId[updatedActivity.venueId]?.singleOrNull { it.id == updatedActivity.id }
+            ?.also { activity ->
+                when (field) {
+                    is ActivityFieldUpdate.State -> activity.state = updatedActivity.state
+                    ActivityFieldUpdate.Teacher -> activity.teacher = updatedActivity.teacher
+                    ActivityFieldUpdate.Description -> activity.description = updatedActivity.description
+                    ActivityFieldUpdate.SpotsLeft -> activity.spotsLeft = updatedActivity.spotsLeft
+                    ActivityFieldUpdate.CancellationLimit -> activity.cancellationLimit =
+                        updatedActivity.cancellationLimit
+                }
+            } ?: log.warn {
             "Couldn't find activity in data storage. " +
                     "Most likely trying to update something which is too old and not visible on the UI anyway. " +
-                    "Activity: $activityDbo"
+                    "Activity: $updatedActivity"
         }
     }
 
-    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
-        allFreetrainingsByVenueId.values.flatten().firstOrNull { it.id == freetrainingDbo.id }?.also { freetraining ->
-            when (field) {
-                FreetrainingFieldUpdate.State -> freetraining.state = freetrainingDbo.state
-            }
-        } ?: log.warn {
-            "Couldn't find freetraining in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Freetraining: $freetrainingDbo"
+    override fun onFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        allFreetrainingsByVenueId.values.flatten().firstOrNull { it.id == updatedFreetraining.id }
+            ?.also { freetraining ->
+                when (field) {
+                    FreetrainingFieldUpdate.State -> freetraining.state = updatedFreetraining.state
+                }
+            } ?: log.warn {
+            "Couldn't find freetraining in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Freetraining: $updatedFreetraining"
         }
     }
 

@@ -48,8 +48,8 @@ class CheckinSyncerTest : StringSpec() {
         syncerListenerDispatcher = SyncerListenerDispatcher()
         syncActivityDbosUpdated = mutableListOf()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
-            override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-                syncActivityDbosUpdated += activityDbo to field
+            override fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
+                syncActivityDbosUpdated += updatedActivity to field
             }
         })
 

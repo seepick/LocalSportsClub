@@ -57,7 +57,7 @@ class Venue(
     val plan: Plan.UscPlan,
     // those down below also mutable...
     officialWebsite: String?,
-    val isDeleted: Boolean,
+    isDeleted: Boolean,
     notes: String,
     rating: Rating,
     isFavorited: Boolean,
@@ -76,6 +76,7 @@ class Venue(
     var isWishlisted: Boolean by mutableStateOf(isWishlisted)
     var isHidden: Boolean by mutableStateOf(isHidden)
     var isAutoSync: Boolean by mutableStateOf(isAutoSync)
+    var isDeleted: Boolean by mutableStateOf(isDeleted)
     var officialWebsite: String? by mutableStateOf(officialWebsite)
     val linkedVenues = mutableStateListOf<Venue>()
 

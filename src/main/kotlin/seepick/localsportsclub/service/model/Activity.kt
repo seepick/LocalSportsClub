@@ -7,6 +7,7 @@ import com.github.seepick.uscclient.utils.DateTimeRange
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 enum class ActivityState(val label: String) {
@@ -50,6 +51,9 @@ class Activity(
     var description: String? by mutableStateOf(description)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
     var cancellationLimit: LocalDateTime? by mutableStateOf(cancellationLimit)
+
+    fun isInPast(today: LocalDate): Boolean =
+        dateTimeRange.from.toLocalDate() < today
 
     override fun toString() =
         "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"

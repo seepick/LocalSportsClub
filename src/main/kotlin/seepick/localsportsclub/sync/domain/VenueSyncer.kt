@@ -5,6 +5,7 @@ import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.PageProgressListener
 import com.github.seepick.uscclient.venue.VenueDetails
+import com.github.seepick.uscclient.venue.VenueInfo
 import com.github.seepick.uscclient.venue.VenuesFilter
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.VenueDbo
@@ -38,14 +39,45 @@ class VenueSyncer(
         val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan), listener).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenues = venueRepo.selectAllByCity(city.id)
-        val markDeleted = localVenues.filter { !it.isDeleted }.associateBy { it.slug }.minus(remoteVenuesBySlug.keys)
+
+        markDeleted(localVenues, remoteVenuesBySlug)
+        markUndeleted(localVenues, remoteVenuesBySlug)
+        insertMissing(localVenues, remoteVenuesBySlug, city)
+    }
+
+    private fun markUndeleted(
+        localVenues: List<VenueDbo>,
+        remoteVenuesBySlug: Map<String, VenueInfo>,
+    ) {
+        val localDeletedBySlug = localVenues.filter { it.isDeleted }.associateBy { it.slug }
+        val venuesToBeUndeleted = localDeletedBySlug.keys.toSet().intersect(remoteVenuesBySlug.keys)
+            .map { localDeletedBySlug[it]!! }
+        log.debug { "Going to mark ${venuesToBeUndeleted.size} venues as undeleted." }
+        dispatcher.dispatchOnVenueDbosMarkedUndeleted(venuesToBeUndeleted)
+        venuesToBeUndeleted.forEach {
+            venueRepo.update(it.copy(isDeleted = false))
+        }
+    }
+
+    private fun markDeleted(
+        localVenues: List<VenueDbo>,
+        remoteVenuesBySlug: Map<String, VenueInfo>,
+    ) {
         // this also means that the "hidden linked ones" will be marked deleted
+        val localUndeletedBySlug = localVenues.filter { !it.isDeleted }.associateBy { it.slug }
+        val markDeleted = localUndeletedBySlug.minus(remoteVenuesBySlug.keys)
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
         markDeleted.values.forEach {
             venueRepo.update(it.copy(isDeleted = true))
         }
+    }
 
+    private suspend fun insertMissing(
+        localVenues: List<VenueDbo>,
+        remoteVenuesBySlug: Map<String, VenueInfo>,
+        city: City,
+    ) {
         val missingVenues = remoteVenuesBySlug.minus(localVenues.associateBy { it.slug }.keys)
         venueSyncInserter.fetchInsertAndDispatch(
             city, missingVenues.values.map { VenueMeta(slug = it.slug, plan = it.plan) })

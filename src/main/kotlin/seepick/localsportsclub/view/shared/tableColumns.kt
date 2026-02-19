@@ -18,7 +18,7 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
     renderer = CellRenderer.TextRenderer(textAlign = TextAlign.Right, paddingRight = paddingRight) {
         it.venue.activities.filter { it.state == ActivityState.Checkedin }.size + it.venue.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
     },
-    tooltip = "check-ins"
+    tooltip = "Check-ins"
 )
 
 fun <T : HasVenue> RatingColumn() =

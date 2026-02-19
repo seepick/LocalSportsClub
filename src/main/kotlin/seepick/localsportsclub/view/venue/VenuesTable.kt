@@ -26,8 +26,9 @@ import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
+import java.time.LocalDate
 
-fun venuesTableColumns() = listOf<TableColumn<Venue>>(
+fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it.imageFileName },
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
@@ -43,13 +44,13 @@ fun venuesTableColumns() = listOf<TableColumn<Venue>>(
     TableColumn(
         Lsc.icons.activitiesIndicator,
         WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.activities.size },
+        TextRenderer(textAlign = TextAlign.Right) { it.activities.filter { !it.isInPast(today) }.size },
         tooltip = "Activities",
     ),
     TableColumn(
         Lsc.icons.freetrainingsIndicator,
         WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.size },
+        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.filter { !it.isInPast(today) }.size },
         tooltip = "Freetrainings",
     ),
     TableColumn(

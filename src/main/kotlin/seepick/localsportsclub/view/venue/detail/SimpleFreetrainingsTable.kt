@@ -42,7 +42,11 @@ fun SimpleFreetrainingsTable(
         val currentYear = clock.today().year
         Row(verticalAlignment = Alignment.Bottom) {
             Icon(Lsc.icons.freetrainings, contentDescription = null)
-            Text("${freetrainings.size} Freetrainings:")
+            val today = clock.today()
+            val upcomingCount = freetrainings.count { !it.isInPast(today) }
+            val pastCount = freetrainings.size - upcomingCount
+            val pastText = if (pastCount > 0) " ($pastCount past)" else ""
+            Text("$upcomingCount Freetrainings$pastText:")
         }
         Table(
             items = freetrainings,

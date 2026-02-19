@@ -14,16 +14,17 @@ interface Syncer {
 
 interface SyncerListener {
     fun alsoRegisterForBooking(): Boolean = true
-    fun onVenueDbosAdded(venueDbos: List<VenueDbo>)
-    fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>)
+    fun onVenueDbosAdded(addedVenues: List<VenueDbo>)
+    fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>)
+    fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>)
 
-    fun onActivityDbosAdded(activityDbos: List<ActivityDbo>)
-    fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate)
-    fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>)
+    fun onActivityDbosAdded(addedActivities: List<ActivityDbo>)
+    fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate)
+    fun onActivityDbosDeleted(deletedActivities: List<ActivityDbo>)
 
-    fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>)
-    fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate)
-    fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>)
+    fun onFreetrainingDbosAdded(addedFreetrainings: List<FreetrainingDbo>)
+    fun onFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate)
+    fun onFreetrainingDbosDeleted(deletedFreetrainings: List<FreetrainingDbo>)
 }
 
 sealed interface ActivityFieldUpdate {
@@ -68,60 +69,68 @@ class SyncerListenerDispatcher {
         listeners += listener
     }
 
-    fun dispatchOnVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        if (venueDbos.isNotEmpty()) {
+    fun dispatchOnVenueDbosAdded(addedVenues: List<VenueDbo>) {
+        if (addedVenues.isNotEmpty()) {
             listeners.forEach {
-                it.onVenueDbosAdded(venueDbos)
+                it.onVenueDbosAdded(addedVenues)
             }
         }
     }
 
-    fun dispatchOnVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        if (venueDbos.isNotEmpty()) {
+    fun dispatchOnVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
+        if (deletedVenues.isNotEmpty()) {
             listeners.forEach {
-                it.onVenueDbosMarkedDeleted(venueDbos)
+                it.onVenueDbosMarkedDeleted(deletedVenues)
             }
         }
     }
 
-    fun dispatchOnActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        if (activityDbos.isNotEmpty()) {
+    fun dispatchOnVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
+        if (undeletedVenues.isNotEmpty()) {
             listeners.forEach {
-                it.onActivityDbosAdded(activityDbos)
+                it.onVenueDbosMarkedUndeleted(undeletedVenues)
             }
         }
     }
 
-    fun dispatchOnActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+    fun dispatchOnActivityDbosAdded(addedActivities: List<ActivityDbo>) {
+        if (addedActivities.isNotEmpty()) {
+            listeners.forEach {
+                it.onActivityDbosAdded(addedActivities)
+            }
+        }
+    }
+
+    fun dispatchOnActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
         listeners.forEach {
-            it.onActivityDboUpdated(activityDbo, field)
+            it.onActivityDboUpdated(updatedActivity, field)
         }
     }
 
-    fun dispatchOnFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
+    fun dispatchOnFreetrainingDbosAdded(addedFreetrainings: List<FreetrainingDbo>) {
         listeners.forEach {
-            it.onFreetrainingDbosAdded(freetrainingDbos)
+            it.onFreetrainingDbosAdded(addedFreetrainings)
         }
     }
 
-    fun dispatchOnFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+    fun dispatchOnFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         listeners.forEach {
-            it.onFreetrainingDboUpdated(freetrainingDbo, field)
+            it.onFreetrainingDboUpdated(updatedFreetraining, field)
         }
     }
 
-    fun dispatchOnActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        if (activityDbos.isNotEmpty()) {
+    fun dispatchOnActivityDbosDeleted(deletedActivities: List<ActivityDbo>) {
+        if (deletedActivities.isNotEmpty()) {
             listeners.forEach {
-                it.onActivityDbosDeleted(activityDbos)
+                it.onActivityDbosDeleted(deletedActivities)
             }
         }
     }
 
-    fun dispatchOnFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        if (freetrainingDbos.isNotEmpty()) {
+    fun dispatchOnFreetrainingDbosDeleted(deletedFreetrainings: List<FreetrainingDbo>) {
+        if (deletedFreetrainings.isNotEmpty()) {
             listeners.forEach {
-                it.onFreetrainingDbosDeleted(freetrainingDbos)
+                it.onFreetrainingDbosDeleted(deletedFreetrainings)
             }
         }
     }

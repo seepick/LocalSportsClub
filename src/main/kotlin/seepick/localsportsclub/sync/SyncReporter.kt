@@ -25,21 +25,25 @@ class SyncReporter : SyncerListener {
         report = SyncReport()
     }
 
-    override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
-        report.venuesAdded += venueDbos.size
+    override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
+        report.venuesAdded += addedVenues.size
     }
 
-    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        report.venuesMarkedDeleted += venueDbos.size
+    override fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
+        report.venuesMarkedDeleted += deletedVenues.size
     }
 
-    override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        report.activitiesAdded += activityDbos.size
+    override fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
+        report.venuesMarkedUndeleted += undeletedVenues.size
     }
 
-    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
+    override fun onActivityDbosAdded(addedActivities: List<ActivityDbo>) {
+        report.activitiesAdded += addedActivities.size
+    }
+
+    override fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
         if (field is ActivityFieldUpdate.State) {
-            when (activityDbo.state) {
+            when (updatedActivity.state) {
                 ActivityState.Blank -> {} // ignore
                 ActivityState.Booked -> report.activitiesBooked++
                 ActivityState.Checkedin -> report.activitiesCheckedin++
@@ -49,13 +53,13 @@ class SyncReporter : SyncerListener {
         }
     }
 
-    override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
-        report.freetrainingsAdded += freetrainingDbos.size
+    override fun onFreetrainingDbosAdded(addedFreetrainings: List<FreetrainingDbo>) {
+        report.freetrainingsAdded += addedFreetrainings.size
     }
 
-    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+    override fun onFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         if (field == FreetrainingFieldUpdate.State) {
-            when (freetrainingDbo.state) {
+            when (updatedFreetraining.state) {
                 FreetrainingState.Blank -> {} // ignore
                 FreetrainingState.Scheduled -> report.freetrainingsScheduled++
                 FreetrainingState.Checkedin -> report.freetrainingsCheckedin++
@@ -63,11 +67,11 @@ class SyncReporter : SyncerListener {
         }
     }
 
-    override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
+    override fun onActivityDbosDeleted(deletedActivities: List<ActivityDbo>) {
         // no op
     }
 
-    override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
+    override fun onFreetrainingDbosDeleted(deletedFreetrainings: List<FreetrainingDbo>) {
         // no op
     }
 }
@@ -75,6 +79,7 @@ class SyncReporter : SyncerListener {
 data class SyncReport(
     var venuesAdded: Int = 0,
     var venuesMarkedDeleted: Int = 0,
+    var venuesMarkedUndeleted: Int = 0,
 
     var activitiesAdded: Int = 0,
     var activitiesBooked: Int = 0,
@@ -88,12 +93,21 @@ data class SyncReport(
 ) {
 
     private fun buildEntries() = buildList {
-        if (venuesAdded != 0 || venuesMarkedDeleted != 0) {
+        if (venuesAdded != 0 || venuesMarkedDeleted != 0 || venuesMarkedUndeleted != 0) {
             add(ReportEntry(buildList {
                 add(ReportToken.Text("Venues "))
-                if (venuesAdded != 0) add(ReportToken.ColoredText("+$venuesAdded", Color.Green))
-                if (venuesAdded != 0 && venuesMarkedDeleted != 0) add(ReportToken.Text("/"))
-                if (venuesMarkedDeleted != 0) add(ReportToken.ColoredText("-$venuesMarkedDeleted", Color.Gray))
+                if (venuesAdded != 0) {
+                    add(ReportToken.ColoredText("+$venuesAdded", Color.Green))
+                }
+                if (venuesMarkedUndeleted != 0) {
+                    add(ReportToken.ColoredText("+$venuesMarkedUndeleted", Color.Gray))
+                }
+                if ((venuesAdded != 0 || venuesMarkedUndeleted != 0) && venuesMarkedDeleted != 0) {
+                    add(ReportToken.Text("/"))
+                }
+                if (venuesMarkedDeleted != 0) {
+                    add(ReportToken.ColoredText("-$venuesMarkedDeleted", Color.Red))
+                }
             }))
         }
         if (activitiesAdded != 0) {

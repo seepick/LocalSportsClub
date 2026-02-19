@@ -52,20 +52,26 @@ class ActivityDetailService(
         activityRepo.update(newActivityDbo)
 
         if (oldActivityDbo.teacher != details.teacher) {
-            dispatcher.dispatchOnActivityDboUpdated(activityDbo = newActivityDbo, field = ActivityFieldUpdate.Teacher)
+            dispatcher.dispatchOnActivityDboUpdated(
+                updatedActivity = newActivityDbo,
+                field = ActivityFieldUpdate.Teacher
+            )
         }
         if (oldActivityDbo.description != details.description) {
             dispatcher.dispatchOnActivityDboUpdated(
-                activityDbo = newActivityDbo,
+                updatedActivity = newActivityDbo,
                 field = ActivityFieldUpdate.Description
             )
         }
         if (oldActivityDbo.spotsLeft != details.spotsLeft) {
-            dispatcher.dispatchOnActivityDboUpdated(activityDbo = newActivityDbo, field = ActivityFieldUpdate.SpotsLeft)
+            dispatcher.dispatchOnActivityDboUpdated(
+                updatedActivity = newActivityDbo,
+                field = ActivityFieldUpdate.SpotsLeft
+            )
         }
         if (oldActivityDbo.cancellationLimit != details.cancellationDateLimit) {
             dispatcher.dispatchOnActivityDboUpdated(
-                activityDbo = newActivityDbo,
+                updatedActivity = newActivityDbo,
                 field = ActivityFieldUpdate.CancellationLimit
             )
         }

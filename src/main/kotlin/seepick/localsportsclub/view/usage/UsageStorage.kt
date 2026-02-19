@@ -88,7 +88,7 @@ class UsageStorage(
         }
     }
 
-    override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
+    override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
         // no-op
     }
 
@@ -96,29 +96,33 @@ class UsageStorage(
         // no-op
     }
 
-    override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-        activityDbos.forEach(::processActivity)
+    override fun onVenueDbosMarkedUndeleted(venueDbos: List<VenueDbo>) {
+        // no-op
     }
 
-    override fun onFreetrainingDbosAdded(freetrainingDbos: List<FreetrainingDbo>) {
-        freetrainingDbos.forEach(::processFreetraining)
+    override fun onActivityDbosAdded(addedActivities: List<ActivityDbo>) {
+        addedActivities.forEach(::processActivity)
     }
 
-    override fun onActivityDboUpdated(activityDbo: ActivityDbo, field: ActivityFieldUpdate) {
-        if (activityDbo.from.toLocalDate() !in periodRange) {
+    override fun onFreetrainingDbosAdded(addedFreetrainings: List<FreetrainingDbo>) {
+        addedFreetrainings.forEach(::processFreetraining)
+    }
+
+    override fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
+        if (updatedActivity.from.toLocalDate() !in periodRange) {
             return
         }
         when (field) {
             is ActivityFieldUpdate.State -> {
-                if (activityDbo.isBooked) {
-                    bookedActivityIds.update { it + activityDbo.id }
-                } else if (bookedActivityIds.value.contains(activityDbo.id)) {
-                    bookedActivityIds.update { it - activityDbo.id }
+                if (updatedActivity.isBooked) {
+                    bookedActivityIds.update { it + updatedActivity.id }
+                } else if (bookedActivityIds.value.contains(updatedActivity.id)) {
+                    bookedActivityIds.update { it - updatedActivity.id }
                 }
-                if (activityDbo.isCheckedin) {
-                    checkedinActivityIds.update { it + activityDbo.id }
-                } else if (checkedinActivityIds.value.contains(activityDbo.id)) {
-                    checkedinActivityIds.update { it - activityDbo.id }
+                if (updatedActivity.isCheckedin) {
+                    checkedinActivityIds.update { it + updatedActivity.id }
+                } else if (checkedinActivityIds.value.contains(updatedActivity.id)) {
+                    checkedinActivityIds.update { it - updatedActivity.id }
                 }
             }
 
@@ -136,34 +140,34 @@ class UsageStorage(
         }
     }
 
-    override fun onFreetrainingDboUpdated(freetrainingDbo: FreetrainingDbo, field: FreetrainingFieldUpdate) {
-        if (freetrainingDbo.date !in periodRange) {
+    override fun onFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate) {
+        if (updatedFreetraining.date !in periodRange) {
             return
         }
         when (field) {
             FreetrainingFieldUpdate.State -> {
-                if (freetrainingDbo.isScheduled) {
-                    scheduledFreetrainingIds.update { it + freetrainingDbo.id }
-                } else if (scheduledFreetrainingIds.value.contains(freetrainingDbo.id)) {
-                    scheduledFreetrainingIds.update { it - freetrainingDbo.id }
+                if (updatedFreetraining.isScheduled) {
+                    scheduledFreetrainingIds.update { it + updatedFreetraining.id }
+                } else if (scheduledFreetrainingIds.value.contains(updatedFreetraining.id)) {
+                    scheduledFreetrainingIds.update { it - updatedFreetraining.id }
                 }
-                if (freetrainingDbo.isCheckedin) {
-                    checkedinFreetrainingIds.update { it + freetrainingDbo.id }
-                } else if (checkedinFreetrainingIds.value.contains(freetrainingDbo.id)) {
-                    checkedinFreetrainingIds.update { it - freetrainingDbo.id }
+                if (updatedFreetraining.isCheckedin) {
+                    checkedinFreetrainingIds.update { it + updatedFreetraining.id }
+                } else if (checkedinFreetrainingIds.value.contains(updatedFreetraining.id)) {
+                    checkedinFreetrainingIds.update { it - updatedFreetraining.id }
                 }
             }
         }
     }
 
-    override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        val inRange = activityDbos.filter { it.from.toLocalDate() in periodRange }
+    override fun onActivityDbosDeleted(deletedActivities: List<ActivityDbo>) {
+        val inRange = deletedActivities.filter { it.from.toLocalDate() in periodRange }
         checkedinActivityIds.update { ids -> ids - inRange.filter { it.isCheckedin }.map { it.id }.toSet() }
         bookedActivityIds.update { ids -> ids - inRange.filter { it.isBooked }.map { it.id }.toSet() }
     }
 
-    override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        val inRange = freetrainingDbos.filter { it.date in periodRange }
+    override fun onFreetrainingDbosDeleted(deletedFreetrainings: List<FreetrainingDbo>) {
+        val inRange = deletedFreetrainings.filter { it.date in periodRange }
         scheduledFreetrainingIds.update { ids -> ids - inRange.filter { it.isScheduled }.map { it.id }.toSet() }
         checkedinFreetrainingIds.update { ids -> ids - inRange.filter { it.isCheckedin }.map { it.id }.toSet() }
     }

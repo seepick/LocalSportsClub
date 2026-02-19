@@ -38,6 +38,7 @@ class VenueSyncerTest : StringSpec() {
     private val plan = Arb.plan().next()
     private val syncVenueDbosAdded = mutableListOf<VenueDbo>()
     private val syncVenueDbosMarkedDeleted = mutableListOf<VenueDbo>()
+    private val syncVenueDbosMarkedUndeleted = mutableListOf<VenueDbo>()
     private lateinit var api: UscApi
     private lateinit var venueRepo: InMemoryVenueRepo
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
@@ -52,15 +53,20 @@ class VenueSyncerTest : StringSpec() {
         imageStorage = MemorizableImageStorage()
         syncVenueDbosAdded.clear()
         syncVenueDbosMarkedDeleted.clear()
+        syncVenueDbosMarkedUndeleted.clear()
 
         val syncerListenerDispatcher = SyncerListenerDispatcher()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
-            override fun onVenueDbosAdded(venueDbos: List<VenueDbo>) {
-                syncVenueDbosAdded += venueDbos
+            override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
+                syncVenueDbosAdded += addedVenues
             }
 
             override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
                 syncVenueDbosMarkedDeleted += venueDbos
+            }
+
+            override fun onVenueDbosMarkedUndeleted(venueDbos: List<VenueDbo>) {
+                syncVenueDbosMarkedUndeleted += venueDbos
             }
         })
         val syncProgress = DummySyncProgress()
@@ -90,8 +96,9 @@ class VenueSyncerTest : StringSpec() {
             coEvery {
                 api.fetchVenues(VenuesFilter(city, plan), any())
             } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
-            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns
-                    remoteDetails.copy(linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next())
+            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails.copy(
+                linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next()
+            )
 
             syncer.sync(plan, city)
 
@@ -116,13 +123,29 @@ class VenueSyncerTest : StringSpec() {
             venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe true
             syncVenueDbosMarkedDeleted.shouldBeSingleton().first().id shouldBe stored.id
         }
+        "Given api returns 1 and db has 1 deleted When sync Then mark as undeleted" {
+            val testSlug = "testSlug"
+            coEvery { api.fetchVenues(VenuesFilter(city, plan), any()) } returns
+                    listOf(remoteVenue.copy(slug = testSlug))
+            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails.copy(slug = testSlug)
+
+            val stored = venueRepo.insert(
+                Arb.venueDbo().next().copy(slug = testSlug, cityId = city.id, isDeleted = true)
+            )
+
+            syncer.sync(plan, city)
+
+            venueRepo.stored.values.shouldBeSingleton().first().isDeleted shouldBe false
+            syncVenueDbosMarkedUndeleted.shouldBeSingleton().first().id shouldBe stored.id
+        }
         "Given 1 stored And api returns it and one linked to it When sync Then link them" {
             val stored = venueRepo.insert(Arb.venueDbo().next().copy(cityId = city.id, isDeleted = false))
             coEvery { api.fetchVenues(VenuesFilter(city, plan), any()) } returns listOf(
                 remoteVenue.copy(slug = stored.slug), remoteVenue
             )
-            coEvery { api.fetchVenueDetail(remoteVenue.slug) } returns remoteDetails
-                .copy(slug = remoteVenue.slug, linkedVenueSlugs = listOf(stored.slug))
+            coEvery { api.fetchVenueDetail(remoteVenue.slug) } returns remoteDetails.copy(
+                slug = remoteVenue.slug, linkedVenueSlugs = listOf(stored.slug)
+            )
 
             syncer.sync(plan, city)
 

@@ -24,9 +24,12 @@ class Freetraining(
     val name: String,
     val category: String,
     val date: LocalDate,
-    state: FreetrainingState
+    state: FreetrainingState,
 ) : HasVenue, TableItemBgColor by venue {
     var state: FreetrainingState by mutableStateOf(state)
+
+    fun isInPast(today: LocalDate): Boolean =
+        date < today
 
     override fun toString(): String =
         "Freetraining[id=$id, name=$name, venue.slug=${venue.slug}, date=$date, state=$state]"

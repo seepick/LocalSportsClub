@@ -6,6 +6,7 @@ import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VenueService
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.singles.SinglesService
@@ -25,6 +26,7 @@ class VenueViewModel(
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
     fileResolver: FileResolver,
+    clock: Clock,
 ) : ScreenViewModel<Venue, VenueSearch>(
     dataStorage,
     bookingService,
@@ -37,7 +39,7 @@ class VenueViewModel(
     fileResolver,
 ) {
 
-    override val tableColumns = venuesTableColumns()
+    override val tableColumns = venuesTableColumns(clock.today())
     override val selectedVenue = MutableStateFlow<Venue?>(null)
     override val selectedItem = selectedVenue
     override val showLinkedVenues = true

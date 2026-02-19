@@ -48,8 +48,8 @@ class ActivitiesSyncerTest : DescribeSpec() {
         venueRepo = InMemoryVenueRepo()
         syncerListenerDispatcher = SyncerListenerDispatcher()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
-            override fun onActivityDbosAdded(activityDbos: List<ActivityDbo>) {
-                syncActivityAdded += activityDbos
+            override fun onActivityDbosAdded(addedActivities: List<ActivityDbo>) {
+                syncActivityAdded += addedActivities
             }
         })
     }
