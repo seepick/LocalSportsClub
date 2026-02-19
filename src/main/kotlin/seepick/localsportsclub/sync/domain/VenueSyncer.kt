@@ -39,7 +39,7 @@ class VenueSyncer(
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenues = venueRepo.selectAllByCity(city.id)
         val markDeleted = localVenues.filter { !it.isDeleted }.associateBy { it.slug }.minus(remoteVenuesBySlug.keys)
-        // this also means that the "hidden linked ones" will be deleted
+        // this also means that the "hidden linked ones" will be marked deleted
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
         markDeleted.values.forEach {

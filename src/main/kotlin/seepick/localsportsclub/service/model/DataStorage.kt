@@ -365,7 +365,7 @@ fun VenueDbo.toVenue(
     importantInfo = importantInfo,
     openingTimes = openingTimes,
     officialWebsite = officialWebsite,
-    uscWebsite = "${baseUrl}/venues/$slug",
+    uscWebsite = "${baseUrl.toString().trimEnd('/')}/venues/$slug",
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
     isHidden = isHidden,

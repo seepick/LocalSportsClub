@@ -2,17 +2,18 @@
 
 ## v1.9.0
 
-* 🖋 new venue search filter: deleted (venues with title strike through)
-* 🎨double search input; parser is weird; typing is weird
 * 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
     * while venue sync: not stepping over to next page when: page count > page hint
     * showMore logic doesn't work to skip over...
+    * PLUS!! reset all VENUE.IS_DELETED=false; then full-resync will adjust properly
 * 🎨when use keys up/down for navigation, scrolling along if outside of displayed content
     * maybe also when e.g. selecting in master, then also select in venue.detail
-* 🎨make address right-clickable => dropdown: copy to clipboard
+* 🎨double search input; parser is weird; typing is weird
+* 🖋make address right-clickable => dropdown: copy to clipboard
 
 ## Backlog
 
+* 🖋 new venue search filter: deleted (venues with title strike through)
 * 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
     * 🖋️when cancel booking, get sure cancellation time window is considered
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
