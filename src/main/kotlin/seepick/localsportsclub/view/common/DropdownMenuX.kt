@@ -61,7 +61,7 @@ fun <T> DropdownMenuX(
 fun <T> _DropdownMenuX(
     items: List<T>,
     itemFormatter: ((T) -> String)? = null,
-    isMenuExpanded: MutableState<Boolean>,
+    isMenuExpanded: MutableState<Boolean>, // TODO try refactor to simple boolean
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
@@ -75,7 +75,8 @@ fun <T> _DropdownMenuX(
         items.forEach { item ->
             var isHovered by remember { mutableStateOf(false) }
             index++
-            DropdownMenuItem(onClick = {
+            DropdownMenuItem(
+                onClick = {
                 onItemClicked(item)
                 isMenuExpanded.value = false
             },

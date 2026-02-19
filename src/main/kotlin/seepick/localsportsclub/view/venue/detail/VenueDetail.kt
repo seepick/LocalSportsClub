@@ -29,6 +29,7 @@ import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CheckboxTexted
+import seepick.localsportsclub.view.common.CopyTextToClipboard
 import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LinkTonalButton
@@ -88,15 +89,19 @@ fun VenueDetail(
                     Text(venue.categories.joinToString(", "))
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
-                    Tooltip("Open Google Maps") {
-                        UrlText(
-                            url = "https://www.google.com/maps/search/?api=1&query=${
-                                URLEncoder.encode(
-                                    "${venue.street}, ${venue.postalCode} ${venue.addressLocality}", "UTF-8"
-                                )
-                            }",
-                            displayText = "${venue.street}${if (venue.street.isEmpty()) "" else ", "}${venue.postalCode}",
-                        )
+                    Tooltip("Open Google Maps / Right click to copy") {
+                        val displayText =
+                            "${venue.street}${if (venue.street.isEmpty()) "" else ", "}${venue.postalCode}"
+                        CopyTextToClipboard(text = displayText) {
+                            UrlText(
+                                url = "https://www.google.com/maps/search/?api=1&query=${
+                                    URLEncoder.encode(
+                                        "${venue.street}, ${venue.postalCode} ${venue.addressLocality}", "UTF-8"
+                                    )
+                                }",
+                                displayText = displayText,
+                            )
+                        }
                     }
                     venue.distanceInKm.also { distance ->
                         Text(

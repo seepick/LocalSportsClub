@@ -2,14 +2,9 @@
 
 ## v1.9.0
 
-* 🐞️!!BUG in PAGEABLE.kt: not going beyond 20 pages!
-    * while venue sync: not stepping over to next page when: page count > page hint
-    * showMore logic doesn't work to skip over...
-    * PLUS!! reset all VENUE.IS_DELETED=false; then full-resync will adjust properly
 * 🎨when use keys up/down for navigation, scrolling along if outside of displayed content
     * maybe also when e.g. selecting in master, then also select in venue.detail
 * 🎨double search input; parser is weird; typing is weird
-* 🖋make address right-clickable => dropdown: copy to clipboard
 
 ## Backlog
 
