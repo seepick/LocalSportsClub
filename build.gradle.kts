@@ -19,7 +19,7 @@ group = "com.github.seepick.localsportsclub"
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
 //    val versionUscClient = "2000.0.SNAPSHOT"
-    val versionUscClient = "2026.2.6"
+    val versionUscClient = "2026.2.7"
     implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
