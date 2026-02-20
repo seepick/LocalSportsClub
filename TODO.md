@@ -2,13 +2,14 @@
 
 ## v1.10.0
 
-* 🖋 new venue search filter: is-auto-sync, is-deleted
 * 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
+* also exclude past activities from search (only regard future ones; same for freetraining)
 
 ## Backlog
 
+* when update venue which leads to sort table change, then auto-scroll there (if still available in content)
 * 🖋also sync "plus checkins"?
 * ad website, embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
     * better: long term solution: https://www.macobserver.com/tips/how-to/open-mac-app-from-unidentified-developer/

@@ -26,20 +26,20 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
 fun <T : HasVenue> RatingColumn() =
     TableColumn<T>(
         VisualIndicator.StringIndicator("Rating"),
-        WidthOrWeight.Width(90.dp),
+        WidthOrWeight.Width(80.dp),
         CellRenderer.TextRenderer { it.venue.rating.label })
 
 fun <T : HasDistance> DistanceColumn() =
     TableColumn<T>(
         VisualIndicator.StringIndicator("km"),
-        WidthOrWeight.Width(40.dp),
+        WidthOrWeight.Width(35.dp),
         CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm }
     )
 
 fun <T : HasPlan> PlanColumn() =
     TableColumn<T>(
         header = VisualIndicator.StringIndicator(Plan.UscPlan.Large.emoji),
-        size = WidthOrWeight.Width(20.dp),
+        size = WidthOrWeight.Width(40.dp),
         tooltip = "Plan: ${Plan.UscPlan.entries.joinToString(" ") { "${it.emoji} ${it.apiString}" }}",
         renderer = CellRenderer.TextRenderer(
             textAlign = TextAlign.Center,

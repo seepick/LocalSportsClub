@@ -1,10 +1,14 @@
 package seepick.localsportsclub.view.venue
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.common.Lsc
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Venue>(resetItems) {
@@ -40,4 +44,14 @@ class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : Abstrac
     val category = newSelectSearchOption(
         "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
     ) { it.categories }
+    val autoSync = newBooleanSearchOption(
+        label = "Auto-Sync",
+        initialValue = true,
+        visualIndicator = VisualIndicator.VectorIndicator(Icons.Lsc.syncActivityDetails)
+    ) { it.isAutoSync }
+    val deleted = newBooleanSearchOption(
+        label = "Deleted",
+        initialValue = false,
+        visualIndicator = VisualIndicator.VectorIndicator(Icons.Default.Delete),
+    ) { it.isDeleted }
 }

@@ -9,6 +9,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
+    // invisible to the user
     val hidden = newBooleanSearchOption(
         "hidden", initiallyEnabled = true, initialValue = false
     ) { it.venue.isHidden }

@@ -29,5 +29,8 @@ fun VenueSearchPanel(
         BooleanSearchField(viewModel.searching.wishlisted)
         RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.category)
+        BooleanSearchField(viewModel.searching.autoSync)
+        BooleanSearchField(viewModel.searching.deleted)
+
     }
 }
