@@ -79,7 +79,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     ),
     TableColumn(
         VisualIndicator.StringIndicator("Last Visit"), WidthOrWeight.Width(80.dp), TextRenderer(
-            extractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
+            valueExtractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
         )

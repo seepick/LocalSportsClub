@@ -23,6 +23,7 @@ import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 import seepick.localsportsclub.view.shared.CheckedinColumn
 import seepick.localsportsclub.view.shared.DistanceColumn
+import seepick.localsportsclub.view.shared.PlanColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
@@ -30,19 +31,17 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.6f),
-        CellRenderer.TextRenderer(
-            extractor = { activity ->
-                buildString {
-                    if (activity.state == ActivityState.Booked) {
-                        append("${Lsc.icons.reservedEmoji} ")
-                    }
-                    append(activity.name)
-                    if (activity.teacher != null) {
-                        append(" /${activity.teacher}")
-                    }
+        CellRenderer.TextRenderer(valueExtractor = { activity ->
+            buildString {
+                if (activity.state == ActivityState.Booked) {
+                    append("${Lsc.icons.reservedEmoji} ")
                 }
-            },
-            sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
+                append(activity.name)
+                if (activity.teacher != null) {
+                    append(" /${activity.teacher}")
+                }
+            }
+        }, sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
     ),
     TableColumn(
         VisualIndicator.StringIndicator("Venue"),
@@ -58,17 +57,16 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     ),
     TableColumn(
         VisualIndicator.StringIndicator("Category"),
-        WidthOrWeight.Width(120.dp),
+        WidthOrWeight.Width(80.dp),
         CellRenderer.TextRenderer { it.category }),
     TableColumn(
-        VisualIndicator.StringIndicator("Date"),
-        WidthOrWeight.Width(100.dp),
-        CellRenderer.TextRenderer(
-            extractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
+        VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
+            valueExtractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,
         )
     ),
+    PlanColumn(),
     DistanceColumn(),
     CheckedinColumn(paddingRight = true),
     RatingColumn(),

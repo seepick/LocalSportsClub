@@ -61,6 +61,7 @@ fun Arb.Companion.activity() = arbitrary {
         teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().bind(),
         state = enum<ActivityState>().bind(),
         cancellationLimit = if (boolean().bind()) null else dateTimeRange.from.minusHours(2),
-        description = string().orNull().bind()
+        description = string().orNull().bind(),
+        plan = enum<Plan.UscPlan>().bind(),
     )
 }

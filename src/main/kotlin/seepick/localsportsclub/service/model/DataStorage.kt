@@ -317,6 +317,7 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     description = description,
     dateTimeRange = DateTimeRange(from, to),
     state = state,
+    plan = Plan.UscPlan.byId(planId),
     cancellationLimit = cancellationLimit,
 )
 

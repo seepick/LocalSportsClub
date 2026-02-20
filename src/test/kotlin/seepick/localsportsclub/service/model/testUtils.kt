@@ -19,6 +19,7 @@ fun Activity.copy(
     spotsLeft = spotsLeft,
     teacher = teacher,
     description = description,
+    plan = plan,
 )
 
 fun ActivityState.someOther() = ActivityState.entries.toSet().minus(this).random()

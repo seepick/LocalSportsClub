@@ -2,9 +2,11 @@ package seepick.localsportsclub.view.shared
 
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.HasDistance
+import seepick.localsportsclub.service.model.HasPlan
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.VisualIndicator
@@ -30,6 +32,18 @@ fun <T : HasVenue> RatingColumn() =
 fun <T : HasDistance> DistanceColumn() =
     TableColumn<T>(
         VisualIndicator.StringIndicator("km"),
-        WidthOrWeight.Width(50.dp),
+        WidthOrWeight.Width(40.dp),
         CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm }
+    )
+
+fun <T : HasPlan> PlanColumn() =
+    TableColumn<T>(
+        header = VisualIndicator.StringIndicator(Plan.UscPlan.Large.emoji),
+        size = WidthOrWeight.Width(20.dp),
+        tooltip = "Plan: ${Plan.UscPlan.entries.joinToString(" ") { "${it.emoji} ${it.apiString}" }}",
+        renderer = CellRenderer.TextRenderer(
+            textAlign = TextAlign.Center,
+            sortExtractor = { it.plan.id },
+            valueExtractor = { it.plan.emoji },
+        )
     )

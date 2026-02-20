@@ -1,9 +1,11 @@
 package seepick.localsportsclub.view.activity
 
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
@@ -33,4 +35,10 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
     val categories = newSelectSearchOption(
         "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
     ) { listOf(it.category) }
+    val plan = newSelectSearchOption(
+        label = "Plan",
+        visualIndicator = VisualIndicator.EmojiIndicator(Plan.UscPlan.emoji),
+        allOptions = Plan.UscPlan.entries.map { it.fullLabel },
+        extractor = { listOf(it.plan.fullLabel) },
+    )
 }

@@ -144,7 +144,7 @@ fun <T> Table(
 
                             is CellRenderer.TextRenderer -> {
                                 TableTextCell(
-                                    text = col.renderer.extractor(item).toString(),
+                                    text = col.renderer.valueExtractor(item).toString(),
                                     size = col.size,
                                     textAlign = col.renderer.textAlign,
                                     modifier = Modifier.let { m1 ->

@@ -26,6 +26,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.search.SelectSearchOption
@@ -34,7 +35,10 @@ import seepick.localsportsclub.view.common.rowBgColor
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
+fun <T> SelectSearchField(
+    searchOption: SelectSearchOption<T>,
+    width: Dp = 150.dp,
+) {
     val tableScrollState = rememberLazyListState()
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText()
@@ -42,7 +46,7 @@ fun <T> SelectSearchField(searchOption: SelectSearchOption<T>) {
             Box(
                 modifier = Modifier
                     .height(60.dp)
-                    .width(200.dp)
+                    .width(width)
                     .border(1.dp, Lsc.colors.onSurface)
             ) {
                 LazyColumn(

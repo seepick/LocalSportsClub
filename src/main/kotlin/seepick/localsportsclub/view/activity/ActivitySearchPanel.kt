@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.activity
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.search.ComparingNumericComparator
 import seepick.localsportsclub.view.search.BooleanSearchField
@@ -27,5 +28,6 @@ fun ActivitySearchPanel(
         BooleanSearchField(viewModel.searching.wishlisted)
         RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.categories)
+        SelectSearchField(viewModel.searching.plan, width = 120.dp)
     }
 }

@@ -3,6 +3,7 @@ package seepick.localsportsclub.service.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.utils.DateTimeRange
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
@@ -33,12 +34,13 @@ class Activity(
     val name: String,
     val category: String, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
+    override val plan: Plan.UscPlan,
     teacher: String?,
     description: String?,
     spotsLeft: Int,
     state: ActivityState,
     cancellationLimit: LocalDateTime?,
-) : HasVenue, HasDistance by venue, TableItemBgColor by venue {
+) : HasVenue, HasDistance by venue, HasPlan, TableItemBgColor by venue {
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
     // not possible due to mixed setup of table columns (doing logic in view/composable together)

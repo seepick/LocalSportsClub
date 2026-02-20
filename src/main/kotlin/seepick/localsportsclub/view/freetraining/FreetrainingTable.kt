@@ -39,7 +39,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         VisualIndicator.StringIndicator("Date"),
         WidthOrWeight.Width(80.dp),
         CellRenderer.TextRenderer(
-            extractor = { it.date.prettyPrint(clock.today().year) },
+            valueExtractor = { it.date.prettyPrint(clock.today().year) },
             sortExtractor = { it.date },
             textAlign = TextAlign.Right,
         )

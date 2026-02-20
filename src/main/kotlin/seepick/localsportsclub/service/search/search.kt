@@ -79,8 +79,7 @@ abstract class AbstractSearch<T>(
             initiallyEnabled = initiallyEnabled,
             initialDate = initialDate,
             visualIndicator = visualIndicator,
-
-            ).also {
+        ).also {
             options += it
         }
 

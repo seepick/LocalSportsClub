@@ -36,7 +36,7 @@ fun RowScope.TableTextCell(
 
 sealed interface CellRenderer<T> {
     data class TextRenderer<T>(
-        val extractor: (T) -> Any,
+        val valueExtractor: (T) -> Any,
         val sortExtractor: (T) -> Any?,
         val textAlign: TextAlign? = null,
         val paddingLeft: Boolean = false,
@@ -49,7 +49,7 @@ sealed interface CellRenderer<T> {
                 paddingRight: Boolean = false,
                 extractor: (T) -> Any,
             ): TextRenderer<T> = TextRenderer(
-                extractor = extractor,
+                valueExtractor = extractor,
                 sortExtractor = extractor,
                 textAlign = textAlign,
                 paddingLeft = paddingLeft,

@@ -85,8 +85,13 @@ fun SubEntityDetail(
                 TitleText(subEntity.name)
             }
         }
-        Column {
+        Row {
             Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (subEntity is SubEntity.ActivityEntity) {
+                Tooltip("Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
+                    Text(" ${subEntity.activity.plan.emoji} ")
+                }
+            }
             Text(
                 text = buildString {
                     if (isBooked) {
