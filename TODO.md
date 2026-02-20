@@ -2,14 +2,22 @@
 
 ## v1.10.0
 
-* 🖋also sync "plus checkins"
-* 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
 * 🖋 new venue search filter: is-auto-sync, is-deleted
+* 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
 * 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
 * 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 
 ## Backlog
 
+* 🖋also sync "plus checkins"?
+* ad website, embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
+    * better: long term solution: https://www.macobserver.com/tips/how-to/open-mac-app-from-unidentified-developer/
+      `sudo spctl –master-disable` + settings / security / choose "Anywhere"
+* load more venue pictures; on-demand transient storage
+* go through venue/activity info/descriptive text details; is all synced?
+* could sync official rating (0.0-5.0 number and total count)
+* mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
+* copy-address-to-clipboard, make width constant (otherwise if address short, then linebreak)
 * !  when sort table, then by default DESC initially! (not asc)
 * search fields provide count already; e.g. category "(20) EMS"
 * manually adjustable table column width (e.g. wanting to make name wider)

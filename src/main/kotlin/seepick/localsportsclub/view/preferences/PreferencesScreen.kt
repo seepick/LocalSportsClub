@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.Country
+import com.github.seepick.uscclient.plan.Plan
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.view.common.DoubleField
 import seepick.localsportsclub.view.common.DropDownTextField
@@ -159,7 +160,17 @@ fun UscInfoRow(
     Spacer(Modifier.width(10.dp))
     PeriodTextField(viewModel.entity.periodFirstDay)
     Spacer(Modifier.width(10.dp))
-    Text("Plan: ${viewModel.plan?.label ?: "?"}")
+
+    Text(buildString {
+        append("Plan: ")
+        viewModel.plan?.also { plan ->
+            if (plan is Plan.OnefitPlan) {
+                append("${plan.uscPlan.fullLabel} (${plan.label})")
+            } else {
+                append(plan.fullLabel)
+            }
+        } ?: append("N/A")
+    })
 }
 
 @Composable
