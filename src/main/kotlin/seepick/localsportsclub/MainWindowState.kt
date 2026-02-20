@@ -14,7 +14,7 @@ class MainWindowState {
         private set
 
     fun update(width: Int, height: Int) {
-        log.debug { "update($width x $height)" }
+        log.trace { "update($width x $height)" }
         this.width = width
         this.height = height
     }

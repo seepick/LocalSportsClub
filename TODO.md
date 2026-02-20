@@ -1,14 +1,14 @@
 # TODO
 
-## v1.10.0
-
-* 🐞🎨in address: "&#039;" for "Thrive Yoga Outdoor Oosterpark" (but it DOES work with e.g. "Fitness Acadey - 's-Graves...")
-* 🎨enforce venue custom text min-height (so when vertical window gets smaller, it doesn't just disappear)
-* 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
-* also exclude past activities from search (only regard future ones; same for freetraining)
+## v1.11.0
 
 ## Backlog
 
+* 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
+* combine all venue info-texts into a single popup (info, times, description)
+* ad activity details: when info text is empty, don't even render the "Info:" label
+* make "available visits this month" as progress bar with "4/6" next to it
+* also exclude past activities from search (only regard future ones; same for freetraining)
 * when update venue which leads to sort table change, then auto-scroll there (if still available in content)
 * 🖋also sync "plus checkins"?
 * ad website, embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
