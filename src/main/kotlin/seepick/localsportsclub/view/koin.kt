@@ -6,12 +6,13 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.usage.UsageStatsViewModel
+import seepick.localsportsclub.usage.UsageStorage
 import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
 import seepick.localsportsclub.view.preferences.PreferencesViewModel
 import seepick.localsportsclub.view.shared.SharedModel
-import seepick.localsportsclub.view.usage.UsageStorage
 import seepick.localsportsclub.view.venue.VenueViewModel
 
 fun viewModule(config: LscConfig) = module {
@@ -50,7 +51,7 @@ fun viewModule(config: LscConfig) = module {
     viewModelOf(::NotesViewModel)
     viewModelOf(::SyncerViewModel)
     viewModelOf(::PreferencesViewModel)
-    viewModelOf(::StatsViewModel)
+    viewModelOf(::UsageStatsViewModel)
     viewModelOf(::VersionNotifier)
     singleOf(::SharedModel)
     singleOf(::UsageStorage)

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view.usage
+package seepick.localsportsclub.usage
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyShortPrint
-import seepick.localsportsclub.view.StatsDialog
+import seepick.localsportsclub.view.common.Tooltip
 
 private val colorBg = Color(0xFF9B9B9B)
 private val colorPeriod = Color(0xFFFF9300)
@@ -50,7 +50,7 @@ fun UsageView(
     var showStatsDialog by remember { mutableStateOf(false) }
 
     if (showStatsDialog) {
-        StatsDialog(
+        UsageStatsDialog(
             onClose = { showStatsDialog = false }
         )
     }
@@ -88,14 +88,16 @@ fun UsageView(
                 percentageBooked = percentageBooked,
             )
         }
-        TextButton(
-            onClick = { showStatsDialog = true },
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier
-                .padding(0.dp)
+        Tooltip("Show usage statistics") {
+            TextButton(
+                onClick = { showStatsDialog = true },
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier
+                    .padding(0.dp)
 //                .background(Color.Red)
-        ) {
-            Icon(Icons.Default.Info, null, modifier = Modifier.padding(0.dp))
+            ) {
+                Icon(Icons.Default.Info, null, modifier = Modifier.padding(0.dp))
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Preferences
 import seepick.localsportsclub.sync.ActivityFieldUpdate
+import seepick.localsportsclub.usage.UsageStorage
 import testfixtUsc.city
 import java.time.LocalDate
 import java.time.LocalDateTime

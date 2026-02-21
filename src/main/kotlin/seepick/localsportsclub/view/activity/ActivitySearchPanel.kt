@@ -20,7 +20,7 @@ fun ActivitySearchPanel(
         clearSearchEnabled = viewModel.searching.anyEnabled,
         clearSearch = viewModel.searching::clearAll,
     ) {
-        StringSearchField(viewModel.searching.name)
+        StringSearchField(viewModel.searching.activityNameTeacherAndVenue)
         DateTimeRangeSearchField(viewModel.searching.date, viewModel.syncDates)
         BooleanSearchField(viewModel.searching.booked)
         DoubleSearchField(viewModel.searching.distance, ComparingNumericComparator.entries)

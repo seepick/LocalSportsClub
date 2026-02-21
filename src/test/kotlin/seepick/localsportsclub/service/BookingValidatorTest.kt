@@ -24,8 +24,8 @@ import seepick.localsportsclub.service.model.copy
 import seepick.localsportsclub.service.model.toDbo
 import seepick.localsportsclub.service.model.venue
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.usage.UsageStorage
 import seepick.localsportsclub.view.usage.InMemorySinglesService
-import seepick.localsportsclub.view.usage.UsageStorage
 import java.time.LocalDateTime
 
 class BookingValidatorTest : DescribeSpec() {

@@ -42,7 +42,7 @@ import seepick.localsportsclub.view.common.WidthOrFill
 
 private val col1width = 180.dp
 
-const val tooltipTextVerifyUscFirst = "Please enter and verify your USC login data in the preferences first."
+const val tooltipTextVerifyUscFirst = "Enter and verify your USC login data in the preferences first"
 
 @Composable
 fun PreferencesScreen(

@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view
+package seepick.localsportsclub.usage
 
 import androidx.lifecycle.ViewModel
 import seepick.localsportsclub.persistence.ActivityDbo
@@ -11,7 +11,7 @@ import seepick.localsportsclub.service.date.sameYearMonth
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.singles.SinglesService
 
-class StatsViewModel(
+class UsageStatsViewModel(
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
     private val venueRepo: VenueRepo,

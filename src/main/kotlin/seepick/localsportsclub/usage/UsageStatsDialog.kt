@@ -1,4 +1,4 @@
-package seepick.localsportsclub.view
+package seepick.localsportsclub.usage
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,9 +30,9 @@ import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.LscVScroll
 
 @Composable
-fun StatsDialog(
+fun UsageStatsDialog(
     onClose: () -> Unit,
-    viewModel: StatsViewModel = koinInject(),
+    viewModel: UsageStatsViewModel = koinInject(),
     clock: Clock = koinInject(),
 ) {
     val values = viewModel.values
@@ -56,7 +56,7 @@ fun StatsDialog(
                 Box(Modifier.weight(1.0f, true).fillMaxWidth(1.0f)) {
                     Column(modifier = Modifier.verticalScroll(scrollState)) {
                         Text(
-                            "Statistics", fontWeight = FontWeight.Bold, fontSize = 18.sp,
+                            "Usage Statistics", fontWeight = FontWeight.Bold, fontSize = 18.sp,
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
                         LabeledText("Total Checkins", values.totalCheckins.toString())

@@ -8,7 +8,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.monthRange
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.singles.SinglesService
-import seepick.localsportsclub.view.usage.UsageStorage
+import seepick.localsportsclub.usage.UsageStorage
 
 sealed interface BookingValidation {
     data object Valid : BookingValidation

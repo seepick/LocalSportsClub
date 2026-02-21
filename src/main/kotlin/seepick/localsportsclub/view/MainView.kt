@@ -41,10 +41,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.usage.UsageView
 import seepick.localsportsclub.view.activity.ActivitiesScreen
-import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.CustomSnackbar
+import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.bottomBorder
 import seepick.localsportsclub.view.common.brighter
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
@@ -52,7 +53,6 @@ import seepick.localsportsclub.view.notes.NotesScreen
 import seepick.localsportsclub.view.preferences.PreferencesScreen
 import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 import seepick.localsportsclub.view.shared.SharedModel
-import seepick.localsportsclub.view.usage.UsageView
 import seepick.localsportsclub.view.venue.VenueScreen
 
 private val log = logger {}
@@ -172,8 +172,8 @@ fun MainView(
 fun SyncPanel(
     viewModel: MainViewModel = koinViewModel(),
 ) {
-    ConditionalTooltip(
-        !viewModel.isSyncPossible, tooltipTextVerifyUscFirst
+    Tooltip(
+        if (viewModel.isSyncPossible) "Synchronize data" else tooltipTextVerifyUscFirst
     ) {
         Button(
             enabled = viewModel.isSyncPossible && !viewModel.isSyncInProgress,

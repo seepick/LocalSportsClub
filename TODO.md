@@ -2,47 +2,52 @@
 
 ## v1.11.0
 
-## Backlog
-
 * tooltip for top-menu buttons CMD+1/2/3/4/5  (also for win)
-* 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
-* combine all venue info-texts into a single popup (info, times, description)
+* also exclude past activities from search (only regard future ones; same for freetraining)
 * ad activity details: when info text is empty, don't even render the "Info:" label
 * make "available visits this month" as progress bar with "4/6" next to it
-* also exclude past activities from search (only regard future ones; same for freetraining)
-* when update venue which leads to sort table change, then auto-scroll there (if still available in content)
-* 🖋also sync "plus checkins"?
-* ad website:
-    * apple restriction: bypass once: embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
-    * bypass forever : `spctl --global-disable` and then: Settings / Security / Choose "Anywhere"
-* load more venue pictures; on-demand transient storage
-* go through venue/activity info/descriptive text details; is all synced?
-* could sync official rating (0.0-5.0 number and total count)
-* mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
 * copy-address-to-clipboard, make width constant (otherwise if address short, then linebreak)
-* !  when sort table, then by default DESC initially! (not asc)
-* search fields provide count already; e.g. category "(20) EMS"
-* manually adjustable table column width (e.g. wanting to make name wider)
-* table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
-* clear color coding: everything clickable is blue
-* make all/most text selectable for copy'n'paste
-* if scroll through table with keys and hold, then short delay and burst
-* ad booking validation: the monthly limit (per venue) is venue-specific
+* when update venue which leads to sort table change, then auto-scroll there (if still available in content)
+* ad website, apple restriction: bypass once: embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
+    * bypass forever : `spctl --global-disable` and then: Settings / Security / Choose "Anywhere"
+* when sort table, then by default DESC initially! (not asc)
+
+!!! == DONE == NO new issues here == !!!
+
+## Backlog
+
+* 🎨 clear color coding: everything clickable is blue
+* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
+* 🎨 manually adjustable table column width (e.g. wanting to make name wider)
+* 🎨 table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
+* 🎨 make all/most text selectable for copy'n'paste
+* 🎨 if scroll through table with keys and hold, then short delay and burst
+* 🖋 ad booking validation: the monthly limit (per venue) is venue-specific
     * e.g.: S=2, M=4, L/XL=8 .... or: L/XL=4 // also differentiate between B2C and B2B
-* add booking warning if 0 spots; general rule: never block action, only inform (we might be wrong, and worst-case getting server error, no harm being done)
-* 🖋display cancellation limit; fetch hour setting per venue; remove from activity; infer
-    * 🖋️when cancel booking, get sure cancellation time window is considered
+* 🎨 add booking warning if 0 spots
+* 🖋️ when cancel booking, get sure cancellation time window is considered; warning dialog
+* 🎨 combine all venue info-texts into a single popup (info, times, description); too busy right now
 * 🐞🎨if rating sorted, then update rating => resort! (just that one which has been updated)
-* 🤖test fixtures from usc-client don't work; right now copy'n'pasted all
-* 🎨make rating UI a slider with custom renderer
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
-* 🖋️"hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
-* 🖋️filter for time only (evenings), without specifying day/date
+* 🎨 make rating UI a slider with custom renderer
+* 🖋 search filter for time only (evenings), without specifying day/date; in general think about using a ranged slider
+* 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
+
+## New Features
+
+* 🖋 sync also "plus checkins" (check app what's that again)
+* 🖋 load more venue pictures; on-demand transient storage; from web
+* 🖋 search fields provide count already; e.g. category "(20) EMS"
+* 🖋 mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
+    * or maybe an adaptive "suggested" or "liked" venues/activities based on past bookings
+* 🖋 could sync official rating (0.0-5.0 number and total count)
+* 🖋️ "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 
 ## Later
 
+* 🤖test fixtures from usc-client don't work; right now copy'n'pasted all
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
 * 🤖move all mock/dev/dummy things in src/test/kotlin (leftovers?)
 * 🤖rework `workParallel` as service with interface, so can be mocked out easily during testing (?)

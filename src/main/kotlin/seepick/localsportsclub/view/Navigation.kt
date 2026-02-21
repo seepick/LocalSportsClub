@@ -11,16 +11,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.common.Tooltip
 
 enum class Screen(
     val label: String,
     val icon: ImageVector,
+    val tooltip: String,
 ) {
-    Activities(label = "Activities", icon = Lsc.icons.activities),
-    Freetrainings(label = "Freetrainings", icon = Lsc.icons.freetrainings),
-    Venues(label = "Venues", icon = Lsc.icons.venues),
-    Notes(label = "Notes", icon = Lsc.icons.notes),
-    Preferefences(label = "Preferefences", icon = Lsc.icons.preferences);
+    Activities(
+        label = "Activities",
+        tooltip = "View available activities",
+        icon = Lsc.icons.activities,
+    ),
+    Freetrainings(
+        label = "Freetrainings",
+        tooltip = "View available freetrainings",
+        icon = Lsc.icons.freetrainings,
+    ),
+    Venues(
+        label = "Venues",
+        tooltip = "View all venues",
+        icon = Lsc.icons.venues,
+    ),
+    Notes(
+        label = "Notes",
+        tooltip = "Write personal remarks",
+        icon = Lsc.icons.notes,
+    ),
+    Preferefences(
+        label = "Preferefences",
+        tooltip = "Change application configuration",
+        icon = Lsc.icons.preferences,
+    );
 }
 
 @Composable
@@ -33,15 +55,18 @@ fun NavigationScreen(
         modifier = Modifier.width(700.dp)
     ) {
         Screen.entries.forEach { screen ->
-            Tab(text = { Text(screen.label) },
-                selected = selectedScreen == screen,
-                onClick = { selectScreen(screen) },
-                selectedContentColor = Lsc.colors.onPrimary,
-                modifier = Modifier.background(Lsc.colors.primary),
-                icon = {
-                    Icon(imageVector = screen.icon, contentDescription = null)
-                }
-            )
+            Tooltip("${screen.tooltip} (CMD+${screen.ordinal + 1})") {
+                Tab(
+                    text = { Text(screen.label) },
+                    selected = selectedScreen == screen,
+                    onClick = { selectScreen(screen) },
+                    selectedContentColor = Lsc.colors.onPrimary,
+                    modifier = Modifier.background(Lsc.colors.primary),
+                    icon = {
+                        Icon(imageVector = screen.icon, contentDescription = null)
+                    }
+                )
+            }
         }
     }
 }

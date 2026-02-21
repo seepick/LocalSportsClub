@@ -9,13 +9,20 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 
 class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
-    // invisible to the user
-    val hidden = newBooleanSearchOption(
-        "hidden", initiallyEnabled = true, initialValue = false
-    ) { it.venue.isHidden }
-
-    val name = newStringSearchOption(
-        "Name", initiallyEnabled = true, extractors = listOf({ it.name }, { it.teacher }, { it.venue.name })
+    val hidden = newBooleanSearchOption( // invisible to the user
+        label = "hidden",
+        initiallyEnabled = true,
+        initialValue = false,
+        extractor = { it.venue.isHidden }
+    )
+    val activityNameTeacherAndVenue = newStringSearchOption(
+        label = "Search",
+        initiallyEnabled = true,
+        extractors = listOf(
+            { it.name },
+            { it.teacher },
+            { it.venue.name },
+        )
     )
     val date = newDateTimeRangeSearchOption(
         "Date", visualIndicator = Lsc.icons.dateIndicator

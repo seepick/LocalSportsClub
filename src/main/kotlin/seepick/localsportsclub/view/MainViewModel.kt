@@ -63,8 +63,7 @@ class MainViewModel(
         }
     }
 
-    override fun onKeyboardChangeScreen(screenNr: Int) {
-        val screen = Screen.entries.first { it.ordinal == (screenNr - 1) }
+    override fun onKeyboardChangeScreen(screen: Screen) {
         changeScreen(screen)
     }
 

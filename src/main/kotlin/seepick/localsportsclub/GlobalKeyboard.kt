@@ -6,6 +6,7 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isMetaPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
+import seepick.localsportsclub.view.Screen
 
 class GlobalKeyboard {
 
@@ -28,12 +29,13 @@ class GlobalKeyboard {
     }
 
     private fun changeToScreen(screenNr: Int) {
+        val screen = Screen.entries.first { it.ordinal == (screenNr - 1) }
         listeners.forEach {
-            it.onKeyboardChangeScreen(screenNr)
+            it.onKeyboardChangeScreen(screen)
         }
     }
 }
 
 interface GlobalKeyboardListener {
-    fun onKeyboardChangeScreen(screenNr: Int)
+    fun onKeyboardChangeScreen(screen: Screen)
 }

@@ -23,6 +23,7 @@ import seepick.localsportsclub.sync.SyncMode
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.Syncer
+import seepick.localsportsclub.usage.UsageStorage
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
 import seepick.localsportsclub.view.Screen
@@ -33,7 +34,6 @@ import seepick.localsportsclub.view.common.showErrorDialog
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
 import seepick.localsportsclub.view.preferences.PreferencesViewModel
-import seepick.localsportsclub.view.usage.UsageStorage
 import seepick.localsportsclub.view.venue.VenueViewModel
 import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
