@@ -2,7 +2,7 @@
 
 ## v1.11.0
 
-* tooltip for top-menu buttons CMD+1/2/3/4/5  (also for win)
+* if start blank, enter&verify usc creds, then sync should be enabled (see lazily stored data)
 * also exclude past activities from search (only regard future ones; same for freetraining)
 * ad activity details: when info text is empty, don't even render the "Info:" label
 * make "available visits this month" as progress bar with "4/6" next to it

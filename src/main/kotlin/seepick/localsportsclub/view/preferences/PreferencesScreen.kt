@@ -55,10 +55,10 @@ fun PreferencesScreen(
         PreferencesItem("Credentials") {
             CredentialsRow()
         }
-        PreferencesItem("USC Info") {
-            UscInfoRow()
+        PreferencesItem("Location") {
+            UscLocationRow()
         }
-        PreferencesItem("Home Coordinates") {
+        PreferencesItem("Coordinates") {
             DoubleField(
                 label = "Latitude",
                 initialValue = viewModel.entity.homeLatitude,
@@ -70,6 +70,9 @@ fun PreferencesScreen(
                 initialValue = viewModel.entity.homeLongitude,
                 onChange = { viewModel.onLongitudeChanged(it) },
             )
+        }
+        PreferencesItem("Plan") {
+            UscPlanRow()
         }
         PreferencesItem("Google Calendar") {
             GCalRow()
@@ -133,7 +136,26 @@ private fun CredentialsRow(
 }
 
 @Composable
-fun UscInfoRow(
+fun UscPlanRow(
+    viewModel: PreferencesViewModel = koinViewModel(),
+) {
+    PeriodTextField(viewModel.entity.periodFirstDay)
+    Spacer(Modifier.width(10.dp))
+
+    Text(buildString {
+        append("Plan: ")
+        viewModel.plan?.also { plan ->
+            if (plan is Plan.OnefitPlan) {
+                append("${plan.uscPlan.fullLabel} (${plan.label})")
+            } else {
+                append(plan.fullLabel)
+            }
+        } ?: append("N/A")
+    })
+}
+
+@Composable
+fun UscLocationRow(
     viewModel: PreferencesViewModel = koinViewModel(),
 ) {
     DropDownTextField(
@@ -157,20 +179,6 @@ fun UscInfoRow(
         onItemSelected = { viewModel.entity.city = it },
         textSize = WidthOrFill.Width(250.dp),
     )
-    Spacer(Modifier.width(10.dp))
-    PeriodTextField(viewModel.entity.periodFirstDay)
-    Spacer(Modifier.width(10.dp))
-
-    Text(buildString {
-        append("Plan: ")
-        viewModel.plan?.also { plan ->
-            if (plan is Plan.OnefitPlan) {
-                append("${plan.uscPlan.fullLabel} (${plan.label})")
-            } else {
-                append(plan.fullLabel)
-            }
-        } ?: append("N/A")
-    })
 }
 
 @Composable

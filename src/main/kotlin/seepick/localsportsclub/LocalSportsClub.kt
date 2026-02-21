@@ -15,16 +15,17 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.module.Module
+import seepick.localsportsclub.gcal.gcalModule
 import seepick.localsportsclub.persistence.exposedPersistenceModule
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.WindowPref
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.singles.SinglesService
-import seepick.localsportsclub.sync.SyncMode
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncReporter
 import seepick.localsportsclub.sync.Syncer
+import seepick.localsportsclub.sync.syncModule
 import seepick.localsportsclub.usage.UsageStorage
 import seepick.localsportsclub.view.MainView
 import seepick.localsportsclub.view.MainViewModel
@@ -49,24 +50,21 @@ object LocalSportsClub {
     }
 }
 
-fun LscConfig.Companion.production(): LscConfig {
-    val appDirectory = File(File(System.getProperty("user.home")), ".lsc")
-    return LscConfig(
-        apiMode = ApiMode.RealHttp,
-        gcalMode = GcalMode.Real,
-        syncMode = SyncMode.Real,
+fun LscConfig.Companion.production() =
+    LscConfig(
         logbackFileEnabled = true,
-        appDirectory = appDirectory,
+        appDirectory = File(File(System.getProperty("user.home")), ".lsc"),
     )
-}
 
 fun startApplication(
     config: LscConfig,
     persistenceModule: Module = exposedPersistenceModule(config),
+    gcalModule: Module = gcalModule(),
+    uscClientModule: Module = uscClientModule(config),
+    syncModule: Module = syncModule(config),
 ) {
     reconfigureLog(
-        logsDirForFileAppender = config.fileResolver.resolve(DirectoryEntry.Logs),
-        packageSettings = mapOf(
+        logsDirForFileAppender = config.fileResolver.resolve(DirectoryEntry.Logs), packageSettings = mapOf(
             "seepick.localsportsclub" to Level.TRACE,
             "com.github.seepick.uscclient" to Level.DEBUG,
             "liquibase" to Level.INFO,
@@ -82,7 +80,15 @@ fun startApplication(
     try {
         application {
             KoinApplication(application = {
-                modules(allModules(config, persistenceModule))
+                modules(
+                    allModules(
+                        config,
+                        persistenceModule = persistenceModule,
+                        gcalModule = gcalModule,
+                        uscClientModule = uscClientModule,
+                        syncModule = syncModule,
+                    )
+                )
             }) {
                 val keyboard: GlobalKeyboard = koinInject()
                 val applicationLifecycle: ApplicationLifecycle = koinInject()

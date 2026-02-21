@@ -1,18 +1,23 @@
 package seepick.localsportsclub.devApp
 
-import seepick.localsportsclub.ApiMode
-import seepick.localsportsclub.GcalMode
 import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.gcal.noopGcalModule
+import seepick.localsportsclub.persistence.inmemoryPersistenceModule
 import seepick.localsportsclub.startApplication
 import seepick.localsportsclub.sync.SyncMode
+import seepick.localsportsclub.sync.devSyncModule
 import java.io.File
 
 object LocalSportsClubDevApp {
     @JvmStatic
     fun main(args: Array<String>) {
+        val config = LscConfig.development
         startApplication(
-            config = LscConfig.development,
-//            persistenceModule = inmemoryPersistenceModule(),
+            config = config,
+            persistenceModule = inmemoryPersistenceModule(),
+            gcalModule = noopGcalModule(),
+            uscClientModule = mockUscClientModule(),
+            syncModule = devSyncModule(SyncMode.Dummy, config),
         )
     }
 }
@@ -24,17 +29,6 @@ private val devConfig = LscConfig(
     appDirectory = File(File(System.getProperty("user.home")), APP_DIRECTORY),
     logbackFileEnabled = false,
     versionCheckEnabled = false,
-
-    apiMode = ApiMode.RealHttp,
-//        apiMode = ApiMode.Mock,
-
-    syncMode = SyncMode.Real,
-//        syncMode = SyncMode.Dummy,
-//        syncMode = SyncMode.Noop,
-//        syncMode = SyncMode.Delayed,
-
-//        gcalMode = GcalMode.Real,
-    gcalMode = GcalMode.Noop,
 )
 
 val LscConfig.Companion.development get() = devConfig

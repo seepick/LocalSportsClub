@@ -1,7 +1,12 @@
 package seepick.localsportsclub.sync
 
 import com.github.seepick.uscclient.plan.Plan
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.delay
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
@@ -15,6 +20,78 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
+
+enum class SyncMode {
+    Noop, Delayed, Dummy, Real
+}
+
+fun devSyncModule(syncMode: SyncMode, config: LscConfig) = when (syncMode) {
+    SyncMode.Real -> syncModule(config)
+    SyncMode.Noop -> module { singleOf(::NoopSyncer) bind Syncer::class }
+    SyncMode.Delayed -> module { singleOf(::SyncerDelayed) bind Syncer::class }
+    SyncMode.Dummy -> module { singleOf(::SyncerDummy) bind Syncer::class }
+}
+
+class NoopSyncer(
+    private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
+) : Syncer {
+    private val log = logger {}
+
+    override fun registerListener(listener: SyncerListener) {
+        dispatcher.registerListener(listener)
+    }
+
+    override suspend fun sync() {
+        log.info { "Noop syncer not doing anything." }
+        progress.start()
+        try {
+            delay(500)
+        } finally {
+            progress.stop(isError = false)
+        }
+    }
+}
+
+class SyncerDelayed(
+    private val dispatcher: SyncerListenerDispatcher,
+    private val progress: SyncProgress,
+) : Syncer {
+    private val log = logger {}
+
+    override suspend fun sync() {
+        log.info { "Delayed syncer delaying" }
+        progress.start()
+        progress.onProgress("Venues")
+        delay(1_000)
+        dispatcher.dispatchOnVenueDbosAdded(listOf(DummyGenerator.venue()))
+        delay(1_000)
+
+        progress.onProgress("Venues")
+        delay(500)
+        progress.onProgress("Venues", "Quick 1")
+        progress.onProgress("Venues", "Quick 2")
+        progress.onProgress("Venues", "Quick 3")
+        progress.onProgress("Activities")
+        delay(500)
+        progress.onProgress("Activities", "Day 1/3")
+        delay(2_000)
+        progress.onProgress("Activities", "Day 2/3")
+        delay(2_000)
+        progress.onProgress("Activities", "Day 3/3")
+        delay(2_000)
+        progress.onProgress("Freetrainings", "")
+        delay(3_000)
+        progress.onProgress("Checkins", "")
+
+        log.info { "Delay sync done." }
+        progress.stop(isError = false)
+    }
+
+    override fun registerListener(listener: SyncerListener) {
+        dispatcher.registerListener(listener)
+    }
+}
 
 class SyncerDummy(
     private val venueRepo: VenueRepo,

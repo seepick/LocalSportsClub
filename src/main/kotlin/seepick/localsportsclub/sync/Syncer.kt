@@ -1,7 +1,6 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlinx.coroutines.delay
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.VenueDbo
@@ -37,27 +36,6 @@ sealed interface ActivityFieldUpdate {
 
 enum class FreetrainingFieldUpdate {
     State,
-}
-
-class NoopSyncer(
-    private val dispatcher: SyncerListenerDispatcher,
-    private val progress: SyncProgress,
-) : Syncer {
-    private val log = logger {}
-
-    override fun registerListener(listener: SyncerListener) {
-        dispatcher.registerListener(listener)
-    }
-
-    override suspend fun sync() {
-        log.info { "Noop syncer not doing anything." }
-        progress.start()
-        try {
-            delay(500)
-        } finally {
-            progress.stop(isError = false)
-        }
-    }
 }
 
 class SyncerListenerDispatcher {

@@ -20,7 +20,6 @@ import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileEntry
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.retry
-import seepick.localsportsclub.service.singles.SinglesService
 import java.net.SocketException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -30,48 +29,10 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.TimeZone
 
-fun SinglesService.readCalendarIdOrThrow() =
-    preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
-
-interface GcalService {
-    fun create(calendarId: String, entry: GcalEntry)
-    fun delete(calendarId: String, deletion: GcalDeletion)
-}
-
-class PrefsEnabledGcalService(
-    private val singlesService: SinglesService,
-    private val fileResolver: FileResolver,
-) : GcalService {
-
-    private val delegate by lazy {
-        val calendarId = singlesService.preferences.gcal.maybeCalendarId
-        if (calendarId == null) NoopGcalService
-        else RealGcalService(fileResolver)
-    }
-
-    override fun create(calendarId: String, entry: GcalEntry) {
-        delegate.create(calendarId, entry)
-    }
-
-    override fun delete(calendarId: String, deletion: GcalDeletion) {
-        delegate.delete(calendarId, deletion)
-    }
-}
-
-object NoopGcalService : GcalService {
-    private val log = logger {}
-    override fun create(calendarId: String, entry: GcalEntry) {
-        log.debug { "Not creating: $entry" }
-    }
-
-    override fun delete(calendarId: String, deletion: GcalDeletion) {
-        log.debug { "Not deleting: $deletion" }
-    }
-}
-
 class RealGcalService(
     private val fileResolver: FileResolver,
 ) : GcalService {
+
     private val log = logger {}
     private val applicationName = "LocalSportsClub"
     private val scopes = setOf(CalendarScopes.CALENDAR, CalendarScopes.CALENDAR_EVENTS)

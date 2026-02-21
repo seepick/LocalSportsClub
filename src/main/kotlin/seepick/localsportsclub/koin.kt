@@ -3,21 +3,24 @@ package seepick.localsportsclub
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import seepick.localsportsclub.gcal.gcalModule
 import seepick.localsportsclub.service.serviceModule
-import seepick.localsportsclub.sync.syncModule
+import seepick.localsportsclub.sync.syncInfraModule
 import seepick.localsportsclub.view.viewModule
 
 fun allModules(
     config: LscConfig,
     persistenceModule: Module,
+    gcalModule: Module,
+    uscClientModule: Module,
+    syncModule: Module,
 ) = listOf(
     rootModule(),
     persistenceModule,
-    uscClientModule(config),
+    uscClientModule,
     serviceModule(config),
-    gcalModule(config),
-    syncModule(config),
+    gcalModule,
+    syncInfraModule(config),
+    syncModule,
     viewModule(config),
 )
 
