@@ -113,12 +113,11 @@ fun SubEntityDetail(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        if (subEntity is SubEntity.ActivityEntity && subEntity.activity.description != null) {
-            val description = subEntity.activity.description!!
-//            Text(text = subEntity.activity.description!!)
-            LongText(label = "Info", text = description, onShowLongText = {
+        val maybeDescription = if (subEntity is SubEntity.ActivityEntity) subEntity.activity.description else null
+        if (!maybeDescription.isNullOrEmpty()) {
+            LongText(label = "Info", text = maybeDescription, onShowLongText = {
                 sharedModel.customDialog.value =
-                    CustomDialog(title = "Activity Description", text = description, showDismissButton = false)
+                    CustomDialog(title = "Activity Description", text = maybeDescription, showDismissButton = false)
             })
         }
         if (subEntity.date >= clock.today()) {
