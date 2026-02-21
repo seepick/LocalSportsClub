@@ -2,8 +2,6 @@
 
 ## v1.11.0
 
-* if start blank, enter&verify usc creds, then sync should be enabled (see lazily stored data)
-* also exclude past activities from search (only regard future ones; same for freetraining)
 * ad activity details: when info text is empty, don't even render the "Info:" label
 * make "available visits this month" as progress bar with "4/6" next to it
 * copy-address-to-clipboard, make width constant (otherwise if address short, then linebreak)

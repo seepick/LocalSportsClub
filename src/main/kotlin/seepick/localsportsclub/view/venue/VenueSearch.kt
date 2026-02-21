@@ -10,34 +10,36 @@ import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
+import java.time.LocalDate
 
-class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Venue>(resetItems) {
+class VenueSearch(today: LocalDate, allCategories: List<String>, resetItems: () -> Unit) :
+    AbstractSearch<Venue>(resetItems) {
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
-    val distance = newDistanceSearchOption()
-    val wishlisted = newBooleanSearchOption(
-        "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
-    ) { it.isWishlisted }
-    val favorited = newBooleanSearchOption(
-        "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
-    ) { it.isFavorited }
-    val hidden = newBooleanSearchOption(
-        "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator
-    ) { it.isHidden }
-    val checkins = newIntSearchOption("Checkins", visualIndicator = Lsc.icons.checkedinIndicator) {
-        it.activities.count { it.state == ActivityState.Checkedin } +
-                it.freetrainings.count { it.state == FreetrainingState.Checkedin }
-    }
     val activities = newIntSearchOption(
         "Activities", visualIndicator = Lsc.icons.activitiesIndicator
-    ) { it.activities.size }
+    ) { it.activities.filter { !it.isInPast(today) }.size }
     val reservations = newIntSearchOption(
         "Reservations", visualIndicator = Lsc.icons.reservedEmojiIndicator
     ) {
         it.activities.count { it.state == ActivityState.Booked } +
                 it.freetrainings.count { it.state == FreetrainingState.Scheduled }
     }
+    val checkins = newIntSearchOption("Checkins", visualIndicator = Lsc.icons.checkedinIndicator) {
+        it.activities.count { it.state == ActivityState.Checkedin } +
+                it.freetrainings.count { it.state == FreetrainingState.Checkedin }
+    }
+    val hidden = newBooleanSearchOption(
+        "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator
+    ) { it.isHidden }
+    val distance = newDistanceSearchOption()
+    val favorited = newBooleanSearchOption(
+        "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
+    ) { it.isFavorited }
+    val wishlisted = newBooleanSearchOption(
+        "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
+    ) { it.isWishlisted }
     val rating = newRatingSearchOption(
         "Rating", visualIndicator = Lsc.icons.ratingIndicator
     ) { it.rating }

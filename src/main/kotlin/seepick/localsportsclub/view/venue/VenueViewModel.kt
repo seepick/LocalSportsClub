@@ -26,7 +26,7 @@ class VenueViewModel(
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
     fileResolver: FileResolver,
-    clock: Clock,
+    private val clock: Clock,
 ) : ScreenViewModel<Venue, VenueSearch>(
     dataStorage,
     bookingService,
@@ -37,6 +37,7 @@ class VenueViewModel(
     activityDetailService,
     venueService,
     fileResolver,
+    clock,
 ) {
 
     override val tableColumns = venuesTableColumns(clock.today())
@@ -44,7 +45,9 @@ class VenueViewModel(
     override val selectedItem = selectedVenue
     override val showLinkedVenues = true
 
-    override fun buildSearch(resetItems: () -> Unit) = VenueSearch(dataStorage.venuesCategories, resetItems)
+    override fun buildSearch(resetItems: () -> Unit) =
+        VenueSearch(clock.today(), dataStorage.venuesCategories, resetItems)
+
     override fun DataStorage.selectAllItems() = selectVisibleVenues()
 
     override fun onItemSelected(item: SelectedItemType) {

@@ -59,4 +59,18 @@ class Activity(
 
     override fun toString() =
         "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"
+
+    companion object {
+        fun comparator(today: LocalDate) = Comparator<Activity> { a1, a2 ->
+            val a1IsNew = a1.dateTimeRange.from.toLocalDate() >= today
+            val a2IsNew = a2.dateTimeRange.from.toLocalDate() >= today
+            if (a1IsNew && a2IsNew) {
+                a1.dateTimeRange.from.compareTo(a2.dateTimeRange.from)
+            } else if (!a1IsNew && !a2IsNew) {
+                a2.dateTimeRange.from.compareTo(a1.dateTimeRange.from)
+            } else {
+                if (a1IsNew) -1 else 1
+            }
+        }
+    }
 }

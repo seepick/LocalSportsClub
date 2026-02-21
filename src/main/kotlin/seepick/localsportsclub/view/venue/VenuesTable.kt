@@ -48,9 +48,11 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         tooltip = "Available activities",
     ),
     TableColumn(
-        Lsc.icons.freetrainingsIndicator,
-        WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.filter { !it.isInPast(today) }.size },
+        header = Lsc.icons.freetrainingsIndicator,
+        size = WidthOrWeight.Width(40.dp),
+        renderer = TextRenderer(textAlign = TextAlign.Right) {
+            it.freetrainings.filter { !it.isInPast(today) }.size
+        },
         tooltip = "Available freetrainings",
     ),
     TableColumn(

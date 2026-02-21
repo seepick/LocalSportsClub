@@ -80,60 +80,37 @@ class Venue(
     var officialWebsite: String? by mutableStateOf(officialWebsite)
     val linkedVenues = mutableStateListOf<Venue>()
 
-    private val _activities = mutableStateListOf<Activity>()
-    val activities: List<Activity> = _activities
-    private val _freetrainings = mutableStateListOf<Freetraining>()
-    val freetrainings: List<Freetraining> = _freetrainings
-
-    private val now = LocalDate.now()
+    private val mutableActivities = mutableStateListOf<Activity>()
+    val activities: List<Activity> = mutableActivities
+    private val mutableFreetrainings = mutableStateListOf<Freetraining>()
+    val freetrainings: List<Freetraining> = mutableFreetrainings
 
     // reordered according to display style in simple table (first future ASC, then past DESC)
-    val sortedActivities = TreeSet(Comparator<Activity> { a1, a2 ->
-        val a1IsNew = a1.dateTimeRange.from.toLocalDate() >= now
-        val a2IsNew = a2.dateTimeRange.from.toLocalDate() >= now
-        if (a1IsNew && a2IsNew) {
-            a1.dateTimeRange.from.compareTo(a2.dateTimeRange.from)
-        } else if (!a1IsNew && !a2IsNew) {
-            a2.dateTimeRange.from.compareTo(a1.dateTimeRange.from)
-        } else {
-            if (a1IsNew) -1 else 1
-        }
-    })
-    val sortedFreetrainings = TreeSet(Comparator<Freetraining> { f1, f2 ->
-        val f1IsNew = f1.date >= now
-        val f2IsNew = f2.date >= now
-        if (f1IsNew && f2IsNew) {
-            f1.date.compareTo(f2.date)
-        } else if (!f1IsNew && !f2IsNew) {
-            f2.date.compareTo(f1.date)
-        } else {
-            if (f1IsNew) -1 else 1
-        }
-    })
+    fun sortedActivities(today: LocalDate): List<Activity> =
+        activities.sortedWith(Activity.comparator(today)).toList()
+
+    fun sortedFreetrainings(today: LocalDate): List<Freetraining> =
+        freetrainings.sortedWith(Freetraining.comparator(today)).toList()
 
     fun addActivities(activities: Set<Activity>) {
-        _activities += activities
-        sortedActivities += activities
+        mutableActivities += activities
     }
 
     fun removeActivities(activities: Set<Activity>) {
-        _activities -= activities
-        sortedActivities -= activities
+        mutableActivities -= activities
     }
 
     fun addFreetrainings(freetrainings: Set<Freetraining>) {
-        _freetrainings += freetrainings
-        sortedFreetrainings += freetrainings
+        mutableFreetrainings += freetrainings
     }
 
     fun removeFreetrainings(freetrainings: Set<Freetraining>) {
-        _freetrainings -= freetrainings
-        sortedFreetrainings -= freetrainings
+        mutableFreetrainings -= freetrainings
     }
 
     fun lastVisit(): LocalDate? {
         val nope = LocalDate.of(2000, 1, 1)
-        val actMax = _activities.filter { it.state == ActivityState.Checkedin }
+        val actMax = activities.filter { it.state == ActivityState.Checkedin }
             .maxByOrNull { it.dateTimeRange }?.dateTimeRange?.from?.toLocalDate() ?: nope
         val freMax =
             freetrainings.filter { it.state == FreetrainingState.Checkedin }.maxByOrNull { it.date }?.date ?: nope

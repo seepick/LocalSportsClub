@@ -38,6 +38,7 @@ class FreetrainingViewModel(
     activityDetailService,
     venueService,
     fileResolver,
+    clock,
 ) {
     override val tableColumns = freetrainingsTableColumns(clock)
     override val selectedItem = selectedSubEntity.map { it?.maybeFreetraining }

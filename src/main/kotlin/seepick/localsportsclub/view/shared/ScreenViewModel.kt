@@ -26,6 +26,7 @@ import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.VenueService
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.findIndexFor
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.DataStorage
@@ -60,6 +61,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val activityDetailService: ActivityDetailService,
     private val venueService: VenueService,
     private val fileResolver: FileResolver,
+    private val clock: Clock,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -201,14 +203,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
 
     fun onSubActivityNavigated(navigation: TableNavigation, item: Activity) {
         log.trace { "onSubActivityNavigated($navigation, $item)" }
-        selectedVenue.value!!.sortedActivities.toList().navigate(item, navigation)?.also { newItem ->
+        selectedVenue.value!!.sortedActivities(clock.today()).navigate(item, navigation)?.also { newItem ->
             onActivitySelected(newItem)
         }
     }
 
     fun onSubFreetrainingNavigated(navigation: TableNavigation, item: Freetraining) {
         log.trace { "onSubFreetrainingNavigated($navigation, $item)" }
-        selectedVenue.value!!.sortedFreetrainings.toList().navigate(item, navigation)?.also { newItem ->
+        selectedVenue.value!!.sortedFreetrainings(clock.today()).navigate(item, navigation)?.also { newItem ->
             onFreetrainingSelected(newItem)
         }
     }

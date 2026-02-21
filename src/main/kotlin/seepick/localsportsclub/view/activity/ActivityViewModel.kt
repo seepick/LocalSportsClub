@@ -38,6 +38,7 @@ class ActivityViewModel(
     activityDetailService,
     venueService,
     fileResolver,
+    clock,
 ) {
 
     override val tableColumns = activitiesTableColumns(clock)

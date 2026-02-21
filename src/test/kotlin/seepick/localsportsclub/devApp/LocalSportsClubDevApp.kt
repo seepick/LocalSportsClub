@@ -2,10 +2,7 @@ package seepick.localsportsclub.devApp
 
 import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.gcal.noopGcalModule
-import seepick.localsportsclub.persistence.inmemoryPersistenceModule
 import seepick.localsportsclub.startApplication
-import seepick.localsportsclub.sync.SyncMode
-import seepick.localsportsclub.sync.devSyncModule
 import java.io.File
 
 object LocalSportsClubDevApp {
@@ -14,10 +11,10 @@ object LocalSportsClubDevApp {
         val config = LscConfig.development
         startApplication(
             config = config,
-            persistenceModule = inmemoryPersistenceModule(),
+//            persistenceModule = inmemoryPersistenceModule(),
             gcalModule = noopGcalModule(),
-            uscClientModule = mockUscClientModule(),
-            syncModule = devSyncModule(SyncMode.Dummy, config),
+//            uscClientModule = mockUscClientModule(),
+//            syncModule = devSyncModule(SyncMode.Dummy, config),
         )
     }
 }

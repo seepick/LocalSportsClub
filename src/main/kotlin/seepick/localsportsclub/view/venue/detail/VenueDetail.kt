@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
 import seepick.localsportsclub.MainWindowState
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
@@ -71,6 +72,7 @@ fun VenueDetail(
     onSyncVenue: () -> Unit,
     sharedModel: SharedModel = koinInject(),
     mainWindowState: MainWindowState = koinInject(),
+    clock: Clock = koinInject(),
     onActivityNavigated: (TableNavigation, Activity) -> Unit,
     onFreetrainingNavigated: (TableNavigation, Freetraining) -> Unit,
 ) {
@@ -194,7 +196,7 @@ fun VenueDetail(
             freetrainingsCount = venue.freetrainings.size,
         )
         SimpleActivitiesTable(
-            activities = venue.sortedActivities.toList(),
+            activities = venue.sortedActivities(clock.today()),
             selectedActivity = activity,
             onActivitySelected = onActivityClicked,
             onItemNavigation = onActivityNavigated,
@@ -203,8 +205,11 @@ fun VenueDetail(
             isSyncVenueInProgress = isSyncVenueInProgress,
             onSyncVenue = onSyncVenue,
         )
+        if (venue.name == "Oki Do Yoga") {
+            println("")
+        }
         SimpleFreetrainingsTable(
-            freetrainings = venue.sortedFreetrainings.toList(),
+            freetrainings = venue.sortedFreetrainings(clock.today()),
             selectedFreetraining = freetraining,
             onFreetrainingSelected = onFreetrainingClicked,
             onItemNavigation = onFreetrainingNavigated,
