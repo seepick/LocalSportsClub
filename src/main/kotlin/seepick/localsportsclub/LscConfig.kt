@@ -11,7 +11,6 @@ import java.time.LocalDate
 
 data class LscConfig(
     val versionCheckEnabled: Boolean = true,
-    val databaseMode: DatabaseMode,
     val gcalMode: GcalMode,
     val logbackFileEnabled: Boolean = false,
 
@@ -34,10 +33,6 @@ data class LscConfig(
     companion object {
         val downloadImageSize = 400 to 400
     }
-}
-
-enum class DatabaseMode {
-    Exposed, InMemory
 }
 
 

@@ -115,62 +115,6 @@ interface ActivityRepo {
     fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo>
 }
 
-class InMemoryActivityRepo(
-    private val venueRepo: VenueRepo? = null,
-) : ActivityRepo {
-
-    val stored = mutableMapOf<Int, ActivityDbo>()
-
-    override fun selectAll(cityId: Int): List<ActivityDbo> =
-        if (venueRepo == null) stored.values.toList()
-        else {
-            val venueIdsInCity = venueRepo.selectAllByCity(cityId).map { it.id }.toSet()
-            stored.values.filter { venueIdsInCity.contains(it.venueId) }
-        }
-
-    override fun selectAllBooked(cityId: Int): List<ActivityDbo> {
-        val condition: (ActivityDbo) -> Boolean = if (venueRepo == null) {
-            { _ -> true }
-        } else {
-            val venueIdsInCity = venueRepo.selectAllByCity(cityId).map { it.id }.toSet();
-            { activity: ActivityDbo -> venueIdsInCity.contains(activity.venueId) }
-        }
-        return stored.values.filter { it.state == ActivityState.Booked && condition(it) }.toList()
-    }
-
-    override fun selectAllAnywhere(): List<ActivityDbo> =
-        stored.values.toList()
-
-    override fun selectAllForVenueId(venueId: Int) = stored.values.filter { it.venueId == venueId }
-
-    override fun selectById(id: Int): ActivityDbo? = stored[id]
-
-    override fun selectFutureMostDate(): LocalDate? = stored.values.maxByOrNull { it.from }?.from?.toLocalDate()
-
-    override fun selectNewestCheckedinDate(): LocalDate? =
-        stored.values.filter { it.state == ActivityState.Checkedin }.maxByOrNull { it.from }?.from?.toLocalDate()
-
-    override fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo> {
-        val deletingActivities = stored.values.filter {
-            it.state == ActivityState.Blank && it.from.toLocalDate() < threshold
-        }
-        deletingActivities.forEach {
-            stored.remove(it.id)
-        }
-        return deletingActivities
-    }
-
-    override fun insert(activity: ActivityDbo) {
-        require(!stored.containsKey(activity.id)) { "Primary key violation: ${activity.id}" }
-        stored[activity.id] = activity
-    }
-
-    override fun update(activity: ActivityDbo) {
-        require(stored.containsKey(activity.id))
-        stored[activity.id] = activity
-    }
-}
-
 object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
 

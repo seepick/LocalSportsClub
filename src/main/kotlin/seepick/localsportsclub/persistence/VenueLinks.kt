@@ -74,12 +74,3 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
         }
     }
 }
-
-class InMemoryVenueLinksRepo : VenueLinksRepo {
-    val stored = mutableSetOf<VenueIdLink>()
-    override fun selectAll(cityId: Int): List<VenueIdLink> = stored.toList()
-
-    override fun insert(venueIdLink: VenueIdLink) {
-        stored += venueIdLink
-    }
-}

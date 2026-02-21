@@ -14,6 +14,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.Module
+import seepick.localsportsclub.persistence.exposedPersistenceModule
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.WindowPref
@@ -50,7 +52,6 @@ object LocalSportsClub {
 fun LscConfig.Companion.production(): LscConfig {
     val appDirectory = File(File(System.getProperty("user.home")), ".lsc")
     return LscConfig(
-        databaseMode = DatabaseMode.Exposed,
         apiMode = ApiMode.RealHttp,
         gcalMode = GcalMode.Real,
         syncMode = SyncMode.Real,
@@ -59,7 +60,10 @@ fun LscConfig.Companion.production(): LscConfig {
     )
 }
 
-fun startApplication(config: LscConfig) {
+fun startApplication(
+    config: LscConfig,
+    persistenceModule: Module = exposedPersistenceModule(config),
+) {
     reconfigureLog(
         logsDirForFileAppender = config.fileResolver.resolve(DirectoryEntry.Logs),
         packageSettings = mapOf(
@@ -78,7 +82,7 @@ fun startApplication(config: LscConfig) {
     try {
         application {
             KoinApplication(application = {
-                modules(allModules(config))
+                modules(allModules(config, persistenceModule))
             }) {
                 val keyboard: GlobalKeyboard = koinInject()
                 val applicationLifecycle: ApplicationLifecycle = koinInject()

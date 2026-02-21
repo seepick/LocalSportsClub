@@ -4,14 +4,16 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import seepick.localsportsclub.gcal.gcalModule
-import seepick.localsportsclub.persistence.persistenceModule
 import seepick.localsportsclub.service.serviceModule
 import seepick.localsportsclub.sync.syncModule
 import seepick.localsportsclub.view.viewModule
 
-fun allModules(config: LscConfig) = listOf(
+fun allModules(
+    config: LscConfig,
+    persistenceModule: Module,
+) = listOf(
     rootModule(),
-    persistenceModule(config),
+    persistenceModule,
     uscClientModule(config),
     serviceModule(config),
     gcalModule(config),

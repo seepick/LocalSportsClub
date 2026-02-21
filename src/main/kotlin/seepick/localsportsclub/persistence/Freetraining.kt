@@ -85,37 +85,6 @@ interface FreetrainingRepo {
     fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo>
 }
 
-class InMemoryFreetrainingRepo : FreetrainingRepo {
-    val stored = mutableMapOf<Int, FreetrainingDbo>()
-
-    override fun selectAll(cityId: Int) = stored.values.toList()
-    override fun selectAllScheduled(cityId: Int) = stored.values.filter { it.isScheduled }
-    override fun selectAllAnywhere(): List<FreetrainingDbo> = stored.values.toList()
-
-    override fun selectFutureMostDate(cityId: Int): LocalDate? = stored.values.maxByOrNull { it.date }?.date
-    override fun selectById(freetrainingId: Int): FreetrainingDbo? = stored[freetrainingId]
-
-    override fun insert(dbo: FreetrainingDbo) {
-        require(!stored.containsKey(dbo.id))
-        stored[dbo.id] = dbo
-    }
-
-    override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> {
-        val delete = stored.values.filter {
-            it.state == FreetrainingState.Blank && it.date < threshold
-        }
-        delete.forEach {
-            stored.remove(it.id)
-        }
-        return delete
-    }
-
-    override fun update(dbo: FreetrainingDbo) {
-        require(stored.containsKey(dbo.id))
-        stored[dbo.id] = dbo
-    }
-}
-
 object ExposedFreetrainingRepo : FreetrainingRepo {
 
     private val log = logger {}

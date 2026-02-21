@@ -223,32 +223,3 @@ object ExposedVenueRepo : VenueRepo {
         planId = row[VenuesTable.planId],
     )
 }
-
-class InMemoryVenueRepo : VenueRepo {
-
-    private var currentId = 1
-    val stored = mutableMapOf<Int, VenueDbo>()
-
-    override fun selectAllByCity(cityId: Int): List<VenueDbo> =
-        stored.values.filter { it.cityId == cityId }.toList().sortedBy { it.id }
-
-    override fun selectAllAnywhere(): List<VenueDbo> =
-        stored.values.toList()
-
-    override fun selectBySlug(slug: String): VenueDbo? = stored.values.firstOrNull { it.slug == slug }
-
-    override fun selectById(id: Int): VenueDbo? = stored.values.firstOrNull { it.id == id }
-
-    override fun insert(venue: VenueDbo): VenueDbo {
-        val newVenue = venue.copy(id = currentId++)
-        require(stored.values.none { it.slug == venue.slug })
-        stored[newVenue.id] = newVenue
-        return newVenue
-    }
-
-    override fun update(venue: VenueDbo): VenueDbo {
-        require(stored[venue.id] != null)
-        stored[venue.id] = venue
-        return venue
-    }
-}

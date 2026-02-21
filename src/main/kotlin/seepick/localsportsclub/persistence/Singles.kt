@@ -27,21 +27,6 @@ interface SinglesRepo {
     fun update(singles: SinglesDbo)
 }
 
-class InMemorySinglesRepo : SinglesRepo {
-    var stored: SinglesDbo? = null
-    override fun select(): SinglesDbo? = stored
-
-    override fun insert(singles: SinglesDbo) {
-        require(stored == null)
-        stored = singles
-    }
-
-    override fun update(singles: SinglesDbo) {
-        require(stored != null)
-        stored = singles
-    }
-}
-
 object ExposedSinglesRepo : SinglesRepo {
 
     private val log = logger {}
