@@ -37,7 +37,7 @@ class VersionNotifier(
 
                     is VersionResult.UpToDate -> log.debug { "Current version [$version] is up2date." }
                 }
-            } catch (e: UnknownHostException) {
+            } catch (_: UnknownHostException) {
                 log.debug { "Skip version check as seems not to be connected to the internet." }
             }
         }

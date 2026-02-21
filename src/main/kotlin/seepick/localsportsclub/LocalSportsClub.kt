@@ -12,8 +12,10 @@ import androidx.compose.ui.window.rememberWindowState
 import ch.qos.logback.classic.Level
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.KoinApplication
+import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.Koin
 import org.koin.core.module.Module
 import seepick.localsportsclub.gcal.gcalModule
 import seepick.localsportsclub.persistence.exposedPersistenceModule
@@ -58,6 +60,7 @@ fun LscConfig.Companion.production() =
 
 fun startApplication(
     config: LscConfig,
+    onStartup: ((Koin) -> Unit)? = null,
     persistenceModule: Module = exposedPersistenceModule(config),
     gcalModule: Module = gcalModule(),
     uscClientModule: Module = uscClientModule(config),
@@ -174,9 +177,11 @@ fun startApplication(
                         applicationLifecycle.registerListener(it)
                     }
 
+                    val koin = getKoin()
                     window.addWindowListener(object : WindowAdapter() {
                         // they're working on proper onWindowReady here: https://youtrack.jetbrains.com/issue/CMP-5106
                         override fun windowOpened(e: WindowEvent?) {
+                            onStartup?.invoke(koin) // before others!
                             applicationLifecycle.onStartUp()
                         }
                     })
