@@ -4,6 +4,7 @@
 
 ## Backlog
 
+* tooltip for top-menu buttons CMD+1/2/3/4/5  (also for win)
 * 🖋most venues montly limit of 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 * combine all venue info-texts into a single popup (info, times, description)
 * ad activity details: when info text is empty, don't even render the "Info:" label
@@ -11,9 +12,9 @@
 * also exclude past activities from search (only regard future ones; same for freetraining)
 * when update venue which leads to sort table change, then auto-scroll there (if still available in content)
 * 🖋also sync "plus checkins"?
-* ad website, embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
-    * better: long term solution: https://www.macobserver.com/tips/how-to/open-mac-app-from-unidentified-developer/
-      `sudo spctl –master-disable` + settings / security / choose "Anywhere"
+* ad website:
+    * apple restriction: bypass once: embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
+    * bypass forever : `spctl --global-disable` and then: Settings / Security / Choose "Anywhere"
 * load more venue pictures; on-demand transient storage
 * go through venue/activity info/descriptive text details; is all synced?
 * could sync official rating (0.0-5.0 number and total count)

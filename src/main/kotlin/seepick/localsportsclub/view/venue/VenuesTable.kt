@@ -45,21 +45,13 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         Lsc.icons.activitiesIndicator,
         WidthOrWeight.Width(40.dp),
         TextRenderer(textAlign = TextAlign.Right) { it.activities.filter { !it.isInPast(today) }.size },
-        tooltip = "Activities",
+        tooltip = "Available activities",
     ),
     TableColumn(
         Lsc.icons.freetrainingsIndicator,
         WidthOrWeight.Width(40.dp),
         TextRenderer(textAlign = TextAlign.Right) { it.freetrainings.filter { !it.isInPast(today) }.size },
-        tooltip = "Freetrainings",
-    ),
-    TableColumn(
-        VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
-        WidthOrWeight.Width(30.dp),
-        TextRenderer(textAlign = TextAlign.Right) {
-            it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
-        },
-        tooltip = "Check-ins",
+        tooltip = "Available freetrainings",
     ),
     TableColumn(
         VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
@@ -67,22 +59,33 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         TextRenderer(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
         },
-        tooltip = "Booked",
+        tooltip = "Booked activities/freetrainings",
     ),
     TableColumn(
-        VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
-        WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Center) {
+        VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
+        WidthOrWeight.Width(30.dp),
+        TextRenderer(textAlign = TextAlign.Right) {
+            it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
+        },
+        tooltip = "Total past check-ins",
+    ),
+    TableColumn(
+        header = VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
+        tooltip = "Hidden",
+        size = WidthOrWeight.Width(40.dp),
+        renderer = TextRenderer(textAlign = TextAlign.Center) {
             if (it.isHidden) LscIcons.hiddenEmoji else ""
         },
-        tooltip = "Hidden",
     ),
     TableColumn(
-        VisualIndicator.StringIndicator("Last Visit"), WidthOrWeight.Width(80.dp), TextRenderer(
+        header = VisualIndicator.StringIndicator("Visited"),
+        tooltip = "The last time you visited the venue",
+        size = WidthOrWeight.Width(70.dp),
+        renderer = TextRenderer(
             valueExtractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
-        )
+        ),
     ),
     DistanceColumn(),
     RatingColumn(),

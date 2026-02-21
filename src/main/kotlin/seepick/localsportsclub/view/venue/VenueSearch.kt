@@ -51,7 +51,7 @@ class VenueSearch(allCategories: List<String>, resetItems: () -> Unit) : Abstrac
     ) { it.isAutoSync }
     val deleted = newBooleanSearchOption(
         label = "Deleted",
-        initialValue = false,
+        initialValue = true,
         visualIndicator = VisualIndicator.VectorIndicator(Icons.Default.Delete),
     ) { it.isDeleted }
 }
