@@ -26,7 +26,7 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
 fun <T : HasVenue> RatingColumn() =
     TableColumn<T>(
         VisualIndicator.StringIndicator("Rating"),
-        WidthOrWeight.Width(80.dp),
+        WidthOrWeight.Width(90.dp),
         CellRenderer.TextRenderer { it.venue.rating.label })
 
 fun <T : HasDistance> DistanceColumn() =
