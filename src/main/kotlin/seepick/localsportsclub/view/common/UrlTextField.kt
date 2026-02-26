@@ -27,14 +27,12 @@ import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.Lsc
 
 @Preview
@@ -60,22 +58,17 @@ fun UrlText(url: String, displayText: String = url) {
 fun CopyTextToClipboard(text: String, content: @Composable () -> Unit) {
     val isExpanded = remember { mutableStateOf(false) }
     val clipboard = androidx.compose.ui.platform.LocalClipboardManager.current
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
     Box(
         modifier = Modifier
-            .onGloballyPositioned { coordinates ->
-                textFieldSize = coordinates.size.toSize()
-            }
             .onPointerEvent(PointerEventType.Press) { event ->
                 if (event.buttons.isSecondaryPressed) {
-                    println("right click: $text")
                     isExpanded.value = true
                 }
             }) {
         DropdownMenuX(
             items = listOf("Copy address to clipboard"),
             isMenuExpanded = isExpanded,
-            textFieldSize = textFieldSize,
+            textFieldSize = Size(400f, 0f),
             itemFormatter = { it },
             onItemClicked = {
                 clipboard.setText(AnnotatedString(text))
