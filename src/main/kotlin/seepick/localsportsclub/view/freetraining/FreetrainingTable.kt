@@ -18,6 +18,7 @@ import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 import seepick.localsportsclub.view.shared.CheckedinColumn
+import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
@@ -45,6 +46,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         )
     ),
     CheckedinColumn(paddingRight = true),
+    DistanceColumn(),
     RatingColumn(),
     tableColumnFavorited { it.venue.isFavorited },
     tableColumnWishlisted { it.venue.isWishlisted },

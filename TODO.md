@@ -2,7 +2,6 @@
 
 ## v1.11.0
 
-* make "available visits this month" as progress bar with "4/6" next to it
 * copy-address-to-clipboard, make width constant (otherwise if address short, then linebreak)
 * when update venue which leads to sort table change, then auto-scroll there (if still available in content)
 * ad website, apple restriction: bypass once: embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
@@ -13,6 +12,15 @@
 
 ## Backlog
 
+* low: for some categories, add associated emoji
+* rethink color coding for both progress bars; make consistent!
+* MonthlyVisitsModel.MAX_VISITS = 6, but must change according plan
+    * S = 2x; M = 4x; L & XL = 6x; different per venue?
+* if filter time, and change "from" time after "to" time, then adjust
+* Balanzs has two linked venues with identical name; it seems to cause issues...?!
+    * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
+* prefill search properly; e.g. distance < 3.0; checkins = 0
+* string similarity search (search "foopar" and find "foobar" ); 'net.ricecode:string-similarity:1.0.0'
 * 🎨 clear color coding: everything clickable is blue
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * 🎨 manually adjustable table column width (e.g. wanting to make name wider)
@@ -64,7 +72,6 @@
 * for website: html click on image, zoom (https://codeconvey.com/html-image-zoom-on-click/)
 * investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
 * (switch to ZonedDate?)
-* maybe use 'net.ricecode:string-similarity:1.0.0'
 * display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * 🎨adaptive layout: depending on window size, change layout (add columns, change formatting)

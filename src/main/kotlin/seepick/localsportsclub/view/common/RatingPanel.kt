@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.Rating
 
+val RatingPanelWidth = 160.dp
 @Composable
 fun RatingPanel(
     selectedRating: Rating,
@@ -16,6 +17,6 @@ fun RatingPanel(
         selectedItem = selectedRating,
         onItemSelected = onRatingSelected,
         enabled = enabled,
-        textSize = WidthOrFill.Width(160.dp),
+        textSize = WidthOrFill.Width(RatingPanelWidth),
     )
 }

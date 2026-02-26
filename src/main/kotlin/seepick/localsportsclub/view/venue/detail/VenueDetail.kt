@@ -39,6 +39,7 @@ import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
+import seepick.localsportsclub.view.common.RatingPanelWidth
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlText
@@ -105,14 +106,14 @@ fun VenueDetail(
                             )
                         }
                     }
-                    venue.distanceInKm.also { distance ->
-                        Text(
-                            text = " $distance km away",
-                        )
-                    }
+                    Text(" ${venue.distanceInKm} km away")
                 }
-                RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-                MonthlyVisitsPanel(visitsModel)
+                Column(modifier = Modifier.width(RatingPanelWidth)) {
+                    RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
+                    MonthlyVisitsPanel(
+                        visitsModel, modifier = Modifier.fillMaxWidth().height(20.dp)
+                    )
+                }
             }
         }
         LongText(text = venue.description, onShowLongText = {

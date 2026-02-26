@@ -25,7 +25,7 @@ class Freetraining(
     val category: String,
     val date: LocalDate,
     state: FreetrainingState,
-) : HasVenue, TableItemBgColor by venue {
+) : HasVenue, TableItemBgColor by venue, HasDistance by venue {
     var state: FreetrainingState by mutableStateOf(state)
 
     fun isInPast(today: LocalDate): Boolean = date < today
