@@ -1,12 +1,8 @@
 package seepick.localsportsclub.service.date
 
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
-
-fun LocalDate.daysBetween(other: LocalDate): Long =
-    Duration.between(atStartOfDay(), other.atStartOfDay()).toDays()
 
 fun LocalDate.monthRange(): ClosedRange<LocalDate> =
     withDayOfMonth(1)..atEndOfMonth()

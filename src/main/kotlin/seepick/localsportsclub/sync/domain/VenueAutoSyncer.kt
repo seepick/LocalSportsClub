@@ -21,6 +21,6 @@ class VenueAutoSyncer(
         val autoSyncedVenueIds = venueRepo.selectAllByCity(city.id).filter { it.isAutoSync }.map { it.id }.toSet()
         val toBeSyncedActivities = insertedActivities.filter { autoSyncedVenueIds.contains(it.venueId) }
         log.debug { "Auto sync details for ${autoSyncedVenueIds.size} venues / ${toBeSyncedActivities.size} activities." }
-        activityDetailService.syncBulk(toBeSyncedActivities.map { it.id })
+        activityDetailService.syncBulk(toBeSyncedActivities)
     }
 }

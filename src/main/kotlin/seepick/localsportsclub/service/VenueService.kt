@@ -14,10 +14,6 @@ class VenueService(
     suspend fun syncActivityDetails(venueId: Int) {
         log.debug { "syncActivityDetails(venueId=$venueId)" }
         val now = clock.now()
-        activityDetailService.syncBulk(
-            activityIds = activityRepo.selectAllForVenueId(venueId)
-                .filter { it.from >= now }
-                .map { it.id }
-        )
+        activityDetailService.syncBulk(activityRepo.selectAllForVenueId(venueId).filter { it.from >= now })
     }
 }

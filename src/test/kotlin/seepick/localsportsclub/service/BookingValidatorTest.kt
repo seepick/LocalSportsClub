@@ -2,7 +2,7 @@ package seepick.localsportsclub.service
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
-import com.github.seepick.uscclient.utils.DateTimeRange
+import com.github.seepick.uscclient.shared.DateTimeRange
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.string.shouldContain

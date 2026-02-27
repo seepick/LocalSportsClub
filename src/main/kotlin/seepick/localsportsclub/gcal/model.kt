@@ -1,6 +1,6 @@
 package seepick.localsportsclub.gcal
 
-import com.github.seepick.uscclient.utils.DateTimeRange
+import com.github.seepick.uscclient.shared.DateTimeRange
 import java.time.LocalDate
 
 data class GcalDeletion(

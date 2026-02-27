@@ -2,7 +2,7 @@ package seepick.localsportsclub.service.model
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
-import com.github.seepick.uscclient.utils.DateTimeRange
+import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo

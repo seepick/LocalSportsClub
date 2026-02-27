@@ -304,7 +304,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             doBefore = { isSyncActivityInProgress = true },
             doFinally = { isSyncActivityInProgress = false },
         ) {
-            activityDetailService.syncSingle(activity.id)
+            activityDetailService.syncSingle(activity)
         }
     }
 

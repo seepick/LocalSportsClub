@@ -4,6 +4,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.service.DnysActivityDetailsFetcher
 import seepick.localsportsclub.sync.domain.ActivitiesSyncer
 import seepick.localsportsclub.sync.domain.CheckinSyncer
 import seepick.localsportsclub.sync.domain.CleanupPostSync
@@ -32,6 +33,7 @@ fun syncModule(config: LscConfig) = module {
     singleOf(::FreetrainingSyncer)
     singleOf(::ScheduleSyncer)
     singleOf(::CheckinSyncer)
+    singleOf(::DnysActivityDetailsFetcher)
     singleOf(::CleanupPostSync)
     single {
         SyncerFacade(

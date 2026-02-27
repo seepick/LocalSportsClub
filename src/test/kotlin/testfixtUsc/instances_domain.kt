@@ -1,6 +1,7 @@
 package testfixtUsc
 
 import com.github.seepick.uscclient.UscConfig
+import com.github.seepick.uscclient.activity.ActivityDetails
 import com.github.seepick.uscclient.activity.ActivityInfo
 import com.github.seepick.uscclient.checkin.ActivityCheckinEntry
 import com.github.seepick.uscclient.checkin.ActivityCheckinEntryType
@@ -9,6 +10,7 @@ import com.github.seepick.uscclient.login.Credentials
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.model.UscLang
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.thirdparty.DnysEvent
 import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenueInfo
 import io.kotest.property.Arb
@@ -21,6 +23,7 @@ import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.localDate
+import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 
@@ -124,5 +127,27 @@ fun Arb.Companion.activityCheckinEntry() = arbitrary {
         date = localDate().bind(),
         timeRange = timeRange().bind(),
         type = enum<ActivityCheckinEntryType>().bind(),
+    )
+}
+
+fun Arb.Companion.activityDetails() = arbitrary {
+    ActivityDetails(
+        teacher = Arb.string().orNull().bind(),
+        description = Arb.string().orNull().bind(),
+        name = Arb.string().bind(),
+        dateTimeRange = Arb.dateTimeRange().bind(),
+        venueName = Arb.string().bind(),
+        category = Arb.string().bind(),
+        spotsLeft = Arb.int(0..100).bind(),
+        cancellationDateLimit = Arb.localDateTime().orNull().bind(),
+        plan = enum<Plan.UscPlan>().bind(),
+    )
+}
+
+fun Arb.Companion.dnysEvent() = arbitrary {
+    DnysEvent(
+        title = string().bind(),
+        teacher = string().bind(),
+        dateTimeRange = dateTimeRange().bind()
     )
 }

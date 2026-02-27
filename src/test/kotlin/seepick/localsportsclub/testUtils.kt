@@ -9,9 +9,8 @@ import java.time.LocalTime
 fun StringValues.toFlatMap(): Map<String, String> =
     toMap().mapValues { it.value.single() }
 
-@Deprecated("migrated usc-client")
-inline fun <reified T> readTestResponse(fileName: String, folder: String = "/test_lsc/response/"): T {
-    val fileContent = readFromClasspath("$folder$fileName")
+inline fun <reified T> readTestResponse(fileName: String, folder: String = "/responses/"): T {
+    val fileContent = readFromClasspath("$folder${fileName.trimStart('/')}")
     return if (T::class == String::class) fileContent as T else jsonx.decodeFromString(fileContent)
 }
 

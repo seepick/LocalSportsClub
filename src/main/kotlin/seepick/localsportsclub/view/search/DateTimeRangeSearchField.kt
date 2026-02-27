@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.seepick.uscclient.utils.DateTimeRange
+import com.github.seepick.uscclient.shared.DateTimeRange
 import seepick.localsportsclub.service.date.DateParser
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.search.DateTimeRangeSearchOption

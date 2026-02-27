@@ -1,6 +1,6 @@
 package seepick.localsportsclub.gcal
 
-import com.github.seepick.uscclient.utils.DateTimeRange
+import com.github.seepick.uscclient.shared.DateTimeRange
 import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.devApp.development
 import java.time.LocalDate
