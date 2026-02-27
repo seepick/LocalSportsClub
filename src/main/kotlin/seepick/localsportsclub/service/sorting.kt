@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.view.common.table.SortableColumn
 import seepick.localsportsclub.view.common.table.TableColumn
 
 enum class SortDirection {
@@ -41,19 +42,20 @@ class SortingDelegate<T>(
 
     private val log = logger {}
     val selectedColumnValueExtractor get() = sortColumn.sortValueExtractor!!
-    var sortColumn: TableColumn<T> by mutableStateOf(initialSortColumn ?: columns.first { it.sortingEnabled })
+    var sortColumn: TableColumn<T> by mutableStateOf(initialSortColumn ?: columns.first { it.sorting.isEnabled })
         private set
     var sortDirection: SortDirection by mutableStateOf(SortDirection.Asc)
         private set
 
-    fun onSortColumn(column: TableColumn<T>) {
-        log.debug { "update sorting" }
-        require(sortColumn.sortingEnabled)
-        if (sortColumn == column) {
+    fun onSortColumn(newSortColumn: TableColumn<T>) {
+        log.debug { "update sorting($newSortColumn)" }
+        val newSorting = newSortColumn.sorting
+        require(newSorting is SortableColumn.Enabled)
+        if (sortColumn == newSortColumn) {
             sortDirection = sortDirection.toggle()
         } else {
-            sortColumn = column
-            sortDirection = SortDirection.Asc
+            sortColumn = newSortColumn
+            sortDirection = newSorting.initialDirection
         }
         resetSort()
     }

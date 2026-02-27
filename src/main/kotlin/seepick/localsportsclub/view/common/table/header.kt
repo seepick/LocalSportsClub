@@ -51,7 +51,7 @@ fun <T> LazyListScope.renderTableHeader(
                     header = col.header,
                     tooltip = col.tooltip,
                     size = col.size,
-                    isSortEnabled = col.sortingEnabled,
+                    isSortEnabled = col.sorting.isEnabled,
                     isSortActive = col == sortColumn,
                     sortDirection = sortDirection,
                     onClick = { onHeaderClicked(col) },

@@ -8,6 +8,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.ActivityState
@@ -46,6 +47,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         WidthOrWeight.Width(40.dp),
         TextRenderer(textAlign = TextAlign.Right) { it.activities.filter { !it.isInPast(today) }.size },
         tooltip = "Available activities",
+        initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
         header = Lsc.icons.freetrainingsIndicator,
@@ -54,6 +56,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
             it.freetrainings.filter { !it.isInPast(today) }.size
         },
         tooltip = "Available freetrainings",
+        initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
         VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
@@ -62,14 +65,16 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
             it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
         },
         tooltip = "Booked activities/freetrainings",
+        initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
-        VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
-        WidthOrWeight.Width(30.dp),
-        TextRenderer(textAlign = TextAlign.Right) {
+        header = VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
+        size = WidthOrWeight.Width(30.dp),
+        renderer = TextRenderer(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
         },
         tooltip = "Total past check-ins",
+        initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
         header = VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
@@ -78,6 +83,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         renderer = TextRenderer(textAlign = TextAlign.Center) {
             if (it.isHidden) LscIcons.hiddenEmoji else ""
         },
+        initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
         header = VisualIndicator.StringIndicator("Visited"),
@@ -88,6 +94,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
         ),
+        initialSortDirection = SortDirection.Desc,
     ),
     DistanceColumn(),
     RatingColumn(),
