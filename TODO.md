@@ -3,10 +3,6 @@
 ## v1.11.0
 
 * when update venue which leads to sort table change, then auto-scroll there (if still available in content)
-* ad website, apple restriction: bypass once: embed video how to exec unidentified app: https://www.youtube.com/watch?v=biIvAM94b98
-    * bypass forever : `spctl --global-disable` and then: Settings / Security / Choose "Anywhere"
-
-!!! == DONE == NO new issues here == !!!
 
 ## Backlog
 
