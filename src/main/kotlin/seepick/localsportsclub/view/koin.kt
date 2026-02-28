@@ -14,10 +14,12 @@ import seepick.localsportsclub.view.notes.NotesViewModel
 import seepick.localsportsclub.view.preferences.PreferencesViewModel
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueViewModel
+import seepick.localsportsclub.view.venue.detail.CarouselViewModel
 
 fun viewModule(config: LscConfig) = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::VenueViewModel)
+    viewModelOf(::CarouselViewModel)
     viewModel {
         ActivityViewModel(
             config.syncDaysAhead,

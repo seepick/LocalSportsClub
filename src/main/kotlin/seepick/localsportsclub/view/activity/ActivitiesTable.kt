@@ -27,7 +27,7 @@ import seepick.localsportsclub.view.shared.PlanColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
-    tableColumnVenueImage { it.venue.imageFileName },
+    tableColumnVenueImage { it.venue },
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.6f),

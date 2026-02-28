@@ -84,7 +84,7 @@ fun VenueDetail(
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         Row {
             Box(modifier = Modifier.width(200.dp)) {
-                VenueImage(venue.imageFileName)
+                VenueImage(venue)
             }
             Spacer(Modifier.width(5.dp))
             Column {

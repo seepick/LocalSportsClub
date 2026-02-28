@@ -30,7 +30,7 @@ import seepick.localsportsclub.view.shared.RatingColumn
 import java.time.LocalDate
 
 fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
-    tableColumnVenueImage { it.imageFileName },
+    tableColumnVenueImage { it },
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.7f),

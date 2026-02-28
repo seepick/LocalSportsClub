@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.ModifierWith
 import seepick.localsportsclub.view.common.VisualIndicator
@@ -41,12 +42,12 @@ data class TableColumn<T>(
     }
 }
 
-fun <T> tableColumnVenueImage(imageFileName: (T) -> String?): TableColumn<T> = TableColumn(
+fun <T> tableColumnVenueImage(venueMapper: (T) -> Venue): TableColumn<T> = TableColumn(
     header = VisualIndicator.StringIndicator("Image"),
     size = WidthOrWeight.Width(70.dp),
     renderer = CellRenderer.CustomRenderer { item, col ->
         Row(ModifierWith(col.size).height(30.dp)) {
-            VenueImage(imageFileName(item))
+            VenueImage(venueMapper(item))
         }
     },
     sorting = SortableColumn.Disabled,

@@ -41,6 +41,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.usage.UsageView
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.common.CustomDialog
@@ -54,13 +55,16 @@ import seepick.localsportsclub.view.preferences.PreferencesScreen
 import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueScreen
+import seepick.localsportsclub.view.venue.detail.CarouselDialog
+import seepick.localsportsclub.view.venue.detail.CarouselViewModel
 
 private val log = logger {}
 
 @Composable
 fun MainView(
-    viewModel: MainViewModel = koinViewModel(),
+    mainModel: MainViewModel = koinViewModel(),
     sharedModel: SharedModel = koinInject(),
+    carouselModel: CarouselViewModel = koinInject(),
     snackbarService: SnackbarService = koinInject(),
 ) {
     var snackbarEvent by remember { mutableStateOf<SnackbarEvent?>(null) }
@@ -77,6 +81,10 @@ fun MainView(
         }
     }
     var customDialog: CustomDialog? by sharedModel.customDialog
+    var carouselVenue: Venue? by sharedModel.carouselVenue
+    if (carouselVenue != null) {
+        CarouselDialog()
+    }
     if (customDialog != null) {
         AlertDialog(
             onDismissRequest = {
@@ -148,7 +156,7 @@ fun MainView(
                     .fillMaxWidth(1.0f)
                     .bottomBorder(2.dp, Lsc.colors.primary)
             ) {
-                val (selectedScreenValue, setSelectedScreen) = viewModel.selectedScreen
+                val (selectedScreenValue, setSelectedScreen) = mainModel.selectedScreen
                 NavigationScreen(selectedScreenValue, setSelectedScreen)
                 Spacer(Modifier.width(10.dp))
                 SyncPanel()
@@ -156,7 +164,7 @@ fun MainView(
                 UsageView()
             }
             Box(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-                when (viewModel.selectedScreen.value) {
+                when (mainModel.selectedScreen.value) {
                     Screen.Activities -> ActivitiesScreen()
                     Screen.Freetrainings -> FreetrainingsScreen()
                     Screen.Venues -> VenueScreen()

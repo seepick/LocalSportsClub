@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.shared
 
 import androidx.compose.runtime.mutableStateOf
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.CustomDialog
 
 class SharedModel {
@@ -11,4 +12,5 @@ class SharedModel {
     val verifiedUscPassword = mutableStateOf<String?>(null)
 
     val customDialog = mutableStateOf<CustomDialog?>(null)
+    val carouselVenue = mutableStateOf<Venue?>(null)
 }

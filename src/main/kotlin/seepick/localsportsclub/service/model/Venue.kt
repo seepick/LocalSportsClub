@@ -44,7 +44,7 @@ class Venue(
     val slug: String,
     val description: String,
     val categories: List<String>,
-    val city: com.github.seepick.uscclient.model.City,
+    val city: City,
     val postalCode: String,
     val street: String,
     val addressLocality: String,

@@ -22,7 +22,7 @@ import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
-    tableColumnVenueImage { it.venue.imageFileName },
+    tableColumnVenueImage { it.venue },
     TableColumn(
         VisualIndicator.StringIndicator("Name"),
         WidthOrWeight.Weight(0.6f),
