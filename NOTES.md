@@ -1,5 +1,7 @@
 # Notes
 
+* Download count for each version (GitHub release): https://qwertycube.com/github-release-stats/
+
 ## Exposed
 
 * add: `addLogger(StdOutSqlLogger)` in transaction block

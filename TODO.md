@@ -73,3 +73,4 @@
 * display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
 * notes with rich format text-editor (bold, italic, colors, fontsize)
 * 🎨adaptive layout: depending on window size, change layout (add columns, change formatting)
+* generate and install random UUID locally, and introduce heartbeat to server for usage statistics (opt-in in prefs) 

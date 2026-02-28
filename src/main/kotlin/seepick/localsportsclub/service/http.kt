@@ -17,7 +17,6 @@ val jsonSerializer = Json {
 
 fun buildHttpClient(): HttpClient = HttpClient(Apache5) {
     install(ContentNegotiation) {
-
         json(jsonSerializer)
     }
     expectSuccess = false
