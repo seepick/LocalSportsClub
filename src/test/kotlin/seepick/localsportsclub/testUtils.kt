@@ -1,5 +1,6 @@
 package seepick.localsportsclub
 
+import com.github.seepick.uscclient.shared.DateTimeRange
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
@@ -21,3 +22,8 @@ val jsonx = Json {
 }
 
 fun LocalDate.atAnyTime() = atTime(LocalTime.of(0, 0))
+
+fun DateTimeRange.adjustHours(hoursToAdd: Int) = copy(
+    from = from.plusHours(hoursToAdd.toLong()),
+    to = to.plusHours(hoursToAdd.toLong()),
+)
