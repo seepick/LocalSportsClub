@@ -34,7 +34,6 @@
 ## New Features
 
 * 🖋 sync also "plus checkins" (check app what's that again)
-* 🖋 load more venue pictures; on-demand transient storage; from web
 * 🖋 search fields provide count already; e.g. category "(20) EMS"
 * 🖋 mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
     * or maybe an adaptive "suggested" or "liked" venues/activities based on past bookings

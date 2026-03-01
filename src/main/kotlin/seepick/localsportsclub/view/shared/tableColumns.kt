@@ -28,7 +28,7 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
 fun <T : HasVenue> RatingColumn() = TableColumn<T>(
     header = VisualIndicator.StringIndicator("Rating"),
     size = WidthOrWeight.Width(90.dp),
-    renderer = CellRenderer.TextRenderer { it.venue.rating.label },
+    renderer = CellRenderer.TextRenderer(textAlign = TextAlign.Center) { it.venue.rating.label },
     initialSortDirection = SortDirection.Desc,
 )
 
