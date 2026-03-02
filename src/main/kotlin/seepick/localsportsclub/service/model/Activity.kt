@@ -32,7 +32,7 @@ class Activity(
     val id: Int,
     override val venue: Venue,
     val name: String,
-    val category: String, // aka disciplines/facilities
+    val category: Category, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
     override val plan: Plan.UscPlan,
     teacher: String?,

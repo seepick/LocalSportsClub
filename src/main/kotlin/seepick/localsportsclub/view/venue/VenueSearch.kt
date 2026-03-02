@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
@@ -12,7 +13,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 import java.time.LocalDate
 
-class VenueSearch(today: LocalDate, allCategories: List<String>, resetItems: () -> Unit) :
+class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: () -> Unit) :
     AbstractSearch<Venue>(resetItems) {
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
@@ -44,8 +45,11 @@ class VenueSearch(today: LocalDate, allCategories: List<String>, resetItems: () 
         "Rating", visualIndicator = Lsc.icons.ratingIndicator
     ) { it.rating }
     val category = newSelectSearchOption(
-        "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
-    ) { it.categories }
+        label = "Category",
+        allOptions = allCategories.map { it.nameAndMaybeEmoji },
+        visualIndicator = Lsc.icons.categoryIndicator,
+        extractor = { venue -> venue.categories.map { cat -> cat.nameAndMaybeEmoji } },
+    )
     val autoSync = newBooleanSearchOption(
         label = "Auto-Sync",
         initialValue = true,

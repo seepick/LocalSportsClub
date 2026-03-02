@@ -89,7 +89,7 @@ fun VenueDetail(
             Spacer(Modifier.width(5.dp))
             Column {
                 if (venue.categories.isNotEmpty()) {
-                    Text(venue.categories.joinToString(", "))
+                    Text(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
                     Tooltip("Open Google Maps / Right click to copy") {

@@ -67,10 +67,8 @@ class DataStorage(
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
-            val venues =
-                venueRepo.selectAllByCity(cityId)
-                    .map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }
-                    .associateBy { it.id }
+            val venues = venueRepo.selectAllByCity(cityId)
+                .map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }.associateBy { it.id }
             venueLinksRepo.selectAll(cityId).forEach { (id1, id2) ->
                 val venue1 = venues[id1] ?: error("Linking venue1 not found by ID: $id1")
                 val venue2 = venues[id2] ?: error("Linking venue2 not found by ID: $id2")
@@ -81,18 +79,19 @@ class DataStorage(
         } ?: mutableMapOf()
     }
 
-    val venuesCategories: List<String> by lazy {
-        venuesById.values.asSequence().flatMap { it.categories }.distinct().filter { it.isNotEmpty() }.sorted().toList()
+    val venuesCategories: List<Category> by lazy {
+        venuesById.values.asSequence().flatMap { it.categories }.distinct().filter { it.name.isNotEmpty() }.sorted()
+            .toList()
     }
 
-    val activitiesCategories: List<String> by lazy {
-        allActivitiesByVenueId.values.asSequence().flatten().map { it.category }.distinct().filter { it.isNotEmpty() }
-            .sorted().toList()
+    val activitiesCategories: List<Category> by lazy {
+        allActivitiesByVenueId.values.asSequence().flatten().map { it.category }.distinct()
+            .filter { it.name.isNotEmpty() }.sorted().toList()
     }
 
-    val freetrainingsCategories: List<String> by lazy {
+    val freetrainingsCategories: List<Category> by lazy {
         allFreetrainingsByVenueId.values.asSequence().flatten().map { it.category }.distinct()
-            .filter { it.isNotEmpty() }.sorted().toList()
+            .filter { it.name.isNotEmpty() }.sorted().toList()
     }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
@@ -214,9 +213,7 @@ class DataStorage(
                         updatedActivity.cancellationLimit
                 }
             } ?: log.warn {
-            "Couldn't find activity in data storage. " +
-                    "Most likely trying to update something which is too old and not visible on the UI anyway. " +
-                    "Activity: $updatedActivity"
+            "Couldn't find activity in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Activity: $updatedActivity"
         }
     }
 
@@ -311,7 +308,7 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     id = id,
     venue = venue,
     name = name,
-    category = category,
+    category = Category(category),
     spotsLeft = spotsLeft,
     teacher = teacher,
     description = description,
@@ -325,7 +322,7 @@ fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
     id = id,
     venue = venue,
     name = name,
-    category = category,
+    category = Category(category),
     date = date,
     state = state,
 )
@@ -334,7 +331,7 @@ fun Venue.toDbo() = VenueDbo(
     id = id,
     name = name,
     slug = slug,
-    facilities = categories.joinToString(","),
+    facilities = categories.joinToString(",") { it.name },
     cityId = city.id,
     officialWebsite = officialWebsite,
     rating = rating.value,
@@ -363,7 +360,7 @@ fun VenueDbo.toVenue(
     id = id,
     name = name,
     slug = slug,
-    categories = facilities.split(",").filter { it.isNotEmpty() },
+    categories = facilities.split(",").filter { it.isNotEmpty() }.map { Category(it) },
     city = City.byId(cityId),
     rating = Rating.byValue(rating),
     notes = notes,

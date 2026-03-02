@@ -4,11 +4,12 @@ import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 
-class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
+class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
     val hidden = newBooleanSearchOption( // invisible to the user
         label = "hidden",
         initiallyEnabled = true,
@@ -41,8 +42,11 @@ class ActivitySearch(allCategories: List<String>, resetItems: () -> Unit) : Abst
         "Rating", visualIndicator = Lsc.icons.ratingIndicator
     ) { it.venue.rating }
     val categories = newSelectSearchOption(
-        "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
-    ) { listOf(it.category) }
+        label = "Category",
+        allOptions = allCategories.map { it.nameAndMaybeEmoji },
+        visualIndicator = Lsc.icons.categoryIndicator,
+        extractor = { listOf(it.category.nameAndMaybeEmoji) },
+    )
     val plan = newSelectSearchOption(
         label = "Plan",
         visualIndicator = VisualIndicator.EmojiIndicator(Plan.UscPlan.emoji),

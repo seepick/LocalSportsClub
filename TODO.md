@@ -2,14 +2,13 @@
 
 ## v1.12.0
 
-* for some categories, add associated emoji
-* rethink color coding for both progress bars; make consistent!
-* MonthlyVisitsModel.MAX_VISITS = 6, but must change according plan
+6. rethink color coding for both progress bars; make consistent!
+5. MonthlyVisitsModel.MAX_VISITS = 6, but must change according plan
     * S = 2x; M = 4x; L & XL = 6x; different per venue?
-* if filter time, and change "from" time after "to" time, then adjust
-* prefill search properly; e.g. distance < 3.0; checkins = 0
-* table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
-* make all/most text selectable for copy'n'paste
+4. if filter time, and change "from" time after "to" time, then adjust
+3. prefill search properly; e.g. distance < 3.0; checkins = 0
+2. table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
+1. make all/most text selectable for copy'n'paste
 
 ## Backlog
 

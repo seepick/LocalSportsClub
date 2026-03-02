@@ -33,13 +33,13 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         WidthOrWeight.Weight(0.4f),
         CellRenderer.TextRenderer { it.venue.name }),
     TableColumn(
-        VisualIndicator.StringIndicator("Category"),
-        WidthOrWeight.Width(120.dp),
-        CellRenderer.TextRenderer { it.category }),
+        header = VisualIndicator.StringIndicator("Category"),
+        size = WidthOrWeight.Width(120.dp),
+        renderer = CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji }),
     TableColumn(
-        VisualIndicator.StringIndicator("Date"),
-        WidthOrWeight.Width(80.dp),
-        CellRenderer.TextRenderer(
+        header = VisualIndicator.StringIndicator("Date"),
+        size = WidthOrWeight.Width(80.dp),
+        renderer = CellRenderer.TextRenderer(
             valueExtractor = { it.date.prettyPrint(clock.today().year) },
             sortExtractor = { it.date },
             textAlign = TextAlign.Right,

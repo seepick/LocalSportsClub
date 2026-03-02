@@ -1,13 +1,14 @@
 package seepick.localsportsclub.view.freetraining
 
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
 import java.time.LocalDate
 
 class FreetrainingSearch(
-    allCategories: List<String>,
+    allCategories: List<Category>,
     searchDates: List<LocalDate>,
     resetItems: () -> Unit,
 ) : AbstractSearch<Freetraining>(resetItems) {
@@ -34,6 +35,9 @@ class FreetrainingSearch(
         "Rating", visualIndicator = Lsc.icons.ratingIndicator
     ) { it.venue.rating }
     val category = newSelectSearchOption(
-        "Category", allOptions = allCategories, visualIndicator = Lsc.icons.categoryIndicator
-    ) { listOf(it.category) }
+        label = "Category",
+        allOptions = allCategories.map { it.nameAndMaybeEmoji },
+        visualIndicator = Lsc.icons.categoryIndicator,
+        extractor = { listOf(it.category.nameAndMaybeEmoji) },
+    )
 }

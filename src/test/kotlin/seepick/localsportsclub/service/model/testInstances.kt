@@ -55,7 +55,7 @@ fun Arb.Companion.activity() = arbitrary {
         id = int(min = 1).bind(),
         venue = venue().bind(),
         name = string(minSize = 5, maxSize = 20, codepoints = Codepoint.az()).bind(),
-        category = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).bind(),
+        category = category().bind(),
         dateTimeRange = dateTimeRange,
         spotsLeft = int(min = 0, max = 20).bind(),
         teacher = string(minSize = 2, maxSize = 25, codepoints = Codepoint.az()).orNull().bind(),
@@ -64,4 +64,8 @@ fun Arb.Companion.activity() = arbitrary {
         description = string().orNull().bind(),
         plan = enum<Plan.UscPlan>().bind(),
     )
+}
+
+fun Arb.Companion.category() = arbitrary {
+    Category(name = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).bind())
 }

@@ -17,12 +17,19 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 import seepick.localsportsclub.view.shared.SubEntity
+
+val ActivityDbo.whitespaceEmojiIfPresent: String
+    get() {
+        val cat = Category(category)
+        return if (cat.emoji == null) "" else " ${cat.emoji}"
+    }
 
 class BookingService(
     private val uscApi: UscApi,
@@ -138,13 +145,14 @@ class BookingService(
 
     private fun VenueDbo.location() = "${name}, $street, $postalCode $addressLocality"
 
+
     private fun createCalendarActivity(activityDbo: ActivityDbo) {
         val venue = venueRepo.selectById(activityDbo.venueId) ?: error("Venue not found for: $activityDbo")
         gcalService.create(
             singlesService.readCalendarIdOrThrow(),
             GcalEntry.GcalActivity(
                 activityId = activityDbo.id,
-                title = activityDbo.nameWithTeacherIfPresent,
+                title = activityDbo.nameWithTeacherIfPresent + activityDbo.whitespaceEmojiIfPresent,
                 dateTimeRange = DateTimeRange(from = activityDbo.from, to = activityDbo.to),
                 location = venue.location(),
                 notes = "[LSC] created${

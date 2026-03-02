@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -86,7 +87,12 @@ fun SubEntityDetail(
             }
         }
         Row {
-            Text(subEntity.dateFormatted(year), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                subEntity.dateFormatted(year),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(end = 3.dp)
+            )
             if (subEntity is SubEntity.ActivityEntity) {
                 Tooltip("Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
                     Text(" ${subEntity.activity.plan.emoji} ")
@@ -103,7 +109,7 @@ fun SubEntityDetail(
                     if (isNoshow) {
                         Text("${Icons.Lsc.noshowEmoji} no-show")
                     }
-                    append(subEntity.category)
+                    append(subEntity.category.nameAndMaybeEmoji)
                     if (subEntity is SubEntity.ActivityEntity) {
                         subEntity.activity.teacher?.also { append(" with $it") }
                         append(" (${subEntity.activity.spotsLeft} spots)")

@@ -22,7 +22,7 @@ class Freetraining(
     val id: Int,
     override val venue: Venue,
     val name: String,
-    val category: String,
+    val category: Category,
     val date: LocalDate,
     state: FreetrainingState,
 ) : HasVenue, TableItemBgColor by venue, HasDistance by venue {

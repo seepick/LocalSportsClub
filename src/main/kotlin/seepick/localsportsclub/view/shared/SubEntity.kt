@@ -2,6 +2,7 @@ package seepick.localsportsclub.view.shared
 
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.HasVenue
 import java.time.LocalDate
@@ -12,7 +13,7 @@ sealed interface SubEntity : HasVenue {
     val id: Int
     val name: String
     fun dateFormatted(year: Int): String
-    val category: String
+    val category: Category
     val date: LocalDate
     /** Either "Book" (activity) or "Schedule" (freetraining) */
     val bookLabel: String

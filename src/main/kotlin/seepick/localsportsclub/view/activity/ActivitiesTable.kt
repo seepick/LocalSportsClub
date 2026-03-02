@@ -58,7 +58,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     TableColumn(
         VisualIndicator.StringIndicator("Category"),
         WidthOrWeight.Width(80.dp),
-        CellRenderer.TextRenderer { it.category }),
+        CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji }),
     TableColumn(
         VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
             valueExtractor = { it.dateTimeRange.prettyFromShorterPrint(clock.today().year) },
