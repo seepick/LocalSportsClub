@@ -18,7 +18,6 @@
 * Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🎨 if scroll through table with keys and hold, then short delay and burst
-* string similarity search (search "foopar" and find "foobar" ); 'net.ricecode:string-similarity:1.0.0'
 * 🎨 manually adjustable table column width (e.g. wanting to make name wider)
 * 🎨 combine all venue info-texts into a single popup (info, times, description); too busy right now
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
@@ -65,3 +64,4 @@
 * 🎨 adaptive layout: depending on window size, change layout (add columns, change formatting)
 * 🖋 generate and install random UUID locally, and introduce heartbeat to server for usage statistics (opt-in in prefs)
 * 🎨 when update venue leading to sort table change, then auto-scroll there
+* string similarity search for "foopar" and find "foobar"

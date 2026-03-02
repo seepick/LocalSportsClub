@@ -11,7 +11,7 @@ class StringSearchOption<T>(
     private val stringExtractors: List<(T) -> String?>,
     permanentEnabled: Boolean = false,
     reset: () -> Unit,
-    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator
+    visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
 ) : SearchOption<T>(label, reset, permanentEnabled, visualIndicator) {
 
     private val log = logger {}
