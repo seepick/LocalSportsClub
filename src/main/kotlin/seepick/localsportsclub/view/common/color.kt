@@ -14,10 +14,10 @@ fun rowBgColor(
     isHovered: Boolean,
     isSelected: Boolean,
     isClickable: Boolean,
-    primaryColor: Color? = null
+    primaryColor: Color? = null, // red for favorited, yellow for wishlisted
 ): Color {
     val alternateColor = alternateBgColor(index)
-    val selectedColor = primaryColor?.adjustHSB() ?: Lsc.colors.itemSelectedBg
+    val selectedColor = primaryColor?.adjustHSB() ?: Lsc.colors.itemSelectedBg.brighter()
     val hoverColor = primaryColor?.brighter() ?: Lsc.colors.itemHoverBg
     return (
             if (isSelected) selectedColor.copy(0.8f)
