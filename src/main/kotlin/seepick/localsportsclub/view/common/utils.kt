@@ -3,9 +3,16 @@ package seepick.localsportsclub.view.common
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
@@ -103,3 +110,15 @@ fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(factory = {
 })
 
 fun Modifier.applyTestTag(testTagName: String?) = let { if (testTagName == null) it else it.testTag(testTagName) }
+
+fun DrawScope.roundedCornerMask(width: Float, height: Float, block: DrawScope.() -> Unit) {
+    val cornerRadius = CornerRadius(height / 3f, height / 3f)
+    clipPath(Path().apply {
+        addRoundRect(
+            RoundRect(
+                rect = Rect(Offset.Zero, Size(width, height)),
+                cornerRadius = cornerRadius,
+            )
+        )
+    }, block = block)
+}

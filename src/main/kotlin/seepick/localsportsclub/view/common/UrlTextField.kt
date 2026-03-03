@@ -37,7 +37,7 @@ import seepick.localsportsclub.Lsc
 
 @Preview
 @Composable
-fun _UrlTextField() {
+fun UrlTextFieldPreview() {
     UrlTextField(
         label = "My Website",
         url = "http://www.nu.nl",

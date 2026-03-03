@@ -2,7 +2,6 @@
 
 ## v1.12.0
 
-6. rethink color coding for both progress bars; make consistent!
 5. MonthlyVisitsModel.MAX_VISITS = 6, but must change according plan
     * S = 2x; M = 4x; L & XL = 6x; different per venue?
 4. if filter time, and change "from" time after "to" time, then adjust
@@ -12,6 +11,7 @@
 
 ## Backlog
 
+* disable fetching details from past events
 * use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue

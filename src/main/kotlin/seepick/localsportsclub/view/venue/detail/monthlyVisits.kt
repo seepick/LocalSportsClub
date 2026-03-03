@@ -1,9 +1,12 @@
 package seepick.localsportsclub.view.venue.detail
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -18,16 +21,34 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.view.common.Tooltip
+import seepick.localsportsclub.view.common.roundedCornerMask
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-private val colorCheckins = Color(0xFFFF9300)
-private val colorBooked = Color(0xFF9B9B9B)
-private val colorAvailable = Color(0xFF48931C)
 
 fun String.pluralS(number: Int) = if (number == 1) this else "${this}s"
 
 private val monthFormat = DateTimeFormatter.ofPattern("MMMM")
+
+@Preview
+@Composable
+private fun MonthlyVisitsPanel(
+) {
+    Column {
+        val modifier = Modifier.size(200.dp, 20.dp)
+        fun model(checkins: Int = 0, booked: Int = 0) = MonthlyVisitsModel(
+            checkins = checkins,
+            booked = booked,
+            maxVisits = 6,
+        )
+        MonthlyVisitsPanel(model(), modifier)
+        MonthlyVisitsPanel(model(checkins = 1), modifier)
+        MonthlyVisitsPanel(model(booked = 2), modifier)
+        MonthlyVisitsPanel(model(checkins = 1, booked = 2), modifier)
+        MonthlyVisitsPanel(model(checkins = 4), modifier)
+        MonthlyVisitsPanel(model(checkins = 5), modifier)
+        MonthlyVisitsPanel(model(checkins = 6), modifier)
+    }
+}
 
 @Composable
 fun MonthlyVisitsPanel(
@@ -39,14 +60,10 @@ fun MonthlyVisitsPanel(
     val percentageAvailable = model.available.toDouble() / model.maxVisits
     val textMeasurer = rememberTextMeasurer()
     Tooltip(
-        "${model.available} ${"visit".pluralS(model.available)} available " +
-                "in ${monthFormat.format(LocalDate.now())} " +
-                "(${model.checkins} checkins, ${model.booked} booked)"
+        "${model.available} ${"visit".pluralS(model.available)} available " + "in ${monthFormat.format(LocalDate.now())} " + "(${model.checkins} checkins, ${model.booked} booked)"
     ) {
         Box(
-            modifier = Modifier
-//                .size(140.dp, 20.dp)
-                .then(modifier)
+            modifier = modifier
         ) {
             Canvas(
                 modifier = Modifier.fillMaxSize().padding(top = 4.dp, bottom = 4.dp)
@@ -56,27 +73,29 @@ fun MonthlyVisitsPanel(
                 val checkinsWidth = (width * percentageCheckins).toFloat()
                 val bookedWidth = (width * percentageBooked).toFloat()
                 val availableWidth = (width * percentageAvailable).toFloat()
-                drawRect(
-                    topLeft = Offset(0.0f, 0.0f),
-                    color = colorCheckins,
-                    size = Size(checkinsWidth, height),
-                )
-                drawRect(
-                    topLeft = Offset(checkinsWidth, 0.0f),
-                    color = colorBooked,
-                    size = Size(bookedWidth, height),
-                )
                 val availableX = checkinsWidth + bookedWidth
-                drawRect(
-                    topLeft = Offset(availableX, 0.0f),
-                    color = colorAvailable,
-                    size = Size(availableWidth, height),
-                )
+                roundedCornerMask(width, height) {
+                    drawRect(
+                        topLeft = Offset(0.0f, 0.0f),
+                        color = Lsc.colors.checkins,
+                        size = Size(checkinsWidth, height),
+                    )
+                    drawRect(
+                        topLeft = Offset(checkinsWidth, 0.0f),
+                        color = Lsc.colors.booked,
+                        size = Size(bookedWidth, height),
+                    )
+                    drawRect(
+                        topLeft = Offset(availableX, 0.0f),
+                        color = Lsc.colors.available,
+                        size = Size(availableWidth, height),
+                    )
+                }
                 drawText(
                     textMeasurer,
-                    "${model.available}/${model.maxVisits}",
-                    topLeft = Offset(minOf(availableX + 8.0f, width - 40.0f), 0.0f),
-                    style = TextStyle(color = Lsc.colors.onPrimary, fontSize = 10.sp),
+                    text = "${model.available}/${model.maxVisits}",
+                    topLeft = Offset(minOf(availableX + 5.0f, width - 25.0f), 0.0f),
+                    style = TextStyle(color = Color.Black, fontSize = 10.sp),
                 )
             }
         }

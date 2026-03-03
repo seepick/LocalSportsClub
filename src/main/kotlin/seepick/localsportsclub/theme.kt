@@ -25,10 +25,10 @@ interface LscColors {
     val backgroundToolip: Color
 
     // custom
-    val itemHoverBg: Color get() = primaryBrighter
+    val itemHoverBg get() = primaryBrighter
 
     // custom
-    val itemSelectedBg: Color get() = primaryDarker
+    val itemSelectedBg get() = primaryDarker
 
     // button bg
     val primary: Color
@@ -70,6 +70,12 @@ interface LscColors {
 
     // for CheckboxTexted hover bg color
     val hoverIndicator: Color get() = onBackground // alpha will be calculated internally
+
+
+    val checkins: Color get() = Color(0xFF0076BA)
+    val booked: Color get() = Color(0xFF00A2FF)
+    val available: Color get() = Color(0xFF6AC43C)
+    val backgroundGray: Color get() = Color(0xFF9B9B9B)
 }
 
 private val colorUnset = Color.Red
