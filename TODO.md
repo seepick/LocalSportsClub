@@ -12,6 +12,7 @@
 
 ## Backlog
 
+* use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
