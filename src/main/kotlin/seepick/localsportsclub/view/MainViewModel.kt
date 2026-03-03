@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import seepick.localsportsclub.ApplicationLifecycleListener
 import seepick.localsportsclub.GlobalKeyboardListener
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.SyncProgressListener
 import seepick.localsportsclub.sync.SyncReporter
@@ -20,6 +21,7 @@ import seepick.localsportsclub.sync.Syncer
 import seepick.localsportsclub.view.common.launchBackgroundTask
 import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.shared.SharedModel
+import java.time.LocalDate
 
 class MainViewModel(
     private val syncer: Syncer,
@@ -43,6 +45,9 @@ class MainViewModel(
     private var currentSyncJob: Job? = null
     private var currentSyncJobCancelled = false
 
+    var lastSync by mutableStateOf("N/A")
+        private set
+
     override fun onStartUp() {
         log.debug { "onStartUp()" }
         val preferences = singlesService.preferences
@@ -51,6 +56,7 @@ class MainViewModel(
         sharedModel.verifiedUscPassword.value = singlesService.verifiedUscCredentials?.password
         isSyncPossible = sharedModel.isUscConnectionVerified.value && preferences.city != null
         sharedModel.verifiedGcalId.value = singlesService.verifiedGcalId
+        lastSync = calcLastSync()
     }
 
     override fun onExit() {
@@ -94,6 +100,7 @@ class MainViewModel(
         log.info { "onSyncFinish(isError=$isError)" }
         isSyncInProgress = false
         currentSyncJob = null
+        lastSync = calcLastSync()
 
         if (!currentSyncJobCancelled) {
             launchViewTask("Failed to show snackbar!", fileResolver) {
@@ -109,5 +116,11 @@ class MainViewModel(
                 )
             }
         }
+    }
+
+    private fun calcLastSync(): String {
+        val city = singlesService.preferences.city ?: return "N/A"
+        val last = singlesService.getLastSyncFor(city) ?: return "N/A"
+        return last.prettyPrint(LocalDate.now().year)
     }
 }

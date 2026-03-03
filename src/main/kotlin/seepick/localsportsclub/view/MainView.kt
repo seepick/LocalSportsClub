@@ -181,7 +181,7 @@ fun SyncPanel(
     viewModel: MainViewModel = koinViewModel(),
 ) {
     Tooltip(
-        if (viewModel.isSyncPossible) "Synchronize data" else tooltipTextVerifyUscFirst
+        if (viewModel.isSyncPossible) "Last Sync ${viewModel.lastSync}" else tooltipTextVerifyUscFirst
     ) {
         Button(
             enabled = viewModel.isSyncPossible && !viewModel.isSyncInProgress,
