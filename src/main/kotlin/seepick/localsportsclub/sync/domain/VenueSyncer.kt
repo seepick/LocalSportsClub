@@ -256,5 +256,6 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int) = VenueDbo(
     isDeleted = false,
     isAutoSync = false,
     planId = planId,
-    // TODO insert visit limits
+    visitLimits = visitLimits,
+    lastSync = null,
 )

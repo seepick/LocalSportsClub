@@ -2,16 +2,19 @@ package seepick.localsportsclub.persistence
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.javatime.date
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
+import java.time.LocalDate
 
 data class VenueDbo(
     val id: Int,
@@ -38,6 +41,8 @@ data class VenueDbo(
     val isHidden: Boolean,
     val isAutoSync: Boolean,
     val isDeleted: Boolean,
+    val visitLimits: VisitLimits,
+    val lastSync: LocalDate?,
 ) {
     companion object {
         val dummy = VenueDbo(
@@ -64,11 +69,17 @@ data class VenueDbo(
             isHidden = false,
             isAutoSync = false,
             isDeleted = false,
+            visitLimits = VisitLimits.default,
+            lastSync = null,
         )
     }
 
     override fun toString() =
-        "VenueDbo[id=$id, slug=$slug, name=$name, cityId=$cityId, imageFileName=$imageFileName, " + "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted]"
+        "VenueDbo[" +
+                "id=$id, slug=$slug, name=$name, cityId=$cityId, imageFileName=$imageFileName, " +
+                "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted, " +
+                "visitLimits=$visitLimits, lastSync=$lastSync" +
+                "]"
 }
 
 interface VenueRepo {
@@ -104,6 +115,8 @@ object VenuesTable : IntIdTable("VENUES", "ID") {
     val isDeleted = bool("IS_DELETED") // custom
     val isAutoSync = bool("IS_AUTO_SYNC")
     val planId = integer("PLAN_ID") // custom
+    val visitLimits = varchar("VISIT_LIMITS", 32) // comma-separated for all 4 plans (S, M, L, XL), e.g. "1,2,3,4"
+    val lastSync = date("LAST_SYNC").nullable()
 }
 
 object ExposedVenueRepo : VenueRepo {
@@ -165,6 +178,8 @@ object ExposedVenueRepo : VenueRepo {
             it[isAutoSync] = venue.isAutoSync
             it[isDeleted] = venue.isDeleted
             it[planId] = venue.planId
+            it[visitLimits] = venue.visitLimits.toSqlValue()
+            it[lastSync] = venue.lastSync
         }
         log.trace { "New venue ID=$nextId" }
         venue.copy(id = nextId)
@@ -192,6 +207,8 @@ object ExposedVenueRepo : VenueRepo {
             it[importantInfo] = venue.importantInfo
             it[openingTimes] = venue.openingTimes
             it[planId] = venue.planId
+            it[visitLimits] = venue.visitLimits.toSqlValue()
+            it[lastSync] = venue.lastSync
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
         venue
@@ -221,5 +238,13 @@ object ExposedVenueRepo : VenueRepo {
         isAutoSync = row[VenuesTable.isAutoSync],
         isDeleted = row[VenuesTable.isDeleted],
         planId = row[VenuesTable.planId],
+        visitLimits = VisitLimits.fromSqlValue(row[VenuesTable.visitLimits]),
+        lastSync = row[VenuesTable.lastSync],
     )
 }
+
+private fun VisitLimits.Companion.fromSqlValue(value: String) = value.split(",").map { it.toInt() }.let {
+    VisitLimits(it[0], it[1], it[2], it[3])
+}
+
+private fun VisitLimits.toSqlValue() = listOf(small, medium, large, xlarge).joinToString(",")

@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
@@ -64,6 +65,8 @@ class Venue(
     isWishlisted: Boolean,
     isHidden: Boolean,
     isAutoSync: Boolean,
+    visitLimits: VisitLimits,
+    lastSync: LocalDate?,
 ) : HasVenue, HasLabel, HasDistance, TableItemBgColor {
     override val label = name
     override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
@@ -79,6 +82,8 @@ class Venue(
     var isDeleted: Boolean by mutableStateOf(isDeleted)
     var officialWebsite: String? by mutableStateOf(officialWebsite)
     val linkedVenues = mutableStateListOf<Venue>()
+    var visitLimits: VisitLimits by mutableStateOf(visitLimits)
+    var lastSync: LocalDate? by mutableStateOf(lastSync)
 
     private val mutableActivities = mutableStateListOf<Activity>()
     val activities: List<Activity> = mutableActivities
@@ -123,33 +128,6 @@ class Venue(
             isWishlisted: Boolean,
         ): Color? =
             if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null
-
-        fun dummy() = Venue(
-            id = 42,
-            name = "Dummy Venue",
-            slug = "dummy-venue",
-            categories = listOf(Category("Gym")),
-            city = City.Amsterdam,
-            rating = Rating.R4,
-            notes = "no notes",
-            officialWebsite = null,
-            description = "dummy description",
-            openingTimes = null,
-            importantInfo = null,
-            imageFileName = null,
-            uscWebsite = "https://usc.com/en/dummy-venue",
-            isFavorited = false,
-            isWishlisted = false,
-            isHidden = false,
-            isAutoSync = false,
-            isDeleted = false,
-            postalCode = "1001",
-            street = "Street",
-            addressLocality = "Amsterdam, Netherlands",
-            location = Location(5.0, 3.0),
-            distanceInKm = 1.3,
-            plan = Plan.UscPlan.Small,
-        )
     }
 
     fun copy(
@@ -177,6 +155,8 @@ class Venue(
         rating: Rating = this.rating,
         isFavorited: Boolean = this.isFavorited,
         plan: Plan.UscPlan = this.plan,
+        visitLimits: VisitLimits = this.visitLimits,
+        lastSync: LocalDate? = this.lastSync,
     ) = Venue(
         id = id,
         slug = slug,
@@ -202,6 +182,8 @@ class Venue(
         rating = rating,
         isFavorited = isFavorited,
         plan = plan,
+        visitLimits = visitLimits,
+        lastSync = lastSync,
     )
 
     override fun toString() = "Venue[id=$id, slug=$slug, name=$name, rating=$rating]"

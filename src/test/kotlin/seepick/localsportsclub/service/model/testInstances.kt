@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.arbitrary
@@ -10,6 +11,7 @@ import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.service.Location
@@ -46,6 +48,17 @@ fun Arb.Companion.venue() = arbitrary {
         rating = Rating.entries.random(),
         plan = enum<Plan.UscPlan>().bind(),
         isAutoSync = boolean().bind(),
+        visitLimits = visitLimits().bind(),
+        lastSync = localDate().orNull().bind(),
+    )
+}
+
+fun Arb.Companion.visitLimits() = arbitrary {
+    VisitLimits(
+        small = int(1..6).bind(),
+        medium = int(1..6).bind(),
+        large = int(1..6).bind(),
+        xlarge = int(1..6).bind(),
     )
 }
 

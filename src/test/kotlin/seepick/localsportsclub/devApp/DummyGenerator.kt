@@ -1,17 +1,17 @@
-package seepick.localsportsclub.service
+package seepick.localsportsclub.devApp
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.persistence.VenueDbo
 
 object DummyGenerator {
-
     fun venue() = VenueDbo(
         id = 0,
         name = "",
         slug = "",
         facilities = "",
-        cityId = City.Amsterdam.id,
+        cityId = City.Companion.Amsterdam.id,
         officialWebsite = null,
         rating = 0,
         notes = "",
@@ -30,5 +30,7 @@ object DummyGenerator {
         isDeleted = false,
         isAutoSync = false,
         planId = Plan.UscPlan.Small.id,
+        visitLimits = VisitLimits.Companion.default,
+        lastSync = null,
     )
 }

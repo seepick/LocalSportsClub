@@ -2,6 +2,7 @@ package seepick.localsportsclub.tools.migration
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ExposedActivityRepo
 import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
@@ -75,6 +76,8 @@ object MigrationProcessor {
             isDeleted = true,
             isAutoSync = false,
             planId = Plan.UscPlan.Small.id,
+            visitLimits = VisitLimits.default,
+            lastSync = null,
         )
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id
         linkedVenueSlugs.forEach { otherSlug ->

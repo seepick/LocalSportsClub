@@ -351,6 +351,8 @@ fun Venue.toDbo() = VenueDbo(
     isAutoSync = isAutoSync,
     isDeleted = isDeleted,
     planId = plan.id,
+    visitLimits = visitLimits,
+    lastSync = lastSync,
 )
 
 fun VenueDbo.toVenue(
@@ -381,4 +383,6 @@ fun VenueDbo.toVenue(
     isDeleted = isDeleted,
     isAutoSync = isAutoSync,
     plan = Plan.UscPlan.byId(planId),
+    visitLimits = visitLimits,
+    lastSync = lastSync,
 )

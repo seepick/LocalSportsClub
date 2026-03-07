@@ -22,6 +22,7 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Gcal
 import seepick.localsportsclub.service.model.Preferences
+import seepick.localsportsclub.service.model.visitLimits
 import testfixtUsc.credentials
 
 fun Arb.Companion.venueDbo() = arbitrary {
@@ -49,9 +50,12 @@ fun Arb.Companion.venueDbo() = arbitrary {
         longitude = double(0.0, 5.0, false).bind().toString().take(5),
         latitude = double(0.0, 5.0, false).bind().toString().take(5),
         planId = enum<Plan.UscPlan>().bind().id,
-        isAutoSync = boolean().bind()
+        isAutoSync = boolean().bind(),
+        visitLimits = visitLimits().bind(),
+        lastSync = localDate().orNull().bind(),
     )
 }
+
 
 fun Arb.Companion.activityDbo() = arbitrary {
     val from = localDateTime().bind()
