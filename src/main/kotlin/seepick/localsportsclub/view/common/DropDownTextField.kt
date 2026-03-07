@@ -45,6 +45,7 @@ data class DropDownTextFieldEdits(
     val onTextChanged: (String) -> Unit,
     val errorChecker: () -> Boolean = { false },
     val textAlign: TextAlign? = null,
+    val itemAlign: TextAlign = TextAlign.Start,
     val onReset: (() -> Unit)? = null,
 )
 
@@ -106,7 +107,7 @@ private fun <T> _DropDownTextField(
     enabled: Boolean,
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
-    useSlimDisplay: Boolean
+    useSlimDisplay: Boolean,
 ) {
     val selectedItemLabel = if (selectedItem == null) {
         label ?: ""
@@ -151,7 +152,8 @@ private fun <T> _DropDownTextField(
                         },
                     label = label?.let { { Text(label) } },
                     trailingIcon = {
-                        Icon(icon,
+                        Icon(
+                            icon,
                             null,
                             Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
                                 .let {
@@ -180,7 +182,8 @@ private fun <T> _DropDownTextField(
                         },
                     label = label?.let { { Text(label) } },
                     trailingIcon = {
-                        Icon(icon,
+                        Icon(
+                            icon,
                             null,
                             Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
                                 .let {
@@ -250,11 +253,15 @@ private fun <T> _DropDownTextField(
                 focusRequester.requestFocus()
             }
         }
+        // FIXME
+//        textStyle = textFieldEdits.textAlign?.let { LocalTextStyle.current.copy(textAlign = textFieldEdits.textAlign) }
+//            ?: LocalTextStyle.current,
         if (itemFormatter != null) {
             DropdownMenuX(
                 items = items,
                 isMenuExpanded = isMenuExpanded,
                 itemFormatter = itemFormatter,
+                itemAlign = textFieldEdits?.itemAlign,
                 textFieldSize = textFieldSize,
                 onItemClicked = {
                     onItemSelected(it)
@@ -267,6 +274,7 @@ private fun <T> _DropDownTextField(
                 items = items as List<HasLabel>,
                 isMenuExpanded = isMenuExpanded,
                 textFieldSize = textFieldSize,
+                itemAlign = textFieldEdits?.itemAlign,
                 onItemClicked = {
                     onItemSelected(it as T)
                     onClickFocus()

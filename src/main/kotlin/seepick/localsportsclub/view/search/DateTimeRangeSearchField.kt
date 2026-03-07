@@ -110,6 +110,7 @@ fun TimeRangeSelector(
             },
             errorChecker = { if (timeAsString.value.isEmpty()) false else DateParser.parseTimeOrNull(timeAsString.value) == null },
             textAlign = TextAlign.Center,
+            itemAlign = TextAlign.Center,
             onReset = {
                 timeAsString.value = ""
                 onTimeSelected(null)

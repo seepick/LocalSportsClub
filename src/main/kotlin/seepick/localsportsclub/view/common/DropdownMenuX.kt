@@ -1,6 +1,8 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -17,6 +19,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.Lsc
 
@@ -27,6 +31,7 @@ fun <T : HasLabel> DropdownMenuX(
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
+    itemAlign: TextAlign? = null,
 ) {
     _DropdownMenuX(
         items = items,
@@ -34,6 +39,7 @@ fun <T : HasLabel> DropdownMenuX(
         textFieldSize = textFieldSize,
         onItemClicked = onItemClicked,
         selectedItem = selectedItem,
+        itemAlign = itemAlign,
     )
 }
 
@@ -45,6 +51,7 @@ fun <T> DropdownMenuX(
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
+    itemAlign: TextAlign? = null,
 ) {
     _DropdownMenuX(
         items = items,
@@ -53,6 +60,7 @@ fun <T> DropdownMenuX(
         textFieldSize = textFieldSize,
         onItemClicked = onItemClicked,
         selectedItem = selectedItem,
+        itemAlign = itemAlign,
     )
 }
 
@@ -65,6 +73,7 @@ fun <T> _DropdownMenuX(
     textFieldSize: Size,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
+    itemAlign: TextAlign? = null,
 ) {
     DropdownMenu(
         expanded = isMenuExpanded.value,
@@ -80,8 +89,11 @@ fun <T> _DropdownMenuX(
                     onItemClicked(item)
                     isMenuExpanded.value = false
                 },
-                modifier = Modifier.onPointerEvent(PointerEventType.Enter) { isHovered = true }
-                    .onPointerEvent(PointerEventType.Exit) { isHovered = false }.background(
+                modifier = Modifier
+                    .height(35.dp)
+                    .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                    .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+                    .background(
                         rowBgColor(
                             index = index,
                             isHovered = isHovered,
@@ -94,6 +106,8 @@ fun <T> _DropdownMenuX(
                     color = Lsc.colors.onBackground,
                     text = if (item is HasLabel) item.label else itemFormatter!!(item),
                     fontSize = 13.sp,
+                    textAlign = itemAlign,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }

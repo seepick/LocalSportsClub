@@ -13,6 +13,7 @@
 * 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * 🖋 disable fetching details from past events
+* 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue
