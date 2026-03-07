@@ -11,6 +11,7 @@ class IntSearchOption<T>(
     reset: () -> Unit,
     initialValue: Int? = null,
     initiallyEnabled: Boolean = false,
+    initialComparator: FullNumericComparator = FullNumericComparator.Equals,
     visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
 ) : SearchOption<T>(
     label = label,
@@ -19,7 +20,7 @@ class IntSearchOption<T>(
     visualIndicator = visualIndicator,
 ) {
 
-    var searchComparator: FullNumericComparator by mutableStateOf(FullNumericComparator.Equals)
+    var searchComparator: FullNumericComparator by mutableStateOf(initialComparator)
         private set
     var searchInt: Int? by mutableStateOf(initialValue)
         private set

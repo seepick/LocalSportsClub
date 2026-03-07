@@ -2,7 +2,6 @@
 
 ## v1.12.0
 
-3. prefill search properly; e.g. distance < 3.0; checkins = 0
 2. table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
 1. make all/most text selectable for copy'n'paste
 

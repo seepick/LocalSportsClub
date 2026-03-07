@@ -103,18 +103,20 @@ abstract class AbstractSearch<T>(
 
     protected fun newIntSearchOption(
         label: String,
-        initialValue: Int? = null,
         initiallyEnabled: Boolean = false,
+        initialValue: Int? = null,
+        initialComparator: FullNumericComparator = FullNumericComparator.Equals,
         visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
         extractor: (T) -> Int,
     ) =
         IntSearchOption(
             label = label,
-            reset = ::reset,
-            extractor = extractor,
-            initialValue = initialValue,
             initiallyEnabled = initiallyEnabled,
+            initialValue = initialValue,
+            initialComparator = initialComparator,
             visualIndicator = visualIndicator,
+            extractor = extractor,
+            reset = ::reset,
         ).also {
             options += it
         }

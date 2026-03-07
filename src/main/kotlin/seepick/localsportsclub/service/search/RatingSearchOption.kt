@@ -18,10 +18,9 @@ class RatingSearchOption<T>(
     initiallyEnabled = initiallyEnabled,
     visualIndicator = visualIndicator,
 ) {
-
-    var searchComparator: FullNumericComparator by mutableStateOf(FullNumericComparator.Equals)
+    var searchComparator: FullNumericComparator by mutableStateOf(FullNumericComparator.Bigger)
         private set
-    var searchRating: Rating by mutableStateOf(Rating.R0)
+    var searchRating: Rating by mutableStateOf(Rating.R3)
         private set
 
     fun updateSearchComparator(value: FullNumericComparator) {

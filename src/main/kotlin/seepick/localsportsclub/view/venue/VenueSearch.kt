@@ -8,6 +8,7 @@ import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.service.search.FullNumericComparator
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
@@ -19,15 +20,26 @@ class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: (
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
     val activities = newIntSearchOption(
-        "Activities", visualIndicator = Lsc.icons.activitiesIndicator
+        label = "Activities",
+        visualIndicator = Lsc.icons.activitiesIndicator,
+        initialValue = 10,
+        initialComparator = FullNumericComparator.Bigger,
     ) { it.activities.filter { !it.isInPast(today) }.size }
     val reservations = newIntSearchOption(
-        "Reservations", visualIndicator = Lsc.icons.reservedEmojiIndicator
+        label = "Reservations",
+        visualIndicator = Lsc.icons.reservedEmojiIndicator,
+        initialValue = 0,
+        initialComparator = FullNumericComparator.Bigger,
     ) {
         it.activities.count { it.state == ActivityState.Booked } +
                 it.freetrainings.count { it.state == FreetrainingState.Scheduled }
     }
-    val checkins = newIntSearchOption("Checkins", visualIndicator = Lsc.icons.checkedinIndicator) {
+    val checkins = newIntSearchOption(
+        label = "Checkins",
+        visualIndicator = Lsc.icons.checkedinIndicator,
+        initialValue = 0,
+        initialComparator = FullNumericComparator.Bigger,
+    ) {
         it.activities.count { it.state == ActivityState.Checkedin } +
                 it.freetrainings.count { it.state == FreetrainingState.Checkedin }
     }
