@@ -75,7 +75,7 @@ fun SubEntityDetail(
                         Tooltip("Sync details (description, teacher) of this activity") {
                             TextButton(onClick = onSyncActivity) {
                                 Icon(
-                                    Lsc.icons.syncActivityDetails, contentDescription = null,
+                                    Lsc.icons.manualSync, contentDescription = null,
                                 )
                             }
                         }

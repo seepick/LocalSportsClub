@@ -42,8 +42,7 @@ object LscIcons {
     val venues = Icons.Default.HolidayVillage
     val notes = Icons.Default.Description
     val preferences = Icons.Default.Settings
-
-    val syncActivityDetails = Icons.Default.Refresh
+    val manualSync = Icons.Default.Refresh
 }
 
 @Suppress("UnusedReceiverParameter")

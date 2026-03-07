@@ -38,8 +38,8 @@ enum class Screen(
         tooltip = "Write personal remarks",
         icon = Lsc.icons.notes,
     ),
-    Preferefences(
-        label = "Preferefences",
+    Preferences(
+        label = "Preferences",
         tooltip = "Change application configuration",
         icon = Lsc.icons.preferences,
     );

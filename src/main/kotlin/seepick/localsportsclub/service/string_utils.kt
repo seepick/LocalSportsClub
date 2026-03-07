@@ -2,7 +2,6 @@ package seepick.localsportsclub.service
 
 import java.util.Locale
 
-@Deprecated("use usc-client")
 fun String.unescape(): String =
     replace("\\\"", "\"").replace("\\n", "\n")
 

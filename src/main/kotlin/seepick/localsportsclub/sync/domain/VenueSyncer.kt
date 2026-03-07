@@ -4,9 +4,11 @@ import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.PageProgressListener
+import com.github.seepick.uscclient.shared.daysBetween
 import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenueInfo
 import com.github.seepick.uscclient.venue.VenuesFilter
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
@@ -14,12 +16,14 @@ import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 import seepick.localsportsclub.sync.Downloader
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.net.URL
+import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
@@ -29,20 +33,47 @@ class VenueSyncer(
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
+    private val clock: Clock,
 ) {
     private val log = logger {}
 
     suspend fun sync(plan: Plan, city: City) {
         log.info { "Syncing venues ..." }
         progress.onProgressVenues(null)
-        val listener = PageProgressListener { pageNr -> progress.onProgressVenues("Page $pageNr") }
-        val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan), listener).associateBy { it.slug }
+        val pageListener = PageProgressListener { pageNr -> progress.onProgressVenues("Page $pageNr") }
+        val remoteVenuesBySlug = uscApi.fetchVenues(VenuesFilter(city, plan), pageListener).associateBy { it.slug }
         log.debug { "Received ${remoteVenuesBySlug.size} remote venues." }
         val localVenues = venueRepo.selectAllByCity(city.id)
 
         markDeleted(localVenues, remoteVenuesBySlug)
         markUndeleted(localVenues, remoteVenuesBySlug)
         insertMissing(localVenues, remoteVenuesBySlug, city)
+        updateDetails(city)
+    }
+
+    suspend fun updateSingleDetails(venueId: Int) {
+        log.debug { "updateSingleDetails(venueId=$venueId)" }
+        val venue = venueRepo.selectById(venueId) ?: error("Venue not found by id: $venueId")
+        val details = uscApi.fetchVenueDetail(venue.slug)
+        venueRepo.update(venue.copyByDetails(clock.today(), details))
+    }
+
+    private suspend fun updateDetails(city: City) {
+        log.debug { "updateDetails($city)" }
+        val today = clock.today()
+        val venuesToUpdate = venueRepo.selectAllByCity(city.id).filter {
+            (it.lastSync == null || it.lastSync.daysBetween(today) <= Math.random() * 10 + 14) &&
+                    !it.isDeleted && !it.isHidden
+        }
+        progress.onProgressVenues("${venuesToUpdate.size} Details")
+        log.debug { "Fetching details for ${venuesToUpdate.size} venues." }
+        val dboAndDetails = workParallel(10, venuesToUpdate) {
+            it to uscApi.fetchVenueDetail(it.slug)
+        }
+        dboAndDetails.forEach { (dbo, detail) ->
+            venueRepo.update(dbo.copyByDetails(today, detail))
+        }
+        // no dispatch, thus UI won't be updated; require app restart; good enough
     }
 
     private fun markUndeleted(
@@ -121,6 +152,7 @@ class VenueSyncInserterImpl(
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
     private val fileResolver: FileResolver,
+    private val clock: Clock,
 ) : VenueSyncInserter {
     private val log = logger {}
 
@@ -210,7 +242,7 @@ class VenueSyncInserterImpl(
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id)
+        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, today = clock.today())
             .ensureHasImageIfPresent(details)
     }
 
@@ -232,7 +264,25 @@ class VenueSyncInserterImpl(
     }
 }
 
-private fun VenueDetails.toDbo(cityId: Int, planId: Int) = VenueDbo(
+private fun VenueDbo.copyByDetails(today: LocalDate, detail: VenueDetails) = copy(
+    lastSync = today,
+    visitLimits = detail.visitLimits ?: VisitLimits.default, // just assume this if not provided by server
+    description = detail.description,
+    openingTimes = detail.openingTimes,
+    importantInfo = detail.importantInfo,
+    // only override if not yet set (most likely custom user override gone otherwise)
+    // as a consequence, if the URL was changed on the server side, these changes will not be visible; ok, i guess.
+    officialWebsite = officialWebsite ?: detail.websiteUrl?.toString(),
+    // these should be pretty static:
+//        postalCode = postalCode,
+//        street = streetAddress,
+//        addressLocality = addressLocality,
+//        latitude = latitude,
+//        longitude = longitude,
+//        facilities = disciplines.joinToString(","),
+)
+
+private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = VenueDbo(
     id = -1,
     name = title,
     slug = slug,
@@ -256,6 +306,6 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int) = VenueDbo(
     isDeleted = false,
     isAutoSync = false,
     planId = planId,
-    visitLimits = visitLimits,
-    lastSync = null,
+    visitLimits = visitLimits ?: VisitLimits.default, // just assume this if not provided by server,
+    lastSync = today,
 )

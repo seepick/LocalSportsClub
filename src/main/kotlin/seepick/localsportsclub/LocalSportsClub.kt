@@ -124,7 +124,7 @@ fun startApplication(
                     if (desktop.isSupported(java.awt.Desktop.Action.APP_PREFERENCES)) {
                         log.debug { "Registering preferences handler" }
                         desktop.setPreferencesHandler {
-                            mainViewModel.changeScreen(Screen.Preferefences)
+                            mainViewModel.changeScreen(Screen.Preferences)
                         }
                     }
 

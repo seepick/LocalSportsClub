@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.onClick
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
@@ -24,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.MainWindowState
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
@@ -69,8 +75,10 @@ fun VenueDetail(
     reducedVSpace: Boolean,
     isSyncing: Boolean,
     configuredCity: City?,
-    isSyncVenueInProgress: Boolean,
-    onSyncVenue: () -> Unit,
+    isSyncVenueActivitiesInProgress: Boolean,
+    isSyncVenueDetailsInProgress: Boolean,
+    onSyncVenueActivities: () -> Unit,
+    onSyncVenueDetails: () -> Unit,
     sharedModel: SharedModel = koinInject(),
     mainWindowState: MainWindowState = koinInject(),
     clock: Clock = koinInject(),
@@ -139,16 +147,33 @@ fun VenueDetail(
             })
         }
         Row {
-            CheckboxTexted("Favorited", venueEdit.isFavorited, images = Icons.Lsc.favorited2)
-            CheckboxTexted("Wishlisted", venueEdit.isWishlisted, images = Icons.Lsc.wishlisted2)
-            CheckboxTexted("Hidden ${LscIcons.hiddenEmoji}", venueEdit.isHidden, modifier = Modifier.height(30.dp))
+            val syncSize = 40
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
+                if (isSyncVenueDetailsInProgress) {
+                    CircularProgressIndicator(modifier = Modifier.size((syncSize - 15).dp))
+                } else {
+                    Tooltip("Update venue details; last sync: ${venue.lastSync ?: "never"}\n(Restart the application to show changes)") {
+                        TextButton(onClick = onSyncVenueDetails) {
+                            Icon(Lsc.icons.manualSync, contentDescription = null)
+                        }
+                    }
+                }
+            }
+            CheckboxTexted("Fav.", venueEdit.isFavorited, images = Icons.Lsc.favorited2, tooltipText = "Favorited")
+            CheckboxTexted("Wish.", venueEdit.isWishlisted, images = Icons.Lsc.wishlisted2, tooltipText = "Wishlisted")
+            CheckboxTexted(
+                "Hidden ${LscIcons.hiddenEmoji}",
+                venueEdit.isHidden,
+                modifier = Modifier.height(30.dp),
+                tooltipText = "Hide/Show venue items"
+            )
             Spacer(Modifier.width(10.dp))
             CheckboxTexted(
                 label = "Auto-Sync",
                 tooltipText = "Automatically sync activity details on global sync",
                 checked = venueEdit.isAutoSync,
                 modifier = Modifier.height(30.dp),
-                icon = Icons.Lsc.syncActivityDetails,
+                icon = Icons.Lsc.manualSync,
             )
         }
         Spacer(Modifier.height(2.dp))
@@ -203,12 +228,9 @@ fun VenueDetail(
             onItemNavigation = onActivityNavigated,
             height = heights.first,
             modifier = Modifier.fillMaxWidth(),
-            isSyncVenueInProgress = isSyncVenueInProgress,
-            onSyncVenue = onSyncVenue,
+            isSyncVenueInProgress = isSyncVenueActivitiesInProgress,
+            onSyncVenue = onSyncVenueActivities,
         )
-        if (venue.name == "Oki Do Yoga") {
-            println("")
-        }
         SimpleFreetrainingsTable(
             freetrainings = venue.sortedFreetrainings(clock.today()),
             selectedFreetraining = freetraining,

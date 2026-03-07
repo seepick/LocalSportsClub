@@ -10,6 +10,7 @@
 
 ## Backlog
 
+* 🎨 combine all venue info-texts into a single popup (info, times, description); too busy right now
 * activity has plan, but also venue has plan; clarify!
 * venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
@@ -22,7 +23,6 @@
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🎨 if scroll through table with keys and hold, then short delay and burst
 * 🎨 manually adjustable table column width (e.g. wanting to make name wider)
-* 🎨 combine all venue info-texts into a single popup (info, times, description); too busy right now
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * 🖋 search filter for time only (evenings), without specifying day/date; in general think about using a ranged slider
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")

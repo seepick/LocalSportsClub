@@ -9,12 +9,12 @@ abstract class TestSyncerListener : SyncerListener {
         error("Unexpected call to onVenueDbosAdded! $addedVenues")
     }
 
-    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-        error("Unexpected call to onVenueDbosMarkedDeleted! $venueDbos")
+    override fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
+        error("Unexpected call to onVenueDbosMarkedDeleted! $deletedVenues")
     }
 
-    override fun onVenueDbosMarkedUndeleted(venueDbos: List<VenueDbo>) {
-        error("Unexpected call to onVenueDbosMarkedUndeleted! $venueDbos")
+    override fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
+        error("Unexpected call to onVenueDbosMarkedUndeleted! $undeletedVenues")
     }
 
     override fun onActivityDbosAdded(addedActivities: List<ActivityDbo>) {

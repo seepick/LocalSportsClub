@@ -3,7 +3,7 @@
 echo "rm -rf ~/.lsc-dev/database/"
 rm -rf ~/.lsc-dev/database || exit 1
 
-echo "cp -r  ~/.lsc-dev/database-prod/ ~/.lsc-dev/database/"
+echo "cp -r  ~/.lsc/database/ ~/.lsc-dev/database/"
 cp -r  ~/.lsc/database ~/.lsc-dev/database || exit 1
 
 echo

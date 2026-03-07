@@ -53,11 +53,12 @@ class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: (
     val autoSync = newBooleanSearchOption(
         label = "Auto-Sync",
         initialValue = true,
-        visualIndicator = VisualIndicator.VectorIndicator(Icons.Lsc.syncActivityDetails)
+        visualIndicator = VisualIndicator.VectorIndicator(Icons.Lsc.manualSync)
     ) { it.isAutoSync }
     val deleted = newBooleanSearchOption(
         label = "Deleted",
-        initialValue = true,
+        initialValue = false,
+        initiallyEnabled = true,
         visualIndicator = VisualIndicator.VectorIndicator(Icons.Default.Delete),
     ) { it.isDeleted }
 }

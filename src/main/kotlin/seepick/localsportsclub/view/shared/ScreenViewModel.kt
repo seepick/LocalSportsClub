@@ -105,7 +105,8 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     var isSyncActivityPossible by mutableStateOf(false)
         private set
     var isSyncActivityInProgress by mutableStateOf(false)
-    var isSyncVenueInProgress by mutableStateOf(false)
+    var isSyncVenueActivitiesInProgress by mutableStateOf(false)
+    var isSyncVenueDetailsInProgress by mutableStateOf(false)
     var userPlan by mutableStateOf<Plan.UscPlan?>(null)
 
     private var isAddingItems = AtomicBoolean(false)
@@ -285,16 +286,29 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         }
     }
 
-    fun onSyncVenue() {
-        log.debug { "onSyncVenue()" }
+    fun onSyncVenueActivities() {
+        log.debug { "onSyncVenueActivities()" }
         val venue = selectedVenue.value!!.venue
         launchBackgroundTask(
             errorMessage = "Sync activity details failed!",
             fileResolver = fileResolver,
-            doBefore = { isSyncVenueInProgress = true },
-            doFinally = { isSyncVenueInProgress = false },
+            doBefore = { isSyncVenueActivitiesInProgress = true },
+            doFinally = { isSyncVenueActivitiesInProgress = false },
         ) {
             venueService.syncActivityDetails(venue.id)
+        }
+    }
+
+    fun onSyncVenueDetails() {
+        log.debug { "onSyncVenueDetails()" }
+        val venue = selectedVenue.value!!.venue
+        launchBackgroundTask(
+            errorMessage = "Sync venue details failed!",
+            fileResolver = fileResolver,
+            doBefore = { isSyncVenueDetailsInProgress = true },
+            doFinally = { isSyncVenueDetailsInProgress = false },
+        ) {
+            venueService.syncVenueDetails(venue.id)
         }
     }
 

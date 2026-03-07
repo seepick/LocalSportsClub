@@ -60,7 +60,7 @@ fun SimpleActivitiesTable(
                     Tooltip("Sync activity details") {
                         TextButton(onClick = onSyncVenue) {
                             Icon(
-                                Lsc.icons.syncActivityDetails, contentDescription = null
+                                Lsc.icons.manualSync, contentDescription = null
                             )
                         }
                     }

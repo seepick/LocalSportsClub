@@ -169,7 +169,7 @@ fun MainView(
                     Screen.Freetrainings -> FreetrainingsScreen()
                     Screen.Venues -> VenueScreen()
                     Screen.Notes -> NotesScreen()
-                    Screen.Preferefences -> PreferencesScreen()
+                    Screen.Preferences -> PreferencesScreen()
                 }
             }
         }

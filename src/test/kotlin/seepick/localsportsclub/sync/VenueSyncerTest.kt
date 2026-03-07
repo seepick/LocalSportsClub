@@ -14,6 +14,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
+import seepick.localsportsclub.StaticClock
 import seepick.localsportsclub.imageUrl
 import seepick.localsportsclub.persistence.DbListener
 import seepick.localsportsclub.persistence.InMemoryVenueLinksRepo
@@ -23,6 +24,7 @@ import seepick.localsportsclub.persistence.VenueIdLink
 import seepick.localsportsclub.persistence.venueDbo
 import seepick.localsportsclub.service.DummyFileResolver
 import seepick.localsportsclub.service.MemorizableImageStorage
+import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.sync.domain.VenueSyncInserterImpl
 import seepick.localsportsclub.sync.domain.VenueSyncer
 import testfixtUsc.city
@@ -44,6 +46,7 @@ class VenueSyncerTest : StringSpec() {
     private lateinit var venueLinksRepo: InMemoryVenueLinksRepo
     private lateinit var imageStorage: MemorizableImageStorage
     private lateinit var syncer: VenueSyncer
+    private lateinit var clock: Clock
 
     override suspend fun beforeEach(testCase: TestCase) {
         super.beforeEach(testCase)
@@ -54,6 +57,7 @@ class VenueSyncerTest : StringSpec() {
         syncVenueDbosAdded.clear()
         syncVenueDbosMarkedDeleted.clear()
         syncVenueDbosMarkedUndeleted.clear()
+        clock = StaticClock()
 
         val syncerListenerDispatcher = SyncerListenerDispatcher()
         syncerListenerDispatcher.registerListener(object : TestSyncerListener() {
@@ -61,12 +65,12 @@ class VenueSyncerTest : StringSpec() {
                 syncVenueDbosAdded += addedVenues
             }
 
-            override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
-                syncVenueDbosMarkedDeleted += venueDbos
+            override fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
+                syncVenueDbosMarkedDeleted += deletedVenues
             }
 
-            override fun onVenueDbosMarkedUndeleted(venueDbos: List<VenueDbo>) {
-                syncVenueDbosMarkedUndeleted += venueDbos
+            override fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
+                syncVenueDbosMarkedUndeleted += undeletedVenues
             }
         })
         val syncProgress = DummySyncProgress()
@@ -83,8 +87,10 @@ class VenueSyncerTest : StringSpec() {
                 syncerListenerDispatcher,
                 syncProgress,
                 DummyFileResolver,
+                clock,
             ),
             progress = syncProgress,
+            clock = clock,
         )
     }
 

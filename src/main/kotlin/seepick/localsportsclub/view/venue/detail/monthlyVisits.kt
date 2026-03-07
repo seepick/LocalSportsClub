@@ -18,6 +18,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
@@ -40,6 +41,7 @@ private fun MonthlyVisitsPanel(
             checkins = checkins,
             booked = booked,
             maxVisits = 6,
+            visitLimits = VisitLimits.default,
         )
         MonthlyVisitsPanel(model(), modifier)
         MonthlyVisitsPanel(model(checkins = 1), modifier)
@@ -51,6 +53,7 @@ private fun MonthlyVisitsPanel(
     }
 }
 
+
 @Composable
 fun MonthlyVisitsPanel(
     model: MonthlyVisitsModel,
@@ -61,7 +64,10 @@ fun MonthlyVisitsPanel(
     val percentageAvailable = model.available.toDouble() / model.maxVisits
     val textMeasurer = rememberTextMeasurer()
     Tooltip(
-        "${model.available} ${"visit".pluralS(model.available)} available " + "in ${monthFormat.format(LocalDate.now())} " + "(${model.checkins} checkins, ${model.booked} booked)"
+        "${model.available} ${"visit".pluralS(model.available)} available " +
+                "in ${monthFormat.format(LocalDate.now())} " +
+                "(${model.checkins} checkins, ${model.booked} booked)" +
+                "\nVisit limits by plan: ${model.visitLimits.toPrettyString()}",
     ) {
         Box(
             modifier = modifier
@@ -103,10 +109,13 @@ fun MonthlyVisitsPanel(
     }
 }
 
+private fun VisitLimits.toPrettyString() = "S=$small, M=$medium, L=$large, XL=$xlarge"
+
 data class MonthlyVisitsModel(
     val checkins: Int,
     val booked: Int,
     val maxVisits: Int,
+    val visitLimits: VisitLimits,
 ) {
     val used = checkins + booked
     val available = maxVisits - used
@@ -120,5 +129,6 @@ fun Venue.toMonthlyVisitsModel(today: LocalDate, userPlan: Plan.UscPlan): Monthl
         checkins = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
         booked = currentMonthsActivities.count { it.state == ActivityState.Booked },
         maxVisits = visitLimits.forPlan(userPlan),
+        visitLimits = visitLimits,
     )
 }

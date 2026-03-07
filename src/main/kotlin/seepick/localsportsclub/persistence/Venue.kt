@@ -78,7 +78,7 @@ data class VenueDbo(
         "VenueDbo[" +
                 "id=$id, slug=$slug, name=$name, cityId=$cityId, imageFileName=$imageFileName, " +
                 "isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, isDeleted=$isDeleted, " +
-                "visitLimits=$visitLimits, lastSync=$lastSync" +
+                "visitLimits=$visitLimits, lastSync=$lastSync, officialWebsite=$officialWebsite" +
                 "]"
 }
 
