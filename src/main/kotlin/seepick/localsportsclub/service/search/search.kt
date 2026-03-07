@@ -174,7 +174,11 @@ abstract class AbstractSearch<T>(
         }
 
     fun reset() {
-        log.debug { "${this::class.simpleName} resetting search with options: ${options.joinToString { "[${it.label}/${it.enabled}]" }}" }
+        log.debug {
+            "${this::class.simpleName} resetting search with options: ${
+                options.filter { it.enabled }.joinToString { it.label }
+            }"
+        }
         predicates.clear()
         predicates.addAll(options.mapNotNull { it.buildPredicateIfEnabled() })
         resetItems()

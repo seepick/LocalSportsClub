@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +31,8 @@ fun _Preview_DateTimeRangeSearchField() {
             extractor = { it },
             initiallyEnabled = true,
         ),
-        dates = listOf(LocalDate.now())
+        dates = listOf(LocalDate.now()),
+        times = (6..22).map { LocalTime.of(it, 0) },
     )
 }
 
@@ -40,6 +40,7 @@ fun _Preview_DateTimeRangeSearchField() {
 fun <T> DateTimeRangeSearchField(
     searchOption: DateTimeRangeSearchOption<T>,
     dates: List<LocalDate>,
+    times: List<LocalTime>,
 ) {
     if (searchOption.searchDate == null) searchOption.updateSearchDate(dates.first())
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -53,12 +54,14 @@ fun <T> DateTimeRangeSearchField(
             )
             Spacer(Modifier.width(6.dp))
             TimeRangeSelector(
+                times = times,
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeStart,
                 preselectedTime = searchOption.searchTimeStart,
             )
             Text("-")
             TimeRangeSelector(
+                times = times,
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeEnd,
                 preselectedTime = searchOption.searchTimeEnd,
@@ -67,34 +70,31 @@ fun <T> DateTimeRangeSearchField(
     }
 }
 
-private val times: List<LocalTime> = (6..22).map {
-    LocalTime.of(it, 0)
-}
-
 @Composable
 @Preview
 fun _Preview_TimeRangeSelector() {
     TimeRangeSelector(
         enabled = true,
         preselectedTime = null,
-        onTimeSelected = {},
+        onTimeSelected = { null },
+        times = (6..22).map { LocalTime.of(it, 0) },
     )
 }
 
 @Composable
 fun TimeRangeSelector(
+    times: List<LocalTime>,
     enabled: Boolean,
-    onTimeSelected: (LocalTime?) -> Unit,
+    onTimeSelected: (LocalTime?) -> LocalTime?,
     preselectedTime: LocalTime?,
 ) {
-    val timeAsString = remember { mutableStateOf(preselectedTime?.prettyPrint() ?: "") }
+    val timeAsString = mutableStateOf(preselectedTime?.prettyPrint() ?: "")
     DropDownTextField(
         items = times,
         selectedItem = preselectedTime,
         itemFormatter = { it?.prettyPrint() ?: "" },
         onItemSelected = {
-            timeAsString.value = it?.prettyPrint() ?: ""
-            onTimeSelected(it)
+            timeAsString.value = onTimeSelected(it)?.prettyPrint() ?: ""
         },
         useSlimDisplay = true,
         enabled = enabled,

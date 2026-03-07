@@ -2,24 +2,21 @@
 
 ## v1.12.0
 
-5. make use of VenueDetails.visitLimits
-4. if filter time, and change "from" time after "to" time, then adjust
 3. prefill search properly; e.g. distance < 3.0; checkins = 0
 2. table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
 1. make all/most text selectable for copy'n'paste
 
 ## Backlog
 
-* 🎨 combine all venue info-texts into a single popup (info, times, description); too busy right now
-* activity has plan, but also venue has plan; clarify!
-* venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
+* 🎨 combine all venue info-texts into a single popup (info, times, description)
+* 🖋 activity has plan, but also venue has plan; clarify!
+* 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
-* hard-sync (reset info) for specific (or all?) venue; remember last-sync (do regularly in main sync operation; distribute time, add randomness for threshold, so not all at the same time)
-* disable fetching details from past events
-* use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
+* 🖋 disable fetching details from past events
+* 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue
-* Balanzs has two linked venues with identical name; it seems to cause issues...?!
+* 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🎨 if scroll through table with keys and hold, then short delay and burst
 * 🎨 manually adjustable table column width (e.g. wanting to make name wider)
@@ -39,7 +36,6 @@
 * 🖋 mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
     * or maybe an adaptive "suggested" or "liked" venues/activities based on past bookings
 * 🖋 could sync official rating (0.0-5.0 number and total count)
-* 🖋️ "hard sync" feature: get all venue details again (overwrite to get most recent description, opening times, etc...)
 
 ## Later
 

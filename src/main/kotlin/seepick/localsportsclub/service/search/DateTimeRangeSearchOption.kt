@@ -23,25 +23,29 @@ class DateTimeRangeSearchOption<T>(
     var searchTimeEnd: LocalTime? by mutableStateOf(null)
         private set
 
-
     fun updateSearchDate(date: LocalDate) {
         searchDate = date
         reset()
     }
 
-    fun initializeDate(date: LocalDate) {
-        searchDate = date
-        // no reset()
-    }
-
-    fun updateSearchTimeStart(time: LocalTime?) {
+    fun updateSearchTimeStart(time: LocalTime?): LocalTime? {
+        if (searchTimeStart == time) return searchTimeStart
+        if (time != null && searchTimeEnd != null && time.isAfter(searchTimeEnd)) {
+            searchTimeEnd = time
+        }
         searchTimeStart = time
         reset()
+        return searchTimeStart
     }
 
-    fun updateSearchTimeEnd(time: LocalTime?) {
+    fun updateSearchTimeEnd(time: LocalTime?): LocalTime? {
+        if (searchTimeEnd == time) return searchTimeEnd
+        if (time != null && searchTimeStart != null && time.isBefore(searchTimeStart)) {
+            searchTimeStart = time
+        }
         searchTimeEnd = time
         reset()
+        return searchTimeEnd
     }
 
     override fun buildPredicate(): (T) -> Boolean =

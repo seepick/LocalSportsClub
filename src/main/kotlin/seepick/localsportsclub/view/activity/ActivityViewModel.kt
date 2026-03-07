@@ -15,6 +15,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SharedModel
 import java.time.LocalDate
+import java.time.LocalTime
 
 class ActivityViewModel(
     syncDaysAhead: Int,
@@ -48,6 +49,7 @@ class ActivityViewModel(
     override val initialSortColumn =
         tableColumns.single { it.header is VisualIndicator.StringIndicator && it.header.label == "Date" }
     val syncDates: List<LocalDate>
+    val timeRange = (6..22).map { LocalTime.of(it, 0) }
 
     init {
         val today = clock.today()
