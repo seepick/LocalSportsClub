@@ -76,10 +76,12 @@ private fun <T> iconImageColumn(
     initialSortDirection: SortDirection = SortDirection.Asc,
 ): TableColumn<T> = TableColumn(
     header = header,
-    size = WidthOrWeight.Width(50.dp),
+    size = WidthOrWeight.Width(30.dp),
     renderer = CellRenderer.CustomRenderer { item, col ->
         Row(ModifierWith(col.size).height(30.dp), horizontalArrangement = Arrangement.Center) {
-            Image(if (flagExtractor(item)) icons.first else icons.second, null)
+            if (flagExtractor(item)) {
+                Image(icons.first, null)
+            }
         }
     },
     sortValueExtractor = { flagExtractor(it) },

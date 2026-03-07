@@ -14,12 +14,12 @@ import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
-import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
-import seepick.localsportsclub.view.common.table.tableColumnWishlisted
+import seepick.localsportsclub.view.shared.CategoryColumn
 import seepick.localsportsclub.view.shared.CheckedinColumn
 import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
+import seepick.localsportsclub.view.shared.VenueColumn
 
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue },
@@ -28,14 +28,8 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         WidthOrWeight.Weight(0.6f),
         CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })
     ),
-    TableColumn(
-        VisualIndicator.StringIndicator("Venue"),
-        WidthOrWeight.Weight(0.4f),
-        CellRenderer.TextRenderer { it.venue.name }),
-    TableColumn(
-        header = VisualIndicator.StringIndicator("Category"),
-        size = WidthOrWeight.Width(120.dp),
-        renderer = CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji }),
+    VenueColumn(),
+    CategoryColumn(),
     TableColumn(
         header = VisualIndicator.StringIndicator("Date"),
         size = WidthOrWeight.Width(80.dp),
@@ -48,8 +42,8 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     CheckedinColumn(paddingRight = true),
     DistanceColumn(),
     RatingColumn(),
-    tableColumnFavorited { it.venue.isFavorited },
-    tableColumnWishlisted { it.venue.isWishlisted },
+//    tableColumnFavorited { it.venue.isFavorited },
+//    tableColumnWishlisted { it.venue.isWishlisted },
 )
 
 

@@ -17,3 +17,7 @@ interface HasSlug {
 interface HasVenue {
     val venue: Venue
 }
+
+interface HasCategory {
+    val category: Category
+}

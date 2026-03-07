@@ -22,9 +22,7 @@ import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableTextCell
-import seepick.localsportsclub.view.common.table.tableColumnFavorited
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
-import seepick.localsportsclub.view.common.table.tableColumnWishlisted
 import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 import java.time.LocalDate
@@ -98,8 +96,8 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     ),
     DistanceColumn(),
     RatingColumn(),
-    tableColumnFavorited { it.isFavorited },
-    tableColumnWishlisted { it.isWishlisted },
+//    tableColumnFavorited { it.isFavorited },
+//    tableColumnWishlisted { it.isWishlisted },
 )
 
 @Composable

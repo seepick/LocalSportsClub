@@ -1,11 +1,13 @@
 package seepick.localsportsclub.view.shared
 
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.HasCategory
 import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasPlan
 import seepick.localsportsclub.service.model.HasVenue
@@ -14,6 +16,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableTextCell
 
 fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<T>(
     header = VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
@@ -46,4 +49,23 @@ fun <T : HasPlan> PlanColumn() = TableColumn<T>(
         sortExtractor = { it.plan.id },
         valueExtractor = { it.plan.emoji },
     )
+)
+
+fun <T : HasCategory> CategoryColumn() = TableColumn<T>(
+    VisualIndicator.StringIndicator("Category"),
+    WidthOrWeight.Width(80.dp),
+    CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji }
+)
+
+fun <T : HasVenue> VenueColumn() = TableColumn<T>(
+    VisualIndicator.StringIndicator("Venue"),
+    WidthOrWeight.Weight(0.4f),
+    sortValueExtractor = { it.venue.name },
+    renderer = CellRenderer.CustomRenderer { activity, col ->
+        TableTextCell(
+            text = activity.venue.name,
+            size = col.size,
+            textDecoration = if (activity.venue.isDeleted) TextDecoration.LineThrough else null,
+        )
+    },
 )

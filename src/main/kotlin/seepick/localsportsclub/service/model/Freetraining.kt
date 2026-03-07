@@ -22,10 +22,10 @@ class Freetraining(
     val id: Int,
     override val venue: Venue,
     val name: String,
-    val category: Category,
+    override val category: Category,
     val date: LocalDate,
     state: FreetrainingState,
-) : HasVenue, TableItemBgColor by venue, HasDistance by venue {
+) : HasVenue, HasCategory, TableItemBgColor by venue, HasDistance by venue {
     var state: FreetrainingState by mutableStateOf(state)
 
     fun isInPast(today: LocalDate): Boolean = date < today

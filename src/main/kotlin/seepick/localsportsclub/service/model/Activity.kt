@@ -32,7 +32,7 @@ class Activity(
     val id: Int,
     override val venue: Venue,
     val name: String,
-    val category: Category, // aka disciplines/facilities
+    override val category: Category, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
     override val plan: Plan.UscPlan,
     teacher: String?,
@@ -40,7 +40,7 @@ class Activity(
     spotsLeft: Int,
     state: ActivityState,
     cancellationLimit: LocalDateTime?,
-) : HasVenue, HasDistance by venue, HasPlan, TableItemBgColor by venue {
+) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor by venue {
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
     // not possible due to mixed setup of table columns (doing logic in view/composable together)
