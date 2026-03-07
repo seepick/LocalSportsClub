@@ -18,16 +18,16 @@ abstract class AbstractSearch<T>(
     val anyEnabled
         get() =
             options.any {
-                !it.permanentEnabled && it.enabled ||
-                        it.permanentEnabled && it.permanentEnabledIsModified
+                !it.initiallyEnabled && it.enabled ||
+                        it.initiallyEnabled && it.permanentEnabledIsModified
             }
 
     fun clearAll() {
         log.debug { "clearAll()" }
-        options.filter { it.permanentEnabled }.forEach {
+        options.filter { it.initiallyEnabled }.forEach {
             it.resetPermanentEnabledState()
         }
-        options.filter { it.enabled && !it.permanentEnabled }.forEach {
+        options.filter { it.enabled && !it.initiallyEnabled }.forEach {
             it.updateEnabled(isEnabled = false, suppressReset = true)
         }
         reset()
@@ -188,13 +188,13 @@ abstract class AbstractSearch<T>(
 abstract class SearchOption<T>(
     val label: String,
     protected val reset: () -> Unit,
-    val permanentEnabled: Boolean,
+    val initiallyEnabled: Boolean,
     val visualIndicator: VisualIndicator,
 ) {
     private val log = logger {}
     protected val alwaysTruePredicate: (T) -> Boolean = { true }
 
-    var enabled by mutableStateOf(permanentEnabled)
+    var enabled by mutableStateOf(initiallyEnabled)
         private set
 
     protected abstract fun buildPredicate(): (T) -> Boolean
@@ -206,7 +206,6 @@ abstract class SearchOption<T>(
     open fun resetPermanentEnabledState() {}
 
     fun updateEnabled(isEnabled: Boolean, suppressReset: Boolean = false) {
-        if (permanentEnabled && !isEnabled) error("Cannot disable a permanently enabled search option: $this")
         if (enabled == isEnabled) return
         log.debug { "${this::class.simpleName} - updateEnabled(isEnabled=$isEnabled, suppressReset=$suppressReset)" }
         enabled = isEnabled

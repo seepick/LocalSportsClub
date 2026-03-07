@@ -17,7 +17,7 @@ class DoubleSearchOption<T, C : NumericComparator>(
 ) : SearchOption<T>(
     label = label,
     reset = reset,
-    permanentEnabled = initiallyEnabled,
+    initiallyEnabled = initiallyEnabled,
     visualIndicator = visualIndicator,
 ) {
     private val log = logger {}

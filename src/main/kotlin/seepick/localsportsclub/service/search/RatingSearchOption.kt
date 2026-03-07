@@ -15,7 +15,7 @@ class RatingSearchOption<T>(
 ) : SearchOption<T>(
     label = label,
     reset = reset,
-    permanentEnabled = initiallyEnabled,
+    initiallyEnabled = initiallyEnabled,
     visualIndicator = visualIndicator,
 ) {
 
