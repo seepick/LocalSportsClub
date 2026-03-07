@@ -13,6 +13,7 @@ import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.thirdparty.DnysEvent
 import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenueInfo
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -78,6 +79,7 @@ fun Arb.Companion.venueDetails() = arbitrary {
         streetAddress = string(minSize = 3, maxSize = 50).bind(),
         originalImageUrl = url().orNull().bind(),
         carouselUrls = list(url(), 0..5).bind(),
+        visitLimits = VisitLimits(2, 3, 4, 5),
     )
 }
 

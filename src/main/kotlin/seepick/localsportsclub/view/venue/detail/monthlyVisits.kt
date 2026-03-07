@@ -18,8 +18,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.Lsc
-import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.roundedCornerMask
 import java.time.LocalDate
@@ -105,17 +105,19 @@ fun MonthlyVisitsPanel(
 data class MonthlyVisitsModel(
     val checkins: Int,
     val booked: Int,
-    val maxVisits: Int = 6, // needs to be adjusted according to plan
+    val maxVisits: Int,
 ) {
     val used = checkins + booked
     val available = maxVisits - used
 }
 
-fun List<Activity>.toMonthlyVisitsModel(today: LocalDate): MonthlyVisitsModel {
-    val currentMonthsActivities =
-        filter { it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year }
+fun Venue.toMonthlyVisitsModel(today: LocalDate): MonthlyVisitsModel {
+    val currentMonthsActivities = activities.filter {
+        it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year
+    }
     return MonthlyVisitsModel(
         checkins = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
         booked = currentMonthsActivities.count { it.state == ActivityState.Booked },
+        maxVisits = 6, // TODO venue.visitLimitsForCurrentPlan (pre-calc in data storage)
     )
 }

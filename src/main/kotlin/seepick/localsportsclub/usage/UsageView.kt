@@ -65,7 +65,7 @@ fun UsageView(
             Row {
                 Text("Period: ")
                 Text(
-                    "${usageStorage.periodFirstDay.prettyShortPrint(year)}-${
+                    "${usageStorage.periodFirstDay.prettyShortPrint(year)} - ${
                         usageStorage.periodLastDay.prettyShortPrint(year)
                     }", color = periodColor.darker()
                 )
@@ -81,7 +81,7 @@ fun UsageView(
                         append(bookedCount.toString())
                     }
                     append(" / ${usageStorage.maxBookingsForPeriod}")
-                })
+                }, modifier = Modifier.padding(bottom = 3.dp))
             }
             UsageIndicator(
                 percentagePeriod = usageStorage.percentagePeriod,

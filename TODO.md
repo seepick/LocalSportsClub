@@ -2,8 +2,7 @@
 
 ## v1.12.0
 
-5. MonthlyVisitsModel.MAX_VISITS = 6, but must change according plan
-    * S = 2x; M = 4x; L & XL = 6x; different per venue?
+5. make use of VenueDetails.visitLimits
 4. if filter time, and change "from" time after "to" time, then adjust
 3. prefill search properly; e.g. distance < 3.0; checkins = 0
 2. table columns for favorited/wishlisted: make icons smaller; don't even render if disabled (less distraction, safe space)
@@ -11,11 +10,13 @@
 
 ## Backlog
 
+* venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
+* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
+* hard-sync (reset info) for specific (or all?) venue; remember last-sync (do regularly in main sync operation; distribute time, add randomness for threshold, so not all at the same time)
 * disable fetching details from past events
 * use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue
-* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🎨 if scroll through table with keys and hold, then short delay and burst
