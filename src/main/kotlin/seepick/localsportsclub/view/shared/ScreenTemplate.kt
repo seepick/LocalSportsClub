@@ -46,7 +46,9 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                         VenueDetail(
                             venue = selectedVenue!!,
                             visitsModel = viewModel.userPlan?.let { plan ->
-                                selectedVenue!!.toMonthlyVisitsModel(clock.today(), plan)
+                                selectedVenue!!.visitLimits?.let { limits ->
+                                    selectedVenue!!.toMonthlyVisitsModel(clock.today(), plan, limits)
+                                }
                             },
                             activity = selectedActivity,
                             freetraining = selectedFreetraining,

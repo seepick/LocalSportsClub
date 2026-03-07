@@ -41,7 +41,7 @@ private fun MonthlyVisitsPanel(
             checkins = checkins,
             booked = booked,
             maxVisits = 6,
-            visitLimits = VisitLimits.default,
+            visitLimits = VisitLimits(small = 2, medium = 4, large = 6, xlarge = 8),
         )
         MonthlyVisitsPanel(model(), modifier)
         MonthlyVisitsPanel(model(checkins = 1), modifier)
@@ -121,14 +121,14 @@ data class MonthlyVisitsModel(
     val available = maxVisits - used
 }
 
-fun Venue.toMonthlyVisitsModel(today: LocalDate, userPlan: Plan.UscPlan): MonthlyVisitsModel {
+fun Venue.toMonthlyVisitsModel(today: LocalDate, userPlan: Plan.UscPlan, limits: VisitLimits): MonthlyVisitsModel {
     val currentMonthsActivities = activities.filter {
         it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year
     }
     return MonthlyVisitsModel(
         checkins = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
         booked = currentMonthsActivities.count { it.state == ActivityState.Booked },
-        maxVisits = visitLimits.forPlan(userPlan),
-        visitLimits = visitLimits,
+        maxVisits = limits.forPlan(userPlan),
+        visitLimits = limits,
     )
 }

@@ -65,7 +65,7 @@ class Venue(
     isWishlisted: Boolean,
     isHidden: Boolean,
     isAutoSync: Boolean,
-    visitLimits: VisitLimits,
+    visitLimits: VisitLimits?,
     lastSync: LocalDate?,
 ) : HasVenue, HasLabel, HasDistance, TableItemBgColor {
     override val label = name
@@ -82,7 +82,7 @@ class Venue(
     var isDeleted: Boolean by mutableStateOf(isDeleted)
     var officialWebsite: String? by mutableStateOf(officialWebsite)
     val linkedVenues = mutableStateListOf<Venue>()
-    var visitLimits: VisitLimits by mutableStateOf(visitLimits)
+    var visitLimits: VisitLimits? by mutableStateOf(visitLimits)
     var lastSync: LocalDate? by mutableStateOf(lastSync)
 
     private val mutableActivities = mutableStateListOf<Activity>()
@@ -155,7 +155,7 @@ class Venue(
         rating: Rating = this.rating,
         isFavorited: Boolean = this.isFavorited,
         plan: Plan.UscPlan = this.plan,
-        visitLimits: VisitLimits = this.visitLimits,
+        visitLimits: VisitLimits? = this.visitLimits,
         lastSync: LocalDate? = this.lastSync,
     ) = Venue(
         id = id,

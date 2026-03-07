@@ -41,7 +41,7 @@ data class VenueDbo(
     val isHidden: Boolean,
     val isAutoSync: Boolean,
     val isDeleted: Boolean,
-    val visitLimits: VisitLimits,
+    val visitLimits: VisitLimits?,
     val lastSync: LocalDate?,
 ) {
     companion object {
@@ -69,7 +69,7 @@ data class VenueDbo(
             isHidden = false,
             isAutoSync = false,
             isDeleted = false,
-            visitLimits = VisitLimits.default,
+            visitLimits = null,
             lastSync = null,
         )
     }
@@ -115,7 +115,8 @@ object VenuesTable : IntIdTable("VENUES", "ID") {
     val isDeleted = bool("IS_DELETED") // custom
     val isAutoSync = bool("IS_AUTO_SYNC")
     val planId = integer("PLAN_ID") // custom
-    val visitLimits = varchar("VISIT_LIMITS", 32) // comma-separated for all 4 plans (S, M, L, XL), e.g. "1,2,3,4"
+    val visitLimits =
+        varchar("VISIT_LIMITS", 32).nullable() // comma-separated for all 4 plans (S, M, L, XL), e.g. "1,2,3,4"
     val lastSync = date("LAST_SYNC").nullable()
 }
 
@@ -178,7 +179,7 @@ object ExposedVenueRepo : VenueRepo {
             it[isAutoSync] = venue.isAutoSync
             it[isDeleted] = venue.isDeleted
             it[planId] = venue.planId
-            it[visitLimits] = venue.visitLimits.toSqlValue()
+            it[visitLimits] = venue.visitLimits?.toSqlValue()
             it[lastSync] = venue.lastSync
         }
         log.trace { "New venue ID=$nextId" }
@@ -207,7 +208,7 @@ object ExposedVenueRepo : VenueRepo {
             it[importantInfo] = venue.importantInfo
             it[openingTimes] = venue.openingTimes
             it[planId] = venue.planId
-            it[visitLimits] = venue.visitLimits.toSqlValue()
+            it[visitLimits] = venue.visitLimits?.toSqlValue()
             it[lastSync] = venue.lastSync
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
@@ -238,7 +239,7 @@ object ExposedVenueRepo : VenueRepo {
         isAutoSync = row[VenuesTable.isAutoSync],
         isDeleted = row[VenuesTable.isDeleted],
         planId = row[VenuesTable.planId],
-        visitLimits = VisitLimits.fromSqlValue(row[VenuesTable.visitLimits]),
+        visitLimits = row[VenuesTable.visitLimits]?.let { VisitLimits.fromSqlValue(it) },
         lastSync = row[VenuesTable.lastSync],
     )
 }

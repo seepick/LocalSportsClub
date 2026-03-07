@@ -30,7 +30,7 @@ object DummyGenerator {
         isDeleted = false,
         isAutoSync = false,
         planId = Plan.UscPlan.Small.id,
-        visitLimits = VisitLimits.Companion.default,
+        visitLimits = VisitLimits(small = 2, medium = 4, large = 6, xlarge = 8),
         lastSync = null,
     )
 }

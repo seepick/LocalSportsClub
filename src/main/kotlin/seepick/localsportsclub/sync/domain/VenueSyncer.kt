@@ -8,7 +8,6 @@ import com.github.seepick.uscclient.shared.daysBetween
 import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenueInfo
 import com.github.seepick.uscclient.venue.VenuesFilter
-import com.github.seepick.uscclient.venue.VisitLimits
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueIdLink
@@ -266,7 +265,7 @@ class VenueSyncInserterImpl(
 
 private fun VenueDbo.copyByDetails(today: LocalDate, detail: VenueDetails) = copy(
     lastSync = today,
-    visitLimits = detail.visitLimits ?: VisitLimits.default, // just assume this if not provided by server
+    visitLimits = detail.visitLimits,
     description = detail.description,
     openingTimes = detail.openingTimes,
     importantInfo = detail.importantInfo,
@@ -306,6 +305,6 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = Ven
     isDeleted = false,
     isAutoSync = false,
     planId = planId,
-    visitLimits = visitLimits ?: VisitLimits.default, // just assume this if not provided by server,
+    visitLimits = visitLimits,
     lastSync = today,
 )
