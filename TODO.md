@@ -10,6 +10,7 @@
 
 ## Backlog
 
+* activity has plan, but also venue has plan; clarify!
 * venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * hard-sync (reset info) for specific (or all?) venue; remember last-sync (do regularly in main sync operation; distribute time, add randomness for threshold, so not all at the same time)

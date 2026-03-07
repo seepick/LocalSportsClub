@@ -228,28 +228,28 @@ class DataStorage(
         }
     }
 
-    override fun onActivityDbosDeleted(activityDbos: List<ActivityDbo>) {
-        log.debug { "onActivityDbosDeleted(${activityDbos.joinToString { it.id.toString() }})" }
-        val deletedActivities = activityDbos.mapNotNull { activityDbo ->
+    override fun onActivityDbosDeleted(deletedActivities: List<ActivityDbo>) {
+        log.debug { "onActivityDbosDeleted(${deletedActivities.joinToString { it.id.toString() }})" }
+        val effectivelyDeleted = deletedActivities.mapNotNull { activityDbo ->
             val allActivitiesByVenue = allActivitiesByVenueId[activityDbo.venueId]
             allActivitiesByVenue?.singleOrNull { it.id == activityDbo.id }?.also {
                 allActivitiesByVenue.remove(it)
             } // if null... deleted DBO which wasn't visible in the UI anyway
             // venuesById[activity.venue.id]!!.activities.remove(activity) // NO! do it in SyncerViewModel
         }
-        dispatchOnActivitiesDeleted(deletedActivities)
+        dispatchOnActivitiesDeleted(effectivelyDeleted)
     }
 
-    override fun onFreetrainingDbosDeleted(freetrainingDbos: List<FreetrainingDbo>) {
-        log.debug { "onFreetrainingDbosDeleted(${freetrainingDbos.joinToString { it.id.toString() }})" }
-        val deletedFreetrainings = freetrainingDbos.mapNotNull { freetrainingDbo ->
+    override fun onFreetrainingDbosDeleted(deletedFreetrainings: List<FreetrainingDbo>) {
+        log.debug { "onFreetrainingDbosDeleted(${deletedFreetrainings.joinToString { it.id.toString() }})" }
+        val effectivelyDeleted = deletedFreetrainings.mapNotNull { freetrainingDbo ->
             val allFreetrainingsByVenue = allFreetrainingsByVenueId[freetrainingDbo.venueId]
             allFreetrainingsByVenue?.singleOrNull { it.id == freetrainingDbo.id }?.also {
                 allFreetrainingsByVenue.remove(it)
             } // if null... deleted DBO which wasn't visible in the UI anyway
             // venuesById[freetraining.venue.id]!!.freetrainings.remove(freetraining) // NO! do it in SyncerViewModel
         }
-        dispatchOnFreetrainingsDeleted(deletedFreetrainings)
+        dispatchOnFreetrainingsDeleted(effectivelyDeleted)
     }
 
     fun update(venue: Venue) {

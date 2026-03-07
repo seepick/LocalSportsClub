@@ -56,7 +56,7 @@ import kotlin.math.min
 @Composable
 fun VenueDetail(
     venue: Venue,
-    visitsModel: MonthlyVisitsModel,
+    visitsModel: MonthlyVisitsModel?,
     activity: Activity?,
     freetraining: Freetraining?,
     venueEdit: VenueEditModel,
@@ -110,9 +110,9 @@ fun VenueDetail(
                 }
                 Column(modifier = Modifier.width(RatingPanelWidth)) {
                     RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-                    MonthlyVisitsPanel(
-                        visitsModel, modifier = Modifier.fillMaxWidth().height(20.dp)
-                    )
+                    visitsModel?.let { visits ->
+                        MonthlyVisitsPanel(visits, modifier = Modifier.fillMaxWidth().height(20.dp))
+                    }
                 }
             }
         }

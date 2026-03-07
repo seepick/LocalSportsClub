@@ -17,6 +17,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
@@ -111,13 +112,13 @@ data class MonthlyVisitsModel(
     val available = maxVisits - used
 }
 
-fun Venue.toMonthlyVisitsModel(today: LocalDate): MonthlyVisitsModel {
+fun Venue.toMonthlyVisitsModel(today: LocalDate, userPlan: Plan.UscPlan): MonthlyVisitsModel {
     val currentMonthsActivities = activities.filter {
         it.dateTimeRange.from.month == today.month && it.dateTimeRange.from.year == today.year
     }
     return MonthlyVisitsModel(
         checkins = currentMonthsActivities.count { it.state == ActivityState.Checkedin },
         booked = currentMonthsActivities.count { it.state == ActivityState.Booked },
-        maxVisits = 6, // TODO venue.visitLimitsForCurrentPlan (pre-calc in data storage)
+        maxVisits = visitLimits.forPlan(userPlan),
     )
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.seepick.uscclient.booking.BookingResult
 import com.github.seepick.uscclient.booking.CancelResult
 import com.github.seepick.uscclient.model.City
+import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -105,6 +106,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         private set
     var isSyncActivityInProgress by mutableStateOf(false)
     var isSyncVenueInProgress by mutableStateOf(false)
+    var userPlan by mutableStateOf<Plan.UscPlan?>(null)
 
     private var isAddingItems = AtomicBoolean(false)
     private var triedToResetItems = AtomicBoolean(false)
@@ -116,6 +118,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         isBookOrCancelPossible = singlesService.verifiedUscCredentials != null
         isGcalEnabled = preferences.gcal is Gcal.GcalEnabled && singlesService.verifiedGcalId != null
         configuredCity = preferences.city
+        userPlan = singlesService.plan?.uscPlan
 
         _allItems.addAll(dataStorage.selectAllItems())
         sorting // trigger lazy

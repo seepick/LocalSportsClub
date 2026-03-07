@@ -45,7 +45,9 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
                     if (selectedVenue != null) {
                         VenueDetail(
                             venue = selectedVenue!!,
-                            visitsModel = selectedVenue!!.toMonthlyVisitsModel(clock.today()),
+                            visitsModel = viewModel.userPlan?.let { plan ->
+                                selectedVenue!!.toMonthlyVisitsModel(clock.today(), plan)
+                            },
                             activity = selectedActivity,
                             freetraining = selectedFreetraining,
                             onVenueSelected = viewModel::onVenueSelected,

@@ -92,11 +92,11 @@ class UsageStorage(
         // no-op
     }
 
-    override fun onVenueDbosMarkedDeleted(venueDbos: List<VenueDbo>) {
+    override fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>) {
         // no-op
     }
 
-    override fun onVenueDbosMarkedUndeleted(venueDbos: List<VenueDbo>) {
+    override fun onVenueDbosMarkedUndeleted(undeletedVenues: List<VenueDbo>) {
         // no-op
     }
 
