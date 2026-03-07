@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
@@ -61,20 +62,26 @@ fun UsageStatsDialog(
                         )
                         LabeledText("Total Checkins", values.totalCheckins.toString())
                         Spacer(Modifier.height(5.dp))
-                        Text("Penalties:", fontWeight = FontWeight.Bold)
+                        Text("Recent Penalties:", fontWeight = FontWeight.Bold)
                         val currentYear = clock.now().year
                         values.penalties.forEach {
-                            Text("${it.state.iconStringAndSuffix()}${it.name} @ ${it.from.prettyPrint(currentYear)}")
+                            SelectionContainer {
+                                Text("${it.state.iconStringAndSuffix()}${it.name} @ ${it.from.prettyPrint(currentYear)}")
+                            }
                         }
                         Spacer(Modifier.height(5.dp))
                         Text("Top Categories:", fontWeight = FontWeight.Bold)
                         values.topCategories.forEach {
-                            Text("${it.category}: ${it.checkinsCount}")
+                            SelectionContainer {
+                                Text("${it.category}: ${it.checkinsCount}")
+                            }
                         }
                         Spacer(Modifier.height(5.dp))
                         Text("Venues Monthly Limit:", fontWeight = FontWeight.Bold)
                         values.venueCheckins.forEach {
-                            Text("${it.venue.name}: ${it.checkinsCount}/${values.maxVenueCheckins ?: "?"}")
+                            SelectionContainer {
+                                Text("${it.venue.name}: ${it.checkinsCount}/${values.maxVenueCheckins ?: "?"}")
+                            }
                         }
                     }
                     LscVScroll(rememberScrollbarAdapter(scrollState))

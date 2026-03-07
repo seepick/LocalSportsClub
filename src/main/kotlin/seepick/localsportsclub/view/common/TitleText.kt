@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.common
 
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,14 +14,17 @@ fun TitleText(
     textDecoration: TextDecoration? = null,
     modifier: Modifier = Modifier,
 ) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.h1,
+    SelectionContainer {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.h1,
 //        fontSize = 25.sp,
-        textDecoration = textDecoration,
+            textDecoration = textDecoration,
+            // TODO make it selectable (ready for copy and paste)
 //        fontWeight = FontWeight.Bold,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
-    )
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = modifier,
+        )
+    }
 }

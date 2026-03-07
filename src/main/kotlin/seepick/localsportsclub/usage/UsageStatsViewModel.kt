@@ -19,9 +19,9 @@ class UsageStatsViewModel(
     private val singlesService: SinglesService,
 ) : ViewModel() {
 
-    val values by lazy {
-        loadValues()
-    }
+    private val numberOfRecentPenalties = 3
+    private val numberOfTopCategories = 3
+    val values by lazy { loadValues() }
 
     private fun loadValues(): StatsValues {
         val activities = activityRepo.selectAllAnywhere()
@@ -29,14 +29,13 @@ class UsageStatsViewModel(
         val venues = venueRepo.selectAllAnywhere().associateBy { it.id }
         val checkedinActivities = activities.filter { it.isCheckedin }
         val checkedinFreetrainings = freetrainings.filter { it.isCheckedin }
-
         val penalties =
             (activities.filter { it.state == ActivityState.Noshow } + activities.filter { it.state == ActivityState.CancelledLate })
-                .sortedByDescending { it.from }.take(3)
+                .sortedByDescending { it.from }.take(numberOfRecentPenalties)
 
         val topCategories =
             checkedinActivities.groupingBy { it.category }.eachCount().map { CategoryCount(it.key, it.value) }
-                .sortedByDescending { it.checkinsCount }.take(3)
+                .sortedByDescending { it.checkinsCount }.take(numberOfTopCategories)
 
         val now = clock.today()
         val venueCheckins =
@@ -73,13 +72,5 @@ data class StatsValues(
     val venueCheckins: List<VenueCheckin>, // per month, NOT period (max 6)
     val maxVenueCheckins: Int?,
 ) {
-    companion object {
-        val dummy = StatsValues(
-            totalCheckins = 42,
-            penalties = emptyList(),
-            topCategories = emptyList(),
-            venueCheckins = listOf(VenueCheckin(VenueDbo.dummy, 3)),
-            maxVenueCheckins = 6,
-        )
-    }
+    companion object
 }

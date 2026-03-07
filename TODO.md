@@ -1,11 +1,17 @@
 # TODO
 
-## v1.12.0
-
-1. make all/most text selectable for copy'n'paste
+## v1.13.0
 
 ## Backlog
 
+* highlight "info usage statistic" icon with red badge (away-clickable), if new penalty was synced
+* enhance usage statistics:
+    * top: monthly
+        * rename "venues monthly limit" to "this month's visits" and make it a table (per venue: title, datetime)
+        * average/min/max visits per month
+    * bottom: general
+        * how many years/months active
+        * top venues visited (your favorites, basically)
 * 🎨 combine all venue info-texts into a single popup (info, times, description)
 * 🖋 activity has plan, but also venue has plan; clarify!
 * 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead

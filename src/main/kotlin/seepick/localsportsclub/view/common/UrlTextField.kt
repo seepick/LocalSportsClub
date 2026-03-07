@@ -47,9 +47,13 @@ fun UrlTextFieldPreview() {
 }
 
 @Composable
-fun UrlText(url: String, displayText: String = url) {
+fun UrlText(
+    url: String,
+    displayText: String = url,
+    modifier: Modifier = Modifier,
+) {
     val uriHandler = LocalUriHandler.current
-    ClickableText(text = displayText, onClick = { uriHandler.openUri(url) })
+    ClickableText(text = displayText, onClick = { uriHandler.openUri(url) }, modifier = modifier)
 }
 
 
@@ -66,7 +70,7 @@ fun CopyTextToClipboard(text: String, content: @Composable () -> Unit) {
                 }
             }) {
         DropdownMenuX(
-            items = listOf("Copy address to clipboard"),
+            items = listOf("Copy"),
             isMenuExpanded = isExpanded,
             textFieldSize = Size(400f, 0f),
             itemFormatter = { it },
@@ -87,6 +91,7 @@ fun ClickableText(
     notHoveredColor: Color = Lsc.colors.primary,
     onClick: () -> Unit,
     testTag: String? = null,
+    modifier: Modifier = Modifier,
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val color = if (!isHovered) notHoveredColor else Lsc.colors.primaryBrighter
@@ -105,6 +110,7 @@ fun ClickableText(
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }
             .applyTestTag(testTag)
+            .then(modifier)
     )
 }
 

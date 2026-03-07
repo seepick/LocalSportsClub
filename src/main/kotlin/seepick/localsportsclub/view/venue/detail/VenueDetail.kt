@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.onClick
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -97,7 +99,9 @@ fun VenueDetail(
             Spacer(Modifier.width(5.dp))
             Column {
                 if (venue.categories.isNotEmpty()) {
-                    Text(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
+                    SelectionContainer {
+                        Text(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
+                    }
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
                     Tooltip("Open Google Maps / Right click to copy") {
@@ -111,10 +115,13 @@ fun VenueDetail(
                                     )
                                 }",
                                 displayText = displayText,
+                                modifier = Modifier.padding(end = 4.dp),
                             )
                         }
                     }
-                    Text(" ${venue.distanceInKm} km away")
+                    SelectionContainer {
+                        Text("${venue.distanceInKm} km away")
+                    }
                 }
                 Column(modifier = Modifier.width(RatingPanelWidth)) {
                     RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })

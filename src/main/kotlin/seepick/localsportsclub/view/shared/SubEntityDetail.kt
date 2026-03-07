@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -62,10 +63,14 @@ fun SubEntityDetail(
     val (isBooked, isCheckedin, isNoshow) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
+        Tooltip(subEntity.name) {
+            TitleText(subEntity.name)
+        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            val syncSize = 30
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
-                if (isSyncButtonVisible) {
+            if (isSyncButtonVisible) {
+                val syncSize = 30
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
                     if (isSyncActivityInProgress) {
                         val progressSize = syncSize - 10
                         CircularProgressIndicator(
@@ -82,42 +87,43 @@ fun SubEntityDetail(
                     }
                 }
             }
-            Tooltip(subEntity.name) {
-                TitleText(subEntity.name)
+            SelectionContainer {
+                Text(
+                    subEntity.dateFormatted(year),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(end = 3.dp)
+                )
             }
-        }
-        Row {
-            Text(
-                subEntity.dateFormatted(year),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(end = 3.dp)
-            )
             if (subEntity is SubEntity.ActivityEntity) {
-                Tooltip("Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
-                    Text(" ${subEntity.activity.plan.emoji} ")
+                SelectionContainer {
+                    Tooltip("${subEntity.activity.plan.emoji} Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
+                        Text(" ${subEntity.activity.plan.emoji} ")
+                    }
                 }
             }
-            Text(
-                text = buildString {
-                    if (isBooked) {
-                        append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
-                    }
-                    if (isCheckedin) {
-                        "${Icons.Lsc.checkedinEmoji} checked-in "
-                    }
-                    if (isNoshow) {
-                        Text("${Icons.Lsc.noshowEmoji} no-show")
-                    }
-                    append(subEntity.category.nameAndMaybeEmoji)
-                    if (subEntity is SubEntity.ActivityEntity) {
-                        subEntity.activity.teacher?.also { append(" with $it") }
-                        append(" (${subEntity.activity.spotsLeft} spots)")
-                    }
-                },
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            SelectionContainer {
+                Text(
+                    text = buildString {
+                        if (isBooked) {
+                            append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
+                        }
+                        if (isCheckedin) {
+                            "${Icons.Lsc.checkedinEmoji} checked-in "
+                        }
+                        if (isNoshow) {
+                            Text("${Icons.Lsc.noshowEmoji} no-show")
+                        }
+                        append(subEntity.category.nameAndMaybeEmoji)
+                        if (subEntity is SubEntity.ActivityEntity) {
+                            subEntity.activity.teacher?.also { append(" with $it") }
+                            append(" (${subEntity.activity.spotsLeft} spots)")
+                        }
+                    },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
         val maybeDescription = if (subEntity is SubEntity.ActivityEntity) subEntity.activity.description else null
         if (!maybeDescription.isNullOrEmpty()) {
