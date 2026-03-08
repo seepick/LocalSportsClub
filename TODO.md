@@ -2,9 +2,12 @@
 
 ## v1.13.0
 
-## Backlog
-
-* highlight "info usage statistic" icon with red badge (away-clickable), if new penalty was synced
+* 🎨 combine all venue info-texts into a single popup (info, times, description)
+* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
+* 🖋 disable fetching details from past events
+* 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
+* 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
+* 🖋 activity has plan, but also venue has plan; clarify!
 * enhance usage statistics:
     * top: monthly
         * rename "venues monthly limit" to "this month's visits" and make it a table (per venue: title, datetime)
@@ -12,27 +15,17 @@
     * bottom: general
         * how many years/months active
         * top venues visited (your favorites, basically)
-* 🎨 combine all venue info-texts into a single popup (info, times, description)
-* 🖋 activity has plan, but also venue has plan; clarify!
-* 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead
-* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
-* 🖋 disable fetching details from past events
+
+## Backlog
+
+* 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
-* 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
-* 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🎨 clear color coding: everything clickable is blue
 * 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
-* 🎨 if scroll through table with keys and hold, then short delay and burst
-* 🎨 manually adjustable table column width (e.g. wanting to make name wider)
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
-* 🖋 search filter for time only (evenings), without specifying day/date; in general think about using a ranged slider
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
-* 🎨 make rating UI a slider with custom renderer
-* 🖋 ad booking validation: the monthly limit (per venue) is venue- and plan-specific
-    * e.g.: S=2, M=4, L/XL=8 .... or: L/XL=4 // also differentiate between B2C and B2B
-    * most venues 6; but exceptions exist, e.g.: de nieuwe yogaschool (see mobile app, limits)
 
 ## New Features
 
@@ -41,9 +34,14 @@
 * 🖋 mark wishlisted-like (maybe a new label?) based on activity title (regexp like)
     * or maybe an adaptive "suggested" or "liked" venues/activities based on past bookings
 * 🖋 could sync official rating (0.0-5.0 number and total count)
+* 🖋 search filter for time only (evenings), without specifying day/date; in general think about using a ranged slider
+* 🎨 make rating UI a slider with custom renderer
+* 🖋 highlight "info usage statistic" icon with red badge (away-clickable), if new penalty was synced
+* 🎨 manually adjustable table column width (e.g. wanting to make name wider)
 
-## Later
+## Low Prio
 
+* 🎨 if scroll through table with keys and hold, then short delay and burst
 * 🤖test fixtures from usc-client don't work; right now copy'n'pasted all
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
 * 🤖move all mock/dev/dummy things in src/test/kotlin (leftovers?)
@@ -55,17 +53,17 @@
 * 🖋️MAP component: https://wiki.openstreetmap.org/wiki/JMapViewer (compose google map only for android, not desktop)
 * 🎨could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
 * 🤖the syncer should not add the year information; return incomplete day+month only (let logic determine year)
-* 🤖system test: book something which can't be booked parse response and show proper message
-    * +6 bookings; +2 same day; over checkin limit (end of period); over period/veneu limit late cancellation
-* 🖋️what if the membership.plan changes?! needs to be overwritten (startup, or pref change)
+* 🤖 fix file resorver design issue (passing to error dialog for log retrieval...)
 
 ## Nope
 
-* investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
-* switch to ZonedDate? UTC already for DNYS.
-* display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
+* 🖋️what if the membership.plan changes?! needs to be overwritten (startup, or pref change)
+* 🤖when book activity which can't be booked, parse response and show proper message; not needed, just pass through msg
+* 🤖 investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
+* 🤖 switch to ZonedDate? UTC already for DNYS.
+* 🖋 display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
 * 🎨 notes with rich format text-editor (bold, italic, colors, fontsize)
 * 🎨 adaptive layout: depending on window size, change layout (add columns, change formatting)
 * 🖋 generate and install random UUID locally, and introduce heartbeat to server for usage statistics (opt-in in prefs)
 * 🎨 when update venue leading to sort table change, then auto-scroll there
-* string similarity search for "foopar" and find "foobar"
+* 🖋 string similarity search for "foopar" and find "foobar"
