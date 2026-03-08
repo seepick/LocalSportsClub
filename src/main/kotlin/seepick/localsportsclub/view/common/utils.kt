@@ -28,6 +28,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import seepick.localsportsclub.openFromClasspath
 import seepick.localsportsclub.service.FileResolver
+import java.awt.Dimension
+import java.awt.KeyboardFocusManager
 import java.io.File
 
 private val log = logger {}
@@ -122,3 +124,6 @@ fun DrawScope.roundedCornerMask(width: Float, height: Float, block: DrawScope.()
         )
     }, block = block)
 }
+
+fun activeWindowSize(): Dimension? =
+    KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow?.size

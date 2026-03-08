@@ -26,9 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
 import seepick.localsportsclub.Lsc
@@ -59,6 +61,7 @@ import seepick.localsportsclub.view.venue.VenueImage
 import java.net.URLEncoder
 import kotlin.math.max
 import kotlin.math.min
+
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -94,7 +97,9 @@ fun VenueDetail(
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
         Row {
             Box(modifier = Modifier.width(200.dp)) {
-                VenueImage(venue)
+                Tooltip("Click to open image carousel") {
+                    VenueImage(venue)
+                }
             }
             Spacer(Modifier.width(5.dp))
             Column {
@@ -135,24 +140,18 @@ fun VenueDetail(
             Spacer(Modifier.height(5.dp))
             LongText(label = "City", text = venue.city.label)
         }
-        LongText(text = venue.description, onShowLongText = {
-            sharedModel.customDialog.value =
-                CustomDialog(title = "Description", text = it, showDismissButton = false)
-        })
-        venue.importantInfo?.also {
-            Spacer(Modifier.height(5.dp))
-            LongText(label = "Info", text = it, onShowLongText = {
-                sharedModel.customDialog.value =
-                    CustomDialog(title = "Important Info", text = it, showDismissButton = false)
+
+        LongText(
+            text = venue.description,
+            maxLines = 1,
+            tooltip = "Click to open venue details dialog",
+            onShowLongText = {
+                sharedModel.customDialog.value = CustomDialog(
+                    title = venue.name,
+                    content = { VenueDetailDialogPanel(venue) },
+                    showDismissButton = false,
+                )
             })
-        }
-        venue.openingTimes?.also {
-            Spacer(Modifier.height(5.dp))
-            LongText(label = "Times", text = it, onShowLongText = {
-                sharedModel.customDialog.value =
-                    CustomDialog(title = "Opening Times", text = it, showDismissButton = false)
-            })
-        }
 
         Row {
             val syncSize = 40
@@ -247,6 +246,30 @@ fun VenueDetail(
             modifier = Modifier.fillMaxWidth(),
             height = heights.second,
         )
+    }
+}
+
+@Composable
+fun VenueDetailDialogPanel(venue: Venue) {
+    Column {
+        Text("Description", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        SelectionContainer {
+            Text(venue.description)
+        }
+        venue.importantInfo?.also { info ->
+            Spacer(Modifier.height(12.dp))
+            Text("Info", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            SelectionContainer {
+                Text(info)
+            }
+        }
+        venue.openingTimes?.also { times ->
+            Spacer(Modifier.height(12.dp))
+            Text("Opening Times", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            SelectionContainer {
+                Text(times)
+            }
+        }
     }
 }
 

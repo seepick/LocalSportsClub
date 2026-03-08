@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.shared
 
 import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -237,7 +238,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             is BookingValidation.Invalid -> {
                 sharedModel.customDialog.value = CustomDialog(
                     title = "Booking",
-                    text = validity.reason,
+                    content = { Text(validity.reason) },
                     confirmLabel = "Book anyway",
                     onConfirm = {
                         doBook(subEntity)
@@ -276,7 +277,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             is BookingValidation.Invalid -> {
                 sharedModel.customDialog.value = CustomDialog(
                     title = "Booking",
-                    text = validity.reason,
+                    content = { Text(validity.reason) },
                     confirmLabel = "Cancel anyway",
                     onConfirm = {
                         doCancelBooking(subEntity)

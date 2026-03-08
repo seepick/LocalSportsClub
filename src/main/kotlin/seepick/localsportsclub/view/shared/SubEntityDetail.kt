@@ -125,12 +125,23 @@ fun SubEntityDetail(
                 )
             }
         }
-        val maybeDescription = if (subEntity is SubEntity.ActivityEntity) subEntity.activity.description else null
-        if (!maybeDescription.isNullOrEmpty()) {
-            LongText(label = "Info", text = maybeDescription, onShowLongText = {
-                sharedModel.customDialog.value =
-                    CustomDialog(title = "Activity Description", text = maybeDescription, showDismissButton = false)
-            })
+        if (subEntity is SubEntity.ActivityEntity) {
+            val description = subEntity.activity.description
+            if (!description.isNullOrEmpty()) {
+                LongText(
+                    text = description,
+                    maxLines = 1,
+                    onShowLongText = {
+                        sharedModel.customDialog.value =
+                            CustomDialog(
+                                title = subEntity.activity.name,
+                                content = { Text(description) },
+                                showDismissButton = false,
+                            )
+                    },
+                )
+            }
+
         }
         if (subEntity.date >= clock.today()) {
             Row(

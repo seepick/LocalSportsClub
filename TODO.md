@@ -2,7 +2,6 @@
 
 ## v1.13.0
 
-* 🎨 combine all venue info-texts into a single popup (info, times, description)
 * 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * 🖋 disable fetching details from past events
 * 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
@@ -18,6 +17,7 @@
 
 ## Backlog
 
+* 🎨rating dropdown vertical less space (in venue details)
 * 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 clear color coding: everything clickable is blue

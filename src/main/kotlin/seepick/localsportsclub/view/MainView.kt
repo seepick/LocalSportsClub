@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -46,7 +46,9 @@ import seepick.localsportsclub.usage.UsageView
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.CustomSnackbar
+import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
+import seepick.localsportsclub.view.common.activeWindowSize
 import seepick.localsportsclub.view.common.bottomBorder
 import seepick.localsportsclub.view.common.brighter
 import seepick.localsportsclub.view.freetraining.FreetrainingsScreen
@@ -86,18 +88,19 @@ fun MainView(
         CarouselDialog()
     }
     if (customDialog != null) {
-        // TODO how to show a dialog with custom content? (not only text, but any compose component)
         AlertDialog(
             onDismissRequest = {
                 customDialog = null
             },
+            modifier = Modifier.requiredWidth(activeWindowSize()?.let { size ->
+                (size.width - 180).dp
+            } ?: 800.dp),
             confirmButton = {
                 TextButton(
                     colors = ButtonDefaults.textButtonColors(
                         backgroundColor = Lsc.colors.primary,
                         contentColor = Color.White,
-                    ),
-                    onClick = {
+                    ), onClick = {
                         customDialog!!.onConfirm()
                         customDialog = null
                     }) { Text(customDialog!!.confirmLabel) }
@@ -115,22 +118,15 @@ fun MainView(
                                 backgroundColor = Lsc.colors.primary.brighter(),
                                 contentColor = Color.White,
                             )
-                        },
-                        onClick = {
+                        }, onClick = {
                             customDialog = null
                         }) { Text("Cancel") }
                 }
             } else null,
-            title = { Text(customDialog!!.title) },
-            text = {
-                Column {
-                    Text("top text")
-                    SelectionContainer {
-                        Text(customDialog!!.text)
-                    }
-                    Text("bottom text")
-                }
+            title = {
+                TitleText(customDialog!!.title)
             },
+            text = customDialog!!.content,
         )
     }
     Scaffold(snackbarHost = {
@@ -139,9 +135,7 @@ fun MainView(
         ) { data: SnackbarData ->
             val event = snackbarEvent!!
             CustomSnackbar(
-                snackbarData = data,
-                event = event,
-                content = event.content.let { snackContent ->
+                snackbarData = data, event = event, content = event.content.let { snackContent ->
                     when (snackContent) {
                         is SnackbarContent.CustomContent -> snackContent.composable
                         is SnackbarContent.TextContent -> {
@@ -156,9 +150,7 @@ fun MainView(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(Lsc.colors.backgroundVariant)
-                    .fillMaxWidth(1.0f)
+                modifier = Modifier.background(Lsc.colors.backgroundVariant).fillMaxWidth(1.0f)
                     .bottomBorder(2.dp, Lsc.colors.primary)
             ) {
                 val (selectedScreenValue, setSelectedScreen) = mainModel.selectedScreen

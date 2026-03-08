@@ -160,15 +160,6 @@ fun CarouselView(
         TitleText(model.dialogTitle, modifier = Modifier.padding(bottom = 5.dp))
         if (model.isInitialized) {
             Row {
-                @Composable
-                fun NavigationButton(onClick: () -> Unit, isEnabled: Boolean, icon: ImageVector) {
-                    Button(
-                        onClick = onClick, enabled = isEnabled, contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp).size(20.dp)
-                    ) {
-                        Icon(icon, contentDescription = null)
-                    }
-                }
                 NavigationButton(model::showPrevious, model.hasPreviousImage, Icons.AutoMirrored.Filled.ArrowBack)
                 Box(modifier = Modifier.defaultMinSize(60.dp), contentAlignment = Alignment.Center) {
                     Text("${model.currentImageIndex + 1} / ${model.totalImageCount}")
@@ -190,5 +181,15 @@ fun CarouselView(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun NavigationButton(onClick: () -> Unit, isEnabled: Boolean, icon: ImageVector) {
+    Button(
+        onClick = onClick, enabled = isEnabled, contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp).size(20.dp)
+    ) {
+        Icon(icon, contentDescription = null)
     }
 }
