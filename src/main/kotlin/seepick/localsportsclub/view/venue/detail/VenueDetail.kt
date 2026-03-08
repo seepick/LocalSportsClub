@@ -131,14 +131,14 @@ fun VenueDetail(
                 }
             }
         }
-        LongText(text = venue.description, onShowLongText = {
-            sharedModel.customDialog.value =
-                CustomDialog(title = "Description", text = it, showDismissButton = false)
-        })
         if (venue.city != configuredCity) {
             Spacer(Modifier.height(5.dp))
             LongText(label = "City", text = venue.city.label)
         }
+        LongText(text = venue.description, onShowLongText = {
+            sharedModel.customDialog.value =
+                CustomDialog(title = "Description", text = it, showDismissButton = false)
+        })
         venue.importantInfo?.also {
             Spacer(Modifier.height(5.dp))
             LongText(label = "Info", text = it, onShowLongText = {
@@ -153,6 +153,7 @@ fun VenueDetail(
                     CustomDialog(title = "Opening Times", text = it, showDismissButton = false)
             })
         }
+
         Row {
             val syncSize = 40
             Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {

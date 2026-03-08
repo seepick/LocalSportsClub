@@ -86,6 +86,7 @@ fun MainView(
         CarouselDialog()
     }
     if (customDialog != null) {
+        // TODO how to show a dialog with custom content? (not only text, but any compose component)
         AlertDialog(
             onDismissRequest = {
                 customDialog = null
@@ -122,8 +123,12 @@ fun MainView(
             } else null,
             title = { Text(customDialog!!.title) },
             text = {
-                SelectionContainer {
-                    Text(customDialog!!.text)
+                Column {
+                    Text("top text")
+                    SelectionContainer {
+                        Text(customDialog!!.text)
+                    }
+                    Text("bottom text")
                 }
             },
         )

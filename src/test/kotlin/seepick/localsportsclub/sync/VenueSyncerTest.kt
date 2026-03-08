@@ -99,13 +99,16 @@ class VenueSyncerTest : StringSpec() {
 
         "Given api returns 1 and db has 0 When sync Then inserted, synced, and image saved" {
             val imageUrl = Arb.imageUrl().next()
-            coEvery {
-                api.fetchVenues(VenuesFilter(city, plan), any())
-            } returns listOf(remoteVenue.copy(imageUrl = imageUrl))
-            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails.copy(
-                linkedVenueSlugs = emptyList(), originalImageUrl = Arb.imageUrl().next()
+            val remoteVenue = Arb.venueInfo().next().copy(
+                imageUrl = imageUrl
             )
-
+            val remoteDetails = Arb.venueDetails().next().copy(
+                slug = remoteVenue.slug,
+                linkedVenueSlugs = emptyList(),
+                originalImageUrl = Arb.imageUrl().next()
+            )
+            coEvery { api.fetchVenues(VenuesFilter(city, plan), any()) } returns listOf(remoteVenue)
+            coEvery { api.fetchVenueDetail(eq(remoteVenue.slug)) } returns remoteDetails
             syncer.sync(plan, city)
 
             venueRepo.stored.should {

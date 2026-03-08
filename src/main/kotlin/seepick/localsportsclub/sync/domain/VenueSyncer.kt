@@ -57,12 +57,15 @@ class VenueSyncer(
         venueRepo.update(venue.copyByDetails(clock.today(), details))
     }
 
+    fun VenueDbo.isReadyForSyncDetails(today: LocalDate): Boolean =
+        !isDeleted && !isHidden &&
+                (lastSync == null || lastSync.daysBetween(today) >= (Math.random() * 10 + 14).toLong())
+
     private suspend fun updateDetails(city: City) {
         log.debug { "updateDetails($city)" }
         val today = clock.today()
         val venuesToUpdate = venueRepo.selectAllByCity(city.id).filter {
-            (it.lastSync == null || it.lastSync.daysBetween(today) <= Math.random() * 10 + 14) &&
-                    !it.isDeleted && !it.isHidden
+            it.isReadyForSyncDetails(today)
         }
         progress.onProgressVenues("${venuesToUpdate.size} Details")
         log.debug { "Fetching details for ${venuesToUpdate.size} venues." }
@@ -201,8 +204,9 @@ class VenueSyncInserterImpl(
         newLinks: MutableSet<VenueSlugLink>,
     ) {
         log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
+        val today = clock.today()
         newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
-            fetchDetailsDownloadImage(city, meta, newLinks).copy(notes = prefilledNotes)
+            fetchDetailsDownloadImage(city, meta, newLinks, today).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
@@ -235,13 +239,14 @@ class VenueSyncInserterImpl(
         city: City,
         meta: VenueMeta,
         venueSlugLinks: MutableSet<VenueSlugLink>,
+        today: LocalDate,
     ): VenueDbo {
         progress.onProgressVenueItem()
         val details = api.fetchVenueDetail(meta.slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, today = clock.today())
+        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, today = today)
             .ensureHasImageIfPresent(details)
     }
 
