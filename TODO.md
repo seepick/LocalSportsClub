@@ -17,8 +17,6 @@
 
 ## Backlog
 
-* 🎨 usage progress bar; make it dependent on actual checkins (not future reservations)
-    * also make color change more "sensitive"; a smaller diff already leading to more red
 * 🎨 disable booking-button if class start is in the past
 * 🎨 vertical space fill of venue notes + tables; also make size divider adjustable/draggable
 * autosync on startup checkbox in prefs

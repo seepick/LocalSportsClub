@@ -59,7 +59,7 @@ fun UsageView(
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)
     val percentageBooked by usageStorage.percentageBooked.collectAsState(0.0)
     val year = clock.today().year
-    val periodColor = calcPeriodColor(abs(usageStorage.percentagePeriod - (percentageCheckedin + percentageBooked)))
+    val periodColor = calcPeriodColor(abs(usageStorage.percentagePeriod - percentageCheckedin))
     Row {
         Column {
             Row {
@@ -110,6 +110,13 @@ fun UsageIndicatorPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         UsageIndicator(percentagePeriod = 0.0, percentageCheckedin = 0.0, percentageBooked = 0.0)
         UsageIndicator(percentagePeriod = 0.2, percentageCheckedin = 0.0, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.5, percentageCheckedin = 0.0, percentageBooked = 0.5)
+        UsageIndicator(percentagePeriod = 0.5, percentageCheckedin = 0.5, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.2, percentageCheckedin = 0.3, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.2, percentageCheckedin = 0.4, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.2, percentageCheckedin = 0.5, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.2, percentageCheckedin = 0.6, percentageBooked = 0.0)
+        UsageIndicator(percentagePeriod = 0.1, percentageCheckedin = 0.2, percentageBooked = 0.0)
         UsageIndicator(percentagePeriod = 0.5, percentageCheckedin = 0.0, percentageBooked = 0.0)
         UsageIndicator(percentagePeriod = 0.8, percentageCheckedin = 0.0, percentageBooked = 0.0)
         UsageIndicator(percentagePeriod = 1.0, percentageCheckedin = 0.0, percentageBooked = 0.0)
@@ -125,8 +132,8 @@ fun UsageIndicatorPreview() {
 }
 
 private fun calcPeriodColor(distance: Double): Color {
-    val d = distance.coerceIn(0.0, 1.0).toFloat()
-    // 0.0 \=\> green (120°), 0.5 \=\> orange (30°), 1.0 \=\> red (0°)
+    val d = (distance * 2.0f).coerceIn(0.0, 1.0).toFloat()
+    // 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°)
     val hue = 120f * (1f - d)
     return Color.hsv(hue, 1f, 1f)
 }
@@ -136,7 +143,7 @@ fun UsageIndicator(
     percentagePeriod: Double,
     percentageCheckedin: Double,
     percentageBooked: Double,
-    periodColor: Color = calcPeriodColor(abs(percentagePeriod - (percentageCheckedin + percentageBooked))),
+    periodColor: Color = calcPeriodColor(abs(percentagePeriod - percentageCheckedin)),
 ) {
     Canvas(modifier = Modifier.size(200.dp, 15.dp)) {
         val width = size.width
