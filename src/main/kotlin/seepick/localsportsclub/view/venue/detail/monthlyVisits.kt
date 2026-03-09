@@ -50,6 +50,7 @@ private fun MonthlyVisitsPanel(
         MonthlyVisitsPanel(model(checkins = 4), modifier)
         MonthlyVisitsPanel(model(checkins = 5), modifier)
         MonthlyVisitsPanel(model(checkins = 6), modifier)
+        MonthlyVisitsPanel(model(checkins = 2, booked = 4), modifier)
     }
 }
 
@@ -101,7 +102,7 @@ fun MonthlyVisitsPanel(
                 drawText(
                     textMeasurer,
                     text = "${model.available}/${model.maxVisits}",
-                    topLeft = Offset(minOf(availableX + 5.0f, width - 25.0f), 0.0f),
+                    topLeft = Offset(minOf(availableX + 5.0f, width - 36.0f), 0.0f),
                     style = TextStyle(color = Color.Black, fontSize = 10.sp),
                 )
             }

@@ -2,6 +2,7 @@
 
 ## v1.13.0
 
+* 🐞 when activity has teacher (through sync all activities); then do a single activity sync; teacher is gone?!?
 * 🖋 disable fetching details from past events
 * 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
@@ -16,6 +17,8 @@
 
 ## Backlog
 
+* 🎨 usage progress bar; make it dependent on actual checkins (not future reservations)
+    * also make color change more "sensitive"; a smaller diff already leading to more red
 * 🎨 disable booking-button if class start is in the past
 * 🎨 vertical space fill of venue notes + tables; also make size divider adjustable/draggable
 * autosync on startup checkbox in prefs
