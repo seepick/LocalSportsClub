@@ -18,8 +18,8 @@ group = "com.github.seepick.localsportsclub"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
-    val versionUscClient = "2000.0.SNAPSHOT"
-//    val versionUscClient = "2026.2.9"
+//    val versionUscClient = "2000.0.SNAPSHOT"
+    val versionUscClient = "2026.2.10"
     implementation("com.github.seepick:usc-client:$versionUscClient")
 
     // VIEW
@@ -27,9 +27,7 @@ dependencies {
     implementation(compose.components.resources)
     implementation(compose.material3)
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4") // NO! 2.9.6 UnsatisfiedLinkError
-//    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.0")
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2") // when "Module with the Main dispatcher is missing"
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("net.coobird:thumbnailator:0.4.21") // resize images
 
     // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose

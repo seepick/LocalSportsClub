@@ -253,9 +253,6 @@ private fun <T> _DropDownTextField(
                 focusRequester.requestFocus()
             }
         }
-        // FIXME
-//        textStyle = textFieldEdits.textAlign?.let { LocalTextStyle.current.copy(textAlign = textFieldEdits.textAlign) }
-//            ?: LocalTextStyle.current,
         if (itemFormatter != null) {
             DropdownMenuX(
                 items = items,
