@@ -20,7 +20,6 @@ fun TitleText(
             style = MaterialTheme.typography.h1,
 //        fontSize = 25.sp,
             textDecoration = textDecoration,
-            // TODO make it selectable (ready for copy and paste)
 //        fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

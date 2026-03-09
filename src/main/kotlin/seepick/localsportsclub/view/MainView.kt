@@ -10,18 +10,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.AlertDialog
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarData
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -37,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -46,6 +54,7 @@ import seepick.localsportsclub.usage.UsageView
 import seepick.localsportsclub.view.activity.ActivitiesScreen
 import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.CustomSnackbar
+import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.activeWindowSize
@@ -59,6 +68,7 @@ import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueScreen
 import seepick.localsportsclub.view.venue.detail.CarouselDialog
 import seepick.localsportsclub.view.venue.detail.CarouselViewModel
+import java.awt.Dimension
 
 private val log = logger {}
 
@@ -88,46 +98,64 @@ fun MainView(
         CarouselDialog()
     }
     if (customDialog != null) {
-        AlertDialog(
-            onDismissRequest = {
-                customDialog = null
-            },
-            modifier = Modifier.requiredWidth(activeWindowSize()?.let { size ->
-                (size.width - 180).dp
-            } ?: 800.dp),
-            confirmButton = {
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(
-                        backgroundColor = Lsc.colors.primary,
-                        contentColor = Color.White,
-                    ), onClick = {
-                        customDialog!!.onConfirm()
-                        customDialog = null
-                    }) { Text(customDialog!!.confirmLabel) }
-            },
-            dismissButton = if (customDialog!!.showDismissButton) {
-                {
-                    TextButton(
-                        colors = if (Lsc.isDarkTheme) {
-                            ButtonDefaults.textButtonColors(
-                                backgroundColor = Lsc.colors.primary.copy(alpha = 0.3f),
+        Dialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { customDialog = null },
+        ) {
+            val winSize = activeWindowSize()?.let { Dimension(it.width - 200, it.height - 200) } ?: Dimension(800, 600)
+            Surface(
+                modifier = Modifier
+                    .widthIn(min = 200.dp, max = winSize.width.dp)
+                    .heightIn(min = 200.dp, max = winSize.height.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colors.surface,
+                elevation = 24.dp,
+            ) {
+                Column(modifier = Modifier.padding(top = 20.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)) {
+                    TitleText(customDialog!!.title)
+                    Spacer(Modifier.height(10.dp))
+
+                    val scrollState = rememberScrollState()
+                    Box(Modifier.weight(1.0f, false).fillMaxWidth(1.0f)) {
+                        Column(modifier = Modifier.verticalScroll(scrollState)) {
+                            customDialog!!.content()
+                        }
+                        LscVScroll(rememberScrollbarAdapter(scrollState))
+                    }
+
+                    Spacer(Modifier.height(10.dp))
+                    Row {
+                        if (customDialog!!.showDismissButton) {
+                            TextButton(
+                                colors = if (Lsc.isDarkTheme) {
+                                    ButtonDefaults.textButtonColors(
+                                        backgroundColor = Lsc.colors.primary.copy(alpha = 0.3f),
+                                        contentColor = Color.White,
+                                    )
+                                } else {
+                                    ButtonDefaults.textButtonColors(
+                                        backgroundColor = Lsc.colors.primary.brighter(),
+                                        contentColor = Color.White,
+                                    )
+                                },
+                                onClick = { customDialog = null },
+                            ) { Text("Cancel") }
+                            Spacer(Modifier.width(12.dp))
+                        }
+                        TextButton(
+                            colors = ButtonDefaults.textButtonColors(
+                                backgroundColor = Lsc.colors.primary,
                                 contentColor = Color.White,
-                            )
-                        } else {
-                            ButtonDefaults.textButtonColors(
-                                backgroundColor = Lsc.colors.primary.brighter(),
-                                contentColor = Color.White,
-                            )
-                        }, onClick = {
-                            customDialog = null
-                        }) { Text("Cancel") }
+                            ),
+                            onClick = {
+                                customDialog!!.onConfirm()
+                                customDialog = null
+                            },
+                        ) { Text(customDialog!!.confirmLabel) }
+                    }
                 }
-            } else null,
-            title = {
-                TitleText(customDialog!!.title)
-            },
-            text = customDialog!!.content,
-        )
+            }
+        }
     }
     Scaffold(snackbarHost = {
         SnackbarHost(

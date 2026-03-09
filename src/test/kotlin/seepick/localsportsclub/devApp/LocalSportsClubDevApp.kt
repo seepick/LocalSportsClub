@@ -26,10 +26,10 @@ object LocalSportsClubDevApp {
 //                    uscCredentials = creds, // view it in UI
 //                )
             },
-//            persistenceModule = inmemoryPersistenceModule(),
             gcalModule = noopGcalModule(),
-//            uscClientModule = mockUscClientModule(),
+            uscClientModule = mockUscClientModule(),
 //            syncModule = devSyncModule(SyncMode.Dummy, config),
+//            persistenceModule = inmemoryPersistenceModule(),
         )
     }
 }

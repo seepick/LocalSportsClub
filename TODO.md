@@ -2,7 +2,6 @@
 
 ## v1.13.0
 
-* 🖋 go through venue/activity info/descriptive text details (on website); verify is all synced?
 * 🖋 disable fetching details from past events
 * 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
@@ -17,7 +16,10 @@
 
 ## Backlog
 
-* 🎨rating dropdown vertical less space (in venue details)
+* 🎨 disable booking-button if class start is in the past
+* 🎨 vertical space fill of venue notes + tables; also make size divider adjustable/draggable
+* autosync on startup checkbox in prefs
+* 🎨 rating dropdown vertical less space (in venue details)
 * 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 clear color coding: everything clickable is blue
