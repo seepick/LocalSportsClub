@@ -3,6 +3,7 @@ package seepick.localsportsclub.service
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.string.shouldContain
@@ -23,6 +24,7 @@ import seepick.localsportsclub.service.model.activity
 import seepick.localsportsclub.service.model.copy
 import seepick.localsportsclub.service.model.toDbo
 import seepick.localsportsclub.service.model.venue
+import seepick.localsportsclub.service.model.visitLimits
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.usage.UsageStorage
 import seepick.localsportsclub.view.usage.InMemorySinglesService
@@ -104,8 +106,8 @@ class BookingValidatorTest : DescribeSpec() {
             if (venue == null) inPeriod else inPeriod.copy(copyVenue = venue)
         }
 
-    private fun insertVenueForCity(): Venue {
-        val venuePrototype = Arb.venue().next().copy(city = city)
+    private fun insertVenueForCity(visitLimits: VisitLimits? = null): Venue {
+        val venuePrototype = Arb.venue().next().copy(city = city, visitLimits = visitLimits)
         val venueDbo = venueRepo.insert(venuePrototype.toDbo())
         return venuePrototype.copy(id = venueDbo.id)
     }
@@ -141,9 +143,9 @@ class BookingValidatorTest : DescribeSpec() {
 //                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain "period"
 //            }
             it("no - venue limit") {
-                val venue = insertVenueForCity()
+                val venue = insertVenueForCity(Arb.visitLimits().next().copy(small = 1))
                 given {
-                    repeat(usageInfo.maxCheckinsInMonthPerVenue) { i ->
+                    repeat(venue.visitLimits!!.forPlan(plan.uscPlan)) { i ->
                         activityRepo.insertCheckedinActivityDbo(i, now.minusDays(1), venueId = venue.id)
                     }
                 }

@@ -96,7 +96,6 @@ fun UsageView(
                 contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
                     .padding(0.dp)
-//                .background(Color.Red)
             ) {
                 Icon(Icons.Default.Info, null, modifier = Modifier.padding(0.dp))
             }

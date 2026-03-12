@@ -80,7 +80,7 @@ fun UsageStatsDialog(
                         Text("Venues Monthly Limit:", fontWeight = FontWeight.Bold)
                         values.venueCheckins.forEach {
                             SelectionContainer {
-                                Text("${it.venue.name}: ${it.checkinsCount}/${values.maxVenueCheckins ?: "?"}")
+                                Text("${it.venue.name}: ${it.checkinsCount}/${it.maxCheckinsMonth ?: "?"}")
                             }
                         }
                     }

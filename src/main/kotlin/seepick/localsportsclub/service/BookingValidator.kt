@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service
 
+import com.github.seepick.uscclient.venue.forPlanOrNull
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,9 +27,9 @@ class BookingValidator(
     private var bookedCount = 0
     private var checkedinCount = 0
     private val maxCheckinsInPeriod = singlesService.plan?.usageInfo?.maxCheckinsInPeriod
-    private val maxCheckinsInMonthPerVenue = singlesService.plan?.usageInfo?.maxCheckinsInMonthPerVenue
     private val maxReservationsPerVenue = singlesService.plan?.usageInfo?.maxReservationsPerVenue
     private val maxReservationsPerDay = singlesService.plan?.usageInfo?.maxReservationsPerDay
+    private val plan = singlesService.plan
     private val city = singlesService.preferences.city
 
     init {
@@ -60,8 +61,10 @@ class BookingValidator(
         val venueCheckinsThisMonth = activityRepo.selectAllForVenueId(activity.venue.id).count {
             it.isCheckedin && it.from.toLocalDate() in monthRange
         }
-        if (venueCheckinsThisMonth >= maxCheckinsInMonthPerVenue!!) {
-            return BookingValidation.Invalid("Cannot book more than $maxCheckinsInMonthPerVenue per month for venue '${activity.venue.name}'!")
+
+        val maxMonthlyCheckinsPerVenue = activity.venue.visitLimits.forPlanOrNull(plan)
+        if (maxMonthlyCheckinsPerVenue != null && venueCheckinsThisMonth >= maxMonthlyCheckinsPerVenue) {
+            return BookingValidation.Invalid("Cannot book more than $maxMonthlyCheckinsPerVenue per month for venue '${activity.venue.name}'!")
         }
 
         val reservedTotal = activityRepo.selectAll(city!!.id).filter { it.isBooked }

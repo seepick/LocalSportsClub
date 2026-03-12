@@ -14,6 +14,7 @@
     * bottom: general
         * how many years/months active
         * top venues visited (your favorites, basically)
+* venue details sync fails
 
 ## Backlog
 
