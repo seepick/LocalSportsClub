@@ -12,6 +12,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.service.RemarkService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.distance
 import seepick.localsportsclub.service.round

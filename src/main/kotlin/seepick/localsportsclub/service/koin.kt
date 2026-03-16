@@ -7,7 +7,6 @@ import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.DataStorage
-import seepick.localsportsclub.service.model.RemarkService
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.service.singles.SinglesServiceImpl
 
