@@ -16,7 +16,6 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.view.MainViewModel
-import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.venue.detail.VenueDetail
 import seepick.localsportsclub.view.venue.detail.toMonthlyVisitsModel
 
@@ -25,7 +24,6 @@ fun <ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>> ScreenTemplate(
     searchPanel: @Composable () -> Unit,
     table: @Composable () -> Unit,
     viewModel: ScreenViewModel<ITEM, SEARCH>,
-    remarkViewModel: RemarkViewModel,
     mainViewModel: MainViewModel,
     clock: Clock = koinInject(),
 ) {

@@ -38,6 +38,7 @@ object LscIcons {
     val categoryIndicator = VisualIndicator.EmojiIndicator("🗂️")
     val activities: ImageVector = Icons.Default.SportsGymnastics
     val teachers: ImageVector = Icons.Default.Face
+    val teachersIndicator = VisualIndicator.VectorIndicator(teachers)
     val activitiesIndicator = VisualIndicator.VectorIndicator(activities)
     val freetrainings = Icons.Default.FitnessCenter
     val freetrainingsIndicator = VisualIndicator.VectorIndicator(freetrainings)

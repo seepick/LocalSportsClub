@@ -42,8 +42,8 @@ class Activity(
     cancellationLimit: LocalDateTime?,
 ) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor by venue {
 
-    val remarkRating: ActivityRemarkRating?
-    val teacherRemarkRating: TeacherRemarkRating?
+    val remarkRating: RemarkRating?
+    val teacherRemarkRating: RemarkRating?
 
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"

@@ -17,7 +17,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.view.common.DropDownTextField
-import seepick.localsportsclub.view.common.SmallButton
+import seepick.localsportsclub.view.common.SuperSmallButton
 import seepick.localsportsclub.view.common.WidthOrFill
 import java.time.LocalDate
 
@@ -50,7 +50,7 @@ fun DateSelector(
 ) {
     val today = clock.today()
     var currentDateIndex by mutableStateOf(dates.indexOf(selectedDate))
-    SmallButton(
+    SuperSmallButton(
         label = "<",
         size = buttonSize,
         enabled = enabled && currentDateIndex > 0,
@@ -69,7 +69,7 @@ fun DateSelector(
         useSlimDisplay = true,
     )
     Spacer(modifier = Modifier.width(hspacing))
-    SmallButton(
+    SuperSmallButton(
         label = ">",
         size = buttonSize,
         enabled = enabled && currentDateIndex < (dates.size - 1),

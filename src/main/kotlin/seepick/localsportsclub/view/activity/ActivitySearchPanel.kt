@@ -9,6 +9,7 @@ import seepick.localsportsclub.view.search.DateTimeRangeSearchField
 import seepick.localsportsclub.view.search.DoubleSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
 import seepick.localsportsclub.view.search.RatingSearchField
+import seepick.localsportsclub.view.search.RemarkRatingSearchField
 import seepick.localsportsclub.view.search.SelectSearchField
 import seepick.localsportsclub.view.search.StringSearchField
 
@@ -26,9 +27,10 @@ fun ActivitySearchPanel(
         DoubleSearchField(viewModel.searching.distance, ComparingNumericComparator.entries)
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
-        RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.categories)
         SelectSearchField(viewModel.searching.plan, width = 120.dp)
-        // FIXME (teacher)remarks search (similar to rating)
+        RatingSearchField(viewModel.searching.rating, tooltip = "Venue Rating")
+        RemarkRatingSearchField(viewModel.searching.activityRating, tooltip = "Activity Remark Rating")
+        RemarkRatingSearchField(viewModel.searching.teacherRating, tooltip = "Teacher Remark Rating")
     }
 }

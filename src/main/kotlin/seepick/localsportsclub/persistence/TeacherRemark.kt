@@ -14,7 +14,7 @@ object TeacherRemarksTable : IntIdTable("TEACHER_REMARKS", "ID") {
     val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_TEACHER_REMARKS_VENUE_ID")
     val name = varchar("NAME", 128)
     val remark = text("REMARK")
-    val rating = enumerationByName<TeacherRemarkDboRating>("RATING", 32)
+    val rating = enumerationByName<RemarkDboRating>("RATING", 32)
 }
 
 data class TeacherRemarkDbo(
@@ -22,7 +22,7 @@ data class TeacherRemarkDbo(
     val venueId: Int,
     val name: String,
     val remark: String,
-    val rating: TeacherRemarkDboRating,
+    val rating: RemarkDboRating,
 ) {
     companion object {
         fun fromRow(row: ResultRow) = TeacherRemarkDbo(
@@ -33,11 +33,6 @@ data class TeacherRemarkDbo(
             rating = row[TeacherRemarksTable.rating],
         )
     }
-}
-
-enum class TeacherRemarkDboRating {
-    // CAVE: names are used for DB mapping!
-    Amazing, Good, Meh, Bad
 }
 
 interface TeacherRemarkRepo {

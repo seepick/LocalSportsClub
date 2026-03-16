@@ -142,16 +142,18 @@ fun MainView(
                             ) { Text("Cancel") }
                             Spacer(Modifier.width(12.dp))
                         }
-                        TextButton(
-                            colors = ButtonDefaults.textButtonColors(
-                                backgroundColor = Lsc.colors.primary,
-                                contentColor = Color.White,
-                            ),
-                            onClick = {
-                                customDialog!!.onConfirm()
-                                customDialog = null
-                            },
-                        ) { Text(customDialog!!.confirmLabel) }
+                        Tooltip(customDialog!!.confirmButtonTooltip) {
+                            TextButton(
+                                colors = ButtonDefaults.textButtonColors(
+                                    backgroundColor = Lsc.colors.primary,
+                                    contentColor = Color.White,
+                                ),
+                                onClick = {
+                                    customDialog!!.onConfirm()
+                                    customDialog = null
+                                },
+                            ) { Text(customDialog!!.confirmLabel) }
+                        }
                     }
                 }
             }

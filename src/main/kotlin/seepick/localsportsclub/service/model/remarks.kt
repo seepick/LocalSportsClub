@@ -1,15 +1,15 @@
 package seepick.localsportsclub.service.model
 
 import seepick.localsportsclub.persistence.ActivityRemarkDbo
-import seepick.localsportsclub.persistence.ActivityRemarkDboRating
+import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo
-import seepick.localsportsclub.persistence.TeacherRemarkDboRating
 
 interface Remark {
     val id: Int
     val venueId: Int
     val name: String
     val remark: String
+    val rating: RemarkRating
 }
 
 data class ActivityRemark(
@@ -17,17 +17,18 @@ data class ActivityRemark(
     override val venueId: Int,
     override val name: String,
     override val remark: String,
-    val rating: ActivityRemarkRating,
+    override val rating: RemarkRating,
 ) : Remark
 
-enum class ActivityRemarkRating(
+enum class RemarkRating(
     val label: String,
     val emoji: String,
+    val numericValue: Int,
 ) {
-    Amazing("Amazing", "💖"),
-    Good("Good", "💚"),
-    Meh("Meh", "😕"),
-    Bad("Bad", "❌"),
+    Amazing("Amazing", "💖", 3),
+    Good("Good", "💚", 2),
+    Meh("Meh", "😕", 1),
+    Bad("Bad", "❌", 0),
     ;
 
     companion object {
@@ -40,14 +41,14 @@ fun ActivityRemarkDbo.toActivityRemark() = ActivityRemark(
     venueId = this.venueId,
     name = this.name,
     remark = this.remark,
-    rating = this.rating.toActivityRemarkRating(),
+    rating = this.rating.toRemarkRating(),
 )
 
-private fun ActivityRemarkDboRating.toActivityRemarkRating() = when (this) {
-    ActivityRemarkDboRating.Amazing -> ActivityRemarkRating.Amazing
-    ActivityRemarkDboRating.Good -> ActivityRemarkRating.Good
-    ActivityRemarkDboRating.Meh -> ActivityRemarkRating.Meh
-    ActivityRemarkDboRating.Bad -> ActivityRemarkRating.Bad
+private fun RemarkDboRating.toRemarkRating() = when (this) {
+    RemarkDboRating.Amazing -> RemarkRating.Amazing
+    RemarkDboRating.Good -> RemarkRating.Good
+    RemarkDboRating.Meh -> RemarkRating.Meh
+    RemarkDboRating.Bad -> RemarkRating.Bad
 }
 
 data class TeacherRemark(
@@ -55,35 +56,13 @@ data class TeacherRemark(
     override val venueId: Int,
     override val name: String,
     override val remark: String,
-    val rating: TeacherRemarkRating,
+    override val rating: RemarkRating,
 ) : Remark
-
-enum class TeacherRemarkRating(
-    val label: String,
-    val emoji: String,
-) {
-    Amazing("Amazing", "💖"),
-    Good("Good", "💚"),
-    Meh("Meh", "😕"),
-    Bad("Bad", "❌"),
-    ;
-
-    companion object {
-        val default = Good
-    }
-}
 
 fun TeacherRemarkDbo.toTeacherRemark() = TeacherRemark(
     id = this.id,
     venueId = this.venueId,
     name = this.name,
     remark = this.remark,
-    rating = this.rating.toTeacherRemarkRating(),
+    rating = this.rating.toRemarkRating(),
 )
-
-private fun TeacherRemarkDboRating.toTeacherRemarkRating() = when (this) {
-    TeacherRemarkDboRating.Amazing -> TeacherRemarkRating.Amazing
-    TeacherRemarkDboRating.Good -> TeacherRemarkRating.Good
-    TeacherRemarkDboRating.Meh -> TeacherRemarkRating.Meh
-    TeacherRemarkDboRating.Bad -> TeacherRemarkRating.Bad
-}

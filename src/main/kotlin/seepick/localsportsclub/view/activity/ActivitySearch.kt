@@ -39,8 +39,15 @@ class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : Ab
         "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
     ) { it.venue.isWishlisted }
     val rating = newRatingSearchOption(
-        "Rating", visualIndicator = Lsc.icons.ratingIndicator
+        "Venue", visualIndicator = Lsc.icons.ratingIndicator
     ) { it.venue.rating }
+    val activityRating = newRemarkRatingSearchOption(
+        "Activity", visualIndicator = Lsc.icons.activitiesIndicator
+    ) { it.remarkRating }
+    val teacherRating = newRemarkRatingSearchOption(
+        "Teacher", visualIndicator = Lsc.icons.teachersIndicator
+    ) { it.teacherRemarkRating }
+
     val categories = newSelectSearchOption(
         label = "Category",
         allOptions = allCategories.map { it.nameAndMaybeEmoji },

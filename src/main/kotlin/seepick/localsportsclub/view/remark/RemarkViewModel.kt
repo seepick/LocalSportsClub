@@ -7,16 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging
 import seepick.localsportsclub.persistence.ActivityRemarkDbo
-import seepick.localsportsclub.persistence.ActivityRemarkDboRating
 import seepick.localsportsclub.persistence.ActivityRemarkRepo
+import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo
-import seepick.localsportsclub.persistence.TeacherRemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkRepo
-import seepick.localsportsclub.service.model.ActivityRemark
-import seepick.localsportsclub.service.model.ActivityRemarkRating
 import seepick.localsportsclub.service.model.Remark
-import seepick.localsportsclub.service.model.TeacherRemark
-import seepick.localsportsclub.service.model.TeacherRemarkRating
+import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.toActivityRemark
 import seepick.localsportsclub.service.model.toTeacherRemark
@@ -54,6 +50,7 @@ class RemarkViewModel(
             title = "${if (isActivity) "Activity" else "Teacher"} Remarks",
             content = { RemarkView() },
             confirmLabel = "Save",
+            confirmButtonTooltip = "Restart app to take effect",
             showDismissButton = false,
             onConfirm = ::saveRemarks,
         )
@@ -80,8 +77,7 @@ class RemarkViewModel(
                 venueId = currentVenue!!.id,
                 name = "",
                 remark = "",
-                rating = if (currentIsForActivity) RemarkRating.Activity(ActivityRemarkRating.Companion.default)
-                else RemarkRating.Teacher(TeacherRemarkRating.Companion.default)
+                rating = RemarkRating.default,
             )
         )
     }
@@ -97,14 +93,14 @@ private fun RemarkViewEntity.toActivityRemarkDbo() = ActivityRemarkDbo(
     venueId = this.venueId,
     name = this.name,
     remark = this.remark,
-    rating = (this.rating as RemarkRating.Activity).rating.toActivityRemarkDboRating(),
+    rating = this.rating.toRemarkDboRating(),
 )
 
-private fun ActivityRemarkRating.toActivityRemarkDboRating() = when (this) {
-    ActivityRemarkRating.Amazing -> ActivityRemarkDboRating.Amazing
-    ActivityRemarkRating.Good -> ActivityRemarkDboRating.Good
-    ActivityRemarkRating.Meh -> ActivityRemarkDboRating.Meh
-    ActivityRemarkRating.Bad -> ActivityRemarkDboRating.Bad
+private fun RemarkRating.toRemarkDboRating() = when (this) {
+    RemarkRating.Amazing -> RemarkDboRating.Amazing
+    RemarkRating.Good -> RemarkDboRating.Good
+    RemarkRating.Meh -> RemarkDboRating.Meh
+    RemarkRating.Bad -> RemarkDboRating.Bad
 }
 
 private fun RemarkViewEntity.toTeacherRemarkDbo() = TeacherRemarkDbo(
@@ -112,26 +108,13 @@ private fun RemarkViewEntity.toTeacherRemarkDbo() = TeacherRemarkDbo(
     venueId = this.venueId,
     name = this.name,
     remark = this.remark,
-    rating = (this.rating as RemarkRating.Teacher).rating.toTeacherRemarkDboRating(),
+    rating = this.rating.toRemarkDboRating(),
 )
-
-private fun TeacherRemarkRating.toTeacherRemarkDboRating() = when (this) {
-    TeacherRemarkRating.Amazing -> TeacherRemarkDboRating.Amazing
-    TeacherRemarkRating.Good -> TeacherRemarkDboRating.Good
-    TeacherRemarkRating.Meh -> TeacherRemarkDboRating.Meh
-    TeacherRemarkRating.Bad -> TeacherRemarkDboRating.Bad
-}
 
 private fun Remark.toRemarkUiModel() = RemarkViewEntity(
     id = id,
     venueId = venueId,
     name = name,
     remark = remark,
-    rating = encapsulateRatingForUi(),
+    rating = rating,
 )
-
-private fun Remark.encapsulateRatingForUi() = when (this) {
-    is ActivityRemark -> RemarkRating.Activity(rating)
-    is TeacherRemark -> RemarkRating.Teacher(rating)
-    else -> error("Unhandled remark type: ${this::class.simpleName}")
-}

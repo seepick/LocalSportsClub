@@ -93,7 +93,9 @@ class CarouselViewModel(
 //                )
 //            )
             isInitialized = true
-            loadCurrentPic()
+            if (imageUrls.isNotEmpty()) {
+                loadCurrentPic()
+            }
         }
     }
 
@@ -158,7 +160,7 @@ fun CarouselView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TitleText(model.dialogTitle, modifier = Modifier.padding(bottom = 5.dp))
-        if (model.isInitialized) {
+        if (model.isInitialized && model.totalImageCount > 0) {
             Row {
                 NavigationButton(model::showPrevious, model.hasPreviousImage, Icons.AutoMirrored.Filled.ArrowBack)
                 Box(modifier = Modifier.defaultMinSize(60.dp), contentAlignment = Alignment.Center) {
@@ -175,10 +177,10 @@ fun CarouselView(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
                 )
+            } else if (model.totalImageCount > 0) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                Text("No carousel images available", modifier = Modifier.align(Alignment.Center))
             }
         }
     }
@@ -187,7 +189,9 @@ fun CarouselView(
 @Composable
 fun NavigationButton(onClick: () -> Unit, isEnabled: Boolean, icon: ImageVector) {
     Button(
-        onClick = onClick, enabled = isEnabled, contentPadding = PaddingValues(0.dp),
+        onClick = onClick,
+        enabled = isEnabled,
+        contentPadding = PaddingValues(0.dp),
         modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp).size(20.dp)
     ) {
         Icon(icon, contentDescription = null)

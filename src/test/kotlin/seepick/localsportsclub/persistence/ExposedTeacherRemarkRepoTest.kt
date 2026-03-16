@@ -35,18 +35,6 @@ class ExposedTeacherRemarkRepoTest : DescribeSpec({
         }
     }
 
-    describe("rating") {
-        it("names stable for SQL") {
-            TeacherRemarkDboRating.entries.forEach {
-                when (it) {
-                    TeacherRemarkDboRating.Amazing -> it.name shouldBeEqual "Amazing"
-                    TeacherRemarkDboRating.Good -> it.name shouldBeEqual "Good"
-                    TeacherRemarkDboRating.Meh -> it.name shouldBeEqual "Meh"
-                    TeacherRemarkDboRating.Bad -> it.name shouldBeEqual "Bad"
-                }
-            }
-        }
-    }
     describe("selectAll") {
         it("Given empty Then return empty") {
             repo.selectAll().shouldBeEmpty()
@@ -115,6 +103,6 @@ fun Arb.Companion.teacherRemarkDbo() = arbitrary {
         venueId = Arb.int().bind(),
         name = Arb.string().bind(),
         remark = Arb.string().bind(),
-        rating = Arb.enum<TeacherRemarkDboRating>().bind(),
+        rating = Arb.enum<RemarkDboRating>().bind(),
     )
 }

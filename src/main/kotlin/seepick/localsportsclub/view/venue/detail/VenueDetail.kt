@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -52,6 +50,7 @@ import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.RatingPanelWidth
+import seepick.localsportsclub.view.common.SmallButton
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlText
@@ -148,10 +147,7 @@ fun VenueDetail(
         }
 
         LongText(
-            text = venue.description,
-            maxLines = 1,
-            tooltip = "Click to open venue details dialog",
-            onShowLongText = {
+            text = venue.description, maxLines = 1, tooltip = "Click to open venue details dialog", onShowLongText = {
                 sharedModel.customDialog.value = CustomDialog(
                     title = venue.name,
                     content = { VenueDetailDialogPanel(venue) },
@@ -219,17 +215,18 @@ fun VenueDetail(
                 enabled = !venueEdit.isClean() && !isSyncing,
             ) { Text("Update") }
             Spacer(Modifier.width(16.dp))
-            // TODO only show for activity, not for freetraining
             SmallButton(
                 text = "Activity Remarks ($activityRemarksCount)",
                 icon = Lsc.icons.activities,
                 onClick = onViewActivityRemarks,
+                tooltip = "Open activity remarks dialog ...",
             )
             Spacer(Modifier.width(5.dp))
             SmallButton(
                 text = "Teacher Remarks ($teacherRemarksCount)",
                 icon = Lsc.icons.teachers,
                 onClick = onViewTeacherRemarks,
+                tooltip = "Open teacher remarks dialog ...",
             )
         }
 
@@ -313,24 +310,6 @@ private fun calcTableHeights(
     ) to SimpleFreetrainingsTable_rowEstimatedHeight.dp * min(
         freetrainingsCalcRows + activityLeftovers, freetrainingsCount
     )
-}
-
-@Composable
-fun SmallButton(
-    text: String,
-    icon: ImageVector? = null,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-        modifier = Modifier.height(25.dp),
-    ) {
-        if (icon != null) {
-            Icon(imageVector = icon, contentDescription = null)
-        }
-        Text(text, fontSize = 10.sp)
-    }
 }
 
 

@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -24,7 +26,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.WidthOrFill
@@ -43,12 +45,12 @@ fun RemarkView(
         }
     }
     Column {
-        TextButton(onClick = {
+        Button(onClick = {
             viewModel.addNewRemark()
             shouldRequestFocus = true
         }) {
             Icon(Icons.Default.Add, contentDescription = null)
-            Text("Add New", color = Lsc.colors.primary)
+            Text("Add New")
         }
         Spacer(Modifier.height(5.dp))
         viewModel.remarks.forEachIndexed { index, remark ->
@@ -62,26 +64,14 @@ fun RemarkView(
                         .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier),
                 )
                 Spacer(Modifier.width(10.dp))
-                val realRating = remark.rating
-                if (realRating is RemarkRating.Activity) {
-                    DropDownTextField(
-                        items = realRating.items,
-                        itemFormatter = { "${it.emoji} ${it.label}" },
-                        selectedItem = realRating.rating,
-                        onItemSelected = { remark.rating = RemarkRating.Activity(it) },
-                        label = "Rating",
-                        textSize = WidthOrFill.Width(150.dp)
-                    )
-                } else if (realRating is RemarkRating.Teacher) {
-                    DropDownTextField(
-                        items = realRating.items,
-                        itemFormatter = { "${it.emoji} ${it.label}" },
-                        selectedItem = realRating.rating,
-                        onItemSelected = { remark.rating = RemarkRating.Teacher(it) },
-                        label = "Rating",
-                        textSize = WidthOrFill.Width(150.dp)
-                    )
-                } else error("unhandled remark type ${remark.rating::class.simpleName}")
+                DropDownTextField(
+                    items = RemarkRating.entries,
+                    itemFormatter = { "${it.emoji} ${it.label}" },
+                    selectedItem = remark.rating,
+                    onItemSelected = { remark.rating = it },
+                    label = "Rating",
+                    textSize = WidthOrFill.Width(150.dp)
+                )
 
                 Spacer(Modifier.width(10.dp))
 
@@ -92,8 +82,11 @@ fun RemarkView(
                     modifier = Modifier.weight(1f),
                 )
 
-                Tooltip("Delete this remark") {
-                    TextButton(onClick = { viewModel.deleteRemark(remark) }) {
+                Tooltip("Delete") {
+                    TextButton(
+                        onClick = { viewModel.deleteRemark(remark) },
+                        modifier = Modifier.padding(top = 12.dp),
+                    ) {
                         Icon(Icons.Default.Delete, contentDescription = null)
                     }
                 }

@@ -7,14 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.service.model.Rating
+import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.service.search.FullNumericComparator
-import seepick.localsportsclub.service.search.RatingSearchOption
+import seepick.localsportsclub.service.search.RemarkRatingSearchOption
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.WidthOrFill
 
 @Composable
-fun <T> RatingSearchField(searchOption: RatingSearchOption<T>, tooltip: String? = null) {
+fun <T> RemarkRatingSearchField(searchOption: RemarkRatingSearchOption<T>, tooltip: String? = null) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText(tooltip = tooltip)
         if (searchOption.enabled) {
@@ -28,11 +28,12 @@ fun <T> RatingSearchField(searchOption: RatingSearchOption<T>, tooltip: String? 
             )
             Spacer(Modifier.width(5.dp))
             DropDownTextField(
-                items = Rating.entries,
+                items = RemarkRating.entries,
+                itemFormatter = { it.emoji },
                 selectedItem = searchOption.searchRating,
                 onItemSelected = { searchOption.updateSearchRating(it) },
                 enabled = searchOption.enabled,
-                textSize = WidthOrFill.Width(140.dp),
+                textSize = WidthOrFill.Width(90.dp),
                 useSlimDisplay = true,
             )
         }
