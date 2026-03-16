@@ -3,7 +3,6 @@ package seepick.localsportsclub.service
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.booking.BookingResult
 import com.github.seepick.uscclient.booking.CancelResult
-import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
@@ -17,19 +16,13 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
 import seepick.localsportsclub.view.shared.SubEntity
-
-val ActivityDbo.whitespaceEmojiIfPresent: String
-    get() {
-        val cat = Category(category)
-        return if (cat.emoji == null) "" else " ${cat.emoji}"
-    }
 
 class BookingService(
     private val uscApi: UscApi,
@@ -126,16 +119,9 @@ class BookingService(
         activityRepo.update(updatedActivityDbo)
         if (canGcal && shouldGcal) {
             if (isBooking) {
-                createCalendarActivity(updatedActivityDbo)
+                createCalendarActivity(subEntity.activity)
             } else {
-                val calendarId = singlesService.preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
-                gcalService.delete(
-                    calendarId = calendarId, GcalDeletion(
-                        day = subEntity.activity.dateTimeRange.from.toLocalDate(),
-                        activityOrFreetrainingId = subEntity.activity.id,
-                        isActivity = true,
-                    )
-                )
+                deleteCalendarActivity(subEntity.activity)
             }
         }
         listeners.forEach {
@@ -143,22 +129,33 @@ class BookingService(
         }
     }
 
-    private fun VenueDbo.location() = "${name}, $street, $postalCode $addressLocality"
-
-
-    private fun createCalendarActivity(activityDbo: ActivityDbo) {
-        val venue = venueRepo.selectById(activityDbo.venueId) ?: error("Venue not found for: $activityDbo")
+    private fun createCalendarActivity(activity: Activity) {
         gcalService.create(
             singlesService.readCalendarIdOrThrow(),
             GcalEntry.GcalActivity(
-                activityId = activityDbo.id,
-                title = activityDbo.nameWithTeacherIfPresent + activityDbo.whitespaceEmojiIfPresent,
-                dateTimeRange = DateTimeRange(from = activityDbo.from, to = activityDbo.to),
-                location = venue.location(),
-                notes = "[LSC] created${
-                    venue.officialWebsite?.let { "\n$it" } ?: ""
-                }",
-            ))
+                activityId = activity.id,
+                title = activity.gcalEntryTitle(),
+                dateTimeRange = activity.dateTimeRange,
+                location = activity.venue.gcalEntryLocation(),
+                notes = buildString {
+                    append("[LSC] created")
+                    activity.venue.officialWebsite?.also { append("\n$it") }
+                },
+            )
+        )
+    }
+
+
+    private fun deleteCalendarActivity(activity: Activity) {
+        val calendarId = singlesService.preferences.gcal.maybeCalendarId ?: error("No calendar ID set!")
+        gcalService.delete(
+            calendarId = calendarId,
+            deletion = GcalDeletion(
+                day = activity.dateTimeRange.from.toLocalDate(),
+                activityOrFreetrainingId = activity.id,
+                isActivity = true,
+            ),
+        )
     }
 
     private fun bookOrCancelFreetraining(
@@ -196,11 +193,13 @@ class BookingService(
                 freetrainingId = freetrainingDbo.id,
                 title = freetrainingDbo.name,
                 date = freetrainingDbo.date,
-                location = venue.location(),
-                notes = "[LSC] created${
-                    venue.officialWebsite?.let { "\n$it" } ?: ""
-                }",
-            ))
+                location = venue.gcalEntryLocation(),
+                notes = buildString {
+                    append("[LSC] created")
+                    venue.officialWebsite?.also { append("\n$it") }
+                },
+            )
+        )
     }
 
     fun changeActivityToCheckedin(activity: Activity) {
@@ -214,3 +213,14 @@ class BookingService(
         }
     }
 }
+
+private fun Activity.gcalEntryTitle() = buildString {
+    remarkRating?.also { append("$it ") }
+    category.emoji?.also { append("$it ") }
+    append(name)
+    teacher?.also { append(" /$it") }
+    teacherRemarkRating?.also { append(" $it") }
+}
+
+private fun VenueDbo.gcalEntryLocation() = "${name}, $street, $postalCode $addressLocality"
+private fun Venue.gcalEntryLocation() = "${name}, $street, $postalCode $addressLocality"

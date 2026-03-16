@@ -5,11 +5,9 @@ import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRemarkRepo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.TeacherRemarkRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
@@ -56,8 +54,7 @@ object NoopDataStorageListener : DataStorageListener {
 
 class DataStorage(
     private val venueRepo: VenueRepo,
-    private val activityRemarkRepo: ActivityRemarkRepo,
-    private val teacherRemarkRepo: TeacherRemarkRepo,
+    private val remarkService: RemarkService,
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
@@ -71,16 +68,13 @@ class DataStorage(
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
-            val activityRemarksByVenueId =
-                activityRemarkRepo.selectAll().map { it.toActivityRemark() }.groupBy { it.venueId }
-            val teacherRemarksByVenueId =
-                teacherRemarkRepo.selectAll().map { it.toTeacherRemark() }.groupBy { it.venueId }
+            val remarks = remarkService.selectAll()
 
             val venuesById = venueRepo.selectAllByCity(cityId)
                 .map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }.associateBy { it.id }
             venuesById.forEach { (_, venue) ->
-                venue.activityRemarks.addAll(activityRemarksByVenueId[venue.id] ?: emptyList())
-                venue.teacherRemarks.addAll(teacherRemarksByVenueId[venue.id] ?: emptyList())
+                venue.activityRemarks.addAll(remarks.forActivities(venue.id))
+                venue.teacherRemarks.addAll(remarks.forTeachers(venue.id))
             }
             venueLinksRepo.selectAll(cityId).forEach { (id1, id2) ->
                 val venue1 = venuesById[id1] ?: error("Linking venue1 not found by ID: $id1")

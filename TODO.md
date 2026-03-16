@@ -18,26 +18,27 @@
 
 ## Backlog
 
-* 🖋️ FreetrainingRemarks
+* 🎨 disable booking-button if class start is in the past
 * 🎨 RemarkRating will change bg color (together with favorited/wishlisted red/yellow; need to mix colors)
 * 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
 * 🎨 table column distance as "mini progress bar" (easier visually to grasp)
-* 🎨 table column numberes bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
-* 🎨 disable booking-button if class start is in the past
-* 🎨 vertical space fill of venue notes + tables; also make size divider adjustable/draggable
-* autosync on startup checkbox in prefs
+* 🖋 autosync on startup checkbox in prefs
+* 🎨 vertical space venue notes/tables size divider adjustable/draggable
 * 🎨 rating dropdown vertical less space (in venue details)
-* 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 clear color coding: everything clickable is blue
+* 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
+
 * 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
+* 🎨 table column numberes bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
 
 ## New Features
 
+* 🖋️ FreetrainingRemarks
 * 🖋 sync also "plus checkins" (check app what's that again)
 * 🖋 search fields provide count already; e.g. category "(20) EMS"
 * 🖋 mark wishlisted-like (maybe a new label?) based on activity title (regexp like)

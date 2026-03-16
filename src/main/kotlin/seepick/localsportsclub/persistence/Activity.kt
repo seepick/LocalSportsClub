@@ -40,7 +40,6 @@ data class ActivityDbo(
 ) {
     val isBooked = state == ActivityState.Booked
     val isCheckedin = state == ActivityState.Checkedin
-    val nameWithTeacherIfPresent = if (teacher == null) name else "$name /$teacher"
 
     fun prepareInsert(statement: InsertStatement<Number>) {
         statement[ActivitiesTable.id] = this.id
