@@ -13,8 +13,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -26,20 +33,33 @@ import seepick.localsportsclub.view.common.WidthOrFill
 fun RemarkView(
     viewModel: RemarkViewModel = koinViewModel(),
 ) {
+    val focusRequester = remember { FocusRequester() }
+    var shouldRequestFocus by remember { mutableStateOf(false) }
+
+    LaunchedEffect(shouldRequestFocus) {
+        if (shouldRequestFocus && viewModel.remarks.isNotEmpty()) {
+            focusRequester.requestFocus()
+            shouldRequestFocus = false
+        }
+    }
     Column {
-        TextButton(onClick = { viewModel.addNewRemark() }) {
+        TextButton(onClick = {
+            viewModel.addNewRemark()
+            shouldRequestFocus = true
+        }) {
             Icon(Icons.Default.Add, contentDescription = null)
             Text("Add New", color = Lsc.colors.primary)
         }
         Spacer(Modifier.height(5.dp))
-        viewModel.remarks.forEach { remark ->
+        viewModel.remarks.forEachIndexed { index, remark ->
             Row(verticalAlignment = Alignment.Top) {
                 OutlinedTextField(
                     value = remark.name,
                     singleLine = true,
                     onValueChange = { remark.name = it },
                     label = { Text("Name") },
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier.width(200.dp)
+                        .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier),
                 )
                 Spacer(Modifier.width(10.dp))
                 val realRating = remark.rating

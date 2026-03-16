@@ -29,5 +29,6 @@ fun ActivitySearchPanel(
         RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.categories)
         SelectSearchField(viewModel.searching.plan, width = 120.dp)
+        // FIXME (teacher)remarks search (similar to rating)
     }
 }

@@ -95,7 +95,16 @@ fun SimpleActivitiesTable(
                     header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
-                        "${it.state.iconStringAndSuffix()}${if (it.teacher == null) it.name else "${it.name} /${it.teacher}"}"
+                        buildString {
+                            append(it.state.iconStringAndSuffix())
+                            it.remarkRating?.emoji?.also { append("$it ") }
+                            append(it.name)
+                            if (it.teacher != null) {
+                                append(" /${it.teacher}")
+                                it.teacherRemarkRating?.emoji?.also { append(" $it") }
+                            }
+                        }
+
                     },
                 )
             ),

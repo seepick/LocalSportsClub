@@ -41,6 +41,10 @@ class Activity(
     state: ActivityState,
     cancellationLimit: LocalDateTime?,
 ) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor by venue {
+
+    val remarkRating: ActivityRemarkRating?
+    val teacherRemarkRating: TeacherRemarkRating?
+
 //    val nameWithTeacherIfPresent =
 //        if (teacher == null) name else "$name /$teacher"
     // not possible due to mixed setup of table columns (doing logic in view/composable together)
@@ -53,6 +57,27 @@ class Activity(
     var description: String? by mutableStateOf(description)
     var spotsLeft: Int by mutableStateOf(spotsLeft)
     var cancellationLimit: LocalDateTime? by mutableStateOf(cancellationLimit)
+
+    init {
+        val matchingActivityRemarks = venue.activityRemarks.filter { name.contains(it.name, ignoreCase = true) }
+        remarkRating = when (matchingActivityRemarks.size) {
+            0 -> null
+            1 -> matchingActivityRemarks.single()
+            else -> {
+                matchingActivityRemarks.maxBy { it.name.length }
+            }
+        }?.rating
+        teacherRemarkRating = if (teacher == null) null else {
+            val matchingTeacherRemarks = venue.teacherRemarks.filter { teacher.contains(it.name, ignoreCase = true) }
+            when (matchingTeacherRemarks.size) {
+                0 -> null
+                1 -> matchingTeacherRemarks.single()
+                else -> {
+                    matchingTeacherRemarks.maxBy { it.name.length }
+                }
+            }
+        }?.rating
+    }
 
     fun isInPast(today: LocalDate): Boolean =
         dateTimeRange.from.toLocalDate() < today

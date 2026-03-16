@@ -18,6 +18,9 @@
 
 ## Backlog
 
+* 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly
+* 🎨 table column distance as "mini progress bar" (easier visually to grasp)
+* 🎨 table column numberes bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
 * 🎨 disable booking-button if class start is in the past
 * 🎨 vertical space fill of venue notes + tables; also make size divider adjustable/draggable
 * autosync on startup checkbox in prefs

@@ -219,6 +219,7 @@ fun VenueDetail(
                 enabled = !venueEdit.isClean() && !isSyncing,
             ) { Text("Update") }
             Spacer(Modifier.width(16.dp))
+            // TODO only show for activity, not for freetraining
             SmallButton(
                 text = "Activity Remarks ($activityRemarksCount)",
                 icon = Lsc.icons.activities,

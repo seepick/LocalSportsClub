@@ -34,9 +34,15 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
                 if (activity.state == ActivityState.Booked) {
                     append("${Lsc.icons.reservedEmoji} ")
                 }
+                if (activity.remarkRating != null) {
+                    append("${activity.remarkRating.emoji} ")
+                }
                 append(activity.name)
                 if (activity.teacher != null) {
                     append(" /${activity.teacher}")
+                    if (activity.teacherRemarkRating != null) {
+                        append(" ${activity.teacherRemarkRating.emoji}")
+                    }
                 }
             }
         }, sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })

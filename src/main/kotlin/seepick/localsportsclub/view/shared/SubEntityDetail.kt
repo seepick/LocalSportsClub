@@ -64,7 +64,8 @@ fun SubEntityDetail(
 
     Column(modifier = modifier) {
         Tooltip(subEntity.name) {
-            TitleText(subEntity.name)
+            val remarkRatingEmoji = subEntity.maybeActivity?.remarkRating?.let { "${it.emoji} " } ?: ""
+            TitleText(remarkRatingEmoji + subEntity.name)
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -117,6 +118,7 @@ fun SubEntityDetail(
                         append(subEntity.category.nameAndMaybeEmoji)
                         if (subEntity is SubEntity.ActivityEntity) {
                             subEntity.activity.teacher?.also { append(" with $it") }
+                            subEntity.activity.teacherRemarkRating?.emoji?.let { append(" $it") }
                             append(" (${subEntity.activity.spotsLeft} spots)")
                         }
                     },
