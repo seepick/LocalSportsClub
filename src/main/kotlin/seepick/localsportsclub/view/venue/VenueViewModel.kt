@@ -11,6 +11,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
+import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SelectedItemType
 import seepick.localsportsclub.view.shared.SharedModel
@@ -27,6 +28,7 @@ class VenueViewModel(
     venueService: VenueService,
     fileResolver: FileResolver,
     private val clock: Clock,
+    remarkViewModel: RemarkViewModel,
 ) : ScreenViewModel<Venue, VenueSearch>(
     dataStorage,
     bookingService,
@@ -38,6 +40,7 @@ class VenueViewModel(
     venueService,
     fileResolver,
     clock,
+    remarkViewModel,
 ) {
 
     override val tableColumns = venuesTableColumns(clock.today())

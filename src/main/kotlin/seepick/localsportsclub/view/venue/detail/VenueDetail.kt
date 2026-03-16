@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -72,6 +74,10 @@ fun VenueDetail(
     freetraining: Freetraining?,
     venueEdit: VenueEditModel,
     onUpdateVenue: () -> Unit,
+    activityRemarksCount: Int,
+    teacherRemarksCount: Int,
+    onViewActivityRemarks: () -> Unit,
+    onViewTeacherRemarks: () -> Unit,
     onActivityClicked: ((Activity) -> Unit)?,
     showLinkedVenues: Boolean,
     onVenueSelected: (Venue) -> Unit,
@@ -207,10 +213,24 @@ fun VenueDetail(
         NotesTextField(
             notes = notes, setter = notesSetter, modifier = Modifier.heightIn(min = 500.dp).weight(1f)
         )
-        Button(
-            onClick = onUpdateVenue,
-            enabled = !venueEdit.isClean() && !isSyncing,
-        ) { Text("Update") }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = onUpdateVenue,
+                enabled = !venueEdit.isClean() && !isSyncing,
+            ) { Text("Update") }
+            Spacer(Modifier.width(16.dp))
+            SmallButton(
+                text = "Activity Remarks ($activityRemarksCount)",
+                icon = Lsc.icons.activities,
+                onClick = onViewActivityRemarks,
+            )
+            Spacer(Modifier.width(5.dp))
+            SmallButton(
+                text = "Teacher Remarks ($teacherRemarksCount)",
+                icon = Lsc.icons.teachers,
+                onClick = onViewTeacherRemarks,
+            )
+        }
 
         if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
             DropDownTextField(
@@ -293,6 +313,25 @@ private fun calcTableHeights(
         freetrainingsCalcRows + activityLeftovers, freetrainingsCount
     )
 }
+
+@Composable
+fun SmallButton(
+    text: String,
+    icon: ImageVector? = null,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+        modifier = Modifier.height(25.dp),
+    ) {
+        if (icon != null) {
+            Icon(imageVector = icon, contentDescription = null)
+        }
+        Text(text, fontSize = 10.sp)
+    }
+}
+
 
 private fun calcRows(reducedVSpace: Boolean, min: Int, max: Int, rowEstimatedHeight: Int, windowHeight: Int): Int {
     val gap = 850 + (if (reducedVSpace) 120 else 0)

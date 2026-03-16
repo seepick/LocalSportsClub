@@ -37,6 +37,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 
@@ -59,6 +60,7 @@ fun <T : HasLabel> DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean = false,
+    slimDisplayHeight: Dp = 26.dp,
 ) {
     _DropDownTextField(
         label = label,
@@ -69,6 +71,7 @@ fun <T : HasLabel> DropDownTextField(
         textSize = textSize,
         textFieldEdits = textFieldEdits,
         useSlimDisplay = useSlimDisplay,
+        slimDisplayHeight = slimDisplayHeight,
     )
 }
 
@@ -83,6 +86,7 @@ fun <T> DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean = false,
+    slimDisplayHeight: Dp = 26.dp,
 ) {
     _DropDownTextField(
         label = label,
@@ -94,6 +98,7 @@ fun <T> DropDownTextField(
         textSize = textSize,
         textFieldEdits = textFieldEdits,
         useSlimDisplay = useSlimDisplay,
+        slimDisplayHeight = slimDisplayHeight,
     )
 }
 
@@ -108,6 +113,7 @@ private fun <T> _DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean,
+    slimDisplayHeight: Dp,
 ) {
     val selectedItemLabel = if (selectedItem == null) {
         label ?: ""

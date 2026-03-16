@@ -12,4 +12,6 @@ fun exposedPersistenceModule(config: LscConfig) = module {
     single { ExposedActivityRepo } bind ActivityRepo::class
     single { ExposedFreetrainingRepo } bind FreetrainingRepo::class
     single { ExposedSinglesRepo } bind SinglesRepo::class
+    single { ExposedActivityRemarkRepo } bind ActivityRemarkRepo::class
+    single { ExposedTeacherRemarkRepo } bind TeacherRemarkRepo::class
 }

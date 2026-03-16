@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.ImageBitmap
@@ -36,6 +37,7 @@ object LscIcons {
     val ratingIndicator = VisualIndicator.EmojiIndicator(ratingEmoji)
     val categoryIndicator = VisualIndicator.EmojiIndicator("🗂️")
     val activities: ImageVector = Icons.Default.SportsGymnastics
+    val teachers: ImageVector = Icons.Default.Face
     val activitiesIndicator = VisualIndicator.VectorIndicator(activities)
     val freetrainings = Icons.Default.FitnessCenter
     val freetrainingsIndicator = VisualIndicator.VectorIndicator(freetrainings)

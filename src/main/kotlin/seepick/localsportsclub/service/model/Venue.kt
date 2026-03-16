@@ -85,6 +85,9 @@ class Venue(
     var visitLimits: VisitLimits? by mutableStateOf(visitLimits)
     var lastSync: LocalDate? by mutableStateOf(lastSync)
 
+    val activityRemarks = mutableStateListOf<ActivityRemark>()
+    val teacherRemarks = mutableStateListOf<TeacherRemark>()
+
     private val mutableActivities = mutableStateListOf<Activity>()
     val activities: List<Activity> = mutableActivities
     private val mutableFreetrainings = mutableStateListOf<Freetraining>()

@@ -39,6 +39,10 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedSinglesRepo.select()
             ExposedSinglesRepo.insert(Arb.singlesDbo().next())
             ExposedSinglesRepo.update(Arb.singlesDbo().next())
+
+            ExposedTeacherRemarkRepo.reset(venue1.id, listOf(Arb.teacherRemarkDbo().next().copy(venueId = venue1.id)))
+            ExposedTeacherRemarkRepo.selectAll()
+
             keepAliveConnection.close()
         }
     }

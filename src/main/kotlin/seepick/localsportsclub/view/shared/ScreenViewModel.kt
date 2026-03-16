@@ -49,6 +49,7 @@ import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableNavigation
 import seepick.localsportsclub.view.common.table.navigate
+import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
 import java.util.concurrent.atomic.AtomicBoolean
@@ -64,6 +65,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val venueService: VenueService,
     private val fileResolver: FileResolver,
     private val clock: Clock,
+    private val remarkViewModel: RemarkViewModel,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
     private val log = logger {}
@@ -192,6 +194,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
             isSyncActivityPossible = false
             onItemSelected(FreetrainingSelected(freetraining))
         }
+    }
+
+    fun onViewActivityRemarks() {
+        remarkViewModel.showActivityRemarks(selectedVenue.value!!)
+    }
+
+    fun onViewTeacherRemarks() {
+        remarkViewModel.showTeacherRemarks(selectedVenue.value!!)
     }
 
     fun onItemNavigation(navigation: TableNavigation, currentItem: ITEM) {

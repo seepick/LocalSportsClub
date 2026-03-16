@@ -182,4 +182,41 @@
         <sql>alter table VENUES drop column VISIT_LIMITS</sql>
         <sql>alter table VENUES add column VISIT_LIMITS varchar(32)</sql>
     </changeSet>
+
+    <changeSet id="8" author="owner" failOnError="true">
+        <createTable tableName="ACTIVITY_REMARKS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REMARK" type="longvarchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="RATING" type="varchar(32)"><!-- enum by name -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="VENUE_ID" type="integer">
+                <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_ACTIVITY_REMARKS_VENUE_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="TEACHER_REMARKS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REMARK" type="longvarchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="RATING" type="varchar(32)"><!-- enum by name -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="VENUE_ID" type="integer">
+                <constraints nullable="false" references="VENUES(ID)" foreignKeyName="FK_TEACHER_REMARKS_VENUE_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

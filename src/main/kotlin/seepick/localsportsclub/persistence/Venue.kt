@@ -1,7 +1,6 @@
 package seepick.localsportsclub.persistence
 
 import com.github.seepick.uscclient.model.City
-import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.venue.VisitLimits
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -44,35 +43,7 @@ data class VenueDbo(
     val visitLimits: VisitLimits?,
     val lastSync: LocalDate?,
 ) {
-    companion object {
-        val dummy = VenueDbo(
-            id = 999,
-            name = "Josef Sutton",
-            slug = "netus",
-            facilities = "alienum",
-            cityId = City.Amsterdam.id,
-            officialWebsite = null,
-            rating = 4,
-            notes = "malorum",
-            imageFileName = null,
-            postalCode = "quem",
-            street = "scripserit",
-            addressLocality = "inimicus",
-            latitude = "1.0",
-            longitude = "1.5",
-            description = "cetero",
-            importantInfo = null,
-            openingTimes = null,
-            planId = Plan.UscPlan.Medium.id,
-            isFavorited = false,
-            isWishlisted = false,
-            isHidden = false,
-            isAutoSync = false,
-            isDeleted = false,
-            visitLimits = null,
-            lastSync = null,
-        )
-    }
+    companion object {}
 
     override fun toString() =
         "VenueDbo[" +
@@ -150,11 +121,9 @@ object ExposedVenueRepo : VenueRepo {
 
     override fun insert(venue: VenueDbo): VenueDbo = transaction {
         log.debug { "Inserting $venue" }
-        val nextId =
-            VenuesTable.select(VenuesTable.id).orderBy(VenuesTable.id, order = SortOrder.DESC).limit(1).toList()
-                .firstOrNull()?.let {
-                    it[VenuesTable.id].value + 1
-                } ?: 1
+        val nextId = VenuesTable.select(VenuesTable.id)
+            .orderBy(VenuesTable.id, order = SortOrder.DESC)
+            .limit(1).toList().firstOrNull()?.let { it[VenuesTable.id].value + 1 } ?: 1
         VenuesTable.insert {
             it[id] = nextId
             it[name] = venue.name

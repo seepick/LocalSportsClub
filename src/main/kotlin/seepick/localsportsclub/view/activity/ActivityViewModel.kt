@@ -12,6 +12,7 @@ import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.common.VisualIndicator
+import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.shared.ScreenViewModel
 import seepick.localsportsclub.view.shared.SharedModel
 import java.time.LocalDate
@@ -29,6 +30,7 @@ class ActivityViewModel(
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
     fileResolver: FileResolver,
+    remarkViewModel: RemarkViewModel,
 ) : ScreenViewModel<Activity, ActivitySearch>(
     dataStorage,
     bookingService,
@@ -40,6 +42,7 @@ class ActivityViewModel(
     venueService,
     fileResolver,
     clock,
+    remarkViewModel,
 ) {
 
     override val tableColumns = activitiesTableColumns(clock)
