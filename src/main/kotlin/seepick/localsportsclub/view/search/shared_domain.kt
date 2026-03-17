@@ -9,6 +9,6 @@ fun <E : HasDistance> AbstractSearch<E>.newDistanceSearchOption() = newDoubleSea
     label = "Distance",
     initialValue = 1.0,
     initialComparator = ComparingNumericComparator.Lower,
-    visualIndicator = Lsc.icons.distanceEmojiIndicator,
+    visualIndicator = Lsc.icons.distanceIndicator,
     extractor = { it.distanceInKm },
 )

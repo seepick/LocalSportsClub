@@ -1,16 +1,10 @@
 package seepick.localsportsclub.view.common.table
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.model.Venue
-import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.ModifierWith
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
@@ -51,40 +45,4 @@ fun <T> tableColumnVenueImage(venueMapper: (T) -> Venue): TableColumn<T> = Table
         }
     },
     sorting = SortableColumn.Disabled,
-)
-
-fun <T> tableColumnFavorited(isFavorited: (T) -> Boolean): TableColumn<T> = iconImageColumn(
-    header = Lsc.icons.favoritedIndicator,
-    flagExtractor = isFavorited, Icons.Lsc.favorited2,
-    tooltip = "Favorited",
-    initialSortDirection = SortDirection.Desc,
-)
-
-fun <T> tableColumnWishlisted(isWishlisted: (T) -> Boolean): TableColumn<T> = iconImageColumn(
-    header = Lsc.icons.wishlistedIndicator,
-    flagExtractor = isWishlisted,
-    icons = Icons.Lsc.wishlisted2,
-    tooltip = "Wishlisted",
-    initialSortDirection = SortDirection.Desc,
-)
-
-private fun <T> iconImageColumn(
-    header: VisualIndicator,
-    flagExtractor: (T) -> Boolean,
-    icons: Pair<ImageBitmap, ImageBitmap>,
-    tooltip: String?,
-    initialSortDirection: SortDirection = SortDirection.Asc,
-): TableColumn<T> = TableColumn(
-    header = header,
-    size = WidthOrWeight.Width(30.dp),
-    renderer = CellRenderer.CustomRenderer { item, col ->
-        Row(ModifierWith(col.size).height(30.dp), horizontalArrangement = Arrangement.Center) {
-            if (flagExtractor(item)) {
-                Image(icons.first, null)
-            }
-        }
-    },
-    sortValueExtractor = { flagExtractor(it) },
-    tooltip = tooltip,
-    initialSortDirection = initialSortDirection,
 )

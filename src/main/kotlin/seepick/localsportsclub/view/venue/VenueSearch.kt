@@ -27,7 +27,7 @@ class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: (
     ) { it.activities.filter { !it.isInPast(today) }.size }
     val reservations = newIntSearchOption(
         label = "Reservations",
-        visualIndicator = Lsc.icons.reservedEmojiIndicator,
+        visualIndicator = Lsc.icons.reservedIndicator,
         initialValue = 0,
         initialComparator = FullNumericComparator.Bigger,
     ) {

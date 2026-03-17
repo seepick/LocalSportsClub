@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +47,6 @@ import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LinkTonalButton
 import seepick.localsportsclub.view.common.LongText
 import seepick.localsportsclub.view.common.Lsc
-import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
 import seepick.localsportsclub.view.common.RatingPanelWidth
@@ -107,14 +107,22 @@ fun VenueDetail(
             }
             Spacer(Modifier.width(5.dp))
             Column {
-                SelectionContainer {
-                    Text(buildString {
-                        append(venue.plan.emoji)
-                        if (venue.categories.isNotEmpty()) {
-                            append(" | ")
-                            append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
-                        }
-                    }, fontSize = 11.sp)
+                val text = buildString {
+                    append(venue.plan.emoji)
+                    if (venue.categories.isNotEmpty()) {
+                        append(" | ")
+                        append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
+                    }
+                }
+                Tooltip(text) {
+                    SelectionContainer {
+                        Text(
+                            text = text,
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
                     Tooltip("Open Google Maps / Right click to copy") {
@@ -164,28 +172,36 @@ fun VenueDetail(
                 if (isSyncVenueDetailsInProgress) {
                     CircularProgressIndicator(modifier = Modifier.size((syncSize - 15).dp))
                 } else {
-                    Tooltip("Update venue details; last sync: ${venue.lastSync ?: "never"}\n(Restart the application to show changes)") {
+                    Tooltip("Sync venue details; last sync: ${venue.lastSync ?: "never"}\n(restart the application to display changes)") {
                         TextButton(onClick = onSyncVenueDetails) {
                             Icon(Lsc.icons.manualSync, contentDescription = null)
                         }
                     }
                 }
             }
-            CheckboxTexted("Fav.", venueEdit.isFavorited, images = Icons.Lsc.favorited2, tooltipText = "Favorited")
-            CheckboxTexted("Wish.", venueEdit.isWishlisted, images = Icons.Lsc.wishlisted2, tooltipText = "Wishlisted")
             CheckboxTexted(
-                "Hidden ${LscIcons.hiddenEmoji}",
-                venueEdit.isHidden,
+                icon = Icons.Lsc.favoritedIndicator,
+                checked = venueEdit.isFavorited,
+                tooltipText = "Mark as favorited",
+            )
+            CheckboxTexted(
+                icon = Lsc.icons.wishlistedIndicator,
+                checked = venueEdit.isWishlisted,
+                tooltipText = "Mark as wishlisted",
+            )
+            CheckboxTexted(
+                icon = Lsc.icons.hiddenIndicator,
+                checked = venueEdit.isHidden,
                 modifier = Modifier.height(30.dp),
-                tooltipText = "Hide/Show venue items"
+                tooltipText = "Mark as hidden",
             )
             Spacer(Modifier.width(10.dp))
             CheckboxTexted(
-                label = "Auto-Sync",
-                tooltipText = "Automatically sync activity details on global sync",
+                label = "",
+                tooltipText = "Auto-sync activity details on global sync",
                 checked = venueEdit.isAutoSync,
                 modifier = Modifier.height(30.dp),
-                icon = Icons.Lsc.manualSync,
+                icon = Icons.Lsc.manualSyncIndicator,
             )
         }
         Spacer(Modifier.height(2.dp))

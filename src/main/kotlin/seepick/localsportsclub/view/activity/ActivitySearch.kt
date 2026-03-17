@@ -29,7 +29,7 @@ class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : Ab
         "Date", visualIndicator = Lsc.icons.dateIndicator
     ) { it.dateTimeRange }
     val booked = newBooleanSearchOption(
-        "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedEmojiIndicator
+        "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedIndicator
     ) { it.state == ActivityState.Booked }
     val distance = newDistanceSearchOption()
     val favorited = newBooleanSearchOption(

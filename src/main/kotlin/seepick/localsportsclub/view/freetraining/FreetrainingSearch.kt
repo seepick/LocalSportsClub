@@ -23,7 +23,7 @@ class FreetrainingSearch(
         "Date", initialDate = searchDates.first(), visualIndicator = Lsc.icons.dateIndicator
     ) { it.date }
     val scheduled = newBooleanSearchOption(
-        "Scheduled", initialValue = true, visualIndicator = Lsc.icons.reservedEmojiIndicator
+        "Scheduled", initialValue = true, visualIndicator = Lsc.icons.reservedIndicator
     ) { it.state == FreetrainingState.Scheduled }
     val favorited = newBooleanSearchOption(
         "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator

@@ -8,32 +8,24 @@ import androidx.compose.material.icons.filled.HolidayVillage
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SportsGymnastics
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Suppress("ConstPropertyName")
 object LscIcons {
-    private fun loadIcon(filename: String): ImageBitmap = readImageBitmapFromClasspath("/icons/$filename")
-    val favoritedFull: ImageBitmap = loadIcon("favorite_full.png")
-    val favoritedOutline = loadIcon("favorite_outline.png")
-    val favorited2 = favoritedFull to favoritedOutline
-    val favoritedIndicator = VisualIndicator.BitmapIndicator(favoritedFull)
 
-    val wishlistedFull = loadIcon("wishlist_full.png")
-    val wishlistedOutline = loadIcon("wishlist_outline.png")
-    val wishlisted2 = wishlistedFull to wishlistedOutline
-    val wishlistedIndicator = VisualIndicator.BitmapIndicator(wishlistedFull)
+    const val favoritedEmoji = "❤️"
+    const val wishlistedEmoji = "💡"
+    val favoritedIndicator = VisualIndicator.EmojiIndicator(favoritedEmoji)
+    val wishlistedIndicator = VisualIndicator.EmojiIndicator(wishlistedEmoji)
 
     val dateIndicator = VisualIndicator.EmojiIndicator("📆")
     const val checkedinEmoji = "📝"
     val checkedinIndicator = VisualIndicator.EmojiIndicator(checkedinEmoji)
     const val reservedEmoji = "👟" // booked (activity) or scheduled (freetraining)
-    val reservedEmojiIndicator = VisualIndicator.EmojiIndicator(reservedEmoji)
+    val reservedIndicator = VisualIndicator.EmojiIndicator(reservedEmoji)
     const val distanceEmoji = "🚌"
-    val distanceEmojiIndicator = VisualIndicator.EmojiIndicator(distanceEmoji)
+    val distanceIndicator = VisualIndicator.EmojiIndicator(distanceEmoji)
     const val noshowEmoji = "🚷"
-
-    //    val noshowEmojiIndicator = VisualIndicator.EmojiIndicator(noshowEmoji)
     const val cancelledLateEmoji = "🚯"
     const val hiddenEmoji = "🙈"
     val hiddenIndicator = VisualIndicator.EmojiIndicator(hiddenEmoji)
@@ -50,7 +42,10 @@ object LscIcons {
     val notes = Icons.Default.Description
     val preferences = Icons.Default.Settings
     val manualSync = Icons.Default.Refresh
+    val manualSyncIndicator = manualSync.asIndicator
 }
+
+val ImageVector.asIndicator get() = VisualIndicator.VectorIndicator(this)
 
 @Suppress("UnusedReceiverParameter")
 val Icons.Lsc get() = LscIcons

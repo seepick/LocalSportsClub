@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 sealed interface VisualIndicator {
@@ -21,12 +22,18 @@ sealed interface VisualIndicator {
 }
 
 @Composable
-fun VisualIndicator.composeIt(alpha: Float) {
+fun VisualIndicator.composeIt(
+    alpha: Float,
+    paddingEnd: Dp? = 2.dp,
+) {
+    val modifier2 = Modifier.let {
+        if (paddingEnd != null) it.padding(end = paddingEnd) else it
+    }
     when (this) {
         is VisualIndicator.BitmapIndicator -> Image(
             bitmap = this.icon,
             contentDescription = null, alpha = alpha,
-            modifier = Modifier.height(17.dp).padding(end = 2.dp)
+            modifier = Modifier.height(17.dp).then(modifier2)
         )
 
         is VisualIndicator.VectorIndicator -> Icon(
@@ -36,12 +43,13 @@ fun VisualIndicator.composeIt(alpha: Float) {
 
         is VisualIndicator.StringIndicator -> Text(
             this.label,
-            modifier = Modifier.alpha(alpha).padding(end = 2.dp)
+            modifier = Modifier.alpha(alpha).then(modifier2)
         )
 
         is VisualIndicator.EmojiIndicator -> Text(
             this.emoji,
-            modifier = Modifier.alpha(alpha).padding(end = 2.dp)
+            modifier = Modifier.alpha(alpha)
+                .then(modifier2)
         )
 
         VisualIndicator.NoIndicator -> { /*nothing*/
