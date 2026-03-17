@@ -2,8 +2,6 @@
 
 ## v1.14.0
 
-* 🐞 when activity has teacher (through sync all activities); then do a single activity sync; teacher is gone?!?
-* 🖋 disable fetching details from past events
 * 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🖋 activity has plan, but also venue has plan; clarify!
@@ -14,7 +12,6 @@
     * bottom: general
         * how many years/months active
         * top venues visited (your favorites, basically)
-* venue details sync fails
 
 ## Backlog
 
@@ -30,6 +27,7 @@
 * 🎨 clear color coding: everything clickable is blue
 * 🖋 venue.categories seem not to be static, but dynamic; inferred by/sum-of category of each activity instead?
 
+* 🖋 disable fetching details from past events (???)
 * 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
