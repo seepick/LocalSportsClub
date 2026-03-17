@@ -2,7 +2,6 @@
 
 ## v1.14.0
 
-* 🤖 use implementation(compose.materialIconsExtended) and delete DuplicateIcons.kt again
 * 🖋️ when cancel booking outside cancellation window: display warning-confirmation dialog
 * 🖋 activity has plan, but also venue has plan; clarify!
 * enhance usage statistics:

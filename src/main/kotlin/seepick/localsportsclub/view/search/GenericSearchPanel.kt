@@ -13,11 +13,11 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Icon
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.view.common.Cancel
 import seepick.localsportsclub.view.common.LscHScroll
 import seepick.localsportsclub.view.common.Tooltip
 
