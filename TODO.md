@@ -1,17 +1,5 @@
 # TODO
 
-## v1.14.0
-
-* 🎨 enable tab focus cycling for remark dialog
-* 🎨 rating dropdown vertical less space (A textrield in venue details and B dropdown itself)
-* enhance usage statistics:
-    * top: monthly
-        * rename "venues monthly limit" to "this month's visits" and make it a table (per venue: title, datetime)
-        * average/min/max visits per month
-    * bottom: general
-        * how many years/months active
-        * top venues visited (your favorites, basically)
-
 ## v1.15.0
 
 * 🎨 row bg color in small tables (activity/freetraining); esp. highlight booked ones (also in main/big table); rethink color scheme in general
@@ -72,3 +60,4 @@
 * 🖋 generate and install random UUID locally, and introduce heartbeat to server for usage statistics (opt-in in prefs)
 * 🎨 when update venue leading to sort table change, then auto-scroll there
 * 🖋 string similarity search for "foopar" and find "foobar"
+* 🎨 enable tab focus cycling for remark dialog (textfield consumes tab... not worth it anyways)

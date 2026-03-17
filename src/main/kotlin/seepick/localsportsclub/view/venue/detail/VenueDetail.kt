@@ -114,7 +114,7 @@ fun VenueDetail(
                             append(" | ")
                             append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
                         }
-                    })
+                    }, fontSize = 11.sp)
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
                     Tooltip("Open Google Maps / Right click to copy") {

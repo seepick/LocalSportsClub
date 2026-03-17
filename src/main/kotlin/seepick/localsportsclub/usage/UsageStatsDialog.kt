@@ -24,11 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.github.seepick.uscclient.shared.daysBetween
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.LscVScroll
+import seepick.localsportsclub.view.common.Tooltip
+import java.time.LocalDate
+import kotlin.math.abs
 
 @Composable
 fun UsageStatsDialog(
@@ -40,8 +44,7 @@ fun UsageStatsDialog(
     Dialog(
         onDismissRequest = {
             println("onDismissRequest")
-        },
-        properties = DialogProperties(
+        }, properties = DialogProperties(
             dismissOnClickOutside = true,
         )
     ) {
@@ -50,23 +53,34 @@ fun UsageStatsDialog(
             modifier = Modifier,
         ) {
             Column(
-                Modifier.width(500.dp).height(500.dp)
-                    .padding(20.dp)
+                Modifier.width(500.dp).height(500.dp).padding(20.dp)
             ) {
                 val scrollState = rememberScrollState()
                 Box(Modifier.weight(1.0f, true).fillMaxWidth(1.0f)) {
                     Column(modifier = Modifier.verticalScroll(scrollState)) {
                         Text(
-                            "Usage Statistics", fontWeight = FontWeight.Bold, fontSize = 18.sp,
+                            "Usage Statistics",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
-                        LabeledText("Total Checkins", values.totalCheckins.toString())
+
+                        Text("This Month's Visits:", fontWeight = FontWeight.Bold)
+                        values.monthlyVenueCheckins.forEach {
+                            SelectionContainer {
+                                Text("${it.venue.name}: ${it.checkinsCount}/${it.maxCheckinsMonth ?: "?"}")
+                            }
+                        }
                         Spacer(Modifier.height(5.dp))
                         Text("Recent Penalties:", fontWeight = FontWeight.Bold)
                         val currentYear = clock.now().year
                         values.penalties.forEach {
-                            SelectionContainer {
-                                Text("${it.state.iconStringAndSuffix()}${it.name} @ ${it.from.prettyPrint(currentYear)}")
+                            Tooltip(it.state.label) {
+                                SelectionContainer {
+                                    Text(
+                                        "${it.state.iconStringAndSuffix()}${it.name} @ ${it.from.prettyPrint(currentYear)}"
+                                    )
+                                }
                             }
                         }
                         Spacer(Modifier.height(5.dp))
@@ -77,12 +91,16 @@ fun UsageStatsDialog(
                             }
                         }
                         Spacer(Modifier.height(5.dp))
-                        Text("Venues Monthly Limit:", fontWeight = FontWeight.Bold)
-                        values.venueCheckins.forEach {
+                        Text("Top Venues:", fontWeight = FontWeight.Bold)
+                        values.topVenues.forEach {
                             SelectionContainer {
-                                Text("${it.venue.name}: ${it.checkinsCount}/${it.maxCheckinsMonth ?: "?"}")
+                                Text("${it.venue.name}: ${it.checkinsCount}")
                             }
                         }
+                        Spacer(Modifier.height(5.dp))
+                        LabeledText("Total Checkins", values.totalCheckins.toString())
+                        Spacer(Modifier.height(5.dp))
+                        LabeledText("Active For", renderDaysNicely(values.firstCheckinDate, clock.today()))
                     }
                     LscVScroll(rememberScrollbarAdapter(scrollState))
                 }
@@ -94,5 +112,18 @@ fun UsageStatsDialog(
                 }
             }
         }
+    }
+}
+
+fun renderDaysNicely(start: LocalDate, today: LocalDate): String {
+    val years = today.year - start.year
+    val days = abs(today.daysBetween(start.withYear(today.year)))
+    return buildString {
+        if (years > 0) {
+            append("$years year")
+            append(if (years == 1) "" else "s")
+            append(" and ")
+        }
+        append("$days days")
     }
 }

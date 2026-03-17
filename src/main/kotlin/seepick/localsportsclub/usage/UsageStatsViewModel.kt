@@ -12,6 +12,7 @@ import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.sameYearMonth
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.singles.SinglesService
+import java.time.LocalDate
 
 
 class UsageStatsViewModel(
@@ -23,10 +24,12 @@ class UsageStatsViewModel(
 ) : ViewModel() {
 
     private val numberOfRecentPenalties = 3
-    private val numberOfTopCategories = 5
+    private val numberOfTopCategories = 3
+    private val numberOfTopVenues = 3
     val values by lazy { loadValues() }
 
     private fun loadValues(): StatsValues {
+        val venues = venueRepo.selectAllAnywhere().associateBy { it.id }
         val activities = activityRepo.selectAllAnywhere()
         val checkedinActivities = activities.filter { it.isCheckedin }
         val checkedinFreetrainings = freetrainingRepo.selectAllAnywhere().filter { it.isCheckedin }
@@ -42,16 +45,28 @@ class UsageStatsViewModel(
                 .map { CategoryCount(it.key, it.value) }
                 .sortedByDescending { it.checkinsCount }
                 .take(numberOfTopCategories),
-            venueCheckins = loadVenueCheckins(checkedinActivities, checkedinFreetrainings),
+            topVenues = loadTopVenueCheckins(venues, checkedinActivities),
+            monthlyVenueCheckins = loadMonthlyVenueCheckins(venues, checkedinActivities, checkedinFreetrainings),
+            firstCheckinDate = checkedinActivities.minBy { it.from }.from.toLocalDate(),
         )
     }
 
-    private fun loadVenueCheckins(
+    private fun loadTopVenueCheckins(
+        venues: Map<Int, VenueDbo>,
+        checkedinActivities: List<ActivityDbo>,
+    ): List<VenueCheckin> =
+        checkedinActivities
+            .groupBy { it.venueId }
+            .map { VenueCheckin(venue = venues[it.key]!!, checkinsCount = it.value.size, maxCheckinsMonth = null) }
+            .sortedByDescending { it.checkinsCount }
+            .take(numberOfTopVenues)
+
+    private fun loadMonthlyVenueCheckins(
+        venues: Map<Int, VenueDbo>,
         checkedinActivities: List<ActivityDbo>,
         checkedinFreetrainings: List<FreetrainingDbo>,
     ): List<VenueCheckin> {
         val now = clock.today()
-        val venues = venueRepo.selectAllAnywhere().associateBy { it.id }
         return ((checkedinActivities.filter { it.from.sameYearMonth(now) }.groupingBy { it.venueId }.eachCount()
             .map {
                 val venue = venues[it.key]!!
@@ -89,7 +104,9 @@ data class StatsValues(
     val totalCheckins: Int,
     val penalties: List<ActivityDbo>,
     val topCategories: List<CategoryCount>,
-    val venueCheckins: List<VenueCheckin>, // per month, NOT period (max 6)
+    val topVenues: List<VenueCheckin>,
+    val monthlyVenueCheckins: List<VenueCheckin>, // per month, NOT period (max 6)
+    val firstCheckinDate: LocalDate,
 ) {
     companion object
 }

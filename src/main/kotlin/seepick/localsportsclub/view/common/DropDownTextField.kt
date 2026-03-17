@@ -59,6 +59,8 @@ fun <T : HasLabel> DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean = false,
+    textAlign: TextAlign = TextAlign.Center,
+    paddingMode: PaddingMode = PaddingMode.Zero,
 ) {
     _DropDownTextField(
         label = label,
@@ -69,6 +71,8 @@ fun <T : HasLabel> DropDownTextField(
         textSize = textSize,
         textFieldEdits = textFieldEdits,
         useSlimDisplay = useSlimDisplay,
+        textAlign = textAlign,
+        paddingMode = paddingMode,
     )
 }
 
@@ -83,6 +87,8 @@ fun <T> DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean = false,
+    textAlign: TextAlign = TextAlign.Center,
+    paddingMode: PaddingMode = PaddingMode.Zero,
 ) {
     _DropDownTextField(
         label = label,
@@ -94,6 +100,8 @@ fun <T> DropDownTextField(
         textSize = textSize,
         textFieldEdits = textFieldEdits,
         useSlimDisplay = useSlimDisplay,
+        textAlign = textAlign,
+        paddingMode = paddingMode,
     )
 }
 
@@ -108,6 +116,8 @@ private fun <T> _DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean,
+    textAlign: TextAlign = TextAlign.Center,
+    paddingMode: PaddingMode = PaddingMode.Zero,
 ) {
     val selectedItemLabel = if (selectedItem == null) {
         label ?: ""
@@ -134,10 +144,10 @@ private fun <T> _DropDownTextField(
                     value = selectedItemLabel,
                     onValueChange = { /* no-op */ },
                     readOnly = true,
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                    textStyle = LocalTextStyle.current.copy(textAlign = textAlign),
                     enabled = enabled,
                     singleLine = true,
-                    paddingMode = PaddingMode.Zero,
+                    paddingMode = paddingMode,
                     interactionSource = source,
                     modifier = Modifier
                         .widthOrFill(textSize)
