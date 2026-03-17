@@ -3,7 +3,9 @@
 A custom desktop client for UrbanSportsClub which allows significantly improved search queries (in speed and
 functionality) as well as enhanced metadata for easier management of future activities to visit.
 
-See: https://seepick.github.io/LocalSportsClub/
+Landing page: https://seepick.github.io/LocalSportsClub/
+
+![Screenshot](docs/screenshot-small.png)
 
 ## ⚠️ Disclaimer
 

@@ -5,58 +5,52 @@
         body {
             background: black;
         }
-
         * {
             color: white;
             font-family: "Goudy Bookletter 1911", sans-serif;
         }
-
         #root {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translateX(-50%) translateY(-50%);
         }
-
-        #title {
-            font-size: 1.4em;
-        }
-
         .centered {
             text-align: center;
         }
-
+        a {
+            text-decoration: underline;
+            color: #5c95e8;
+        }
         a:hover {
             text-decoration: none;
-            color: lightgray;
         }
-
         #logo {
             padding-bottom: 20px;
+        }
+        #logo, #screenshot {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
         }
     </style>
 </head>
 <body>
 <div id="root">
     <div class="centered"><img id="logo" src="logo.png" alt="logo"/></div>
-    <div id="title" class="centered"><b>LocalSportsClub</b> - An UrbanSportsClub client
+    <div class="centered" style="font-weight:bold; font-size:2.5em;">LocalSportsClub</div>
+    <div class="centered" style="font-size:1.6em;">An UrbanSportsClub client</div>
+    <div>
+        <a href="screenshot-big.png" title="View bigger screenshot">
+            <img src="screenshot-small.png" id="screenshot" alt="screenshot"/>
+        </a>
     </div>
-    <div><a href="screenshot-big.png" title="View bigger screenshot"><img src="screenshot-small.png" alt="screenshot"/></a>
-    </div>
-    <div class="centered">Download:
+    <div class="centered" style="font-size:15pt;">Download:
         <a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.exe"
            title="Download for Windows">Windows</a>,
         <a href="https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub.dmg"
            title="Download for macOS">macOS</a>
     </div>
-    <div class="centered" style="font-size:0.8em;">
-        (Solution for macOs <a href="macos-not_opened.html">&quot;Not Opened&quot;-Problem</a>)
-    </div>
-    <div class="centered" style="padding-top:10px;">
-        Contact:
-        <a href="mailto:see.pick.mail@gmail.com" title="Send email to: see.pick.mail@gmail.com ">
-            see.pick.mail@gmail.com
-        </a>
+    <div class="centered" style="font-size:0.6em; padding-top:4px;">
+        (Solution for macOS <a href="macos-not_opened.html">Not Opened-Problem</a>)
     </div>
 </div>
 </body>
