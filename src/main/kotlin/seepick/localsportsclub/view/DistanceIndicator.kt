@@ -17,6 +17,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.HasDistance
 
 @Composable
@@ -38,7 +39,7 @@ private fun calcDistanceColor(percentage: Double): Color = Color.hsv(
     hue = 120f * (1f - percentage.toFloat()),
     saturation = 1f,
     value = 1f,
-    alpha = 0.5f,
+    alpha = 0.4f,
 )
 
 @Composable
@@ -70,7 +71,7 @@ fun DistanceIndicator(item: HasDistance) {
                 x = width / 2.0f - textSize.size.width / 2.0f,
                 y = height / 2.0f - textSize.size.height / 2.0f
             ),
-            style = TextStyle(color = Color.Black, fontSize = 12.sp),
+            style = TextStyle(color = Lsc.colors.onPrimary, fontSize = 12.sp),
         )
     }
 }

@@ -19,7 +19,7 @@ data class VenueDbo(
     val id: Int,
     val name: String,
     val slug: String,
-    val facilities: String, // categories "," separated
+    val facilities: String, // categories "," separated ... seems as just inferred by activities categories
     /** @see [City] */
     val cityId: Int,
     val officialWebsite: String?,

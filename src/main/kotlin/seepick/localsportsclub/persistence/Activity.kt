@@ -31,7 +31,7 @@ data class ActivityDbo(
     val from: LocalDateTime,
     val to: LocalDateTime,
     val cancellationLimit: LocalDateTime?,
-    val planId: Int,
+    val planId: Int, // seems as always identical with its venue.plan (?!)
 
     val spotsLeft: Int, // updateable
     val teacher: String?, // updateable

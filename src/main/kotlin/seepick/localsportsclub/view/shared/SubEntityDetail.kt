@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -180,7 +179,7 @@ fun SubEntityDetail(
                             maxLines = 2,
                             text = "Cancel until:\n${cancellationLimit.prettyPrint(clock.today().year)}",
                             fontSize = 10.sp,
-                            color = if (clock.now() > cancellationLimit) Color.Red else Color.Green,
+                            color = if (clock.now() <= cancellationLimit) Lsc.colors.cancelBookingWithin else Lsc.colors.cancelBookingOutside,
                         )
                     }
                 }

@@ -20,6 +20,10 @@ interface LscColors {
     // btn bg (smooth white): #
 // btn disabled bg: A3BCED
 // btn disabled text color: white over 95% alpha
+
+    val cancelBookingWithin: Color
+    val cancelBookingOutside: Color
+
     val isFavorited: Color get() = Color(0x66C12600)
     val isWishlisted: Color get() = Color(0x66D0C742)
     val backgroundToolip: Color
@@ -97,7 +101,8 @@ object DarkLscColors : LscColors {
     override val error = colorUnset
     override val onError = colorUnset
     override val backgroundToolip = backgroundVariant
-    //  = Color(0xFF)
+    override val cancelBookingWithin = Color(0xFF3EDE5F)
+    override val cancelBookingOutside = Color(0xFFEA6065)
 }
 
 object LightLscColors : LscColors {
@@ -117,6 +122,8 @@ object LightLscColors : LscColors {
     override val error = colorUnset
     override val onError = colorUnset
     override val backgroundToolip = Color(255, 255, 210)
+    override val cancelBookingWithin = Color(0xFF4CA631)
+    override val cancelBookingOutside = Color(0xFFB3192A)
 }
 
 object Lsc {
