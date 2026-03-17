@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.view.common.WidthOrWeight
 
 @Composable
@@ -20,6 +22,7 @@ fun RowScope.TableTextCell(
     fontWeight: FontWeight? = null,
     textAlign: TextAlign? = null,
     modifier: Modifier = Modifier,
+    paddingLeft: Boolean = false,
 ) {
     Text(
         text = text,
@@ -30,6 +33,7 @@ fun RowScope.TableTextCell(
         overflow = TextOverflow.Ellipsis,
         modifier = applyColSize(Modifier, size)
             .align(Alignment.CenterVertically)
+            .let { if (paddingLeft) it.padding(start = 8.dp) else it }
             .then(modifier)
     )
 }

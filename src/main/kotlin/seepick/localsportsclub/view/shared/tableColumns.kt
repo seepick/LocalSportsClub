@@ -1,5 +1,7 @@
 package seepick.localsportsclub.view.shared
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -11,7 +13,9 @@ import seepick.localsportsclub.service.model.HasCategory
 import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasPlan
 import seepick.localsportsclub.service.model.HasVenue
+import seepick.localsportsclub.view.DistanceIndicator
 import seepick.localsportsclub.view.common.LscIcons
+import seepick.localsportsclub.view.common.ModifierWith
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
@@ -36,9 +40,16 @@ fun <T : HasVenue> RatingColumn() = TableColumn<T>(
 )
 
 fun <T : HasDistance> DistanceColumn() = TableColumn<T>(
-    VisualIndicator.StringIndicator("km"),
-    WidthOrWeight.Width(35.dp),
-    CellRenderer.TextRenderer(textAlign = TextAlign.Right) { it.distanceInKm })
+    header = VisualIndicator.StringIndicator("km"),
+    size = WidthOrWeight.Width(35.dp),
+    sortValueExtractor = { it.distanceInKm },
+    renderer = CellRenderer.CustomRenderer { item, col ->
+        Row(
+            modifier = ModifierWith(col.size).height(30.dp),
+        ) {
+            DistanceIndicator(item)
+        }
+    })
 
 fun <T : HasPlan> PlanColumn() = TableColumn<T>(
     header = VisualIndicator.StringIndicator(Plan.UscPlan.Large.emoji),
@@ -54,8 +65,7 @@ fun <T : HasPlan> PlanColumn() = TableColumn<T>(
 fun <T : HasCategory> CategoryColumn() = TableColumn<T>(
     VisualIndicator.StringIndicator("Category"),
     WidthOrWeight.Width(80.dp),
-    CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji }
-)
+    CellRenderer.TextRenderer { it.category.nameAndMaybeEmoji })
 
 fun <T : HasVenue> VenueColumn() = TableColumn<T>(
     VisualIndicator.StringIndicator("Venue"),

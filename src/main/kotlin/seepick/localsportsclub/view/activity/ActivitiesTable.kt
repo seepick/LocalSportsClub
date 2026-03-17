@@ -27,25 +27,29 @@ import seepick.localsportsclub.view.shared.VenueColumn
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue },
     TableColumn(
-        VisualIndicator.StringIndicator("Name"),
-        WidthOrWeight.Weight(0.6f),
-        CellRenderer.TextRenderer(valueExtractor = { activity ->
-            buildString {
-                if (activity.state == ActivityState.Booked) {
-                    append("${Lsc.icons.reservedEmoji} ")
-                }
-                if (activity.remarkRating != null) {
-                    append("${activity.remarkRating.emoji} ")
-                }
-                append(activity.name)
-                if (activity.teacher != null) {
-                    append(" /${activity.teacher}")
-                    if (activity.teacherRemarkRating != null) {
-                        append(" ${activity.teacherRemarkRating.emoji}")
+        header = VisualIndicator.StringIndicator("Name"),
+        size = WidthOrWeight.Weight(0.6f),
+        renderer = CellRenderer.TextRenderer(
+            sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() },
+            paddingLeft = true,
+            valueExtractor = { activity ->
+                buildString {
+                    if (activity.state == ActivityState.Booked) {
+                        append("${Lsc.icons.reservedEmoji} ")
+                    }
+                    if (activity.remarkRating != null) {
+                        append("${activity.remarkRating.emoji} ")
+                    }
+                    append(activity.name)
+                    if (activity.teacher != null) {
+                        append(" /${activity.teacher}")
+                        if (activity.teacherRemarkRating != null) {
+                            append(" ${activity.teacherRemarkRating.emoji}")
+                        }
                     }
                 }
-            }
-        }, sortExtractor = { (if (it.teacher == null) it.name else "${it.name} /${it.teacher}").lowercase() })
+            },
+        )
     ),
     VenueColumn(),
     CategoryColumn(),

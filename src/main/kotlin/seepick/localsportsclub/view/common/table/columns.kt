@@ -43,8 +43,8 @@ data class TableColumn<T>(
 }
 
 fun <T> tableColumnVenueImage(venueMapper: (T) -> Venue): TableColumn<T> = TableColumn(
-    header = VisualIndicator.StringIndicator("Image"),
-    size = WidthOrWeight.Width(70.dp),
+    header = VisualIndicator.StringIndicator(""),
+    size = WidthOrWeight.Width(53.dp),
     renderer = CellRenderer.CustomRenderer { item, col ->
         Row(ModifierWith(col.size).height(30.dp)) {
             VenueImage(venueMapper(item))

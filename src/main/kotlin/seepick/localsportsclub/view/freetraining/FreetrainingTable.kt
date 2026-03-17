@@ -24,9 +24,13 @@ import seepick.localsportsclub.view.shared.VenueColumn
 fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
     tableColumnVenueImage { it.venue },
     TableColumn(
-        VisualIndicator.StringIndicator("Name"),
-        WidthOrWeight.Weight(0.6f),
-        CellRenderer.TextRenderer({ it.name }, { it.name.lowercase() })
+        header = VisualIndicator.StringIndicator("Name"),
+        size = WidthOrWeight.Weight(0.6f),
+        renderer = CellRenderer.TextRenderer(
+            valueExtractor = { it.name },
+            sortExtractor = { it.name.lowercase() },
+            paddingLeft = true,
+        )
     ),
     VenueColumn(),
     CategoryColumn(),

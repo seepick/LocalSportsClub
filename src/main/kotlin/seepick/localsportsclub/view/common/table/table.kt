@@ -126,7 +126,10 @@ fun <T> Table(
                     primaryColor = if (customTableItemBgColorEnabled && item is TableItemBgColor) item.tableBgColor else null
                 )
 
-                Row(Modifier.background(color = bgColor).onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                Row(
+                    Modifier
+                    .background(color = bgColor)
+                    .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                     .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                     // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
                     .let {

@@ -30,13 +30,14 @@ import java.time.LocalDate
 fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it },
     TableColumn(
-        VisualIndicator.StringIndicator("Name"),
-        WidthOrWeight.Weight(0.7f),
-        CellRenderer.CustomRenderer { venue, col ->
+        header = VisualIndicator.StringIndicator("Name"),
+        size = WidthOrWeight.Weight(0.7f),
+        renderer = CellRenderer.CustomRenderer { venue, col ->
             TableTextCell(
                 text = venue.name,
                 size = col.size,
                 textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
+                paddingLeft = true,
             )
         },
         sortValueExtractor = { it.name.lowercase() }),
@@ -91,6 +92,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
             valueExtractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
+            paddingRight = true,
         ),
         initialSortDirection = SortDirection.Desc,
     ),

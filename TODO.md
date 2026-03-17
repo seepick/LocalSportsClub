@@ -18,11 +18,11 @@
 
 ## Backlog
 
+* 🎨 enable tab focus cycling for remark dialog
 * 🎨 row bg color in small tables (activity/freetraining); esp. highlight booked ones (also in main/big table); rethink color scheme in general
 * 🎨 disable booking-button if class start is in the past
 * 🎨 RemarkRating will change bg color (together with favorited/wishlisted red/yellow; need to mix colors)
 * 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
-* 🎨 table column distance as "mini progress bar" (easier visually to grasp)
 * 🖋 autosync on startup checkbox in prefs
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable
 * 🎨 rating dropdown vertical less space (in venue details)

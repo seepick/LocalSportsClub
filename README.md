@@ -5,7 +5,7 @@ functionality) as well as enhanced metadata for easier management of future acti
 
 Landing page: https://seepick.github.io/LocalSportsClub/
 
-![Screenshot](docs/screenshot-small.png)
+[![Screenshot](docs/screenshot-small.png)](docs/screenshot-big.png)
 
 ## ⚠️ Disclaimer
 
