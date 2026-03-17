@@ -49,6 +49,7 @@ private fun MonthlyVisitsPanel(
         MonthlyVisitsPanel(model(checkins = 1, booked = 2), modifier)
         MonthlyVisitsPanel(model(checkins = 4), modifier)
         MonthlyVisitsPanel(model(checkins = 5), modifier)
+        MonthlyVisitsPanel(model(checkins = 5, booked = 1), modifier)
         MonthlyVisitsPanel(model(checkins = 6), modifier)
         MonthlyVisitsPanel(model(checkins = 2, booked = 4), modifier)
     }

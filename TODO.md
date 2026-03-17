@@ -2,6 +2,9 @@
 
 ## v1.14.0
 
+* 🎨 disable booking-button if class start is in the past
+* 🎨 enable tab focus cycling for remark dialog
+* 🎨 rating dropdown vertical less space (A textrield in venue details and B dropdown itself)
 * enhance usage statistics:
     * top: monthly
         * rename "venues monthly limit" to "this month's visits" and make it a table (per venue: title, datetime)
@@ -9,9 +12,6 @@
     * bottom: general
         * how many years/months active
         * top venues visited (your favorites, basically)
-* 🎨 disable booking-button if class start is in the past
-* 🎨 enable tab focus cycling for remark dialog
-* 🎨 rating dropdown vertical less space
 
 ## v1.15.0
 
