@@ -1,6 +1,6 @@
 # TODO
 
-## v1.13.0
+## v1.14.0
 
 * 🐞 when activity has teacher (through sync all activities); then do a single activity sync; teacher is gone?!?
 * 🖋 disable fetching details from past events
