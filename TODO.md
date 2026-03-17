@@ -2,16 +2,18 @@
 
 ## v1.15.0
 
+* 🎨 remark auto suggest dropdown, filtered by input, select to autofill
 * 🎨 row bg color in small tables (activity/freetraining); esp. highlight booked ones (also in main/big table); rethink color scheme in general
-* 🎨 RemarkRating will change bg color (together with favorited/wishlisted red/yellow; need to mix colors)
-* 🎨 vertical space venue notes/tables size divider adjustable/draggable
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
-* 🎨 make everything clickable is blue (and don't use blue for non-clickables)
-* 🖋 autosync on startup checkbox in prefs
 * 🎨 if scroll through table with keys and hold, then short delay and burst
+* 🎨 teacher name in different color
 
 ## Backlog
 
+* 🎨 make everything clickable is blue (and don't use blue for non-clickables)
+* 🖋 autosync on startup checkbox in prefs
+* 🎨 RemarkRating will change bg color (together with favorited/wishlisted red/yellow; need to mix colors)
+* 🎨 vertical space venue notes/tables size divider adjustable/draggable
 * 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
 * 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
@@ -41,23 +43,3 @@
 * 🐞DateParser dutch locale doesn't work when packaged as app...?!
 * 🎨don't display distance (column/search) if home coordinates not set
 * 🎨 disable booking-button if class start is in the past
-
-## Nope
-
-* 🎨ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
-* 🤖the syncer should not add the year information; return incomplete day+month only (let logic determine year)
-* 🎨could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
-* 🖋️MAP component: https://wiki.openstreetmap.org/wiki/JMapViewer (compose google map only for android, not desktop)
-* 🤖RowScope.TableHeader missing VisualIndicator for bitmap and vector
-* 🤖rework `workParallel` as service with interface, so can be mocked out easily during testing (?)
-* 🖋️what if the membership.plan changes?! needs to be overwritten (startup, or pref change)
-* 🤖when book activity which can't be booked, parse response and show proper message; not needed, just pass through msg
-* 🤖 investigate: room (flow-enabled sqlite MPP abstraction) instead exposed?
-* 🤖 switch to ZonedDate? UTC already for DNYS.
-* 🖋 display GCal name, once connected tested ok (would need to persist; when to fetch; baeh...)
-* 🎨 notes with rich format text-editor (bold, italic, colors, fontsize)
-* 🎨 adaptive layout: depending on window size, change layout (add columns, change formatting)
-* 🖋 generate and install random UUID locally, and introduce heartbeat to server for usage statistics (opt-in in prefs)
-* 🎨 when update venue leading to sort table change, then auto-scroll there
-* 🖋 string similarity search for "foopar" and find "foobar"
-* 🎨 enable tab focus cycling for remark dialog (textfield consumes tab... not worth it anyways)
