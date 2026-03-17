@@ -34,7 +34,7 @@ data class VenueDbo(
     val description: String,
     val importantInfo: String?,
     val openingTimes: String?,
-    val planId: Int,
+    val planId: Int, // actually not really of value, as we book activities only (not venues) where the plan is relevant
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
     val isHidden: Boolean,

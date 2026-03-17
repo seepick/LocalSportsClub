@@ -63,7 +63,6 @@ import java.net.URLEncoder
 import kotlin.math.max
 import kotlin.math.min
 
-
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun VenueDetail(
@@ -108,10 +107,14 @@ fun VenueDetail(
             }
             Spacer(Modifier.width(5.dp))
             Column {
-                if (venue.categories.isNotEmpty()) {
-                    SelectionContainer {
-                        Text(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
-                    }
+                SelectionContainer {
+                    Text(buildString {
+                        append(venue.plan.emoji)
+                        if (venue.categories.isNotEmpty()) {
+                            append(" | ")
+                            append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
+                        }
+                    })
                 }
                 FlowRow(verticalArrangement = Arrangement.Bottom) {
                     Tooltip("Open Google Maps / Right click to copy") {

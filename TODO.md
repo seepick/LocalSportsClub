@@ -2,7 +2,6 @@
 
 ## v1.14.0
 
-* 🎨 disable booking-button if class start is in the past
 * 🎨 enable tab focus cycling for remark dialog
 * 🎨 rating dropdown vertical less space (A textrield in venue details and B dropdown itself)
 * enhance usage statistics:
@@ -53,6 +52,7 @@
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
 * 🐞DateParser dutch locale doesn't work when packaged as app...?!
 * 🎨don't display distance (column/search) if home coordinates not set
+* 🎨 disable booking-button if class start is in the past
 
 ## Nope
 

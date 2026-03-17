@@ -71,7 +71,7 @@ fun DistanceIndicator(item: HasDistance) {
                 x = width / 2.0f - textSize.size.width / 2.0f,
                 y = height / 2.0f - textSize.size.height / 2.0f
             ),
-            style = TextStyle(color = Lsc.colors.onPrimary, fontSize = 12.sp),
+            style = TextStyle(color = Lsc.colors.onBackground, fontSize = 12.sp),
         )
     }
 }
