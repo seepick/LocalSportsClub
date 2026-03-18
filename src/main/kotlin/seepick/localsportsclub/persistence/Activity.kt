@@ -34,9 +34,9 @@ data class ActivityDbo(
     val planId: Int, // plans for activities can change within the same venue (see e.g. "Het Gymlokaal Noord")
 
     val spotsLeft: Int, // updateable
+    val state: ActivityState, // updateable
     val teacher: String?, // updateable
     val description: String?, // updateable
-    val state: ActivityState, // updateable
 ) {
     val isBooked = state == ActivityState.Booked
     val isCheckedin = state == ActivityState.Checkedin

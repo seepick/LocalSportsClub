@@ -27,7 +27,7 @@ object LocalSportsClubDevApp {
 //                )
             },
             gcalModule = noopGcalModule(),
-            uscClientModule = mockUscClientModule(),
+//            uscClientModule = mockUscClientModule(),
 //            syncModule = devSyncModule(SyncMode.Dummy, config),
 //            persistenceModule = inmemoryPersistenceModule(),
         )

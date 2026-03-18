@@ -23,7 +23,7 @@ class DnysActivityDetailsFetcher(
             it.first.venueId == venue.id && it.first.teacher == null
         }
         if (dnysActivities.isEmpty()) return original
-        log.info { "Enriching DNYS activity details." }
+        log.info { "Enriching DNYS activity details for ${dnysActivities.size} DNYS events without teacher." }
         progress.onProgress("DNYS")
         val dates = dnysActivities.map { it.first.from }.sorted()
         val dateRange = DateRange(dates.first().toLocalDate(), dates.last().toLocalDate())
@@ -31,13 +31,12 @@ class DnysActivityDetailsFetcher(
         val dnysOverrides = mutableMapOf<ActivityDbo, ActivityDetails>()
         dnysEvents.forEach { event ->
             val matchingActivity = dnysActivities.firstOrNull { orig ->
-                // manually adjust UTC to amsterdam+1
-                orig.first.from == event.dateTimeRange.from.plusHours(1) &&
-                        orig.first.to == event.dateTimeRange.to.plusHours(1)
-                // check title too??
+                orig.first.from == event.dateTimeRange.from.plusHours(2) &&
+                        orig.first.to == event.dateTimeRange.to.plusHours(2)
             } ?: return@forEach
             dnysOverrides += matchingActivity.first to matchingActivity.second.copy(teacher = event.teacher)
         }
+        log.debug { "Found ${dnysOverrides.size} DNYS event overrides." }
         val result = original.toMutableList()
         result.removeAll { dnysOverrides.containsKey(it.first) }
         result += dnysOverrides.toList()

@@ -9,10 +9,11 @@
     * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
     * checkedin/booked = blue (dark/bright)
     * regard: venue rating + remark ratings to "intensify"
-* 🐞🖋 DNYS sync doesnt go beyond a few days...?!?
 
 ## Backlog
 
+* 🖋 ad DNYS auto-sync: use timezones to auto-adjust UTC to amsterdam+1/2
+  orig.first.from == event.dateTimeRange.from.plusHours(2) &&
 * 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories)
 * 🎨 make everything clickable is blue (and don't use blue for non-clickables)
 * 🖋 autosync on startup checkbox in prefs

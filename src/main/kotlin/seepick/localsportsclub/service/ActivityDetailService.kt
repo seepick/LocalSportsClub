@@ -33,6 +33,7 @@ class ActivityDetailService(
     }
 
     suspend fun syncBulk(activities: List<ActivityDbo>) {
+        log.debug { "syncBulk(activities.size=${activities.size})" }
         val activitiesDone = AtomicInteger(0)
         val activityAndDetails = workParallel(minOf(5, activities.size), activities) { activity ->
             val details = api.fetchActivityDetails(activity.id)
@@ -49,9 +50,9 @@ class ActivityDetailService(
     }
 
     private fun updateDboAndDispatch(activity: ActivityDbo, details: ActivityDetails) {
-        val oldActivityDbo = activityRepo.selectById(activity.id)!!
+        val oldActivityDbo = activityRepo.selectById(activity.id)!! // could also just use `activity`?!
         val newActivityDbo = oldActivityDbo.copy(
-            teacher = details.teacher,
+            teacher = details.teacher ?: activity.teacher,
             description = details.description,
             spotsLeft = details.spotsLeft,
             cancellationLimit = details.cancellationDateLimit,
