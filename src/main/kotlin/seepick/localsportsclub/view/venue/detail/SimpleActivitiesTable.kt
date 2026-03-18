@@ -12,6 +12,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -21,14 +22,17 @@ import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
+import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.common.table.TableNavigation
-
+import kotlin.math.abs
 
 val SimpleActivitiesTable_rowEstimatedHeight = 18
 
@@ -74,14 +78,13 @@ fun SimpleActivitiesTable(
             Text("$upcomingCount Activities$pastText:")
         }
         Table(
-            items = activities,
+            items = activities.map { SimpleActivity(it) },
             headerEnabled = false,
-            selectedItem = selectedActivity,
-            onItemClicked = onActivitySelected,
-            onItemNavigation = onItemNavigation,
-            boxModifier = Modifier
-                .height(height)
-                .then(modifier),
+            selectedItem = selectedActivity?.toSimpleActivity(),
+            onItemClicked = { onActivitySelected?.invoke(it.activity) },
+            onItemNavigation = { nav, item -> onItemNavigation(nav, item.activity) },
+            customTableItemBgColorEnabled = true,
+            boxModifier = Modifier.height(height).then(modifier),
             columns = listOf(
                 TableColumn(
                     header = VisualIndicator.NoIndicator,
@@ -89,19 +92,18 @@ fun SimpleActivitiesTable(
                     renderer = CellRenderer.TextRenderer(
                         textAlign = TextAlign.Right,
                         paddingRight = true,
-                    ) { it.dateTimeRange.prettyPrint(currentYear) },
-                ),
-                TableColumn(
+                    ) { it.activity.dateTimeRange.prettyPrint(currentYear) },
+                ), TableColumn(
                     header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Weight(1.0f),
                     renderer = CellRenderer.TextRenderer {
                         buildString {
-                            append(it.state.iconStringAndSuffix())
-                            it.remarkRating?.emoji?.also { append("$it ") }
-                            append(it.name)
-                            if (it.teacher != null) {
-                                append(" /${it.teacher}")
-                                it.teacherRemarkRating?.emoji?.also { append(" $it") }
+                            append(it.activity.state.iconStringAndSuffix())
+                            it.activity.remarkRating?.emoji?.also { append("$it ") }
+                            append(it.activity.name)
+                            if (it.activity.teacher != null) {
+                                append(" /${it.activity.teacher}")
+                                it.activity.teacherRemarkRating?.emoji?.also { append(" $it") }
                             }
                         }
 
@@ -112,4 +114,41 @@ fun SimpleActivitiesTable(
             sortDirection = SortDirection.Asc, // doesnt matter; will be ignored
         )
     }
+}
+
+fun Activity.toSimpleActivity() = SimpleActivity(this)
+
+data class SimpleActivity(
+    val activity: Activity,
+) : TableItemBgColor {
+    override val tableBgColor = activity.simpleTableBgColor()
+}
+
+fun Activity.simpleTableBgColor(): Color? {
+    return when (state) {
+        ActivityState.Blank -> {
+            val weighted = (remarkRating?.weightedValue ?: 0) + (teacherRemarkRating?.weightedValue ?: 0)
+            val max = RemarkRating.Amazing.weightedValue * 2
+            val min = RemarkRating.Bad.weightedValue * 2
+            val range = max + abs(min)
+            val weightedAdjusted = weighted + abs(min)
+            val percentage = weightedAdjusted.toFloat() / range.toFloat()
+            if (weighted == 0) null else calcRatingColor(percentage)
+        }
+
+        ActivityState.Booked -> Lsc.colors.booked
+        ActivityState.Checkedin -> Lsc.colors.checkins
+        ActivityState.Noshow -> Color.Red
+        ActivityState.CancelledLate -> Color.Yellow
+    }
+}
+
+/* 1.0 => green, 0.5 => orange, 0.0 => red */
+private fun calcRatingColor(distance: Float): Color {
+    require(distance in 0.0..1.0)
+    return Color.hsv(
+        hue = 120f * distance,
+        saturation = 1f,
+        value = 1f,
+    )
 }

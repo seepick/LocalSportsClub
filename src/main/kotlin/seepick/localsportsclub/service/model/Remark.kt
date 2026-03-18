@@ -24,11 +24,12 @@ enum class RemarkRating(
     val label: String,
     val emoji: String,
     val numericValue: Int,
+    val weightedValue: Int,
 ) {
-    Amazing("Amazing", "💖", 3),
-    Good("Good", "💚", 2),
-    Meh("Meh", "😕", 1),
-    Bad("Bad", "❌", 0),
+    Amazing("Amazing", "💖", 3, 3),
+    Good("Good", "💚", 2, 2),
+    Meh("Meh", "😕", 1, -1),
+    Bad("Bad", "❌", 0, -3),
     ;
 
     companion object {

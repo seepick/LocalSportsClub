@@ -2,11 +2,15 @@
 
 ## v1.15.0
 
-* 🎨 row bg color in small tables (activity/freetraining); esp. highlight booked ones (also in main/big table); rethink color scheme in general
+* 🎨 teacher name in different color with annotated string
+
+* 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)
+    * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
+    * checkedin/booked = blue (dark/bright)
+    * regard: venue rating + remark ratings to "intensify"
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 if scroll through table with keys and hold, then short delay and burst
-* 🎨 teacher name in different color
-* DNYS sync doesnt go beyond a few days...?!?
+* 🖋 DNYS sync doesnt go beyond a few days...?!?
 
 ## Backlog
 
