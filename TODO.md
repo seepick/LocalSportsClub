@@ -2,19 +2,18 @@
 
 ## v1.15.0
 
+* 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
+* 🎨 rearrange venue detail (put rating down to row of buttons; what to do with visit limits?)
+    * vertical center (sync button + checkboxes); bit more vspace between image and text
 * 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)
     * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
     * checkedin/booked = blue (dark/bright)
     * regard: venue rating + remark ratings to "intensify"
-* 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
-* 🎨 if scroll through table with keys and hold, then short delay and burst
-* 🖋 DNYS sync doesnt go beyond a few days...?!?
-* 🎨 rearrange venue detail (put rating down to row of buttons; what to do with visit limits?)
-    * vertical center (sync button + checkboxes)
-    * bit more vspace between image and text
+* 🐞🖋 DNYS sync doesnt go beyond a few days...?!?
 
 ## Backlog
 
+* 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories)
 * 🎨 make everything clickable is blue (and don't use blue for non-clickables)
 * 🖋 autosync on startup checkbox in prefs
 * 🎨 RemarkRating will change bg color (together with favorited/wishlisted red/yellow; need to mix colors)

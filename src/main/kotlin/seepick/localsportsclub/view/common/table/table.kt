@@ -35,6 +35,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.rowBgColor
@@ -62,7 +63,6 @@ fun <T> List<T>.navigate(currentlySelected: T, navigation: TableNavigation): T? 
     }
 }
 
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun <T> Table(
@@ -83,15 +83,32 @@ fun <T> Table(
 ) {
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
-
+    var activeNavigation by remember { mutableStateOf<TableNavigation?>(null) }
+    LaunchedEffect(activeNavigation, selectedItem) {
+        if (activeNavigation != null && selectedItem != null && onItemNavigation != null) {
+            delay(200)
+            while (activeNavigation != null) {
+                onItemNavigation(activeNavigation!!, selectedItem)
+                delay(200)
+            }
+        }
+    }
     Box(modifier = Modifier.focusRequester(focusRequester).onFocusChanged { state ->
         isFocused = state.isFocused
     }.onKeyEvent {
-        if (selectedItem != null && onItemNavigation != null && isFocused && it.type == KeyEventType.KeyUp) {
-            if (it.key == Key.DirectionUp) {
-                onItemNavigation(TableNavigation.Up, selectedItem)
-            } else if (it.key == Key.DirectionDown) {
-                onItemNavigation(TableNavigation.Down, selectedItem)
+        if (selectedItem != null && onItemNavigation != null && isFocused) {
+            if (it.type == KeyEventType.KeyDown && activeNavigation == null) {
+                val nav = when {
+                    it.key == Key.DirectionUp -> TableNavigation.Up
+                    it.key == Key.DirectionDown -> TableNavigation.Down
+                    else -> null
+                }
+                if (nav != null) {
+                    activeNavigation = nav
+                    onItemNavigation(nav, selectedItem)
+                }
+            } else if (it.type == KeyEventType.KeyUp && (it.key == Key.DirectionUp || it.key == Key.DirectionDown)) {
+                activeNavigation = null
             }
         }
         false
