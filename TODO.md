@@ -2,8 +2,6 @@
 
 ## v1.15.0
 
-* 🎨 teacher name in different color with annotated string
-
 * 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)
     * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
     * checkedin/booked = blue (dark/bright)

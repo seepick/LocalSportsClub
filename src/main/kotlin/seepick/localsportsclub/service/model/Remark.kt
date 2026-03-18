@@ -1,8 +1,10 @@
 package seepick.localsportsclub.service.model
 
+import androidx.compose.ui.graphics.Color
 import seepick.localsportsclub.persistence.ActivityRemarkDbo
 import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo
+import seepick.localsportsclub.view.common.darker
 
 interface Remark {
     val id: Int
@@ -25,11 +27,12 @@ enum class RemarkRating(
     val emoji: String,
     val numericValue: Int,
     val weightedValue: Int,
+    val color: Color,
 ) {
-    Amazing("Amazing", "💖", 3, 3),
-    Good("Good", "💚", 2, 2),
-    Meh("Meh", "😕", 1, -1),
-    Bad("Bad", "❌", 0, -3),
+    Amazing("Amazing", "💖", 3, 3, Color.Green),
+    Good("Good", "💚", 2, 2, Color.Green.darker().darker()),
+    Meh("Meh", "😕", 1, -1, Color.Yellow),
+    Bad("Bad", "❌", 0, -3, Color.Red),
     ;
 
     companion object {

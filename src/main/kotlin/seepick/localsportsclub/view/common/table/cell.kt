@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -14,9 +15,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.view.common.WidthOrWeight
 
+sealed interface CellValue {
+    class StringValue(val string: String) : CellValue
+    class AnnotatedStringValue(val annotated: AnnotatedString) : CellValue
+    class IntValue(val int: Int) : CellValue
+
+    companion object {
+        operator fun invoke(string: String) = StringValue(string)
+        operator fun invoke(annotated: AnnotatedString) = AnnotatedStringValue(annotated)
+        operator fun invoke(int: Int) = IntValue(int)
+    }
+}
+
 @Composable
 fun RowScope.TableTextCell(
-    text: String,
+    value: CellValue,
     size: WidthOrWeight,
     textDecoration: TextDecoration? = null,
     fontWeight: FontWeight? = null,
@@ -24,36 +37,73 @@ fun RowScope.TableTextCell(
     modifier: Modifier = Modifier,
     paddingLeft: Boolean = false,
 ) {
-    Text(
-        text = text,
-        textDecoration = textDecoration,
-        maxLines = 1,
-        textAlign = textAlign,
-        fontWeight = fontWeight,
-        overflow = TextOverflow.Ellipsis,
-        modifier = applyColSize(Modifier, size)
-            .align(Alignment.CenterVertically)
-            .let { if (paddingLeft) it.padding(start = 8.dp) else it }
-            .then(modifier)
-    )
+    val finalModifier = applyColSize(Modifier, size)
+        .align(Alignment.CenterVertically)
+        .let { if (paddingLeft) it.padding(start = 8.dp) else it }
+        .then(modifier)
+
+    when (value) {
+        is CellValue.AnnotatedStringValue -> Text(
+            text = value.annotated,
+            textDecoration = textDecoration,
+            maxLines = 1,
+            textAlign = textAlign,
+            fontWeight = fontWeight,
+            overflow = TextOverflow.Ellipsis,
+            modifier = finalModifier
+        )
+
+        is CellValue.StringValue -> Text(
+            text = value.string,
+            textDecoration = textDecoration,
+            maxLines = 1,
+            textAlign = textAlign,
+            fontWeight = fontWeight,
+            overflow = TextOverflow.Ellipsis,
+            modifier = finalModifier
+        )
+
+        is CellValue.IntValue -> Text(
+            text = value.int.toString(),
+            textDecoration = textDecoration,
+            maxLines = 1,
+            textAlign = textAlign,
+            fontWeight = fontWeight,
+            overflow = TextOverflow.Ellipsis,
+            modifier = finalModifier
+        )
+    }
 }
 
 sealed interface CellRenderer<T> {
     data class TextRenderer<T>(
-        val valueExtractor: (T) -> Any,
+        val valueExtractor: (T) -> CellValue,
         val sortExtractor: (T) -> Any?,
         val textAlign: TextAlign? = null,
         val paddingLeft: Boolean = false,
         val paddingRight: Boolean = false,
     ) : CellRenderer<T> {
         companion object {
-            operator fun <T> invoke(
+            fun <T> forString(
                 textAlign: TextAlign? = null,
                 paddingLeft: Boolean = false,
                 paddingRight: Boolean = false,
-                extractor: (T) -> Any,
+                extractor: (T) -> String,
             ): TextRenderer<T> = TextRenderer(
-                valueExtractor = extractor,
+                valueExtractor = { CellValue(extractor(it)) },
+                sortExtractor = extractor,
+                textAlign = textAlign,
+                paddingLeft = paddingLeft,
+                paddingRight = paddingRight,
+            )
+
+            fun <T> forInt(
+                textAlign: TextAlign? = null,
+                paddingLeft: Boolean = false,
+                paddingRight: Boolean = false,
+                extractor: (T) -> Int,
+            ): TextRenderer<T> = TextRenderer(
+                valueExtractor = { CellValue(extractor(it)) },
                 sortExtractor = extractor,
                 textAlign = textAlign,
                 paddingLeft = paddingLeft,

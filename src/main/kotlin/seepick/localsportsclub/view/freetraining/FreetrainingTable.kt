@@ -12,6 +12,7 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
+import seepick.localsportsclub.view.common.table.CellValue
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
@@ -27,7 +28,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         header = VisualIndicator.StringIndicator("Name"),
         size = WidthOrWeight.Weight(0.6f),
         renderer = CellRenderer.TextRenderer(
-            valueExtractor = { it.name },
+            valueExtractor = { CellValue(it.name) },
             sortExtractor = { it.name.lowercase() },
             paddingLeft = true,
         )
@@ -38,7 +39,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         header = VisualIndicator.StringIndicator("Date"),
         size = WidthOrWeight.Width(80.dp),
         renderer = CellRenderer.TextRenderer(
-            valueExtractor = { it.date.prettyPrint(clock.today().year) },
+            valueExtractor = { CellValue(it.date.prettyPrint(clock.today().year)) },
             sortExtractor = { it.date },
             textAlign = TextAlign.Right,
         )

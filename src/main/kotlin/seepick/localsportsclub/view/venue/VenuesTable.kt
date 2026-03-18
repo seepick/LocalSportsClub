@@ -19,6 +19,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
+import seepick.localsportsclub.view.common.table.CellValue
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableTextCell
@@ -34,7 +35,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         size = WidthOrWeight.Weight(0.7f),
         renderer = CellRenderer.CustomRenderer { venue, col ->
             TableTextCell(
-                text = venue.name,
+                value = CellValue(venue.name),
                 size = col.size,
                 textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
                 paddingLeft = true,
@@ -42,25 +43,27 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         },
         sortValueExtractor = { it.name.lowercase() }),
     TableColumn(
-        Lsc.icons.activitiesIndicator,
-        WidthOrWeight.Width(40.dp),
-        TextRenderer(textAlign = TextAlign.Right) { it.activities.filter { !it.isInPast(today) }.size },
+        header = Lsc.icons.activitiesIndicator,
         tooltip = "Available activities",
+        size = WidthOrWeight.Width(40.dp),
+        renderer = TextRenderer.forInt(textAlign = TextAlign.Right) {
+            it.activities.filter { !it.isInPast(today) }.size
+        },
         initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
         header = Lsc.icons.freetrainingsIndicator,
         size = WidthOrWeight.Width(40.dp),
-        renderer = TextRenderer(textAlign = TextAlign.Right) {
+        renderer = TextRenderer.forInt(textAlign = TextAlign.Right) {
             it.freetrainings.filter { !it.isInPast(today) }.size
         },
         tooltip = "Available freetrainings",
         initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
-        VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
-        WidthOrWeight.Width(30.dp),
-        TextRenderer(textAlign = TextAlign.Right) {
+        header = VisualIndicator.EmojiIndicator(LscIcons.reservedEmoji),
+        size = WidthOrWeight.Width(30.dp),
+        renderer = TextRenderer.forInt(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
         },
         tooltip = "Booked activities/freetrainings",
@@ -69,8 +72,9 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     TableColumn(
         header = VisualIndicator.EmojiIndicator(LscIcons.checkedinEmoji),
         size = WidthOrWeight.Width(30.dp),
-        renderer = TextRenderer(textAlign = TextAlign.Right) {
-            it.activities.filter { it.state == ActivityState.Checkedin }.size + it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
+        renderer = TextRenderer.forInt(textAlign = TextAlign.Right) {
+            it.activities.filter { it.state == ActivityState.Checkedin }.size +
+                    it.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
         },
         tooltip = "Total past check-ins",
         initialSortDirection = SortDirection.Desc,
@@ -79,7 +83,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         header = VisualIndicator.EmojiIndicator(LscIcons.hiddenEmoji),
         tooltip = "Hidden",
         size = WidthOrWeight.Width(40.dp),
-        renderer = TextRenderer(textAlign = TextAlign.Center) {
+        renderer = TextRenderer.forString(textAlign = TextAlign.Center) {
             if (it.isHidden) LscIcons.hiddenEmoji else ""
         },
         initialSortDirection = SortDirection.Desc,
@@ -89,7 +93,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         tooltip = "The last time you visited the venue",
         size = WidthOrWeight.Width(70.dp),
         renderer = TextRenderer(
-            valueExtractor = { it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "" },
+            valueExtractor = { CellValue(it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "") },
             sortExtractor = { it.lastVisit() },
             textAlign = TextAlign.Right,
             paddingRight = true,
@@ -98,8 +102,6 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     ),
     DistanceColumn(),
     RatingColumn(),
-//    tableColumnFavorited { it.isFavorited },
-//    tableColumnWishlisted { it.isWishlisted },
 )
 
 @Composable

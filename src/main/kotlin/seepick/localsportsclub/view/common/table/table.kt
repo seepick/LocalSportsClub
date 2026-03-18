@@ -128,17 +128,17 @@ fun <T> Table(
 
                 Row(
                     Modifier
-                    .background(color = bgColor)
-                    .onPointerEvent(PointerEventType.Enter) { isHovered = true }
-                    .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-                    // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
-                    .let {
-                        if (onItemClicked == null) it
-                        else it.onClick {
-                            focusRequester.requestFocus()
-                            onItemClicked(item)
-                        }
-                    }) {
+                        .background(color = bgColor)
+                        .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+                        .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+                        // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners
+                        .let {
+                            if (onItemClicked == null) it
+                            else it.onClick {
+                                focusRequester.requestFocus()
+                                onItemClicked(item)
+                            }
+                        }) {
                     columns.forEach { col ->
                         when (col.renderer) {
                             is CellRenderer.CustomRenderer -> {
@@ -147,7 +147,7 @@ fun <T> Table(
 
                             is CellRenderer.TextRenderer -> {
                                 TableTextCell(
-                                    text = col.renderer.valueExtractor(item).toString(),
+                                    value = col.renderer.valueExtractor(item),
                                     size = col.size,
                                     textAlign = col.renderer.textAlign,
                                     modifier = Modifier.let { m1 ->

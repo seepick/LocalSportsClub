@@ -58,7 +58,7 @@ fun SimpleFreetrainingsTable(
                 TableColumn(
                     size = WidthOrWeight.Width(170.dp),
                     header = VisualIndicator.NoIndicator,
-                    renderer = CellRenderer.TextRenderer(
+                    renderer = CellRenderer.TextRenderer.forString(
                         textAlign = TextAlign.Right,
                         paddingRight = true,
                     ) { it.date.prettyPrint(currentYear) },
@@ -66,7 +66,7 @@ fun SimpleFreetrainingsTable(
                 TableColumn(
                     size = WidthOrWeight.Weight(1.0f),
                     header = VisualIndicator.NoIndicator,
-                    renderer = CellRenderer.TextRenderer {
+                    renderer = CellRenderer.TextRenderer.forString {
                         "${it.state.iconStringAndSuffix()}${it.name}"
                     },
                 )

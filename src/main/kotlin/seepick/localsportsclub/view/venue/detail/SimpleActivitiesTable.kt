@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,12 @@ import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.RemarkRating
+import seepick.localsportsclub.view.activity.appendTeacher
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
+import seepick.localsportsclub.view.common.table.CellValue
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableItemBgColor
@@ -89,25 +92,26 @@ fun SimpleActivitiesTable(
                 TableColumn(
                     header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Width(190.dp),
-                    renderer = CellRenderer.TextRenderer(
+                    renderer = CellRenderer.TextRenderer.forString(
                         textAlign = TextAlign.Right,
                         paddingRight = true,
-                    ) { it.activity.dateTimeRange.prettyPrint(currentYear) },
-                ), TableColumn(
+                        extractor = { it.activity.dateTimeRange.prettyPrint(currentYear) },
+                    ),
+                ),
+                TableColumn(
                     header = VisualIndicator.NoIndicator,
                     size = WidthOrWeight.Weight(1.0f),
-                    renderer = CellRenderer.TextRenderer {
-                        buildString {
-                            append(it.activity.state.iconStringAndSuffix())
-                            it.activity.remarkRating?.emoji?.also { append("$it ") }
-                            append(it.activity.name)
-                            if (it.activity.teacher != null) {
-                                append(" /${it.activity.teacher}")
-                                it.activity.teacherRemarkRating?.emoji?.also { append(" $it") }
-                            }
-                        }
-
-                    },
+                    renderer = CellRenderer.TextRenderer(
+                        sortExtractor = { it.activity.name },
+                        valueExtractor = {
+                            CellValue(buildAnnotatedString {
+                                append(it.activity.state.iconStringAndSuffix())
+                                it.activity.remarkRating?.emoji?.also { append("$it ") }
+                                append(it.activity.name)
+                                appendTeacher(it.activity)
+                            })
+                        },
+                    ),
                 )
             ),
             sortColumn = null,

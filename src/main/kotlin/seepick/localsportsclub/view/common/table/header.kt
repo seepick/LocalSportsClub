@@ -104,7 +104,7 @@ fun RowScope.TableHeader(
                         is VisualIndicator.VectorIndicator -> error("vector indicator not implemented, lol")
                     }
                     TableTextCell(
-                        text = headerText,
+                        value = CellValue(headerText),
                         size = size,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
