@@ -1,6 +1,5 @@
 package seepick.localsportsclub.view.venue.detail
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Icon
@@ -54,10 +53,7 @@ fun SimpleFreetrainingsTable(
             selectedItem = selectedFreetraining,
             onItemClicked = onFreetrainingSelected,
             onItemNavigation = onItemNavigation,
-            boxModifier = Modifier
-                .border(1.dp, Lsc.colors.onSurface)
-                .height(height)
-                .then(modifier),
+            boxModifier = Modifier.height(height).then(modifier),
             columns = listOf(
                 TableColumn(
                     size = WidthOrWeight.Width(170.dp),

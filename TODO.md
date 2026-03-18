@@ -11,6 +11,9 @@
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 if scroll through table with keys and hold, then short delay and burst
 * 🖋 DNYS sync doesnt go beyond a few days...?!?
+* 🎨 rearrange venue detail (put rating down to row of buttons; what to do with visit limits?)
+    * vertical center (sync button + checkboxes)
+    * bit more vspace between image and text
 
 ## Backlog
 
