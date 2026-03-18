@@ -36,6 +36,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -151,7 +152,6 @@ private fun <T> _DropDownTextField(
                     interactionSource = source,
                     modifier = Modifier
                         .widthOrFill(textSize)
-//                        .padding(5.dp)
                         .defaultMinSize(minHeight = 1.dp).height(26.dp)
                         .onGloballyPositioned { coordinates ->
                             textFieldSize = coordinates.size.toSize()
@@ -269,7 +269,7 @@ private fun <T> _DropDownTextField(
                 isMenuExpanded = isMenuExpanded,
                 itemFormatter = itemFormatter,
                 itemAlign = textFieldEdits?.itemAlign,
-                textFieldSize = textFieldSize,
+                width = with(LocalDensity.current) { textFieldSize.width.toDp() },
                 onItemClicked = {
                     onItemSelected(it)
                     onClickFocus()
@@ -280,7 +280,7 @@ private fun <T> _DropDownTextField(
             DropdownMenuX(
                 items = items as List<HasLabel>,
                 isMenuExpanded = isMenuExpanded,
-                textFieldSize = textFieldSize,
+                width = with(LocalDensity.current) { textFieldSize.width.toDp() },
                 itemAlign = textFieldEdits?.itemAlign,
                 onItemClicked = {
                     onItemSelected(it as T)

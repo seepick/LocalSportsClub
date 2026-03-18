@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,12 +25,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.DropDownTextField
+import seepick.localsportsclub.view.common.DropdownMenuX
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.WidthOrFill
+
+@Composable
+fun SuggestTextField(
+    label: String,
+    text: MutableState<String>,
+    suggestions: List<String>,
+    width: Dp = 200.dp,
+    textModifier: Modifier = Modifier,
+) {
+    val dropdownVisible = remember { mutableStateOf(false) }
+    Column {
+        OutlinedTextField(
+            value = text.value,
+            singleLine = true,
+            onValueChange = { text.value = it },
+            label = { Text(label) },
+            modifier = Modifier.width(width)
+                .onFocusChanged { focusState ->
+                    dropdownVisible.value = focusState.isFocused
+                }
+                .then(textModifier),
+        )
+        if (suggestions.isNotEmpty()) {
+            DropdownMenuX(
+                items = suggestions,
+                itemFormatter = { it },
+                isMenuExpanded = dropdownVisible,
+                width = width,
+                onItemClicked = { text.value = it },
+                selectedItem = text.value, // try it, if possible ;)
+            )
+        }
+    }
+}
 
 @Composable
 fun RemarkView(
@@ -55,13 +93,12 @@ fun RemarkView(
         Spacer(Modifier.height(5.dp))
         viewModel.remarks.forEachIndexed { index, remark ->
             Row(verticalAlignment = Alignment.Top) {
-                OutlinedTextField(
-                    value = remark.name,
-                    singleLine = true,
-                    onValueChange = { remark.name = it },
-                    label = { Text("Name") },
-                    modifier = Modifier.width(200.dp)
-                        .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier),
+                SuggestTextField(
+                    text = remark.name,
+                    label = "Name",
+                    width = 300.dp,
+                    suggestions = viewModel.nameSuggestions,
+                    textModifier = if (index == 0) Modifier.focusRequester(focusRequester) else Modifier,
                 )
                 Spacer(Modifier.width(10.dp))
                 DropDownTextField(

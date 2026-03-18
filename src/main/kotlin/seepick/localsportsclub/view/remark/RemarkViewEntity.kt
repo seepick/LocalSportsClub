@@ -12,7 +12,7 @@ class RemarkViewEntity(
     remark: String,
     rating: RemarkRating,
 ) {
-    var name by mutableStateOf(name)
+    var name = mutableStateOf(name)
     var remark by mutableStateOf(remark)
     var rating by mutableStateOf(rating)
 }

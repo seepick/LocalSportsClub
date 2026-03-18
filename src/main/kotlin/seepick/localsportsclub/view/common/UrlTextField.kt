@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -72,7 +71,7 @@ fun CopyTextToClipboard(text: String, content: @Composable () -> Unit) {
         DropdownMenuX(
             items = listOf("Copy"),
             isMenuExpanded = isExpanded,
-            textFieldSize = Size(400f, 0f),
+            width = 100.dp,
             itemFormatter = { it },
             onItemClicked = {
                 clipboard.setText(AnnotatedString(text))

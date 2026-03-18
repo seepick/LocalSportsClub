@@ -2,11 +2,11 @@
 
 ## v1.15.0
 
-* 🎨 remark auto suggest dropdown, filtered by input, select to autofill
 * 🎨 row bg color in small tables (activity/freetraining); esp. highlight booked ones (also in main/big table); rethink color scheme in general
 * 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 if scroll through table with keys and hold, then short delay and burst
 * 🎨 teacher name in different color
+* DNYS sync doesnt go beyond a few days...?!?
 
 ## Backlog
 

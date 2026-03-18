@@ -15,11 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.Lsc
@@ -28,7 +28,7 @@ import seepick.localsportsclub.Lsc
 fun <T : HasLabel> DropdownMenuX(
     items: List<T>,
     isMenuExpanded: MutableState<Boolean>,
-    textFieldSize: Size,
+    width: Dp,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
     itemAlign: TextAlign? = null,
@@ -36,7 +36,7 @@ fun <T : HasLabel> DropdownMenuX(
     _DropdownMenuX(
         items = items,
         isMenuExpanded = isMenuExpanded,
-        textFieldSize = textFieldSize,
+        width = width,
         onItemClicked = onItemClicked,
         selectedItem = selectedItem,
         itemAlign = itemAlign,
@@ -48,7 +48,7 @@ fun <T> DropdownMenuX(
     items: List<T>,
     itemFormatter: (T) -> String,
     isMenuExpanded: MutableState<Boolean>,
-    textFieldSize: Size,
+    width: Dp,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
     itemAlign: TextAlign? = null,
@@ -57,7 +57,7 @@ fun <T> DropdownMenuX(
         items = items,
         isMenuExpanded = isMenuExpanded,
         itemFormatter = itemFormatter,
-        textFieldSize = textFieldSize,
+        width = width,
         onItemClicked = onItemClicked,
         selectedItem = selectedItem,
         itemAlign = itemAlign,
@@ -70,7 +70,7 @@ fun <T> _DropdownMenuX(
     items: List<T>,
     itemFormatter: ((T) -> String)? = null,
     isMenuExpanded: MutableState<Boolean>,
-    textFieldSize: Size,
+    width: Dp,
     onItemClicked: (T) -> Unit,
     selectedItem: T?,
     itemAlign: TextAlign? = null,
@@ -78,7 +78,7 @@ fun <T> _DropdownMenuX(
     DropdownMenu(
         expanded = isMenuExpanded.value,
         onDismissRequest = { isMenuExpanded.value = false },
-        modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+        modifier = Modifier.width(width)
     ) {
         var index = 0
         items.forEach { item ->
@@ -106,7 +106,9 @@ fun <T> _DropdownMenuX(
                     color = Lsc.colors.onBackground,
                     text = if (item is HasLabel) item.label else itemFormatter!!(item),
                     fontSize = 13.sp,
+                    overflow = TextOverflow.Ellipsis,
                     textAlign = itemAlign,
+                    maxLines = 1,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
