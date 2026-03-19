@@ -19,6 +19,10 @@
 
 # Non-Todos
 
+* 🎨disable booking-button if class start is in the past
+* 🖋 search fields provide count already; e.g. category "(20) EMS" (performance impact?!)
+* 🖋 could sync official rating (0.0-5.0 number and total count)
+* 🎨 make rating UI a slider with custom renderer
 * 🎨ScreenTemplate: how to get V-scroll if use Column instead LazyColumn? (need weight 1.0f from Column to fill height)
 * 🤖the syncer should not add the year information; return incomplete day+month only (let logic determine year)
 * 🎨could try to parse venue.openingTimes (standardized text): could shorten it ("Monday 10:00-20:00" -> "Mon 10-20");
