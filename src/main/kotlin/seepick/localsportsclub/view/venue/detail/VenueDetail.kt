@@ -49,7 +49,6 @@ import seepick.localsportsclub.view.common.LongText
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.NotesTextField
 import seepick.localsportsclub.view.common.RatingPanel
-import seepick.localsportsclub.view.common.RatingPanelWidth
 import seepick.localsportsclub.view.common.SmallButton
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
@@ -99,7 +98,7 @@ fun VenueDetail(
         Modifier.fillMaxWidth(1.0f).then(modifier),
     ) {
         TitleText(venue.name, textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null)
-        Row {
+        Row(modifier = Modifier.height(113.dp)) { // enforce height to image's height
             Box(modifier = Modifier.width(200.dp)) {
                 Tooltip("Click to open image carousel") {
                     VenueImage(venue)
@@ -144,41 +143,33 @@ fun VenueDetail(
                         Text("${venue.distanceInKm} km away")
                     }
                 }
-                Column(modifier = Modifier.width(RatingPanelWidth)) {
-                    RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-                    visitsModel?.let { visits ->
-                        MonthlyVisitsPanel(visits, modifier = Modifier.fillMaxWidth().height(20.dp))
-                    }
+                visitsModel?.let { visits ->
+                    MonthlyVisitsPanel(visits, modifier = Modifier.fillMaxWidth().height(20.dp))
                 }
-            }
-        }
-        if (venue.city != configuredCity) {
-            Spacer(Modifier.height(5.dp))
-            LongText(label = "City", text = venue.city.label)
-        }
-
-        LongText(
-            text = venue.description, maxLines = 1, tooltip = "Click to open venue details dialog", onShowLongText = {
-                sharedModel.customDialog.value = CustomDialog(
-                    title = venue.name,
-                    content = { VenueDetailDialogPanel(venue) },
-                    showDismissButton = false,
+                LongText(
+                    text = venue.description,
+                    maxLines = null,
+                    tooltip = "Click to open venue details dialog",
+                    onShowLongText = {
+                        sharedModel.customDialog.value = CustomDialog(
+                            title = venue.name,
+                            content = { VenueDetailDialogPanel(venue) },
+                            showDismissButton = false,
+                        )
+                    },
                 )
-            })
-
-        Row {
-            val syncSize = 40
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
-                if (isSyncVenueDetailsInProgress) {
-                    CircularProgressIndicator(modifier = Modifier.size((syncSize - 15).dp))
-                } else {
-                    Tooltip("Sync venue details; last sync: ${venue.lastSync ?: "never"}\n(restart the application to display changes)") {
-                        TextButton(onClick = onSyncVenueDetails) {
-                            Icon(Lsc.icons.manualSync, contentDescription = null)
-                        }
-                    }
-                }
             }
+        }
+        Spacer(Modifier.height(5.dp))
+
+        if (venue.city != configuredCity) {
+            LongText(label = "City", text = venue.city.label, maxLines = 1)
+            Spacer(Modifier.height(5.dp))
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
+            Spacer(Modifier.width(5.dp))
             CheckboxTexted(
                 icon = Icons.Lsc.favoritedIndicator,
                 checked = venueEdit.isFavorited,
@@ -229,10 +220,22 @@ fun VenueDetail(
             notes = notes, setter = notesSetter, modifier = Modifier.heightIn(min = 500.dp).weight(1f)
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
+            val syncSize = 40
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.width(syncSize.dp).height(syncSize.dp)) {
+                if (isSyncVenueDetailsInProgress) {
+                    CircularProgressIndicator(modifier = Modifier.size((syncSize - 15).dp))
+                } else {
+                    Tooltip("Sync venue details; last sync: ${venue.lastSync ?: "never"}\n(restart the application to display changes)") {
+                        TextButton(onClick = onSyncVenueDetails) {
+                            Icon(Lsc.icons.manualSync, contentDescription = null)
+                        }
+                    }
+                }
+            }
             Button(
                 onClick = onUpdateVenue,
                 enabled = !venueEdit.isClean() && !isSyncing,
-            ) { Text("Update") }
+            ) { Text("Update Venue") }
             Spacer(Modifier.width(16.dp))
             SmallButton(
                 text = "Activity Remarks ($activityRemarksCount)",

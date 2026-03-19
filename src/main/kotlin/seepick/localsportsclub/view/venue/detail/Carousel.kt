@@ -179,7 +179,7 @@ fun CarouselView(
                 )
             } else if (model.totalImageCount > 0) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else {
+            } else if (model.totalImageCount == 0) {
                 Text("No carousel images available", modifier = Modifier.align(Alignment.Center))
             }
         }

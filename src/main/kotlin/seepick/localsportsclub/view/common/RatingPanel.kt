@@ -5,8 +5,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.model.Rating
 
-val RatingPanelWidth = 160.dp
-
 @Composable
 fun RatingPanel(
     selectedRating: Rating,
@@ -18,7 +16,7 @@ fun RatingPanel(
         selectedItem = selectedRating,
         onItemSelected = onRatingSelected,
         enabled = enabled,
-        textSize = WidthOrFill.Width(RatingPanelWidth),
+        textSize = WidthOrFill.Width(160.dp),
         useSlimDisplay = true,
         textAlign = TextAlign.Left,
         paddingMode = PaddingMode.Horizontal,

@@ -2,11 +2,9 @@
 
 ## v1.15.0
 
-* 🎨 rearrange venue detail (put rating down to row of buttons; what to do with visit limits?)
-    * vertical center (sync button + checkboxes); bit more vspace between image and text
 * 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)
     * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
-    * checkedin/booked = blue (dark/bright)
+    * checkedin/booked = NO!blue! reserved for clickables; think of new color (dark/bright)
     * regard: venue rating + remark ratings to "intensify"
 
 ## Backlog
