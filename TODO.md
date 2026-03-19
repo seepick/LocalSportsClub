@@ -2,10 +2,7 @@
 
 ## v1.15.0
 
-* 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)
-    * green = good, red = bad (don't use for favorited! but for noshow/late-cancel)
-    * checkedin/booked = NO!blue! reserved for clickables; think of new color (dark/bright)
-    * regard: venue rating + remark ratings to "intensify"
+* 🎨 rethink general highlight-color scheme
 
 ## Backlog
 
