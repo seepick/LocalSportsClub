@@ -80,6 +80,11 @@ interface LscColors {
     val booked: Color get() = Color(0xFF00A2FF)
     val available: Color get() = Color(0xFF6AC43C)
     val backgroundGray: Color get() = Color(0xFF9B9B9B)
+
+    val remarkRatingAmazing: Color
+    val remarkRatingGood: Color
+    val remarkRatingMeh: Color
+    val remarkRatingBad: Color
 }
 
 private val colorUnset = Color.Red
@@ -103,6 +108,11 @@ object DarkLscColors : LscColors {
     override val backgroundToolip = backgroundVariant
     override val cancelBookingWithin = Color(0xFF3EDE5F)
     override val cancelBookingOutside = Color(0xFFEA6065)
+
+    override val remarkRatingAmazing = Color(0xFF20A819)
+    override val remarkRatingGood = Color(0xFF4F7444)
+    override val remarkRatingMeh = Color(0xFF927444)
+    override val remarkRatingBad = Color(0xFF924944)
 }
 
 object LightLscColors : LscColors {
@@ -124,6 +134,11 @@ object LightLscColors : LscColors {
     override val backgroundToolip = Color(255, 255, 210)
     override val cancelBookingWithin = Color(0xFF4CA631)
     override val cancelBookingOutside = Color(0xFFB3192A)
+
+    override val remarkRatingAmazing = Color(0xFF20A819)
+    override val remarkRatingGood = Color(0xFF4F7444)
+    override val remarkRatingMeh = Color(0xFF927444)
+    override val remarkRatingBad = Color(0xFF924944)
 }
 
 object Lsc {

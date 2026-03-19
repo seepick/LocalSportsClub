@@ -25,7 +25,8 @@ import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.RemarkRating
-import seepick.localsportsclub.view.activity.appendTeacher
+import seepick.localsportsclub.view.activity.appendRatedName
+import seepick.localsportsclub.view.activity.appendRatedTeacher
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
@@ -106,9 +107,8 @@ fun SimpleActivitiesTable(
                         valueExtractor = {
                             CellValue(buildAnnotatedString {
                                 append(it.activity.state.iconStringAndSuffix())
-                                it.activity.remarkRating?.emoji?.also { append("$it ") }
-                                append(it.activity.name)
-                                appendTeacher(it.activity)
+                                appendRatedName(it.activity)
+                                appendRatedTeacher(it.activity)
                             })
                         },
                     ),

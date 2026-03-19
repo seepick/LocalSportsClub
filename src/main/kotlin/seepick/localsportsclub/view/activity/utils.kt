@@ -5,7 +5,20 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.withStyle
 import seepick.localsportsclub.service.model.Activity
 
-fun AnnotatedString.Builder.appendTeacher(activity: Activity) {
+fun AnnotatedString.Builder.appendRatedName(activity: Activity) {
+    if (activity.remarkRating != null) {
+        append("${activity.remarkRating.emoji} ")
+    }
+    if (activity.remarkRating != null) {
+        withStyle(style = SpanStyle(color = activity.remarkRating.color)) {
+            append(activity.name)
+        }
+    } else {
+        append(activity.name)
+    }
+}
+
+fun AnnotatedString.Builder.appendRatedTeacher(activity: Activity) {
     if (activity.teacher == null) {
         return
     }

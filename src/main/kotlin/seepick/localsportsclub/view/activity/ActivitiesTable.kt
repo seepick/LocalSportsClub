@@ -40,12 +40,8 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
                     if (activity.state == ActivityState.Booked) {
                         append("${Lsc.icons.reservedEmoji} ")
                     }
-
-                    if (activity.remarkRating != null) {
-                        append("${activity.remarkRating.emoji} ")
-                    }
-                    append(activity.name)
-                    appendTeacher(activity)
+                    appendRatedName(activity)
+                    appendRatedTeacher(activity)
                 })
             },
         )

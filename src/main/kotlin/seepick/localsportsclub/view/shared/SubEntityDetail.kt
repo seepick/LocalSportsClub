@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +33,7 @@ import seepick.localsportsclub.service.firstUpper
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.view.activity.appendRatedTeacher
 import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.CustomDialog
@@ -96,15 +98,15 @@ fun SubEntityDetail(
                 )
             }
             if (subEntity is SubEntity.ActivityEntity) {
-                SelectionContainer {
-                    Tooltip("${subEntity.activity.plan.emoji} Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
+                Tooltip("${subEntity.activity.plan.emoji} Plan ${subEntity.activity.plan.label} (${subEntity.activity.plan.apiString})") {
+                    SelectionContainer {
                         Text(" ${subEntity.activity.plan.emoji} ")
                     }
                 }
             }
             SelectionContainer {
                 Text(
-                    text = buildString {
+                    text = buildAnnotatedString {
                         if (isBooked) {
                             append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
                         }
@@ -115,9 +117,9 @@ fun SubEntityDetail(
                             Text("${Icons.Lsc.noshowEmoji} no-show")
                         }
                         append(subEntity.category.nameAndMaybeEmoji)
+
                         if (subEntity is SubEntity.ActivityEntity) {
-                            subEntity.activity.teacher?.also { append(" with $it") }
-                            subEntity.activity.teacherRemarkRating?.emoji?.let { append(" $it") }
+                            appendRatedTeacher(subEntity.activity)
                             append(" (${subEntity.activity.spotsLeft} spots)")
                         }
                     },
