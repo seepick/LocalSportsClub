@@ -51,6 +51,7 @@ fun LocalDate.prettyPrintWith(time: LocalTime, currentYear: Int): String {
     else dayDatetimeFormatter.format(datetime)
 }
 
+/** @return "13:21 */
 fun LocalTime.prettyPrint(): String = timeFormatter.format(this)
 
 /**

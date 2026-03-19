@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.seepick.uscclient.shared.DateTimeRange
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 import java.time.LocalTime
@@ -22,6 +23,9 @@ class DateTimeRangeSearchOption<T>(
         private set
     var searchTimeEnd: LocalTime? by mutableStateOf(null)
         private set
+    // decouple rendered string from actual search value
+    val searchTimeStartString = mutableStateOf("")
+    val searchTimeEndString = mutableStateOf("")
 
     fun updateSearchDate(date: LocalDate) {
         searchDate = date
@@ -32,6 +36,7 @@ class DateTimeRangeSearchOption<T>(
         if (searchTimeStart == time) return searchTimeStart
         if (time != null && searchTimeEnd != null && time.isAfter(searchTimeEnd)) {
             searchTimeEnd = time
+            searchTimeEndString.value = time.prettyPrint()
         }
         searchTimeStart = time
         reset()
@@ -42,6 +47,7 @@ class DateTimeRangeSearchOption<T>(
         if (searchTimeEnd == time) return searchTimeEnd
         if (time != null && searchTimeStart != null && time.isBefore(searchTimeStart)) {
             searchTimeStart = time
+            searchTimeStartString.value = time.prettyPrint()
         }
         searchTimeEnd = time
         reset()

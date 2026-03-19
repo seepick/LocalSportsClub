@@ -2,7 +2,6 @@
 
 ## v1.15.0
 
-* 🐞🎨 typing time range for activity search is buggy (too strict; do same as with double did)
 * 🎨 rearrange venue detail (put rating down to row of buttons; what to do with visit limits?)
     * vertical center (sync button + checkboxes); bit more vspace between image and text
 * 🎨 rethink general highlight-color scheme (fav/wishlisted + remarks + booked! + ...)

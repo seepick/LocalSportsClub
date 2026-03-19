@@ -1,6 +1,5 @@
 package seepick.localsportsclub.service.date
 
-
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException

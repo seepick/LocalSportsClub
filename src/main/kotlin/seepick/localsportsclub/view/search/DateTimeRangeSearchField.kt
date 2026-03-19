@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ fun <T> DateTimeRangeSearchField(
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeStart,
                 preselectedTime = searchOption.searchTimeStart,
+                timeAsString = searchOption.searchTimeStartString,
             )
             Text("-")
             TimeRangeSelector(
@@ -65,6 +67,7 @@ fun <T> DateTimeRangeSearchField(
                 enabled = searchOption.enabled,
                 onTimeSelected = searchOption::updateSearchTimeEnd,
                 preselectedTime = searchOption.searchTimeEnd,
+                timeAsString = searchOption.searchTimeEndString,
             )
         }
     }
@@ -78,6 +81,7 @@ fun _Preview_TimeRangeSelector() {
         preselectedTime = null,
         onTimeSelected = { null },
         times = (6..22).map { LocalTime.of(it, 0) },
+        timeAsString = mutableStateOf(""),
     )
 }
 
@@ -87,8 +91,8 @@ fun TimeRangeSelector(
     enabled: Boolean,
     onTimeSelected: (LocalTime?) -> LocalTime?,
     preselectedTime: LocalTime?,
+    timeAsString: MutableState<String>,
 ) {
-    val timeAsString = mutableStateOf(preselectedTime?.prettyPrint() ?: "")
     DropDownTextField(
         items = times,
         selectedItem = preselectedTime,
@@ -108,7 +112,10 @@ fun TimeRangeSelector(
                     onTimeSelected(enteredTime)
                 }
             },
-            errorChecker = { if (timeAsString.value.isEmpty()) false else DateParser.parseTimeOrNull(timeAsString.value) == null },
+            errorChecker = {
+                if (timeAsString.value.isEmpty()) false
+                else DateParser.parseTimeOrNull(timeAsString.value) == null
+            },
             textAlign = TextAlign.Center,
             itemAlign = TextAlign.Center,
             onReset = {
