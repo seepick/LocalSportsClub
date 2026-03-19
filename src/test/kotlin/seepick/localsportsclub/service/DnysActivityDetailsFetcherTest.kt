@@ -44,7 +44,7 @@ class DnysActivityDetailsFetcherTest : StringSpec({
         )
         val eventTeacher = "new teacher name"
         val dnysEvent = Arb.dnysEvent().next().copy(
-            dateTimeRange = dateTimeRange.adjustHours(-1), // adjust to UTC
+            dateTimeRange = dateTimeRange.adjustHours(-2), // adjust to UTC
             teacher = eventTeacher,
         )
         val activityDetails = Arb.activityDetails().next().copy(
