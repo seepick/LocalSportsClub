@@ -1,7 +1,5 @@
 # TODO
 
-## v1.15.0
-
 * 🎨 rethink general highlight-color scheme
 
 ## v1.16.0
