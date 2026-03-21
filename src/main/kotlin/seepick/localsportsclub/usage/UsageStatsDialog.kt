@@ -87,7 +87,7 @@ fun UsageStatsDialog(
                         Text("Top Categories:", fontWeight = FontWeight.Bold)
                         values.topCategories.forEach {
                             SelectionContainer {
-                                Text("${it.category}: ${it.checkinsCount}")
+                                Text("${it.checkinsCount}x ${it.category.nameAndMaybeEmoji}")
                             }
                         }
                         Spacer(Modifier.height(5.dp))

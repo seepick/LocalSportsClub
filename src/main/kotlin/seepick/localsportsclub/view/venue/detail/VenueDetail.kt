@@ -168,31 +168,35 @@ fun VenueDetail(
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Rating: ")
             RatingPanel(venueEdit.rating.value, { venueEdit.rating.value = it })
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(20.dp))
             CheckboxTexted(
                 icon = Icons.Lsc.favoritedIndicator,
                 checked = venueEdit.isFavorited,
                 tooltipText = "Mark as favorited",
+                modifier = Modifier.height(30.dp),
             )
+            Spacer(Modifier.width(10.dp))
             CheckboxTexted(
                 icon = Lsc.icons.wishlistedIndicator,
                 checked = venueEdit.isWishlisted,
                 tooltipText = "Mark as wishlisted",
-            )
-            CheckboxTexted(
-                icon = Lsc.icons.hiddenIndicator,
-                checked = venueEdit.isHidden,
                 modifier = Modifier.height(30.dp),
-                tooltipText = "Mark as hidden",
             )
             Spacer(Modifier.width(10.dp))
             CheckboxTexted(
-                label = "",
-                tooltipText = "Auto-sync activity details on global sync",
-                checked = venueEdit.isAutoSync,
+                icon = Lsc.icons.hiddenIndicator,
+                checked = venueEdit.isHidden,
+                tooltipText = "Mark as hidden",
                 modifier = Modifier.height(30.dp),
+            )
+            Spacer(Modifier.width(10.dp))
+            CheckboxTexted(
                 icon = Icons.Lsc.manualSyncIndicator,
+                checked = venueEdit.isAutoSync,
+                tooltipText = "Auto-sync activity details on global sync",
+                modifier = Modifier.height(30.dp),
             )
         }
         Spacer(Modifier.height(2.dp))
@@ -254,7 +258,7 @@ fun VenueDetail(
 
         if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
             DropDownTextField(
-                label = "Select Linked Venue",
+                label = "Linked Venues",
                 items = venue.linkedVenues,
                 onItemSelected = { onVenueSelected(it!!) },
                 itemFormatter = { it?.name ?: "" },

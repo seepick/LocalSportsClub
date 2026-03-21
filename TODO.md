@@ -4,7 +4,24 @@
 
 ## v1.16.0
 
+* BUGFIX carousel image loading!
+* 🎨 render faved/wished icons in big tables next to venue name (change font color; annotated string)
+* 🎨 ad search-category/plan (mini-tables): remove black border
+* 🎨 ad search-category: add padding left
+* 🎨 make km distance indicator less prominent; remove black border, make even more transparent/alpha
 * 🎨 make everything clickable is blue (and don't use blue for non-clickables)
+    * add:
+        * venue image, for carousal, always draw blue border
+        * scroll bar drag component
+        * blue border around tables (mini tables, in search, big ones, detail-slim ones)
+        * every unselected checkbox
+        * every textfield and dropdown
+        * many search fields...
+        * make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more"?)
+    * remove:
+        * booking/reserved color code
+    * PLUS: make input bg consistent (now it's gray AND white)
+    * PLUS: when hover over input-able component, change appearance (more blue; like table hover)
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable
 * 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
 * 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")

@@ -11,6 +11,7 @@ import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.sameYearMonth
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.singles.SinglesService
 import java.time.LocalDate
 
@@ -89,10 +90,12 @@ class UsageStatsViewModel(
     }
 }
 
-data class CategoryCount(
-    val category: String,
+class CategoryCount(
+    category: String,
     val checkinsCount: Int,
-)
+) {
+    val category = Category(category)
+}
 
 data class VenueCheckin(
     val venue: VenueDbo,
