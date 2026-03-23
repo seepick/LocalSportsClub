@@ -38,10 +38,14 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
     initialSortDirection = SortDirection.Desc,
 )
 
-fun <T : HasVenue> RatingColumn() = TableColumn<T>(
+fun <T : HasVenue> RatingColumn(paddingRight: Boolean = false) = TableColumn<T>(
     header = VisualIndicator.StringIndicator("Rating"),
-    size = WidthOrWeight.Width(90.dp),
-    renderer = CellRenderer.TextRenderer.forString(textAlign = TextAlign.Center) { it.venue.rating.label },
+    size = WidthOrWeight.Width(90.dp + if (paddingRight) 8.dp else 0.dp),
+    renderer = CellRenderer.TextRenderer.forString(
+        textAlign = TextAlign.Center,
+        paddingRight = paddingRight,
+        extractor = { it.venue.rating.label },
+    ),
     initialSortDirection = SortDirection.Desc,
 )
 
@@ -73,15 +77,20 @@ fun <T : HasCategory> CategoryColumn() = TableColumn<T>(
     WidthOrWeight.Width(80.dp),
     CellRenderer.TextRenderer.forString { it.category.nameAndMaybeEmoji })
 
-fun <T : HasVenue> VenueColumn() = TableColumn<T>(
-    header = VisualIndicator.StringIndicator("Venue"),
-    size = WidthOrWeight.Weight(0.4f),
+fun <T : HasVenue> VenueColumn(
+    headerLabel: String,
+    size: WidthOrWeight = WidthOrWeight.Weight(0.4f),
+    paddingLeft: Boolean = false,
+) = TableColumn<T>(
+    header = VisualIndicator.StringIndicator(headerLabel),
+    size = size,
     sortValueExtractor = { it.venue.name.lowercase() },
-    renderer = CellRenderer.CustomRenderer { activity, col ->
+    renderer = CellRenderer.CustomRenderer { venueHaving, col ->
         TableTextCell(
-            value = CellValue(activity.venue.name),
+            value = CellValue(venueHaving.venue.nameAndFavWishEmojiPrefixedAnnotated),
             size = col.size,
-            textDecoration = if (activity.venue.isDeleted) TextDecoration.LineThrough else null,
+            textDecoration = if (venueHaving.venue.isDeleted) TextDecoration.LineThrough else null,
+            paddingLeft = paddingLeft,
         )
     },
 )

@@ -5,7 +5,6 @@
 ## v1.16.0
 
 * 🐞🖋 BUGFIX carousel image loading !!!
-* 🎨 render faved/wished icons in big tables next to venue name (change font color; annotated string)
 * 🐞🎨 while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
 * 🖋 ️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!

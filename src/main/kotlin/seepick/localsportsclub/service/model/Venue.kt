@@ -5,12 +5,16 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
+import seepick.localsportsclub.view.common.darker
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 import java.util.TreeSet
@@ -22,14 +26,13 @@ data class Foo(
 
 fun main() {
     val tree = TreeSet<Foo>(object : Comparator<Foo> {
-        override fun compare(o1: Foo, o2: Foo): Int =
-            if (o1.isNew && o2.isNew) {
-                o1.id.compareTo(o2.id)
-            } else if (!o1.isNew && !o2.isNew) {
-                o2.id.compareTo(o1.id)
-            } else {
-                if (o1.isNew) -1 else 1
-            }
+        override fun compare(o1: Foo, o2: Foo): Int = if (o1.isNew && o2.isNew) {
+            o1.id.compareTo(o2.id)
+        } else if (!o1.isNew && !o2.isNew) {
+            o2.id.compareTo(o1.id)
+        } else {
+            if (o1.isNew) -1 else 1
+        }
     })
     tree.add(Foo(3, true))
     tree.add(Foo(4, false))
@@ -88,14 +91,29 @@ class Venue(
     val activityRemarks = mutableStateListOf<ActivityRemark>()
     val teacherRemarks = mutableStateListOf<TeacherRemark>()
 
+    val nameAndFavWishEmojiPrefixedAnnotated
+        get() = buildAnnotatedString {
+            if (isFavorited) {
+                append("${Lsc.icons.favoritedEmoji} ")
+                withStyle(style = SpanStyle(color = Lsc.colors.isFavorited.darker())) {
+                    append(venue.name)
+                }
+            } else if (isWishlisted) {
+                append("${Lsc.icons.wishlistedEmoji} ")
+                withStyle(style = SpanStyle(color = Lsc.colors.isWishlisted.darker())) {
+                    append(venue.name)
+                }
+            } else {
+                append(venue.name)
+            }
+        }
     private val mutableActivities = mutableStateListOf<Activity>()
     val activities: List<Activity> = mutableActivities
     private val mutableFreetrainings = mutableStateListOf<Freetraining>()
     val freetrainings: List<Freetraining> = mutableFreetrainings
 
     // reordered according to display style in simple table (first future ASC, then past DESC)
-    fun sortedActivities(today: LocalDate): List<Activity> =
-        activities.sortedWith(Activity.comparator(today)).toList()
+    fun sortedActivities(today: LocalDate): List<Activity> = activities.sortedWith(Activity.comparator(today)).toList()
 
     fun sortedFreetrainings(today: LocalDate): List<Freetraining> =
         freetrainings.sortedWith(Freetraining.comparator(today)).toList()
@@ -130,7 +148,9 @@ class Venue(
             isFavorited: Boolean,
             isWishlisted: Boolean,
         ): Color? =
-            if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null
+            (if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null)?.copy(
+                alpha = 0.6f
+            )
     }
 
     fun copy(

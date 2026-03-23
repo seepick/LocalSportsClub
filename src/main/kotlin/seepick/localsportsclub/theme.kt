@@ -30,8 +30,8 @@ interface LscColors {
     val cancelBookingWithin: Color
     val cancelBookingOutside: Color
 
-    val isFavorited: Color get() = Color(0x66C12600)
-    val isWishlisted: Color get() = Color(0x66D0C742)
+    val isFavorited: Color get() = Color(0xFFC12600)
+    val isWishlisted: Color get() = Color(0xFFD0C742)
     val backgroundToolip: Color
 
     // custom

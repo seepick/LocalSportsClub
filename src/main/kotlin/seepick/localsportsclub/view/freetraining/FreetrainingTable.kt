@@ -33,7 +33,7 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
             paddingLeft = true,
         )
     ),
-    VenueColumn(),
+    VenueColumn("Venue"),
     CategoryColumn(),
     TableColumn(
         header = VisualIndicator.StringIndicator("Date"),
@@ -45,8 +45,8 @@ fun freetrainingsTableColumns(clock: Clock) = listOf<TableColumn<Freetraining>>(
         )
     ),
     CheckedinColumn(paddingRight = true),
+    RatingColumn(paddingRight = true),
     DistanceColumn(),
-    RatingColumn(),
 //    tableColumnFavorited { it.venue.isFavorited },
 //    tableColumnWishlisted { it.venue.isWishlisted },
 )

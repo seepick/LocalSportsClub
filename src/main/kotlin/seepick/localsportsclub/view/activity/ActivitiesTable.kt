@@ -46,7 +46,7 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
             },
         )
     ),
-    VenueColumn(),
+    VenueColumn("Venue"),
     CategoryColumn(),
     TableColumn(
         VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
@@ -56,9 +56,9 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
         )
     ),
     PlanColumn(),
-    DistanceColumn(),
     CheckedinColumn(paddingRight = true),
-    RatingColumn(),
+    RatingColumn(paddingRight = true),
+    DistanceColumn(),
 )
 
 @Composable

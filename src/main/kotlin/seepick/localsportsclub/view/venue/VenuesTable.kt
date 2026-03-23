@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.Lsc
@@ -17,31 +16,23 @@ import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
-import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.CellValue
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
-import seepick.localsportsclub.view.common.table.TableTextCell
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.shared.DistanceColumn
 import seepick.localsportsclub.view.shared.RatingColumn
+import seepick.localsportsclub.view.shared.VenueColumn
 import java.time.LocalDate
 
 fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     tableColumnVenueImage { it },
-    TableColumn(
-        header = VisualIndicator.StringIndicator("Name"),
+    VenueColumn(
+        headerLabel = "Name",
         size = WidthOrWeight.Weight(0.7f),
-        renderer = CellRenderer.CustomRenderer { venue, col ->
-            TableTextCell(
-                value = CellValue(venue.name),
-                size = col.size,
-                textDecoration = if (venue.isDeleted) TextDecoration.LineThrough else null,
-                paddingLeft = true,
-            )
-        },
-        sortValueExtractor = { it.name.lowercase() }),
+        paddingLeft = true,
+    ),
     TableColumn(
         header = Lsc.icons.activitiesIndicator,
         tooltip = "Available activities",
@@ -100,8 +91,8 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         ),
         initialSortDirection = SortDirection.Desc,
     ),
+    RatingColumn(paddingRight = true),
     DistanceColumn(),
-    RatingColumn(),
 )
 
 @Composable
