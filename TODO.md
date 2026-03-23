@@ -6,8 +6,7 @@
 
 * 🐞🖋 BUGFIX carousel image loading !!!
 * 🐞🎨 while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
-* 🖋 ️Balanzs has two linked venues with identical name; it seems to cause issues...?!
-    * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
+* het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 
 ## Backlog
 

@@ -262,10 +262,11 @@ fun VenueDetail(
             )
         }
 
-        if (showLinkedVenues && venue.linkedVenues.isNotEmpty()) {
+        val linkedVenues = venue.linkedVenues.filter { !it.isDeleted }
+        if (showLinkedVenues && linkedVenues.isNotEmpty()) {
             DropDownTextField(
                 label = "Linked Venues",
-                items = venue.linkedVenues,
+                items = linkedVenues,
                 onItemSelected = { onVenueSelected(it!!) },
                 itemFormatter = { it?.name ?: "" },
                 selectedItem = null as Venue?,
