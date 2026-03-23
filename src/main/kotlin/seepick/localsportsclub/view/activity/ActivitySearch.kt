@@ -49,14 +49,14 @@ class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : Ab
     ) { it.teacherRemarkRating }
 
     val categories = newSelectSearchOption(
+        visualIndicator = Lsc.icons.categoryIndicator,
         label = "Category",
         allOptions = allCategories.map { it.nameAndMaybeEmoji },
-        visualIndicator = Lsc.icons.categoryIndicator,
         extractor = { listOf(it.category.nameAndMaybeEmoji) },
     )
     val plan = newSelectSearchOption(
-        label = "Plan",
         visualIndicator = VisualIndicator.EmojiIndicator(Plan.UscPlan.emoji),
+        label = "Plan",
         allOptions = Plan.UscPlan.entries.map { it.fullLabel },
         extractor = { listOf(it.plan.fullLabel) },
     )

@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.HolidayVillage
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SportsGymnastics
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Suppress("ConstPropertyName")
@@ -43,6 +45,10 @@ object LscIcons {
     val preferences = Icons.Default.Settings
     val manualSync = Icons.Default.Refresh
     val manualSyncIndicator = manualSync.asIndicator
+
+    fun passwordVisibility(isVisible: Boolean) =
+        if (isVisible) Icons.Filled.VisibilityOff
+        else Icons.Filled.Visibility
 }
 
 val ImageVector.asIndicator get() = VisualIndicator.VectorIndicator(this)

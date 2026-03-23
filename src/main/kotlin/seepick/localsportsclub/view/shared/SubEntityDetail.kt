@@ -35,7 +35,6 @@ import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.view.activity.appendRatedTeacher
 import seepick.localsportsclub.view.common.CheckboxTexted
-import seepick.localsportsclub.view.common.ConditionalTooltip
 import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.LongText
 import seepick.localsportsclub.view.common.Lsc
@@ -64,10 +63,8 @@ fun SubEntityDetail(
     val (isBooked, isCheckedin, isNoshow) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
-        Tooltip(subEntity.name) {
-            val remarkRatingEmoji = subEntity.maybeActivity?.remarkRating?.let { "${it.emoji} " } ?: ""
-            TitleText(remarkRatingEmoji + subEntity.name)
-        }
+        val remarkRatingEmoji = subEntity.maybeActivity?.remarkRating?.let { "${it.emoji} " } ?: ""
+        TitleText(remarkRatingEmoji + subEntity.name)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (isSyncButtonVisible) {
@@ -151,10 +148,7 @@ fun SubEntityDetail(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
             ) {
-                ConditionalTooltip(
-                    !isBookOrCancelPossible,
-                    tooltipTextVerifyUscFirst,
-                ) {
+                Tooltip(if (!isBookOrCancelPossible) tooltipTextVerifyUscFirst else null) {
                     Button(
                         onClick = {
                             if (isBooked) {

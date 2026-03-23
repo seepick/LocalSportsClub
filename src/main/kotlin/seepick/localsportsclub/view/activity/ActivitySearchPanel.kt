@@ -28,7 +28,7 @@ fun ActivitySearchPanel(
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
         SelectSearchField(viewModel.searching.categories)
-        SelectSearchField(viewModel.searching.plan, width = 120.dp)
+        SelectSearchField(viewModel.searching.plan, width = 130.dp)
         RatingSearchField(viewModel.searching.rating, tooltip = "Venue Rating")
         RemarkRatingSearchField(viewModel.searching.activityRating, tooltip = "Activity Remark Rating")
         RemarkRatingSearchField(viewModel.searching.teacherRating, tooltip = "Teacher Remark Rating")

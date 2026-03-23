@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -29,11 +30,14 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.Country
 import com.github.seepick.uscclient.plan.Plan
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.view.common.DoubleField
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PasswordField
@@ -71,7 +75,7 @@ fun PreferencesScreen(
                 onChange = { viewModel.onLongitudeChanged(it) },
             )
         }
-        PreferencesItem("Plan") {
+        PreferencesItem("Membership") {
             UscPlanRow()
         }
         PreferencesItem("Google Calendar") {
@@ -92,7 +96,8 @@ private fun PreferencesItem(
         Text(
             text = label,
             fontSize = 18.sp,
-            modifier = Modifier.width(col1width).align(Alignment.Top),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.width(col1width).align(Alignment.CenterVertically),
         )
         content()
     }
@@ -108,6 +113,7 @@ private fun CredentialsRow(
         value = viewModel.entity.uscUsername,
         label = { Text("Username") },
         onValueChange = { viewModel.setUscUsername(it) },
+        colors = LocalTextFieldColors.current,
         modifier = Modifier.onPreviewKeyEvent {
             if (it.key == Key.Tab && it.type == KeyEventType.KeyDown) {
                 focusManager.moveFocus(FocusDirection.Right)
@@ -122,9 +128,7 @@ private fun CredentialsRow(
     Spacer(Modifier.width(10.dp))
     Button(
         enabled = viewModel.entity.uscUsername.isNotEmpty() && !viewModel.isUscConnectionVerifying && viewModel.entity.uscPassword.isNotEmpty() && viewModel.verifiedUscUsername.value != viewModel.entity.uscUsername && viewModel.verifiedUscPassword.value != viewModel.entity.uscPassword,
-        onClick = {
-            viewModel.verifyUscConnection()
-        },
+        onClick = { viewModel.verifyUscConnection() },
     ) {
         Text("Verify Login")
     }
@@ -188,7 +192,8 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
     Tooltip("The day of the month when the check-in period starts (between 1 and 28)") {
         TextField(
             value = periodFirstDayString,
-            label = { Text("Period") },
+            label = { Text("Period Day") },
+            colors = LocalTextFieldColors.current,
             modifier = Modifier.width(120.dp),
             isError = if (periodFirstDayString.isEmpty()) {
                 false
@@ -216,14 +221,17 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
 fun GCalRow(
     viewModel: PreferencesViewModel = koinViewModel(),
 ) {
-    Switch(checked = viewModel.entity.calendarEnabled, onCheckedChange = {
-        viewModel.entity.calendarEnabled = it
-    })
+    Switch(
+        checked = viewModel.entity.calendarEnabled,
+        onCheckedChange = { viewModel.entity.calendarEnabled = it },
+        colors = SwitchDefaults.colors(uncheckedThumbColor = Lsc.colors.clickableNeutral),
+    )
     Spacer(Modifier.width(10.dp))
     TextField(
         label = { Text("Calendar ID") },
         value = viewModel.entity.calendarId,
         enabled = viewModel.entity.calendarEnabled,
+        colors = LocalTextFieldColors.current,
         onValueChange = { viewModel.setCalendarId(it) },
         modifier = Modifier.width(500.dp)
     )

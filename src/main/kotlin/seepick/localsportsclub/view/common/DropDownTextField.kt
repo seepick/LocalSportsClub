@@ -40,6 +40,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.Lsc
 
 data class DropDownTextFieldEdits(
     val text: MutableState<String>,
@@ -163,9 +165,11 @@ private fun <T> _DropDownTextField(
                     label = label?.let { { Text(label) } },
                     trailingIcon = {
                         Icon(
-                            icon,
-                            null,
-                            Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Lsc.colors.clickableNeutral,
+                            modifier = Modifier
+                                .focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
                                 .let {
                                     if (enabled) {
                                         it.clickable {
@@ -177,11 +181,13 @@ private fun <T> _DropDownTextField(
                 )
             } else {
                 OutlinedTextField(
+                    label = label?.let { { Text(label) } },
                     value = selectedItemLabel,
                     onValueChange = { /* no-op */ },
-                    readOnly = true,
                     enabled = enabled,
+                    readOnly = true,
                     singleLine = true,
+                    colors = LocalTextFieldColors.current,
                     modifier = Modifier
                         .widthOrFill(textSize)
                         .onGloballyPositioned { coordinates ->
@@ -190,12 +196,12 @@ private fun <T> _DropDownTextField(
                         .onFocusChanged { state ->
                             isMenuExpanded.value = state.isFocused
                         },
-                    label = label?.let { { Text(label) } },
                     trailingIcon = {
                         Icon(
-                            icon,
-                            null,
-                            Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Lsc.colors.clickableNeutral,
+                            modifier = Modifier.focusRequester(focusRequester) // nice hack to remove focus from textfield ;)
                                 .let {
                                     if (enabled) {
                                         it.clickable {

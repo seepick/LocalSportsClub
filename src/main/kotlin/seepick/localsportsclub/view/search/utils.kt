@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -23,8 +24,8 @@ import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.search.SearchOption
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.applyTestTag
+import seepick.localsportsclub.view.common.brighter
 import seepick.localsportsclub.view.common.composeIt
-import seepick.localsportsclub.view.common.darker
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -35,12 +36,13 @@ fun SearchOption<*>.ClickableSearchText(
 ) {
     var isHovered by remember { mutableStateOf(false) }
     val alpha = if (enabled) 1.0f else if (isHovered) 0.6f else 0.3f
-    val color = if (isHovered) Lsc.colors.primary.darker()
+    val color = if (isHovered) Lsc.colors.primary.brighter()
     else if (enabled) Lsc.colors.primary
     else Lsc.colors.primaryBrighter
 
     Tooltip(tooltip) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .pointerHoverIcon(PointerIcon.Hand)
                 .onPointerEvent(PointerEventType.Enter) { isHovered = true }
@@ -56,7 +58,7 @@ fun SearchOption<*>.ClickableSearchText(
                 modifier = Modifier
                     .applyTestTag(testTag)
             )
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }

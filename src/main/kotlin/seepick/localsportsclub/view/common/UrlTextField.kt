@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.LocalTextFieldColors
 import seepick.localsportsclub.Lsc
 
 @Preview
@@ -126,15 +128,12 @@ fun UrlTextField(
         value = url ?: "",
         modifier = modifier,
         label = { Text(label) },
-        onValueChange = {
-            onChange?.invoke(it)
-        },
+        onValueChange = { onChange?.invoke(it) },
         singleLine = true,
         textStyle = TextStyle(fontSize = 10.sp),
         enabled = enabled && onChange != null,
-        leadingIcon = {
-            LinkTonalButton(url, enabled = enabled, useHandIcon = true)
-        },
+        colors = LocalTextFieldColors.current,
+        leadingIcon = { LinkTonalButton(url, enabled = enabled, useHandIcon = true) },
     )
 }
 
@@ -156,6 +155,7 @@ fun LinkTonalButton(
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            tint = if (ultimatelyEnabled) Lsc.colors.clickableNeutral else Lsc.colors.onBackground.copy(alpha = ContentAlpha.disabled),
             contentDescription = null,
         )
     }

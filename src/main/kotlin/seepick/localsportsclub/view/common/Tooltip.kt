@@ -50,14 +50,3 @@ fun Tooltip(
         }
     }
 }
-
-@Composable
-fun ConditionalTooltip(condition: Boolean, tooltipText: String, content: @Composable () -> Unit) {
-    if (condition) {
-        Tooltip(tooltipText) {
-            content()
-        }
-    } else {
-        content()
-    }
-}

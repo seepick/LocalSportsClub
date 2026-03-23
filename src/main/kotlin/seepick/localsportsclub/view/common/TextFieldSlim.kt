@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.LocalTextFieldColors
 
 enum class PaddingMode {
     Default, Zero, Horizontal,
@@ -60,7 +61,11 @@ fun TextFieldSlim(
     val textColor = textStyle.color.takeOrElse {
         colors.textColor(enabled).value
     }
-    val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
+    val mergedTextStyle = textStyle.merge(
+        TextStyle(
+            color = textColor,
+        )
+    )
 
     @OptIn(ExperimentalMaterialApi::class)
     BasicTextField(
@@ -75,8 +80,7 @@ fun TextFieldSlim(
                     onFocusLost?.invoke()
                 }
             }
-            .indicatorLine(enabled, isError, interactionSource, colors)
-            //.defaultErrorSemantics(isError, getString(Strings.DefaultErrorMessage))
+            .indicatorLine(enabled, isError, interactionSource, LocalTextFieldColors.current)
             .defaultMinSize(
                 minWidth = TextFieldDefaults.MinWidth,
                 minHeight = TextFieldDefaults.MinHeight,
@@ -108,7 +112,7 @@ fun TextFieldSlim(
                 isError = isError,
                 interactionSource = interactionSource,
                 shape = shape,
-                colors = colors,
+                colors = LocalTextFieldColors.current,
                 // ... we needed this one here
                 contentPadding = when (paddingMode) {
                     PaddingMode.Default -> if (label == null) {

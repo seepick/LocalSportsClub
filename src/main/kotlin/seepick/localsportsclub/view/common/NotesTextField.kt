@@ -10,6 +10,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import seepick.localsportsclub.LocalTextFieldColors
 
 @Composable
 fun ColumnScope.NotesTextField(
@@ -25,6 +26,7 @@ fun ColumnScope.NotesTextField(
             value = notes,
             enabled = enabled,
             onValueChange = setter,
+            colors = LocalTextFieldColors.current,
             modifier = modifier.fillMaxWidth()
                 .verticalScroll(state),
         )

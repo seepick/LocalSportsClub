@@ -47,7 +47,7 @@ fun <T> SelectSearchField(
                 modifier = Modifier
                     .height(60.dp)
                     .width(width)
-                    .border(1.dp, Lsc.colors.onSurface)
+                    .border(1.dp, color = Lsc.colors.clickableNeutral)
             ) {
                 LazyColumn(
                     state = tableScrollState, modifier = Modifier.padding(end = 12.dp) // for the scrollbar to the right
@@ -65,6 +65,8 @@ fun <T> SelectSearchField(
                             color = Lsc.colors.onBackground,
                             modifier = Modifier
                                 .fillMaxWidth(1.0f)
+                                .background(backgroundColor) // must be before padding!
+                                .padding(start = 4.dp)
                                 .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                                 .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                                 .let { m ->
@@ -73,7 +75,7 @@ fun <T> SelectSearchField(
                                             searchOption.toggleSelect(select)
                                         }
                                     } else m
-                                }.background(backgroundColor)
+                                }
                         )
                     }
                 }

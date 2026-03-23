@@ -1,10 +1,16 @@
 package seepick.localsportsclub
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.CheckboxColors
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,9 +36,8 @@ interface LscColors {
 
     // custom
     val itemHoverBg get() = primaryBrighter
-
-    // custom
-    val itemSelectedBg get() = primaryDarker
+    val clickableNeutral get() = primaryBrighter
+    val clickableSelected get() = primaryDarker
 
     // button bg
     val primary: Color
@@ -65,12 +70,13 @@ interface LscColors {
 
     // borders/bg inputfields, borders table, labels, disabled buttons, outline checkboxes, snackbar bg
     val onSurface: Color
+    val onSurfaceAlphaLow: Color get() = onSurface.copy(alpha = 0.3f)
 
     val error: Color
     val onError: Color
 
-    val scrollbarHover: Color get() = onBackground.copy(alpha = 0.6f)
-    val scrollbarUnhover: Color get() = onBackground.copy(alpha = 0.3f)
+    val scrollbarHover: Color get() = clickableNeutral.copy(alpha = 0.6f)
+    val scrollbarUnhover: Color get() = clickableNeutral.copy(alpha = 0.3f)
 
     // for CheckboxTexted hover bg color
     val hoverIndicator: Color get() = onBackground // alpha will be calculated internally
@@ -93,6 +99,7 @@ object DarkLscColors : LscColors {
     override val primary = Color(0xFF5c95e8)
     override val primaryBrighter = Color(0xFF6CA0EA)
     override val primaryDarker = Color(0xFF337BE2)
+
     override val primaryVariant = colorUnset
     override val onPrimary = Color(0xFFF9F9F9)
     override val secondary = primary
@@ -119,6 +126,7 @@ object LightLscColors : LscColors {
     override val primary = Color(0xFF5C95E8)
     override val primaryBrighter = Color(0xFF6CA0EA)
     override val primaryDarker = Color(0xFF337BE2)
+
     override val primaryVariant = colorUnset
     override val onPrimary = Color(0xFFF9F9F9)
     override val secondary = primary
@@ -146,6 +154,18 @@ object Lsc {
     val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
     val icons = LscIcons
 }
+
+val LocalTextFieldColors = compositionLocalOf<TextFieldColors> {
+    error("No text field could be found")
+}
+val LocalCheckboxColors = compositionLocalOf<CheckboxColors> {
+    error("No checkbox could be found")
+}
+
+// TextField(...
+//        colors = androidx.compose.material.TextFieldDefaults.textFieldColors(
+//            backgroundColor = androidx.compose.ui.graphics.Color.Transparent,
+//        ),
 
 // access via: Lsc.colors.primary (standard way: MaterialTheme.colors.primary)
 @Composable
@@ -184,9 +204,27 @@ fun LscTheme(
         )
     )
 //    val shapes = Shapes(...)
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        content = content,
+    val textFieldColors = TextFieldDefaults.textFieldColors(
+        textColor = Lsc.colors.onBackground,
+        backgroundColor = Color.Transparent,
+        focusedIndicatorColor = Lsc.colors.clickableSelected,
+        unfocusedIndicatorColor = Lsc.colors.clickableNeutral,
+        focusedLabelColor = Lsc.colors.onBackground,
+        unfocusedLabelColor = Lsc.colors.onBackground,
     )
+
+    val checkboxFieldColors = CheckboxDefaults.colors(
+        uncheckedColor = Lsc.colors.clickableNeutral,
+        checkedColor = Lsc.colors.clickableSelected,
+    )
+    CompositionLocalProvider(
+        LocalTextFieldColors provides textFieldColors,
+        LocalCheckboxColors provides checkboxFieldColors
+    ) {
+        MaterialTheme(
+            colors = colors,
+            typography = typography,
+            content = content,
+        )
+    }
 }

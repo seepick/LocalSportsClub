@@ -29,6 +29,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.LocalTextFieldColors
 import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.DropdownMenuX
@@ -50,6 +51,7 @@ fun SuggestTextField(
             singleLine = true,
             onValueChange = { text.value = it },
             label = { Text(label) },
+            colors = LocalTextFieldColors.current,
             modifier = Modifier.width(width)
                 .onFocusChanged { focusState ->
                     dropdownVisible.value = focusState.isFocused
@@ -116,6 +118,7 @@ fun RemarkView(
                     value = remark.remark,
                     onValueChange = { remark.remark = it },
                     label = { Text("Remark") },
+                    colors = LocalTextFieldColors.current,
                     modifier = Modifier.weight(1f),
                 )
 

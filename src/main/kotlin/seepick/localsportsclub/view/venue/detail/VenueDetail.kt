@@ -23,6 +23,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -101,7 +105,7 @@ fun VenueDetail(
         Row(modifier = Modifier.height(113.dp)) { // enforce height to image's height
             Box(modifier = Modifier.width(200.dp)) {
                 Tooltip("Click to open image carousel") {
-                    VenueImage(venue)
+                    VenueImage(venue, drawBorder = true)
                 }
             }
             Spacer(Modifier.width(5.dp))
@@ -113,13 +117,15 @@ fun VenueDetail(
                         append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
                     }
                 }
-                Tooltip(text) {
+                var isOverflowing by remember { mutableStateOf(false) }
+                Tooltip(if (isOverflowing) text else null) {
                     SelectionContainer {
                         Text(
                             text = text,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
+                            onTextLayout = { isOverflowing = it.hasVisualOverflow },
                         )
                     }
                 }

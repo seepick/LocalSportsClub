@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.LocalCheckboxColors
 import seepick.localsportsclub.Lsc
 
 private val checkboxRipple = ripple({ Lsc.colors.hoverIndicator })
@@ -48,7 +49,8 @@ fun CheckboxTexted(
         ) {
             Checkbox(
                 checked = checked.value,
-                onCheckedChange = null, // null recommended for accessibility with screenreaders
+                onCheckedChange = null,
+                colors = LocalCheckboxColors.current,
             )
             Spacer(Modifier.width(4.dp))
             if (label != null) {

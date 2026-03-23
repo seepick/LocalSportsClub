@@ -42,6 +42,7 @@ private fun calcDistanceColor(percentage: Double): Color = Color.hsv(
     alpha = 0.4f,
 )
 
+
 @Composable
 fun DistanceIndicator(item: HasDistance) {
     val textMeasurer = rememberTextMeasurer()
@@ -58,8 +59,9 @@ fun DistanceIndicator(item: HasDistance) {
             size = Size((width.toDouble() * percentageWidth).toFloat(), height),
         )
         drawRect(
+            // border
             topLeft = Offset(0.0f, 0.0f),
-            color = Color.Black,
+            color = Lsc.colors.onSurfaceAlphaLow,
             style = Stroke(width = 1.0f),
             size = Size(width, height),
         )

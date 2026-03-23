@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import seepick.localsportsclub.LocalTextFieldColors
 
 @Composable
 fun DoubleField(
@@ -18,9 +19,11 @@ fun DoubleField(
     onChange: (Double?) -> Unit,
 ) {
     var valueString: String by remember { mutableStateOf(initialValue?.toString() ?: "") }
-    TextField(label = { Text(label) },
+    TextField(
+        label = { Text(label) },
         value = valueString,
         maxLines = 1,
+        colors = LocalTextFieldColors.current,
         isError = valueString.isNotEmpty() && valueString.toDoubleOrNull() == null,
         modifier = Modifier.width(200.dp),
         onValueChange = {

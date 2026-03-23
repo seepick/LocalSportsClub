@@ -1,36 +1,22 @@
 # TODO
 
-* 🎨 rethink general highlight-color scheme
+* 🎨 rethink general highlight-color scheme (no more blue for reserved, as it is used for clickable indicator)
 
 ## v1.16.0
 
-* BUGFIX carousel image loading!
+* 🐞🖋 BUGFIX carousel image loading !!!
 * 🎨 render faved/wished icons in big tables next to venue name (change font color; annotated string)
-* 🎨 ad search-category/plan (mini-tables): remove black border
-* 🎨 ad search-category: add padding left
-* 🎨 make km distance indicator less prominent; remove black border, make even more transparent/alpha
-* 🎨 make everything clickable is blue (and don't use blue for non-clickables)
-    * add:
-        * venue image, for carousal, always draw blue border
-        * scroll bar drag component
-        * blue border around tables (mini tables, in search, big ones, detail-slim ones)
-        * every unselected checkbox
-        * every textfield and dropdown
-        * many search fields...
-        * make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more"?)
-    * remove:
-        * booking/reserved color code
-    * PLUS: make input bg consistent (now it's gray AND white)
-    * PLUS: when hover over input-able component, change appearance (more blue; like table hover)
-* 🎨 vertical space venue notes/tables size divider adjustable/draggable
-* 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
-* 🐞🎨while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
-* 🖋 ad DNYS auto-sync: use timezones to auto-adjust UTC to amsterdam+1/2
-  orig.first.from == event.dateTimeRange.from.plusHours(2) &&
-* 🖋️Balanzs has two linked venues with identical name; it seems to cause issues...?!
+* 🐞🎨 while sync, Book button is disabled with wrong tooltip text ("Please verify USC login credentials")
+* 🖋 ️Balanzs has two linked venues with identical name; it seems to cause issues...?!
     * het gymlokaal has two venues, with almost identical activity; it seems to cause issues...?!
 
 ## Backlog
+
+* 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)
+* 🎨 vertical space venue notes/tables size divider adjustable/draggable
+* 🖋 search venue by plan
+* 🖋 ad DNYS auto-sync: use timezones to auto-adjust UTC to amsterdam+1/2
+  orig.first.from == event.dateTimeRange.from.plusHours(2) &&
 
 * 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories)
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
@@ -40,6 +26,7 @@
 * 🖋 sync also "plus checkins" (check app what's that again)
 * 🤖fix file resorver design issue (passing to error dialog for log retrieval...)
 * 🤖UI tests not working anymore... NoSuchMethodError :-/
+* 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
 
 ## Low Prio
 

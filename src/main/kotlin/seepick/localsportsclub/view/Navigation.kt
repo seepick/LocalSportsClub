@@ -55,13 +55,15 @@ fun NavigationScreen(
         modifier = Modifier.width(700.dp)
     ) {
         Screen.entries.forEach { screen ->
+            val isSelected = selectedScreen == screen
             Tooltip("${screen.tooltip} (CMD+${screen.ordinal + 1})") {
                 Tab(
-                    text = { Text(screen.label) },
-                    selected = selectedScreen == screen,
+                    text = { Text(text = screen.label) },
+                    selected = isSelected,
                     onClick = { selectScreen(screen) },
                     selectedContentColor = Lsc.colors.onPrimary,
-                    modifier = Modifier.background(Lsc.colors.primary),
+                    modifier = Modifier
+                        .background(if (isSelected) Lsc.colors.primaryDarker else Lsc.colors.primary),
                     icon = {
                         Icon(imageVector = screen.icon, contentDescription = null)
                     }
