@@ -55,10 +55,10 @@ fun Arb.Companion.venue() = arbitrary {
 
 fun Arb.Companion.visitLimits() = arbitrary {
     VisitLimits(
-        small = int(1..6).bind(),
-        medium = int(1..6).bind(),
-        large = int(1..6).bind(),
-        xlarge = int(1..6).bind(),
+        small = int(0..8).orNull().bind(),
+        medium = int(0..8).orNull().bind(),
+        large = int(0..8).orNull().bind(),
+        xlarge = int(0..8).orNull().bind(),
     )
 }
 

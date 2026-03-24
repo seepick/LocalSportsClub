@@ -1,9 +1,5 @@
 # TODO
 
-## v1.16.0
-
-* 🖋 USC API changed for visit limits!!!
-
 ## v1.17.0
 
 * 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.)

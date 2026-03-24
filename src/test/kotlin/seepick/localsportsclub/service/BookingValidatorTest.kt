@@ -32,8 +32,8 @@ import java.time.LocalDateTime
 
 class BookingValidatorTest : DescribeSpec() {
 
-    private val plan = Plan.OnefitPlan.Premium
-    private val usageInfo = plan.usageInfo
+    private val storedSinglePlan = Plan.OnefitPlan.Premium
+    private val usageInfo = storedSinglePlan.usageInfo
     private var activityIdSequence = 1
     private val now = LocalDateTime.of(2000, 6, 15, 12, 0)
     private val clock = StaticClock(now)
@@ -52,7 +52,7 @@ class BookingValidatorTest : DescribeSpec() {
         activityRepo = InMemoryActivityRepo(venueRepo)
         freetrainingRepo = InMemoryFreetrainingRepo()
         singlesService = InMemorySinglesService()
-        singlesService.plan = plan
+        singlesService.plan = storedSinglePlan
         singlesService.preferences = singlesService.preferences.copy(periodFirstDay = 5, city = city)
         usageStorage = UsageStorage(clock, activityRepo, freetrainingRepo, singlesService)
         validator = BookingValidator(singlesService, activityRepo, usageStorage, clock)
@@ -143,9 +143,9 @@ class BookingValidatorTest : DescribeSpec() {
 //                result.shouldBeInstanceOf<BookingValidation.Invalid>().reason shouldContain "period"
 //            }
             it("no - venue limit") {
-                val venue = insertVenueForCity(Arb.visitLimits().next().copy(small = 1))
+                val venue = insertVenueForCity(Arb.visitLimits().next().copy(large = 1))
                 given {
-                    repeat(venue.visitLimits!!.forPlan(plan.uscPlan)) { i ->
+                    repeat(venue.visitLimits!!.forPlan(storedSinglePlan.uscPlan)!!) { i ->
                         activityRepo.insertCheckedinActivityDbo(i, now.minusDays(1), venueId = venue.id)
                     }
                 }

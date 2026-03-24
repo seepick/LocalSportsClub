@@ -213,7 +213,7 @@ object ExposedVenueRepo : VenueRepo {
     )
 }
 
-private fun VisitLimits.Companion.fromSqlValue(value: String) = value.split(",").map { it.toInt() }.let {
+private fun VisitLimits.Companion.fromSqlValue(value: String) = value.split(",").map { it.toIntOrNull() }.let {
     VisitLimits(it[0], it[1], it[2], it[3])
 }
 

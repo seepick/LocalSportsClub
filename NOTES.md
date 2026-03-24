@@ -19,6 +19,7 @@
 
 # Non-Todos
 
+* 🖋 support for corporate (non-private) accounts
 * 🎨disable booking-button if class start is in the past
 * 🖋 search fields provide count already; e.g. category "(20) EMS" (performance impact?!)
 * 🖋 could sync official rating (0.0-5.0 number and total count)
