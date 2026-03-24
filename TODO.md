@@ -19,6 +19,8 @@
 * 🤖 fix file resorver design issue (passing to error dialog for log retrieval...)
 * 🤖 UI tests not working anymore... NoSuchMethodError :-/
 * 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
+* 🎨 redo carousel view: on click, load data in bg, and slide images left/right (like website does)
+    * plus: if go beyond end, start from beginning; and vice versa
 
 ## Low Prio
 
