@@ -1,11 +1,15 @@
 package seepick.localsportsclub
 
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.definition.Kind
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent
 import seepick.localsportsclub.service.serviceModule
 import seepick.localsportsclub.sync.syncInfraModule
 import seepick.localsportsclub.view.viewModule
+import kotlin.reflect.full.isSubclassOf
 
 fun allModules(
     config: LscConfig,
@@ -32,11 +36,11 @@ fun rootModule(): Module = module {
 }
 
 // not working for compose ViewModels :(
-//@OptIn(KoinInternalApi::class)
-//inline fun <reified T : Any> getAllCustom(): List<T> =
-//    getKoin().let { koin ->
-//        koin.instanceRegistry.instances.map { it.value.beanDefinition }
-//            .filter { it.kind == Kind.Singleton }
-//            .filter { it.primaryType.isSubclassOf(T::class) }
-//            .map { koin.get(clazz = it.primaryType, qualifier = null, parameters = null) }
-//    }
+@OptIn(KoinInternalApi::class)
+inline fun <reified T : Any> getKoinBeansByType(): List<T> =
+    KoinJavaComponent.getKoin().let { koin ->
+        koin.instanceRegistry.instances.map { it.value.beanDefinition }
+            .filter { it.kind == Kind.Singleton }
+            .filter { it.primaryType.isSubclassOf(T::class) }
+            .map { koin.get(clazz = it.primaryType, qualifier = null, parameters = null) }
+    }

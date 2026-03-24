@@ -12,12 +12,12 @@ class DnysActivityDetailsFetcher(
     private val venueRepo: VenueRepo,
     private val api: UscApi,
     private val progress: SyncProgress,
-) {
+) : ActivityEnricher {
     private val log = logger {}
 
     private val slug = "de-nieuwe-yogaschool"
 
-    suspend fun enrich(original: List<Pair<ActivityDbo, ActivityDetails>>): List<Pair<ActivityDbo, ActivityDetails>> {
+    override suspend fun enrich(original: ActivityDbosWithDetails): ActivityDbosWithDetails {
         val venue = venueRepo.selectBySlug(slug) ?: return original
         val dnysActivities = original.filter {
             it.first.venueId == venue.id && it.first.teacher == null

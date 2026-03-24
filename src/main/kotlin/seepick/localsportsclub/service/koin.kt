@@ -4,6 +4,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
+import seepick.localsportsclub.getKoinBeansByType
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.DataStorage
@@ -22,7 +23,10 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::BookingValidator)
     singleOf(::VenueService)
     singleOf(::RemarkService)
-    singleOf(::ActivityDetailService)
+    singleOf(::CategoryPostprocessorActivityEnricher)
+    single {
+        ActivityDetailService(get(), get(), get(), get(), getKoinBeansByType<ActivityEnricher>())
+    }
     single {
         if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker
     } bind VersionChecker::class

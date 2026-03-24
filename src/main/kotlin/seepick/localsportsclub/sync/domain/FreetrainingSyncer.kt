@@ -34,7 +34,7 @@ class FreetrainingSyncer(
         city: City,
         days: List<LocalDate>,
     ) {
-        log.info { "Syncing freetrainiings for: $days" }
+        log.info { "Syncing freetrainings for: $days" }
         val allStoredFreetrainings = freetrainingRepo.selectAll(city.id)
         val venuesBySlug = venueRepo.selectAllByCity(city.id).associateBy { it.slug }.toMutableMap()
         days.forEachIndexed { index, day ->

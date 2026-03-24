@@ -5,7 +5,6 @@ import com.github.seepick.uscclient.activity.ActivityDetails
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress
@@ -15,12 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger
 class ActivityDetailService(
     private val api: UscApi,
     private val activityRepo: ActivityRepo,
-    private val venueRepo: VenueRepo,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
-    private val dnysFetcher: DnysActivityDetailsFetcher,
+    private val enrichers: List<ActivityEnricher>,
 ) {
     private val log = logger {}
+
+    init {
+        log.debug { "Initialized with ${enrichers.size} enrichers." }
+    }
 
     suspend fun syncSingle(activity: Activity) {
         syncSingle(activityRepo.selectById(activity.id) ?: error("Activity with id ${activity.id} not found"))
@@ -28,25 +30,36 @@ class ActivityDetailService(
 
     suspend fun syncSingle(activity: ActivityDbo) {
         log.debug { "syncSingle(activity=$activity)" }
-
         syncBulk(listOf(activity))
     }
 
     suspend fun syncBulk(activities: List<ActivityDbo>) {
         log.debug { "syncBulk(activities.size=${activities.size})" }
         val activitiesDone = AtomicInteger(0)
-        val activityAndDetails = workParallel(minOf(5, activities.size), activities) { activity ->
-            val details = api.fetchActivityDetails(activity.id)
-            val soFarDone = activitiesDone.incrementAndGet()
-            if (soFarDone % 10 == 0) {
-                val percentageDone = (activitiesDone.get() * 100.0 / activities.size).toInt()
-                progress.onProgress("Auto-Sync", "${percentageDone}%")
-            }
-            activity to details
+        val activitiesCount = activities.size
+        val originalDboDetails = workParallel(minOf(5, activities.size), activities) { dbo ->
+            fetchDetails(dbo, activitiesDone, activitiesCount)
         }
-        dnysFetcher.enrich(activityAndDetails).forEach { (activity, details) ->
-            updateDboAndDispatch(activity, details)
+        val enrichedDboDetails = enrichers.fold(originalDboDetails) { acc, enricher ->
+            enricher.enrich(acc)
         }
+        enrichedDboDetails.forEach { (dbo, details) ->
+            updateDboAndDispatch(dbo, details)
+        }
+    }
+
+    private suspend fun fetchDetails(
+        dbo: ActivityDbo,
+        activitiesDone: AtomicInteger,
+        activitiesCount: Int,
+    ): Pair<ActivityDbo, ActivityDetails> {
+        val details = api.fetchActivityDetails(dbo.id)
+        val soFarDone = activitiesDone.incrementAndGet()
+        if (soFarDone % 10 == 0) {
+            val percentageDone = (activitiesDone.get() * 100.0 / activitiesCount).toInt()
+            progress.onProgress("Auto-Sync", "${percentageDone}%")
+        }
+        return dbo to details
     }
 
     private fun updateDboAndDispatch(activity: ActivityDbo, details: ActivityDetails) {
