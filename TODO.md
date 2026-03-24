@@ -3,7 +3,6 @@
 ## v1.16.0
 
 * 🖋 USC API changed for visit limits!!!
-* 🐞🖋 BUGFIX carousel image loading !!!
 
 ## v1.17.0
 
@@ -15,6 +14,7 @@
 
 ## Backlog
 
+* 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
 * 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories)
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync

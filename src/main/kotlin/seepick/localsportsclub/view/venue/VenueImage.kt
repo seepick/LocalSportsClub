@@ -50,12 +50,15 @@ fun VenueImage(
         painter = BitmapPainter(image),
         contentDescription = null,
         contentScale = ContentScale.Fit,
-        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+        modifier = Modifier
+            .clickable { carouselModel.onVenueDetailImageClicked(venue) }
+            .pointerHoverIcon(PointerIcon.Hand)
             .onPointerEvent(PointerEventType.Enter) { isHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isHovered = false }.let {
                 if (drawBorder) it.border(
                     width = 1.dp,
                     color = if (isHovered) Lsc.colors.clickableNeutral.brighter() else Lsc.colors.clickableNeutral,
                 ) else it
-            }.clickable { carouselModel.onVenueDetailImageClicked(venue) })
+            }
+    )
 }
