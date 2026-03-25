@@ -58,7 +58,7 @@ class Venue(
     val importantInfo: String?,
     val openingTimes: String?,
     val uscWebsite: String, // inferred by static URL + slug
-    val plan: Plan.UscPlan,
+    override val plan: Plan.UscPlan,
     // those down below also mutable...
     officialWebsite: String?,
     isDeleted: Boolean,
@@ -70,7 +70,7 @@ class Venue(
     isAutoSync: Boolean,
     visitLimits: VisitLimits?,
     lastSync: LocalDate?,
-) : HasVenue, HasLabel, HasDistance, TableItemBgColor {
+) : HasVenue, HasLabel, HasPlan, HasDistance, TableItemBgColor {
     override val label = name
     override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
 

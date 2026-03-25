@@ -5,6 +5,7 @@ import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.search.newRatingSearchOption
 import java.time.LocalDate
 
 class FreetrainingSearch(
@@ -31,9 +32,7 @@ class FreetrainingSearch(
     val wishlisted = newBooleanSearchOption(
         "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
     ) { it.venue.isWishlisted }
-    val rating = newRatingSearchOption(
-        "Rating", visualIndicator = Lsc.icons.ratingIndicator
-    ) { it.venue.rating }
+    val rating = newRatingSearchOption()
     val category = newSelectSearchOption(
         label = "Category",
         allOptions = allCategories.map { it.nameAndMaybeEmoji },

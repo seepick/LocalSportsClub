@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.service.model.Rating
 import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
@@ -14,7 +13,7 @@ abstract class AbstractSearch<T>(
     private val resetItems: () -> Unit,
 ) {
     private val log = logger {}
-    private val options = mutableListOf<SearchOption<T>>()
+    val options = mutableListOf<SearchOption<T>>()
     private val predicates = mutableListOf<(T) -> Boolean>()
     val anyEnabled
         get() =
@@ -84,7 +83,7 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
-    protected fun newBooleanSearchOption(
+    fun newBooleanSearchOption(
         label: String,
         initialValue: Boolean = false,
         initiallyEnabled: Boolean = false,
@@ -142,22 +141,6 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
-    protected fun newRatingSearchOption(
-        label: String,
-        initiallyEnabled: Boolean = false,
-        visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
-        extractor: (T) -> Rating,
-    ) =
-        RatingSearchOption(
-            label = label,
-            reset = ::reset,
-            extractor = extractor,
-            initiallyEnabled = initiallyEnabled,
-            visualIndicator = visualIndicator,
-        ).also {
-            options += it
-        }
-
     protected fun newRemarkRatingSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
@@ -174,7 +157,7 @@ abstract class AbstractSearch<T>(
             options += it
         }
 
-    protected fun newSelectSearchOption(
+    fun newSelectSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
         allOptions: List<String>,

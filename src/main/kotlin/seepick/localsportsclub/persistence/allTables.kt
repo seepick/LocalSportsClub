@@ -1,11 +1,11 @@
 package seepick.localsportsclub.persistence
 
 val allTables = arrayOf(
-    VenuesTable,
-    VenueLinksTable,
-    ActivitiesTable,
-    FreetrainingsTable,
-    SinglesTable,
-    ActivityRemarksTable,
-    TeacherRemarksTable,
+    VenueDboTable,
+    VenueLinkDboTable,
+    ActivityDboTable,
+    FreetrainingDboTable,
+    SingleDboTable,
+    ActivityRemarkDboTable,
+    TeacherRemarkDboTable,
 )

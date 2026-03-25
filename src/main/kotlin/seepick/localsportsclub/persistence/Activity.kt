@@ -42,55 +42,55 @@ data class ActivityDbo(
     val isCheckedin = state == ActivityState.Checkedin
 
     fun prepareInsert(statement: InsertStatement<Number>) {
-        statement[ActivitiesTable.id] = this.id
-        statement[ActivitiesTable.venueId] = this.venueId
-        statement[ActivitiesTable.name] = this.name
-        statement[ActivitiesTable.category] = this.category
-        statement[ActivitiesTable.from] = this.from
-        statement[ActivitiesTable.to] = this.to
-        statement[ActivitiesTable.state] = this.state
-        statement[ActivitiesTable.teacher] = this.teacher
-        statement[ActivitiesTable.description] = this.description
-        statement[ActivitiesTable.spotsLeft] = this.spotsLeft
-        statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
-        statement[ActivitiesTable.planId] = this.planId
+        statement[ActivityDboTable.id] = this.id
+        statement[ActivityDboTable.venueId] = this.venueId
+        statement[ActivityDboTable.name] = this.name
+        statement[ActivityDboTable.category] = this.category
+        statement[ActivityDboTable.from] = this.from
+        statement[ActivityDboTable.to] = this.to
+        statement[ActivityDboTable.state] = this.state
+        statement[ActivityDboTable.teacher] = this.teacher
+        statement[ActivityDboTable.description] = this.description
+        statement[ActivityDboTable.spotsLeft] = this.spotsLeft
+        statement[ActivityDboTable.cancellationLimit] = this.cancellationLimit
+        statement[ActivityDboTable.planId] = this.planId
     }
 
     fun prepareUpdate(statement: UpdateStatement) {
-        statement[ActivitiesTable.name] = this.name
-        statement[ActivitiesTable.category] = this.category
-        statement[ActivitiesTable.from] = this.from
-        statement[ActivitiesTable.to] = this.to
-        statement[ActivitiesTable.state] = this.state
-        statement[ActivitiesTable.teacher] = this.teacher
-        statement[ActivitiesTable.description] = this.description
-        statement[ActivitiesTable.spotsLeft] = this.spotsLeft
-        statement[ActivitiesTable.cancellationLimit] = this.cancellationLimit
-        statement[ActivitiesTable.planId] = this.planId
+        statement[ActivityDboTable.name] = this.name
+        statement[ActivityDboTable.category] = this.category
+        statement[ActivityDboTable.from] = this.from
+        statement[ActivityDboTable.to] = this.to
+        statement[ActivityDboTable.state] = this.state
+        statement[ActivityDboTable.teacher] = this.teacher
+        statement[ActivityDboTable.description] = this.description
+        statement[ActivityDboTable.spotsLeft] = this.spotsLeft
+        statement[ActivityDboTable.cancellationLimit] = this.cancellationLimit
+        statement[ActivityDboTable.planId] = this.planId
     }
 
     companion object {
         fun fromRow(row: ResultRow) = ActivityDbo(
-            id = row[ActivitiesTable.id].value,
-            venueId = row[ActivitiesTable.venueId].value,
-            name = row[ActivitiesTable.name],
-            category = row[ActivitiesTable.category],
-            from = row[ActivitiesTable.from].withNano(0),
-            to = row[ActivitiesTable.to].withNano(0),
-            state = row[ActivitiesTable.state],
-            teacher = row[ActivitiesTable.teacher],
-            description = row[ActivitiesTable.description],
-            spotsLeft = row[ActivitiesTable.spotsLeft],
-            cancellationLimit = row[ActivitiesTable.cancellationLimit],
-            planId = row[ActivitiesTable.planId],
+            id = row[ActivityDboTable.id].value,
+            venueId = row[ActivityDboTable.venueId].value,
+            name = row[ActivityDboTable.name],
+            category = row[ActivityDboTable.category],
+            from = row[ActivityDboTable.from].withNano(0),
+            to = row[ActivityDboTable.to].withNano(0),
+            state = row[ActivityDboTable.state],
+            teacher = row[ActivityDboTable.teacher],
+            description = row[ActivityDboTable.description],
+            spotsLeft = row[ActivityDboTable.spotsLeft],
+            cancellationLimit = row[ActivityDboTable.cancellationLimit],
+            planId = row[ActivityDboTable.planId],
         )
     }
 }
 
-object ActivitiesTable : IntIdTable("ACTIVITIES", "ID") {
+object ActivityDboTable : IntIdTable("ACTIVITIES", "ID") {
     val name = varchar("NAME", 256) // sync list
     val category = varchar("CATEGORY", 64) // sync list
-    val venueId = reference(name = "VENUE_ID", foreign = VenuesTable, fkName = "FK_ACTIVITIES_VENUE_ID")
+    val venueId = reference(name = "VENUE_ID", foreign = VenueDboTable, fkName = "FK_ACTIVITIES_VENUE_ID")
     val from = datetime("FROM_DATETIME")
     val to = datetime("TO_DATETIME")
     val spotsLeft = integer("SPOTS_LEFT")
@@ -118,65 +118,65 @@ object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
 
     override fun selectAll(cityId: Int): List<ActivityDbo> = transaction {
-        ActivitiesTable
-            .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
-            .selectAll().where { VenuesTable.cityId.eq(cityId) }.orderBy(ActivitiesTable.from).map {
+        ActivityDboTable
+            .join(VenueDboTable, JoinType.LEFT, onColumn = ActivityDboTable.venueId, otherColumn = VenueDboTable.id)
+            .selectAll().where { VenueDboTable.cityId.eq(cityId) }.orderBy(ActivityDboTable.from).map {
                 ActivityDbo.fromRow(it)
             }
     }
 
     override fun selectAllBooked(cityId: Int): List<ActivityDbo> = transaction {
-        ActivitiesTable
-            .join(VenuesTable, JoinType.LEFT, onColumn = ActivitiesTable.venueId, otherColumn = VenuesTable.id)
-            .selectAll().where { (VenuesTable.cityId eq cityId) and (ActivitiesTable.state eq ActivityState.Booked) }
-            .orderBy(ActivitiesTable.from).map {
+        ActivityDboTable
+            .join(VenueDboTable, JoinType.LEFT, onColumn = ActivityDboTable.venueId, otherColumn = VenueDboTable.id)
+            .selectAll().where { (VenueDboTable.cityId eq cityId) and (ActivityDboTable.state eq ActivityState.Booked) }
+            .orderBy(ActivityDboTable.from).map {
                 ActivityDbo.fromRow(it)
             }
     }
 
     override fun selectAllAnywhere(): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).map {
+        ActivityDboTable.selectAll().orderBy(ActivityDboTable.from).map {
             ActivityDbo.fromRow(it)
         }
     }
 
     override fun selectById(id: Int) = transaction {
-        ActivitiesTable.selectAll().where { ActivitiesTable.id.eq(id) }.map {
+        ActivityDboTable.selectAll().where { ActivityDboTable.id.eq(id) }.map {
             ActivityDbo.fromRow(it)
         }.singleOrNull()
     }
 
     override fun selectAllForVenueId(venueId: Int): List<ActivityDbo> = transaction {
-        ActivitiesTable.selectAll().orderBy(ActivitiesTable.from).where { ActivitiesTable.venueId eq venueId }.map {
+        ActivityDboTable.selectAll().orderBy(ActivityDboTable.from).where { ActivityDboTable.venueId eq venueId }.map {
             ActivityDbo.fromRow(it)
         }
     }
 
     override fun selectFutureMostDate(): LocalDate? = transaction {
-        ActivitiesTable.select(ActivitiesTable.from).orderBy(ActivitiesTable.from, SortOrder.DESC).limit(1).toList()
+        ActivityDboTable.select(ActivityDboTable.from).orderBy(ActivityDboTable.from, SortOrder.DESC).limit(1).toList()
             .let {
                 if (it.isEmpty()) null
-                else it.first()[ActivitiesTable.from].toLocalDate()
+                else it.first()[ActivityDboTable.from].toLocalDate()
             }
     }
 
     override fun selectNewestCheckedinDate(): LocalDate? = transaction {
-        ActivitiesTable.select(ActivitiesTable.from).where { ActivitiesTable.state.eq(ActivityState.Checkedin) }
-            .orderBy(ActivitiesTable.from, SortOrder.DESC).limit(1).toList().let {
+        ActivityDboTable.select(ActivityDboTable.from).where { ActivityDboTable.state.eq(ActivityState.Checkedin) }
+            .orderBy(ActivityDboTable.from, SortOrder.DESC).limit(1).toList().let {
                 if (it.isEmpty()) null
-                else it.first()[ActivitiesTable.from].toLocalDate()
+                else it.first()[ActivityDboTable.from].toLocalDate()
             }
     }
 
     override fun insert(activity: ActivityDbo): Unit = transaction {
         log.debug { "Insert: $activity" }
-        ActivitiesTable.insert {
+        ActivityDboTable.insert {
             activity.prepareInsert(it)
         }
     }
 
     override fun update(activity: ActivityDbo): Unit = transaction {
-        val updated = ActivitiesTable.update(where = { ActivitiesTable.id.eq(activity.id) }) {
+        val updated = ActivityDboTable.update(where = { ActivityDboTable.id.eq(activity.id) }) {
             activity.prepareUpdate(it)
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${activity.id}, but was: $updated")
@@ -185,12 +185,12 @@ object ExposedActivityRepo : ActivityRepo {
     override fun deleteBlanksBefore(threshold: LocalDate): List<ActivityDbo> = transaction {
         val thresholdDateTime = LocalDateTime.of(threshold, LocalTime.of(0, 0))
 
-        val deletedActivities = ActivitiesTable.selectAll().where {
-            (ActivitiesTable.state eq ActivityState.Blank) and (ActivitiesTable.from less thresholdDateTime)
+        val deletedActivities = ActivityDboTable.selectAll().where {
+            (ActivityDboTable.state eq ActivityState.Blank) and (ActivityDboTable.from less thresholdDateTime)
         }.map { ActivityDbo.fromRow(it) }
 
         val deletedActivitiesCount =
-            ActivitiesTable.deleteWhere { ActivitiesTable.id.inList(deletedActivities.map { it.id }) }
+            ActivityDboTable.deleteWhere { ActivityDboTable.id.inList(deletedActivities.map { it.id }) }
         require(deletedActivitiesCount == deletedActivities.size)
 
         log.info { "Deleted ${deletedActivities.size} old activities before $threshold." }

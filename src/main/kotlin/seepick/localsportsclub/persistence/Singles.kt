@@ -8,7 +8,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 
-object SinglesTable : Table("SINGLES") {
+object SingleDboTable : Table("SINGLES") {
     val version = integer("VERSION")
     val json = text("JSON")
 }
@@ -33,18 +33,18 @@ object ExposedSinglesRepo : SinglesRepo {
 
     override fun select() = transaction {
         log.debug { "select()" }
-        SinglesTable.selectAll().singleOrNull()?.let { row ->
+        SingleDboTable.selectAll().singleOrNull()?.let { row ->
             SinglesDbo(
-                version = row[SinglesTable.version],
-                json = row[SinglesTable.json],
+                version = row[SingleDboTable.version],
+                json = row[SingleDboTable.json],
             )
         }
     }
 
     override fun insert(singles: SinglesDbo): Unit = transaction {
         log.debug { "insert($singles)" }
-        require(SinglesTable.selectAll().toList().isEmpty())
-        SinglesTable.insert {
+        require(SingleDboTable.selectAll().toList().isEmpty())
+        SingleDboTable.insert {
             it[version] = singles.version
             it[json] = singles.json
         }
@@ -52,14 +52,14 @@ object ExposedSinglesRepo : SinglesRepo {
 
     override fun update(singles: SinglesDbo): Unit = transaction {
         log.debug { "update($singles)" }
-        require(SinglesTable.selectAll().toList().size == 1)
-        SinglesTable.update {
+        require(SingleDboTable.selectAll().toList().size == 1)
+        SingleDboTable.update {
             it[version] = singles.version
             it[json] = singles.json
         }
     }
 
     fun reset(): Unit = transaction {
-        SinglesTable.deleteAll()
+        SingleDboTable.deleteAll()
     }
 }

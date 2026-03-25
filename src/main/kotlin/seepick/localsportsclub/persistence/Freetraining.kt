@@ -35,38 +35,38 @@ data class FreetrainingDbo(
     val isCheckedin = state == FreetrainingState.Checkedin
 
     fun prepareInsert(statement: InsertStatement<Number>) {
-        statement[FreetrainingsTable.id] = this.id
-        statement[FreetrainingsTable.venueId] = this.venueId
-        statement[FreetrainingsTable.name] = this.name
-        statement[FreetrainingsTable.category] = this.category
-        statement[FreetrainingsTable.date] = this.date
-        statement[FreetrainingsTable.state] = this.state
-        statement[FreetrainingsTable.planId] = this.planId
+        statement[FreetrainingDboTable.id] = this.id
+        statement[FreetrainingDboTable.venueId] = this.venueId
+        statement[FreetrainingDboTable.name] = this.name
+        statement[FreetrainingDboTable.category] = this.category
+        statement[FreetrainingDboTable.date] = this.date
+        statement[FreetrainingDboTable.state] = this.state
+        statement[FreetrainingDboTable.planId] = this.planId
     }
 
     fun prepareUpdate(statement: UpdateStatement) {
-        statement[FreetrainingsTable.name] = this.name
-        statement[FreetrainingsTable.category] = this.category
-        statement[FreetrainingsTable.date] = this.date
-        statement[FreetrainingsTable.state] = this.state
-        statement[FreetrainingsTable.planId] = this.planId
+        statement[FreetrainingDboTable.name] = this.name
+        statement[FreetrainingDboTable.category] = this.category
+        statement[FreetrainingDboTable.date] = this.date
+        statement[FreetrainingDboTable.state] = this.state
+        statement[FreetrainingDboTable.planId] = this.planId
     }
 
     companion object {
         fun fromRow(row: ResultRow) = FreetrainingDbo(
-            id = row[FreetrainingsTable.id].value,
-            venueId = row[FreetrainingsTable.venueId].value,
-            name = row[FreetrainingsTable.name],
-            category = row[FreetrainingsTable.category],
-            date = row[FreetrainingsTable.date],
-            state = row[FreetrainingsTable.state],
-            planId = row[FreetrainingsTable.planId],
+            id = row[FreetrainingDboTable.id].value,
+            venueId = row[FreetrainingDboTable.venueId].value,
+            name = row[FreetrainingDboTable.name],
+            category = row[FreetrainingDboTable.category],
+            date = row[FreetrainingDboTable.date],
+            state = row[FreetrainingDboTable.state],
+            planId = row[FreetrainingDboTable.planId],
         )
     }
 }
 
-object FreetrainingsTable : IntIdTable("FREETRAININGS", "ID") {
-    val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_FREETRAININGS_VENUE_ID")
+object FreetrainingDboTable : IntIdTable("FREETRAININGS", "ID") {
+    val venueId = reference("VENUE_ID", VenueDboTable, fkName = "FK_FREETRAININGS_VENUE_ID")
     val name = varchar("NAME", 256)
     val category = varchar("CATEGORY", 64)
     val date = date("DATE")
@@ -90,63 +90,64 @@ object ExposedFreetrainingRepo : FreetrainingRepo {
     private val log = logger {}
 
     override fun selectAll(cityId: Int): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable
-            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
-            .selectAll().where { VenuesTable.cityId eq cityId }.orderBy(FreetrainingsTable.date).map {
+        FreetrainingDboTable
+            .join(VenueDboTable, JoinType.LEFT, onColumn = FreetrainingDboTable.venueId, otherColumn = VenueDboTable.id)
+            .selectAll().where { VenueDboTable.cityId eq cityId }.orderBy(FreetrainingDboTable.date).map {
                 FreetrainingDbo.fromRow(it)
             }
     }
 
     override fun selectAllScheduled(cityId: Int): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable
-            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
+        FreetrainingDboTable
+            .join(VenueDboTable, JoinType.LEFT, onColumn = FreetrainingDboTable.venueId, otherColumn = VenueDboTable.id)
             .selectAll()
-            .where { (VenuesTable.cityId eq cityId) and (FreetrainingsTable.state eq FreetrainingState.Scheduled) }
+            .where { (VenueDboTable.cityId eq cityId) and (FreetrainingDboTable.state eq FreetrainingState.Scheduled) }
             .map {
                 FreetrainingDbo.fromRow(it)
             }
     }
 
     override fun selectAllAnywhere(): List<FreetrainingDbo> = transaction {
-        FreetrainingsTable.selectAll().orderBy(FreetrainingsTable.date).map { FreetrainingDbo.fromRow(it) }
+        FreetrainingDboTable.selectAll().orderBy(FreetrainingDboTable.date).map { FreetrainingDbo.fromRow(it) }
     }
 
     override fun selectFutureMostDate(cityId: Int): LocalDate? = transaction {
-        FreetrainingsTable
-            .join(VenuesTable, JoinType.LEFT, onColumn = FreetrainingsTable.venueId, otherColumn = VenuesTable.id)
-            .select(FreetrainingsTable.date)
-            .where { VenuesTable.cityId eq cityId }
-            .orderBy(FreetrainingsTable.date, SortOrder.DESC).limit(1)
+        FreetrainingDboTable
+            .join(VenueDboTable, JoinType.LEFT, onColumn = FreetrainingDboTable.venueId, otherColumn = VenueDboTable.id)
+            .select(FreetrainingDboTable.date)
+            .where { VenueDboTable.cityId eq cityId }
+            .orderBy(FreetrainingDboTable.date, SortOrder.DESC).limit(1)
             .toList().let {
                 if (it.isEmpty()) null
-                else it.first()[FreetrainingsTable.date]
+                else it.first()[FreetrainingDboTable.date]
             }
     }
 
     override fun selectById(freetrainingId: Int): FreetrainingDbo? = transaction {
-        FreetrainingsTable.selectAll().where { FreetrainingsTable.id.eq(freetrainingId) }.map {
+        FreetrainingDboTable.selectAll().where { FreetrainingDboTable.id.eq(freetrainingId) }.map {
             FreetrainingDbo.fromRow(it)
         }.singleOrNull()
     }
 
     override fun insert(dbo: FreetrainingDbo): Unit = transaction {
         log.debug { "Insert: $dbo" }
-        FreetrainingsTable.insert {
+        FreetrainingDboTable.insert {
             dbo.prepareInsert(it)
         }
     }
 
     override fun update(dbo: FreetrainingDbo): Unit = transaction {
-        val updated = FreetrainingsTable.update(where = { FreetrainingsTable.id.eq(dbo.id) }) { dbo.prepareUpdate(it) }
+        val updated =
+            FreetrainingDboTable.update(where = { FreetrainingDboTable.id.eq(dbo.id) }) { dbo.prepareUpdate(it) }
         if (updated != 1) error("Expected 1 to be updated by ID ${dbo.id}, but was: $updated")
     }
 
     override fun deleteNonCheckedinBefore(threshold: LocalDate): List<FreetrainingDbo> = transaction {
-        val deleted = FreetrainingsTable.selectAll().where {
-            (FreetrainingsTable.state neq FreetrainingState.Checkedin) and (FreetrainingsTable.date less threshold)
+        val deleted = FreetrainingDboTable.selectAll().where {
+            (FreetrainingDboTable.state neq FreetrainingState.Checkedin) and (FreetrainingDboTable.date less threshold)
         }.map { FreetrainingDbo.fromRow(it) }
 
-        val deletedCount = FreetrainingsTable.deleteWhere { FreetrainingsTable.id.inList(deleted.map { it.id }) }
+        val deletedCount = FreetrainingDboTable.deleteWhere { FreetrainingDboTable.id.inList(deleted.map { it.id }) }
         require(deletedCount == deleted.size)
 
         log.info { "Deleted ${deleted.size} old freetrainings before $threshold." }

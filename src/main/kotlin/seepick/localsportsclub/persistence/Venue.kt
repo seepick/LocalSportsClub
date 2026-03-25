@@ -63,7 +63,7 @@ interface VenueRepo {
     fun selectBySlug(slug: String): VenueDbo?
 }
 
-object VenuesTable : IntIdTable("VENUES", "ID") {
+object VenueDboTable : IntIdTable("VENUES", "ID") {
     val name = varchar("NAME", 256) // sync details
     val slug = varchar("SLUG", 64).uniqueIndex("VENUES_SLUG_UNIQUE_INDEX") // sync details
     val facilities = text("FACILITIES") // sync details; aka disciplines; comma separated list
@@ -96,35 +96,35 @@ object ExposedVenueRepo : VenueRepo {
     private val log = logger {}
 
     override fun selectAllByCity(cityId: Int): List<VenueDbo> = transaction {
-        VenuesTable.selectAll().where { VenuesTable.cityId.eq(cityId) }.map {
+        VenueDboTable.selectAll().where { VenueDboTable.cityId.eq(cityId) }.map {
             VenueDbo.fromRow(it)
         }
     }
 
     override fun selectAllAnywhere(): List<VenueDbo> = transaction {
-        VenuesTable.selectAll().map {
+        VenueDboTable.selectAll().map {
             VenueDbo.fromRow(it)
         }
     }
 
     override fun selectById(id: Int): VenueDbo? = transaction {
-        VenuesTable.selectAll().where { VenuesTable.id.eq(id) }.map {
+        VenueDboTable.selectAll().where { VenueDboTable.id.eq(id) }.map {
             VenueDbo.fromRow(it)
         }.singleOrNull()
     }
 
     override fun selectBySlug(slug: String): VenueDbo? = transaction {
-        VenuesTable.selectAll().where { VenuesTable.slug.eq(slug) }.map {
+        VenueDboTable.selectAll().where { VenueDboTable.slug.eq(slug) }.map {
             VenueDbo.fromRow(it)
         }.singleOrNull()
     }
 
     override fun insert(venue: VenueDbo): VenueDbo = transaction {
         log.debug { "Inserting $venue" }
-        val nextId = VenuesTable.select(VenuesTable.id)
-            .orderBy(VenuesTable.id, order = SortOrder.DESC)
-            .limit(1).toList().firstOrNull()?.let { it[VenuesTable.id].value + 1 } ?: 1
-        VenuesTable.insert {
+        val nextId = VenueDboTable.select(VenueDboTable.id)
+            .orderBy(VenueDboTable.id, order = SortOrder.DESC)
+            .limit(1).toList().firstOrNull()?.let { it[VenueDboTable.id].value + 1 } ?: 1
+        VenueDboTable.insert {
             it[id] = nextId
             it[name] = venue.name
             it[slug] = venue.slug
@@ -157,7 +157,7 @@ object ExposedVenueRepo : VenueRepo {
 
     override fun update(venue: VenueDbo): VenueDbo = transaction {
         log.debug { "Updating $venue" }
-        val updated = VenuesTable.update(where = { VenuesTable.id.eq(venue.id) }) {
+        val updated = VenueDboTable.update(where = { VenueDboTable.id.eq(venue.id) }) {
             it[notes] = venue.notes
             it[rating] = venue.rating
             it[imageFileName] = venue.imageFileName
@@ -185,31 +185,31 @@ object ExposedVenueRepo : VenueRepo {
     }
 
     private fun VenueDbo.Companion.fromRow(row: ResultRow) = VenueDbo(
-        id = row[VenuesTable.id].value,
-        name = row[VenuesTable.name],
-        slug = row[VenuesTable.slug],
-        notes = row[VenuesTable.notes],
-        facilities = row[VenuesTable.facilities],
-        cityId = row[VenuesTable.cityId],
-        officialWebsite = row[VenuesTable.officialWebsite],
-        rating = row[VenuesTable.rating],
-        postalCode = row[VenuesTable.postalCode],
-        street = row[VenuesTable.street],
-        addressLocality = row[VenuesTable.addressLocality],
-        longitude = row[VenuesTable.longitude],
-        latitude = row[VenuesTable.latitude],
-        description = row[VenuesTable.description],
-        importantInfo = row[VenuesTable.importantInfo],
-        imageFileName = row[VenuesTable.imageFileName],
-        openingTimes = row[VenuesTable.openingTimes],
-        isFavorited = row[VenuesTable.isFavorited],
-        isWishlisted = row[VenuesTable.isWishlisted],
-        isHidden = row[VenuesTable.isHidden],
-        isAutoSync = row[VenuesTable.isAutoSync],
-        isDeleted = row[VenuesTable.isDeleted],
-        planId = row[VenuesTable.planId],
-        visitLimits = row[VenuesTable.visitLimits]?.let { VisitLimits.fromSqlValue(it) },
-        lastSync = row[VenuesTable.lastSync],
+        id = row[VenueDboTable.id].value,
+        name = row[VenueDboTable.name],
+        slug = row[VenueDboTable.slug],
+        notes = row[VenueDboTable.notes],
+        facilities = row[VenueDboTable.facilities],
+        cityId = row[VenueDboTable.cityId],
+        officialWebsite = row[VenueDboTable.officialWebsite],
+        rating = row[VenueDboTable.rating],
+        postalCode = row[VenueDboTable.postalCode],
+        street = row[VenueDboTable.street],
+        addressLocality = row[VenueDboTable.addressLocality],
+        longitude = row[VenueDboTable.longitude],
+        latitude = row[VenueDboTable.latitude],
+        description = row[VenueDboTable.description],
+        importantInfo = row[VenueDboTable.importantInfo],
+        imageFileName = row[VenueDboTable.imageFileName],
+        openingTimes = row[VenueDboTable.openingTimes],
+        isFavorited = row[VenueDboTable.isFavorited],
+        isWishlisted = row[VenueDboTable.isWishlisted],
+        isHidden = row[VenueDboTable.isHidden],
+        isAutoSync = row[VenueDboTable.isAutoSync],
+        isDeleted = row[VenueDboTable.isDeleted],
+        planId = row[VenueDboTable.planId],
+        visitLimits = row[VenueDboTable.visitLimits]?.let { VisitLimits.fromSqlValue(it) },
+        lastSync = row[VenueDboTable.lastSync],
     )
 }
 

@@ -26,12 +26,12 @@ class ExposedActivityRemarksRepoTest : DescribeSpec({
     fun insertRemark(withActivity: ActivityRemarkDbo.() -> ActivityRemarkDbo = { this }): ActivityRemarkDbo =
         transaction {
             Arb.activityRemarkDbo().next().let(withActivity).also { dbo ->
-                ActivityRemarksTable.insert {
-                    it[ActivityRemarksTable.id] = dbo.id
-                    it[ActivityRemarksTable.venueId] = dbo.venueId
-                    it[ActivityRemarksTable.name] = dbo.name
-                    it[ActivityRemarksTable.remark] = dbo.remark
-                    it[ActivityRemarksTable.rating] = dbo.rating
+                ActivityRemarkDboTable.insert {
+                    it[ActivityRemarkDboTable.id] = dbo.id
+                    it[ActivityRemarkDboTable.venueId] = dbo.venueId
+                    it[ActivityRemarkDboTable.name] = dbo.name
+                    it[ActivityRemarkDboTable.remark] = dbo.remark
+                    it[ActivityRemarkDboTable.rating] = dbo.rating
                 }
             }
         }

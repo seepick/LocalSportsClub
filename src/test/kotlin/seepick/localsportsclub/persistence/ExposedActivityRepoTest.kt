@@ -116,9 +116,9 @@ class ExposedActivityRepoTest : DescribeSpec() {
                 val activity = activity().copy(venueId = venue.id)
                 activityRepo.insert(activity)
                 transaction {
-                    val stored = ActivitiesTable.selectAll().toList().shouldBeSingleton().first()
-                    stored[ActivitiesTable.id].value shouldBe activity.id
-                    stored[ActivitiesTable.name] shouldBe activity.name
+                    val stored = ActivityDboTable.selectAll().toList().shouldBeSingleton().first()
+                    stored[ActivityDboTable.id].value shouldBe activity.id
+                    stored[ActivityDboTable.name] shouldBe activity.name
                     // ...
                 }
             }

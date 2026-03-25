@@ -1,15 +1,20 @@
 package seepick.localsportsclub.view.activity
 
-import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.search.AbstractSearch
-import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
+import seepick.localsportsclub.view.search.newFavoritedSearchOption
+import seepick.localsportsclub.view.search.newPlanSearchOption
+import seepick.localsportsclub.view.search.newRatingSearchOption
+import seepick.localsportsclub.view.search.newWishlistedSearchOption
 
-class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : AbstractSearch<Activity>(resetItems) {
+class ActivitySearch(
+    allCategories: List<Category>,
+    resetItems: () -> Unit,
+) : AbstractSearch<Activity>(resetItems) {
     val hidden = newBooleanSearchOption( // invisible to the user
         label = "hidden",
         initiallyEnabled = true,
@@ -32,15 +37,9 @@ class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : Ab
         "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedIndicator
     ) { it.state == ActivityState.Booked }
     val distance = newDistanceSearchOption()
-    val favorited = newBooleanSearchOption(
-        label = "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator,
-    ) { it.venue.isFavorited }
-    val wishlisted = newBooleanSearchOption(
-        "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
-    ) { it.venue.isWishlisted }
-    val rating = newRatingSearchOption(
-        "Venue", visualIndicator = Lsc.icons.ratingIndicator
-    ) { it.venue.rating }
+    val favorited = newFavoritedSearchOption()
+    val wishlisted = newWishlistedSearchOption()
+    val rating = newRatingSearchOption(label = "Venue")
     val activityRating = newRemarkRatingSearchOption(
         "Activity", visualIndicator = Lsc.icons.activitiesIndicator
     ) { it.remarkRating }
@@ -49,15 +48,10 @@ class ActivitySearch(allCategories: List<Category>, resetItems: () -> Unit) : Ab
     ) { it.teacherRemarkRating }
 
     val categories = newSelectSearchOption(
-        visualIndicator = Lsc.icons.categoryIndicator,
         label = "Category",
+        visualIndicator = Lsc.icons.categoryIndicator,
         allOptions = allCategories.map { it.nameAndMaybeEmoji },
         extractor = { listOf(it.category.nameAndMaybeEmoji) },
     )
-    val plan = newSelectSearchOption(
-        visualIndicator = VisualIndicator.EmojiIndicator(Plan.UscPlan.emoji),
-        label = "Plan",
-        allOptions = Plan.UscPlan.entries.map { it.fullLabel },
-        extractor = { listOf(it.plan.fullLabel) },
-    )
+    val plan = newPlanSearchOption()
 }

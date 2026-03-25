@@ -29,7 +29,7 @@ import org.koin.compose.koinInject
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import seepick.localsportsclub.persistence.SinglesTable
+import seepick.localsportsclub.persistence.SingleDboTable
 import seepick.localsportsclub.reconfigureLog
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.workParallel
@@ -42,7 +42,7 @@ private class ExitHandler {
         log.debug { "onExit() opening transaction" }
         transaction {
             log.debug { "In transaction" }
-            SinglesTable.selectAll().toList()
+            SingleDboTable.selectAll().toList()
         }
     }
 }
@@ -55,7 +55,7 @@ private class MySyncer {
 //        transaction {
 //        runBlocking { // !!! this one here is/was the problem !!!
             coroutineScope {
-                SinglesTable.selectAll().toList()
+                SingleDboTable.selectAll().toList()
                 workParallel(5, (1..100).toList()) { i ->
                     log.debug { "executing step $i/100" }
                     println("isActive: $isActive")

@@ -37,9 +37,9 @@ class ExposedVenueRepoTest : DescribeSpec() {
                 val venue = Arb.venueDbo().next()
                 val inserted = repo.insert(venue)
                 transaction {
-                    val stored = VenuesTable.selectAll().toList().shouldBeSingleton().first()
-                    stored[VenuesTable.id].value shouldBe inserted.id
-                    stored[VenuesTable.slug] shouldBe venue.slug
+                    val stored = VenueDboTable.selectAll().toList().shouldBeSingleton().first()
+                    stored[VenueDboTable.id].value shouldBe inserted.id
+                    stored[VenueDboTable.slug] shouldBe venue.slug
                     // ...
                 }
             }

@@ -22,6 +22,7 @@ import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.shared.DistanceColumn
+import seepick.localsportsclub.view.shared.PlanColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 import seepick.localsportsclub.view.shared.VenueColumn
 import java.time.LocalDate
@@ -57,7 +58,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         renderer = TextRenderer.forInt(textAlign = TextAlign.Right) {
             it.activities.filter { it.state == ActivityState.Booked }.size + it.freetrainings.filter { it.state == FreetrainingState.Scheduled }.size
         },
-        tooltip = "Booked activities/freetrainings",
+        tooltip = "Booked (reserved/scheduled) activities/freetrainings",
         initialSortDirection = SortDirection.Desc,
     ),
     TableColumn(
@@ -81,7 +82,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
     ),
     TableColumn(
         header = VisualIndicator.StringIndicator("Visited"),
-        tooltip = "The last time you visited the venue",
+        tooltip = "Date of the most recent visit",
         size = WidthOrWeight.Width(70.dp),
         renderer = TextRenderer(
             valueExtractor = { CellValue(it.lastVisit()?.prettyShortPrint(SystemClock.today().year) ?: "") },
@@ -91,6 +92,7 @@ fun venuesTableColumns(today: LocalDate) = listOf<TableColumn<Venue>>(
         ),
         initialSortDirection = SortDirection.Desc,
     ),
+    PlanColumn(),
     RatingColumn(paddingRight = true),
     DistanceColumn(),
 )

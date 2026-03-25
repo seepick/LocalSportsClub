@@ -11,9 +11,9 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 // a.k.a. "other locations"
-object VenueLinksTable : Table("VENUE_LINKS") {
-    val venue1Id = reference("VENUE1_ID", VenuesTable)
-    val venue2Id = reference("VENUE2_ID", VenuesTable)
+object VenueLinkDboTable : Table("VENUE_LINKS") {
+    val venue1Id = reference("VENUE1_ID", VenueDboTable)
+    val venue2Id = reference("VENUE2_ID", VenueDboTable)
     override val primaryKey = PrimaryKey(venue1Id, venue2Id, name = "PK_VENUE_LINKS")
 }
 
@@ -43,24 +43,24 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
 
     override fun selectAll(cityId: Int): List<VenueIdLink> = transaction {
         log.debug { "selectAll(cityId=$cityId)" }
-        val venue1Alias = VenuesTable.alias("v1")
-        val venue2Alias = VenuesTable.alias("v2")
-        VenueLinksTable.join(
+        val venue1Alias = VenueDboTable.alias("v1")
+        val venue2Alias = VenueDboTable.alias("v2")
+        VenueLinkDboTable.join(
             venue1Alias,
             JoinType.LEFT,
-            onColumn = VenueLinksTable.venue1Id,
-            otherColumn = venue1Alias[VenuesTable.id]
+            onColumn = VenueLinkDboTable.venue1Id,
+            otherColumn = venue1Alias[VenueDboTable.id]
         ).join(
             venue2Alias,
             JoinType.LEFT,
-            onColumn = VenueLinksTable.venue2Id,
-            otherColumn = venue2Alias[VenuesTable.id]
+            onColumn = VenueLinkDboTable.venue2Id,
+            otherColumn = venue2Alias[VenueDboTable.id]
         ).selectAll().where {
-            (venue1Alias[VenuesTable.cityId] eq cityId) and (venue2Alias[VenuesTable.cityId] eq cityId)
+            (venue1Alias[VenueDboTable.cityId] eq cityId) and (venue2Alias[VenueDboTable.cityId] eq cityId)
         }.map {
             VenueIdLink(
-                it[VenueLinksTable.venue1Id].value,
-                it[VenueLinksTable.venue2Id].value,
+                it[VenueLinkDboTable.venue1Id].value,
+                it[VenueLinkDboTable.venue2Id].value,
             )
         }
     }
@@ -68,7 +68,7 @@ object ExposedVenueLinksRepo : VenueLinksRepo {
     override fun insert(venueIdLink: VenueIdLink): Unit = transaction {
         log.debug { "insert($venueIdLink)" }
         val (id1, id2) = if (venueIdLink.id1 < venueIdLink.id2) venueIdLink.id1 to venueIdLink.id2 else venueIdLink.id2 to venueIdLink.id1
-        VenueLinksTable.insert {
+        VenueLinkDboTable.insert {
             it[venue1Id] = id1
             it[venue2Id] = id2
         }

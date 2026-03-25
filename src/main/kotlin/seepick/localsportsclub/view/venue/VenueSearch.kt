@@ -12,10 +12,19 @@ import seepick.localsportsclub.service.search.FullNumericComparator
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
+import seepick.localsportsclub.view.search.newFavoritedSearchOption
+import seepick.localsportsclub.view.search.newPlanSearchOption
+import seepick.localsportsclub.view.search.newRatingSearchOption
+import seepick.localsportsclub.view.search.newWishlistedSearchOption
 import java.time.LocalDate
 
-class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: () -> Unit) :
+class VenueSearch(
+    today: LocalDate,
+    allCategories: List<Category>,
+    resetItems: () -> Unit,
+) :
     AbstractSearch<Venue>(resetItems) {
+
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
     )
@@ -47,15 +56,10 @@ class VenueSearch(today: LocalDate, allCategories: List<Category>, resetItems: (
         "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator
     ) { it.isHidden }
     val distance = newDistanceSearchOption()
-    val favorited = newBooleanSearchOption(
-        "Favorited", initialValue = true, visualIndicator = Lsc.icons.favoritedIndicator
-    ) { it.isFavorited }
-    val wishlisted = newBooleanSearchOption(
-        "Wishlisted", initialValue = true, visualIndicator = Lsc.icons.wishlistedIndicator
-    ) { it.isWishlisted }
-    val rating = newRatingSearchOption(
-        "Rating", visualIndicator = Lsc.icons.ratingIndicator
-    ) { it.rating }
+    val favorited = newFavoritedSearchOption()
+    val wishlisted = newWishlistedSearchOption()
+    val plan = newPlanSearchOption()
+    val rating = newRatingSearchOption()
     val category = newSelectSearchOption(
         label = "Category",
         allOptions = allCategories.map { it.nameAndMaybeEmoji },

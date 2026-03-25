@@ -66,7 +66,7 @@ class ExposedVenueLinksRepoTest : DescribeSpec() {
                 linksRepo.insert(VenueIdLink(venue1.id, venue2.id))
 
                 transaction {
-                    VenueLinksTable.selectAll().toList() shouldHaveSize 1
+                    VenueLinkDboTable.selectAll().toList() shouldHaveSize 1
                 }
             }
             it("Given both venues and link exist When insert twice Then fail") {

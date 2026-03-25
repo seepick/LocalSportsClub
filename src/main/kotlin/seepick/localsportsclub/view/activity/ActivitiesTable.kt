@@ -26,7 +26,6 @@ import seepick.localsportsclub.view.shared.PlanColumn
 import seepick.localsportsclub.view.shared.RatingColumn
 import seepick.localsportsclub.view.shared.VenueColumn
 
-
 fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     tableColumnVenueImage { it.venue },
     TableColumn(
@@ -55,8 +54,8 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
             textAlign = TextAlign.Right,
         )
     ),
-    PlanColumn(),
     CheckedinColumn(paddingRight = true),
+    PlanColumn(),
     RatingColumn(paddingRight = true),
     DistanceColumn(),
 )

@@ -7,6 +7,7 @@ import seepick.localsportsclub.view.search.BooleanSearchField
 import seepick.localsportsclub.view.search.DoubleSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
 import seepick.localsportsclub.view.search.IntSearchField
+import seepick.localsportsclub.view.search.PlanSearchField
 import seepick.localsportsclub.view.search.RatingSearchField
 import seepick.localsportsclub.view.search.SelectSearchField
 import seepick.localsportsclub.view.search.StringSearchField
@@ -24,13 +25,13 @@ fun VenueSearchPanel(
         IntSearchField(viewModel.searching.reservations)
         IntSearchField(viewModel.searching.checkins)
         BooleanSearchField(viewModel.searching.hidden)
+        PlanSearchField(viewModel.searching.plan)
+        RatingSearchField(viewModel.searching.rating)
         DoubleSearchField(viewModel.searching.distance, ComparingNumericComparator.entries)
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
-        RatingSearchField(viewModel.searching.rating)
         SelectSearchField(viewModel.searching.category)
         BooleanSearchField(viewModel.searching.autoSync)
         BooleanSearchField(viewModel.searching.deleted)
-
     }
 }

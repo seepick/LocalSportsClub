@@ -1,13 +1,13 @@
 package seepick.localsportsclub.view.activity
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.search.ComparingNumericComparator
 import seepick.localsportsclub.view.search.BooleanSearchField
 import seepick.localsportsclub.view.search.DateTimeRangeSearchField
 import seepick.localsportsclub.view.search.DoubleSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
+import seepick.localsportsclub.view.search.PlanSearchField
 import seepick.localsportsclub.view.search.RatingSearchField
 import seepick.localsportsclub.view.search.RemarkRatingSearchField
 import seepick.localsportsclub.view.search.SelectSearchField
@@ -23,13 +23,15 @@ fun ActivitySearchPanel(
     ) {
         StringSearchField(viewModel.searching.activityNameTeacherAndVenue)
         DateTimeRangeSearchField(viewModel.searching.date, viewModel.syncDates, viewModel.timeRange)
-        BooleanSearchField(viewModel.searching.booked)
+        PlanSearchField(viewModel.searching.plan)
+        RatingSearchField(viewModel.searching.rating, tooltip = "Venue Rating")
         DoubleSearchField(viewModel.searching.distance, ComparingNumericComparator.entries)
+        SelectSearchField(viewModel.searching.categories)
+
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
-        SelectSearchField(viewModel.searching.categories)
-        SelectSearchField(viewModel.searching.plan, width = 130.dp)
-        RatingSearchField(viewModel.searching.rating, tooltip = "Venue Rating")
+        BooleanSearchField(viewModel.searching.booked)
+
         RemarkRatingSearchField(viewModel.searching.activityRating, tooltip = "Activity Remark Rating")
         RemarkRatingSearchField(viewModel.searching.teacherRating, tooltip = "Teacher Remark Rating")
     }

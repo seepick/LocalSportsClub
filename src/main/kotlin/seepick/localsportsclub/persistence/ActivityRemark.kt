@@ -10,8 +10,8 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
-object ActivityRemarksTable : IntIdTable("ACTIVITY_REMARKS", "ID") {
-    val venueId = reference("VENUE_ID", VenuesTable, fkName = "FK_ACTIVITY_REMARKS_VENUE_ID")
+object ActivityRemarkDboTable : IntIdTable("ACTIVITY_REMARKS", "ID") {
+    val venueId = reference("VENUE_ID", VenueDboTable, fkName = "FK_ACTIVITY_REMARKS_VENUE_ID")
     val name = varchar("NAME", 128)
     val remark = text("REMARK")
     val rating = enumerationByName<RemarkDboRating>("RATING", 32)
@@ -26,11 +26,11 @@ data class ActivityRemarkDbo(
 ) {
     companion object {
         fun fromRow(row: ResultRow) = ActivityRemarkDbo(
-            id = row[ActivityRemarksTable.id].value,
-            venueId = row[ActivityRemarksTable.venueId].value,
-            name = row[ActivityRemarksTable.name],
-            remark = row[ActivityRemarksTable.remark],
-            rating = row[ActivityRemarksTable.rating],
+            id = row[ActivityRemarkDboTable.id].value,
+            venueId = row[ActivityRemarkDboTable.venueId].value,
+            name = row[ActivityRemarkDboTable.name],
+            remark = row[ActivityRemarkDboTable.remark],
+            rating = row[ActivityRemarkDboTable.rating],
         )
     }
 }
@@ -50,7 +50,7 @@ object ExposedActivityRemarkRepo : ActivityRemarkRepo {
     private val log = logger {}
 
     override fun selectAll() = transaction {
-        ActivityRemarksTable.selectAll().map {
+        ActivityRemarkDboTable.selectAll().map {
             ActivityRemarkDbo.fromRow(it)
         }
     }
@@ -61,12 +61,12 @@ object ExposedActivityRemarkRepo : ActivityRemarkRepo {
             "All teachers must have the same venueId: $venueId ($remarks))"
         }
 
-        ActivityRemarksTable.deleteWhere { this.venueId eq venueId }
+        ActivityRemarkDboTable.deleteWhere { this.venueId eq venueId }
 
-        val nextId = ActivityRemarksTable.nextId()
+        val nextId = ActivityRemarkDboTable.nextId()
         remarks.mapIndexed { index, oldDbo ->
             val newDbo = oldDbo.copy(id = nextId + index)
-            ActivityRemarksTable.insert {
+            ActivityRemarkDboTable.insert {
                 prepareInsert(it, newDbo)
             }
             newDbo
@@ -74,10 +74,10 @@ object ExposedActivityRemarkRepo : ActivityRemarkRepo {
     }
 
     private fun prepareInsert(stmt: InsertStatement<Number>, dbo: ActivityRemarkDbo) {
-        stmt[ActivityRemarksTable.id] = dbo.id
-        stmt[ActivityRemarksTable.venueId] = dbo.venueId
-        stmt[ActivityRemarksTable.name] = dbo.name
-        stmt[ActivityRemarksTable.remark] = dbo.remark
-        stmt[ActivityRemarksTable.rating] = dbo.rating
+        stmt[ActivityRemarkDboTable.id] = dbo.id
+        stmt[ActivityRemarkDboTable.venueId] = dbo.venueId
+        stmt[ActivityRemarkDboTable.name] = dbo.name
+        stmt[ActivityRemarkDboTable.remark] = dbo.remark
+        stmt[ActivityRemarkDboTable.rating] = dbo.rating
     }
 }
