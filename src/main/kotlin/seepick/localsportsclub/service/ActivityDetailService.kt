@@ -16,12 +16,12 @@ class ActivityDetailService(
     private val activityRepo: ActivityRepo,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
-    private val enrichers: List<ActivityEnricher>,
+    private val detailsEnrichers: List<ActivityDetailsEnricher>,
 ) {
     private val log = logger {}
 
     init {
-        log.debug { "Initialized with ${enrichers.size} enrichers." }
+        log.debug { "Initialized with ${detailsEnrichers.size} enrichers." }
     }
 
     suspend fun syncSingle(activity: Activity) {
@@ -33,14 +33,14 @@ class ActivityDetailService(
         syncBulk(listOf(activity))
     }
 
-    suspend fun syncBulk(activities: List<ActivityDbo>) {
-        log.debug { "syncBulk(activities.size=${activities.size})" }
+    suspend fun syncBulk(activityDbos: List<ActivityDbo>) {
+        log.debug { "syncBulk(activities.size=${activityDbos.size})" }
         val activitiesDone = AtomicInteger(0)
-        val activitiesCount = activities.size
-        val originalDboDetails = workParallel(minOf(5, activities.size), activities) { dbo ->
+        val activitiesCount = activityDbos.size
+        val originalDboDetails = workParallel(minOf(5, activityDbos.size), activityDbos) { dbo ->
             fetchDetails(dbo, activitiesDone, activitiesCount)
-        }
-        val enrichedDboDetails = enrichers.fold(originalDboDetails) { acc, enricher ->
+        }.toMap()
+        val enrichedDboDetails = detailsEnrichers.fold(originalDboDetails) { acc, enricher ->
             enricher.enrich(acc)
         }
         enrichedDboDetails.forEach { (dbo, details) ->

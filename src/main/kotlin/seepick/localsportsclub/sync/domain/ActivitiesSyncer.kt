@@ -10,6 +10,8 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.ActivityDboEnricher
+import seepick.localsportsclub.service.enrich
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
@@ -26,6 +28,7 @@ class ActivitiesSyncer(
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
+    private val activityEnrichers: List<ActivityDboEnricher>,
 ) {
     private val log = logger {}
 
@@ -66,24 +69,17 @@ class ActivitiesSyncer(
         remoteActivities.filterKeys { storedActivities.containsKey(it) }.forEach {
             log.warn { "IGNORE: Duplicate remote activity by ID [${it.key}] found (already locally stored in DB): ${it.value}" }
         }
-        val missingActivities = remoteActivities.minus(storedActivities.keys)
+        val missingActivities =
+            remoteActivities.minus(storedActivities.keys).map { it.value }
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
-        val dbos = missingActivities.values.map { activity ->
-            syncMissingActivity(city, activity, venuesBySlug)
+        val dbos = missingActivities.map { activity ->
+            val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(city, activity, venuesBySlug)
+            val dbo = activity.toDbo(venueId).enrich(activityEnrichers)
+            activityRepo.insert(dbo)
+            dbo
         }
         dispatcher.dispatchOnActivityDbosAdded(dbos)
         return dbos
-    }
-
-    private suspend fun syncMissingActivity(
-        city: City,
-        activity: ActivityInfo,
-        venuesBySlug: MutableMap<String, VenueDbo>,
-    ): ActivityDbo {
-        val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(city, activity, venuesBySlug)
-        val dbo = activity.toDbo(venueId)
-        activityRepo.insert(dbo)
-        return dbo
     }
 
     private suspend fun rescueVenue(

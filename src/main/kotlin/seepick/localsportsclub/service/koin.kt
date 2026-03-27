@@ -23,9 +23,9 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::BookingValidator)
     singleOf(::VenueService)
     singleOf(::RemarkService)
-    singleOf(::CategoryPostprocessorActivityEnricher)
+    singleOf(::CategoryActivityDboEnricher)
     single {
-        ActivityDetailService(get(), get(), get(), get(), getKoinBeansByType<ActivityEnricher>())
+        ActivityDetailService(get(), get(), get(), get(), getKoinBeansByType())
     }
     single {
         if (config.versionCheckEnabled) OnlineVersionChecker(get()) else NoopVersionChecker

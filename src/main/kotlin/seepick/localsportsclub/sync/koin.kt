@@ -4,7 +4,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
-import seepick.localsportsclub.service.DnysActivityDetailsFetcher
+import seepick.localsportsclub.getKoinBeansByType
+import seepick.localsportsclub.service.DnysActivityDetailsEnricher
 import seepick.localsportsclub.sync.domain.ActivitiesSyncer
 import seepick.localsportsclub.sync.domain.CheckinSyncer
 import seepick.localsportsclub.sync.domain.CleanupPostSync
@@ -26,14 +27,27 @@ fun syncInfraModule(config: LscConfig) = module {
 }
 
 fun syncModule(config: LscConfig) = module {
-    singleOf(::DataSyncRescuerImpl) bind DataSyncRescuer::class
+    single {
+        DataSyncRescuerImpl(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            getKoinBeansByType()
+        )
+    } bind DataSyncRescuer::class
     singleOf(::VenueSyncInserterImpl) bind VenueSyncInserter::class
     singleOf(::VenueSyncer)
-    singleOf(::ActivitiesSyncer)
+    single {
+        ActivitiesSyncer(get(), get(), get(), get(), get(), get(), getKoinBeansByType())
+    }
     singleOf(::FreetrainingSyncer)
     singleOf(::ScheduleSyncer)
     singleOf(::CheckinSyncer)
-    singleOf(::DnysActivityDetailsFetcher)
+    singleOf(::DnysActivityDetailsEnricher)
     singleOf(::CleanupPostSync)
     single {
         SyncerFacade(

@@ -143,16 +143,6 @@ class Venue(
         return maxOf(actMax, freMax).let { if (it == nope) null else it }
     }
 
-    companion object {
-        private fun computeBgColor(
-            isFavorited: Boolean,
-            isWishlisted: Boolean,
-        ): Color? =
-            (if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null)?.copy(
-                alpha = 0.6f
-            )
-    }
-
     fun copy(
         id: Int = this.id,
         slug: String = this.slug,
@@ -216,6 +206,25 @@ class Venue(
         return id == other.id && slug == other.slug && name == other.name && description == other.description && categories == other.categories && city == other.city &&
 //                name == other.name &&
                 notes == other.notes && imageFileName == other.imageFileName && isFavorited == other.isFavorited && rating == other.rating
+    }
+
+    companion object {
+        private fun computeBgColor(
+            isFavorited: Boolean,
+            isWishlisted: Boolean,
+        ): Color? =
+            (if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null)?.copy(
+                alpha = 0.6f
+            )
+    }
+
+    object Ids {
+        val EmsHealthStudio = 106
+        val HotFlowYogaJordaan = 178
+        val MassageSchoolItmThaiHandAmsterdam = 217
+        val MovementAmsterdam = 233
+        val MovementCity = 235
+        val RelaxLoungOvertoom = 277
     }
 }
 

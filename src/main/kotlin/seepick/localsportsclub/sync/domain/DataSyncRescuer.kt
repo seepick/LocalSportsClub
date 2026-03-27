@@ -11,7 +11,9 @@ import seepick.localsportsclub.persistence.FreetrainingDbo
 import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.ActivityDboEnricher
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.enrich
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
@@ -41,6 +43,7 @@ class DataSyncRescuerImpl(
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
     private val clock: Clock,
+    private val activityEnrichers: List<ActivityDboEnricher>,
 ) : DataSyncRescuer {
     private val log = logger {}
 
@@ -55,7 +58,7 @@ class DataSyncRescuerImpl(
         val activityDetails = uscApi.fetchActivityDetails(activityId).let(::adjustDate)
 
         val venue = ensureVenue(city, venueSlug, prefilledVenueNotes)
-        val dbo = activityDetails.toActivityDbo(activityId, venue.id)
+        val dbo = activityDetails.toActivityDbo(activityId, venue.id).enrich(activityEnrichers)
         activityRepo.insert(dbo)
         dispatcher.dispatchOnActivityDbosAdded(listOf(dbo))
         return dbo

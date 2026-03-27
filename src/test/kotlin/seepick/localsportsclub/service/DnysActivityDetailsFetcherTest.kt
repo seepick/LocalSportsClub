@@ -25,12 +25,12 @@ class DnysActivityDetailsFetcherTest : StringSpec({
     lateinit var venueRepo: VenueRepo
     lateinit var api: UscApi
     lateinit var progress: SyncProgress
-    lateinit var fetcher: DnysActivityDetailsFetcher
+    lateinit var fetcher: DnysActivityDetailsEnricher
     beforeTest {
         venueRepo = mockk()
         api = mockk()
         progress = mockk(relaxed = true)
-        fetcher = DnysActivityDetailsFetcher(venueRepo, api, progress)
+        fetcher = DnysActivityDetailsEnricher(venueRepo, api, progress)
     }
 
     "simple case" {
@@ -54,8 +54,8 @@ class DnysActivityDetailsFetcherTest : StringSpec({
         every { venueRepo.selectBySlug("de-nieuwe-yogaschool") } returns venueDbo
         coEvery { api.fetchDnysEvents(DateRange(now.toLocalDate(), now.toLocalDate())) } returns listOf(dnysEvent)
 
-        val result = fetcher.enrich(listOf(activityDbo to activityDetails))
+        val result = fetcher.enrich(mapOf(activityDbo to activityDetails))
 
-        result.shouldBeSingleton().first().second.teacher shouldBe eventTeacher
+        result.entries.shouldBeSingleton().first().value.teacher shouldBe eventTeacher
     }
 })

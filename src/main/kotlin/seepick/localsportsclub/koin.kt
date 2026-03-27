@@ -18,6 +18,7 @@ fun allModules(
     uscClientModule: Module,
     syncModule: Module,
 ) = listOf(
+
     rootModule(),
     persistenceModule,
     uscClientModule,

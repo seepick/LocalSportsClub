@@ -2,15 +2,15 @@
 
 ## v1.17.0
 
-* 🖋️ post-process activity category; now it's a mess; use regexp on name to change properly (pilates, EMS, etc.); use enricher, but not only for activity-details-sync (heavy) but also for regular activity-sync (light)
 * 🎨 rethink general highlight-color scheme (no more blue for reserved, as it is used for clickable indicator)
-* 🖋 search venue by plan
 * 🖋 ad DNYS auto-sync: use timezones to auto-adjust UTC to amsterdam+1/2
   orig.first.from == event.dateTimeRange.from.plusHours(2) &&
 * 🖋 venue detail, visit limit, table value can be "Classic Not included"
 
 ## Backlog
 
+* 🖋 in search.category, only show those where there would be activities existing to book
+    * this "bug" is due to past-checkin activities, and those where venue is hidden (implicit search criteria)
 * 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
 * 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
@@ -25,6 +25,7 @@
 * 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
 * 🎨 redo carousel view: on click, load data in bg, and slide images left/right (like website does)
     * plus: if go beyond end, start from beginning; and vice versa
+* 🎨 make date search options less wide
 
 ## Low Prio
 
