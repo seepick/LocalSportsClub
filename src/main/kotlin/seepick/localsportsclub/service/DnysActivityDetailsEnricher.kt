@@ -30,22 +30,20 @@ class DnysActivityDetailsEnricher(
     private fun enrichMatchingActivitiesByEvent(
         dnysEvents: List<DnysEvent>,
         dnysActivities: ActivityDbosWithDetails,
-    ): ActivityDbosWithDetails =
-        dnysEvents.mapNotNull { event ->
-            val matchingActivities = dnysActivities.filter { orig ->
-                orig.key.from == event.dateTimeRange.from.plusHours(2) &&
-                        orig.key.to == event.dateTimeRange.to.plusHours(2)
+    ): ActivityDbosWithDetails = dnysEvents.mapNotNull { event ->
+        val matchingActivities = dnysActivities.filter { orig ->
+            orig.key.from == event.dateTimeRange.from && orig.key.to == event.dateTimeRange.to
+        }
+        when (matchingActivities.size) {
+            0 -> null
+            1 -> {
+                val matching = matchingActivities.iterator().next()
+                matching.key to matching.value.copy(teacher = event.teacher)
             }
-            when (matchingActivities.size) {
-                0 -> null
-                1 -> {
-                    val matching = matchingActivities.iterator().next()
-                    matching.key to matching.value.copy(teacher = event.teacher)
-                }
 
-                else -> error("Multiple matching DNYS found: $matchingActivities")
-            }
-        }.toMap()
+            else -> error("Multiple matching DNYS found: $matchingActivities")
+        }
+    }.toMap()
 
     private fun ActivityDbosWithDetails.overrideWith(
         enrichedActivities: Map<ActivityDbo, ActivityDetails>,
