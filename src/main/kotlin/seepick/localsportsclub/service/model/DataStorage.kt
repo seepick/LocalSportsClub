@@ -90,17 +90,16 @@ class DataStorage(
     val venueCategories: List<Category> by lazy {
         venuesById.values
             .asSequence().flatMap { it.categories }
-            // TODO should we filter here as well?
             .distinct()
             .filter { it.name.isNotEmpty() }
             .sorted().toList()
     }
 
     val availableActivityCategories: List<Category> by lazy {
+        val now = clock.now()
         collectCategories {
             // remove categories from past activities (checkedin)
-            it.dateTimeRange.from.isAfter(clock.now()) &&
-                    !it.venue.isHidden
+            it.dateTimeRange.from >= now && !it.venue.isHidden
         }
     }
 
@@ -113,8 +112,14 @@ class DataStorage(
             .sorted().toList()
 
     val freetrainingsCategories: List<Category> by lazy {
-        allFreetrainingsByVenueId.values.asSequence().flatten().map { it.category }.distinct()
-            .filter { it.name.isNotEmpty() }.sorted().toList()
+        val today = clock.today()
+        allFreetrainingsByVenueId.values
+            .asSequence().flatten()
+            .filter { it.date >= today && !it.venue.isHidden }
+            .map { it.category }
+            .distinct()
+            .filter { it.name.isNotEmpty() }
+            .sorted().toList()
     }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {

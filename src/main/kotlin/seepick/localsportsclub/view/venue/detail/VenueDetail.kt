@@ -59,7 +59,7 @@ import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.UrlText
 import seepick.localsportsclub.view.common.UrlTextField
 import seepick.localsportsclub.view.common.WidthOrFill
-import seepick.localsportsclub.view.common.table.TableNavigation
+import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueImage
 import java.net.URLEncoder
@@ -94,8 +94,8 @@ fun VenueDetail(
     sharedModel: SharedModel = koinInject(),
     mainWindowState: MainWindowState = koinInject(),
     clock: Clock = koinInject(),
-    onActivityNavigated: (TableNavigation, Activity) -> Unit,
-    onFreetrainingNavigated: (TableNavigation, Freetraining) -> Unit,
+    onActivityNavigated: (VDirection, Activity) -> Unit,
+    onFreetrainingNavigated: (VDirection, Freetraining) -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
     Column(

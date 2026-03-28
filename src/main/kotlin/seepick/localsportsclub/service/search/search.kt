@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 
 abstract class AbstractSearch<T>(
+    private val globalKeyboard: GlobalKeyboard,
     private val resetItems: () -> Unit,
 ) {
     private val log = logger {}
@@ -171,6 +173,7 @@ abstract class AbstractSearch<T>(
             initiallyEnabled = initiallyEnabled,
             allOptions = allOptions,
             visualIndicator = visualIndicator,
+            globalKeyboard = globalKeyboard,
         ).also {
             options += it
         }

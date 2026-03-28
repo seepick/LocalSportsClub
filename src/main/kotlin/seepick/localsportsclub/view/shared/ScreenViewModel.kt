@@ -47,7 +47,7 @@ import seepick.localsportsclub.view.common.CustomDialog
 import seepick.localsportsclub.view.common.launchBackgroundTask
 import seepick.localsportsclub.view.common.launchViewTask
 import seepick.localsportsclub.view.common.table.TableColumn
-import seepick.localsportsclub.view.common.table.TableNavigation
+import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.common.table.navigate
 import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
@@ -204,7 +204,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         remarkViewModel.showTeacherRemarks(selectedVenue.value!!)
     }
 
-    fun onItemNavigation(navigation: TableNavigation, currentItem: ITEM) {
+    fun onItemNavigation(navigation: VDirection, currentItem: ITEM) {
         log.trace { "onItemNavigation($navigation)" }
         _items.navigate(currentItem, navigation)?.also { newItem ->
             when (newItem) {
@@ -216,14 +216,14 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
         }
     }
 
-    fun onSubActivityNavigated(navigation: TableNavigation, item: Activity) {
+    fun onSubActivityNavigated(navigation: VDirection, item: Activity) {
         log.trace { "onSubActivityNavigated($navigation, $item)" }
         selectedVenue.value!!.sortedActivities(clock.today()).navigate(item, navigation)?.also { newItem ->
             onActivitySelected(newItem)
         }
     }
 
-    fun onSubFreetrainingNavigated(navigation: TableNavigation, item: Freetraining) {
+    fun onSubFreetrainingNavigated(navigation: VDirection, item: Freetraining) {
         log.trace { "onSubFreetrainingNavigated($navigation, $item)" }
         selectedVenue.value!!.sortedFreetrainings(clock.today()).navigate(item, navigation)?.also { newItem ->
             onFreetrainingSelected(newItem)

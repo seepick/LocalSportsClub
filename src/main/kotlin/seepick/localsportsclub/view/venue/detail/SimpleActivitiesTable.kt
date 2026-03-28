@@ -35,7 +35,7 @@ import seepick.localsportsclub.view.common.table.CellValue
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableItemBgColor
-import seepick.localsportsclub.view.common.table.TableNavigation
+import seepick.localsportsclub.view.common.table.VDirection
 import kotlin.math.abs
 
 val SimpleActivitiesTable_rowEstimatedHeight = 18
@@ -50,7 +50,7 @@ fun SimpleActivitiesTable(
     isSyncVenueInProgress: Boolean,
     onSyncVenue: () -> Unit,
     modifier: Modifier = Modifier,
-    onItemNavigation: (TableNavigation, Activity) -> Unit,
+    onItemNavigation: (VDirection, Activity) -> Unit,
 ) {
     if (activities.isEmpty()) {
         Text("No activities.")

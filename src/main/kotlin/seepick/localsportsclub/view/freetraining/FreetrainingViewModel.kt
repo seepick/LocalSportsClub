@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.freetraining
 
 import kotlinx.coroutines.flow.map
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
@@ -30,6 +31,7 @@ class FreetrainingViewModel(
     venueService: VenueService,
     fileResolver: FileResolver,
     remarkViewModel: RemarkViewModel,
+    private val globalKeyboard: GlobalKeyboard,
 ) : ScreenViewModel<Freetraining, FreetrainingSearch>(
     dataStorage,
     bookingService,
@@ -58,7 +60,7 @@ class FreetrainingViewModel(
     }
 
     override fun buildSearch(resetItems: () -> Unit) =
-        FreetrainingSearch(dataStorage.freetrainingsCategories, syncDates, resetItems)
+        FreetrainingSearch(dataStorage.freetrainingsCategories, syncDates, resetItems, globalKeyboard)
 
     override fun DataStorage.selectAllItems() = selectVisibleFreetrainings()
 

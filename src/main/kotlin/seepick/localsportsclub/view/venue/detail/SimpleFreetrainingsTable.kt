@@ -21,7 +21,7 @@ import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.Table
 import seepick.localsportsclub.view.common.table.TableColumn
-import seepick.localsportsclub.view.common.table.TableNavigation
+import seepick.localsportsclub.view.common.table.VDirection
 
 val SimpleFreetrainingsTable_rowEstimatedHeight = 18
 
@@ -33,7 +33,7 @@ fun SimpleFreetrainingsTable(
     clock: Clock = koinInject(),
     height: Dp,
     modifier: Modifier = Modifier,
-    onItemNavigation: (TableNavigation, Freetraining) -> Unit,
+    onItemNavigation: (VDirection, Freetraining) -> Unit,
 ) {
     if (freetrainings.isEmpty()) {
         Text("No Freetrainings.")

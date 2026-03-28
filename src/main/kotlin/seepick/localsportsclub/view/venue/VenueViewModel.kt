@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.venue
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
@@ -29,6 +30,7 @@ class VenueViewModel(
     fileResolver: FileResolver,
     private val clock: Clock,
     remarkViewModel: RemarkViewModel,
+    private val globalKeyboard: GlobalKeyboard,
 ) : ScreenViewModel<Venue, VenueSearch>(
     dataStorage,
     bookingService,
@@ -52,6 +54,7 @@ class VenueViewModel(
             today = clock.today(),
             allCategories = dataStorage.venueCategories,
             resetItems = resetItems,
+            globalKeyboard = globalKeyboard,
         )
 
     override fun DataStorage.selectAllItems() = selectVisibleVenues()

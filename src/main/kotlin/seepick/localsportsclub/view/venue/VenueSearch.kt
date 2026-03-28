@@ -2,6 +2,7 @@ package seepick.localsportsclub.view.venue
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
@@ -22,8 +23,8 @@ class VenueSearch(
     today: LocalDate,
     allCategories: List<Category>,
     resetItems: () -> Unit,
-) :
-    AbstractSearch<Venue>(resetItems) {
+    globalKeyboard: GlobalKeyboard,
+) : AbstractSearch<Venue>(globalKeyboard, resetItems) {
 
     val name = newStringSearchOption(
         label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
@@ -40,8 +41,7 @@ class VenueSearch(
         initialValue = 0,
         initialComparator = FullNumericComparator.Bigger,
     ) {
-        it.activities.count { it.state == ActivityState.Booked } +
-                it.freetrainings.count { it.state == FreetrainingState.Scheduled }
+        it.activities.count { it.state == ActivityState.Booked } + it.freetrainings.count { it.state == FreetrainingState.Scheduled }
     }
     val checkins = newIntSearchOption(
         label = "Checkins",
@@ -49,8 +49,7 @@ class VenueSearch(
         initialValue = 0,
         initialComparator = FullNumericComparator.Bigger,
     ) {
-        it.activities.count { it.state == ActivityState.Checkedin } +
-                it.freetrainings.count { it.state == FreetrainingState.Checkedin }
+        it.activities.count { it.state == ActivityState.Checkedin } + it.freetrainings.count { it.state == FreetrainingState.Checkedin }
     }
     val hidden = newBooleanSearchOption(
         "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator

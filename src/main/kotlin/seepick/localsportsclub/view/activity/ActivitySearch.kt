@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.activity
 
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
@@ -14,7 +15,8 @@ import seepick.localsportsclub.view.search.newWishlistedSearchOption
 class ActivitySearch(
     allCategories: List<Category>,
     resetItems: () -> Unit,
-) : AbstractSearch<Activity>(resetItems) {
+    globalKeyboard: GlobalKeyboard,
+) : AbstractSearch<Activity>(globalKeyboard, resetItems) {
     val hidden = newBooleanSearchOption( // invisible to the user
         label = "hidden",
         initiallyEnabled = true,

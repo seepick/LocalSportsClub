@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.onClick
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.LscVScroll
+import seepick.localsportsclub.view.common.autoScroll
 import seepick.localsportsclub.view.common.rowBgColor
 
 interface TableItemBgColor {
@@ -46,18 +46,18 @@ interface TableItemBgColor {
 
 private val scrollbarWidthPadding = 12.dp
 
-enum class TableNavigation {
+enum class VDirection {
     Up, Down;
 }
 
-fun <T> List<T>.navigate(currentlySelected: T, navigation: TableNavigation): T? {
+fun <T> List<T>.navigate(currentlySelected: T, direction: VDirection): T? {
     val index = indexOf(currentlySelected)
-    return when (navigation) {
-        TableNavigation.Up -> {
+    return when (direction) {
+        VDirection.Up -> {
             if (index > 0) this[index - 1] else null
         }
 
-        TableNavigation.Down -> {
+        VDirection.Down -> {
             if (index < (this.size - 1)) this[index + 1] else null
         }
     }
@@ -70,7 +70,7 @@ fun <T> Table(
     columns: List<TableColumn<T>>,
     selectedItem: T? = null,
     onItemClicked: ((T) -> Unit)?,
-    onItemNavigation: ((TableNavigation, T) -> Unit)? = null,
+    onItemNavigation: ((VDirection, T) -> Unit)? = null,
     onHeaderClicked: (TableColumn<T>) -> Unit = {},
     sortColumn: TableColumn<T>?,
     sortDirection: SortDirection,
@@ -83,7 +83,7 @@ fun <T> Table(
 ) {
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
-    var activeNavigation by remember { mutableStateOf<TableNavigation?>(null) }
+    var activeNavigation by remember { mutableStateOf<VDirection?>(null) }
     LaunchedEffect(activeNavigation, selectedItem) {
         if (activeNavigation != null && selectedItem != null && onItemNavigation != null) {
             delay(200)
@@ -93,26 +93,33 @@ fun <T> Table(
             }
         }
     }
-    Box(modifier = Modifier.focusRequester(focusRequester).onFocusChanged { state ->
-        isFocused = state.isFocused
-    }.onKeyEvent {
-        if (selectedItem != null && onItemNavigation != null && isFocused) {
-            if (it.type == KeyEventType.KeyDown && activeNavigation == null) {
-                val nav = when {
-                    it.key == Key.DirectionUp -> TableNavigation.Up
-                    it.key == Key.DirectionDown -> TableNavigation.Down
-                    else -> null
-                }
-                if (nav != null) {
-                    activeNavigation = nav
-                    onItemNavigation(nav, selectedItem)
-                }
-            } else if (it.type == KeyEventType.KeyUp && (it.key == Key.DirectionUp || it.key == Key.DirectionDown)) {
-                activeNavigation = null
+    Box(
+        modifier = Modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged { state ->
+                isFocused = state.isFocused
             }
-        }
-        false
-    }.focusProperties { canFocus = true }.then(boxModifier)) {
+            .onKeyEvent {
+                if (selectedItem != null && onItemNavigation != null && isFocused) {
+                    if (it.type == KeyEventType.KeyDown && activeNavigation == null) {
+                        val nav = when {
+                            it.key == Key.DirectionUp -> VDirection.Up
+                            it.key == Key.DirectionDown -> VDirection.Down
+                            else -> null
+                        }
+                        if (nav != null) {
+                            activeNavigation = nav
+                            onItemNavigation(nav, selectedItem)
+                        }
+                    } else if (it.type == KeyEventType.KeyUp && (it.key == Key.DirectionUp || it.key == Key.DirectionDown)) {
+                        activeNavigation = null
+                    }
+                }
+                false
+            }
+            .focusProperties { canFocus = true }
+            .then(boxModifier)
+    ) {
 
         val tableScrollState = rememberLazyListState()
         LaunchedEffect(items, selectedItem) {
@@ -194,23 +201,3 @@ fun <T> Table(
     }
 }
 
-suspend fun <T> autoScroll(tableScrollState: LazyListState, items: List<T>, selectedItem: T?) {
-    val idx = selectedItem?.let { items.indexOf(it) } ?: -1
-    if (idx < 0) return
-    val layoutInfo = tableScrollState.layoutInfo
-    val visibleItems = layoutInfo.visibleItemsInfo
-    if (visibleItems.isEmpty()) return
-    val itemInfo = visibleItems.firstOrNull { it.index == idx }
-    if (itemInfo == null) { // not visible at all; scroll
-        tableScrollState.animateScrollToItem(idx)
-        return
-    }
-    val viewportStart = layoutInfo.viewportStartOffset
-    val viewportEnd = layoutInfo.viewportEndOffset
-    val itemStart = itemInfo.offset
-    val itemEnd = itemInfo.offset + itemInfo.size
-    val fullyVisible = itemStart >= viewportStart && itemEnd <= viewportEnd
-    if (!fullyVisible) {
-        tableScrollState.animateScrollToItem(idx)
-    }
-}

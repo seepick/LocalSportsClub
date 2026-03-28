@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.activity
 
 import kotlinx.coroutines.flow.map
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
@@ -31,6 +32,7 @@ class ActivityViewModel(
     venueService: VenueService,
     fileResolver: FileResolver,
     remarkViewModel: RemarkViewModel,
+    private val globalKeyboard: GlobalKeyboard,
 ) : ScreenViewModel<Activity, ActivitySearch>(
     dataStorage,
     bookingService,
@@ -63,6 +65,7 @@ class ActivityViewModel(
         ActivitySearch(
             allCategories = dataStorage.availableActivityCategories,
             resetItems = resetItems,
+            globalKeyboard = globalKeyboard,
         )
 
     override fun DataStorage.selectAllItems() = selectVisibleActivities()

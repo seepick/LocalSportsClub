@@ -37,11 +37,13 @@ fun viewModule(config: LscConfig) = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     viewModel {
         FreetrainingViewModel(
             config.syncDaysAhead,
+            get(),
             get(),
             get(),
             get(),

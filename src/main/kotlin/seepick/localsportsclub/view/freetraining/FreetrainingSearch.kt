@@ -1,5 +1,6 @@
 package seepick.localsportsclub.view.freetraining
 
+import seepick.localsportsclub.GlobalKeyboard
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
@@ -12,7 +13,8 @@ class FreetrainingSearch(
     allCategories: List<Category>,
     searchDates: List<LocalDate>,
     resetItems: () -> Unit,
-) : AbstractSearch<Freetraining>(resetItems) {
+    globalKeyboard: GlobalKeyboard,
+) : AbstractSearch<Freetraining>(globalKeyboard, resetItems) {
     val hidden = newBooleanSearchOption(
         "hidden", initiallyEnabled = true, initialValue = false
     ) { it.venue.isHidden }
