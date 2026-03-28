@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -34,14 +33,6 @@ fun DistanceIndicatorPreview() {
     }
 }
 
-// 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°)
-private fun calcDistanceColor(percentage: Double): Color = Color.hsv(
-    hue = 120f * (1f - percentage.toFloat()),
-    saturation = 1f,
-    value = 1f,
-    alpha = 0.4f,
-)
-
 
 @Composable
 fun DistanceIndicator(item: HasDistance) {
@@ -55,7 +46,7 @@ fun DistanceIndicator(item: HasDistance) {
         val height = size.height
         drawRect(
             topLeft = Offset(0.0f, 0.0f),
-            color = calcDistanceColor(percentageWidth),
+            color = Lsc.colors.forDistance(percentageWidth),
             size = Size((width.toDouble() * percentageWidth).toFloat(), height),
         )
         drawRect(

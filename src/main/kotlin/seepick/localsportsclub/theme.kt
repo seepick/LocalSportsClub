@@ -91,6 +91,26 @@ interface LscColors {
     val remarkRatingGood: Color
     val remarkRatingMeh: Color
     val remarkRatingBad: Color
+
+    /* 1.0 => green, 0.5 => orange, 0.0 => red */
+    fun forActivitySimpleTable(distance: Double) = redGreenGradient(distance)
+
+    /** 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°) */
+    fun forPeriod(distance: Double) = redGreenGradient(1 - (distance * 2.0f).coerceIn(0.0, 1.0))
+
+    /** 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°) */
+    fun forDistance(percentage: Double) = redGreenGradient(modifier = 1.0 - percentage, alpha = 0.4f)
+
+    private fun redGreenGradient(
+        modifier: Double,
+        alpha: Float = 1f,
+    ) = Color.hsv(
+        hue = 120f * modifier.toFloat(),
+        saturation = 1f,
+        value = 1f,
+        alpha = alpha,
+    )
+
 }
 
 private val colorUnset = Color.Red

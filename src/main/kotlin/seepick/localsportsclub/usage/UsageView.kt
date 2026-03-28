@@ -59,7 +59,7 @@ fun UsageView(
     val percentageCheckedin by usageStorage.percentageCheckedin.collectAsState(0.0)
     val percentageBooked by usageStorage.percentageBooked.collectAsState(0.0)
     val year = clock.today().year
-    val periodColor = calcPeriodColor(abs(usageStorage.percentagePeriod - percentageCheckedin))
+    val periodColor = Lsc.colors.forPeriod(abs(usageStorage.percentagePeriod - percentageCheckedin))
     Row {
         Column {
             Row {
@@ -130,19 +130,12 @@ fun UsageIndicatorPreview() {
     }
 }
 
-private fun calcPeriodColor(distance: Double): Color {
-    val d = (distance * 2.0f).coerceIn(0.0, 1.0).toFloat()
-    // 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°)
-    val hue = 120f * (1f - d)
-    return Color.hsv(hue, 1f, 1f)
-}
-
 @Composable
 fun UsageIndicator(
     percentagePeriod: Double,
     percentageCheckedin: Double,
     percentageBooked: Double,
-    periodColor: Color = calcPeriodColor(abs(percentagePeriod - percentageCheckedin)),
+    periodColor: Color = Lsc.colors.forPeriod(abs(percentagePeriod - percentageCheckedin)),
 ) {
     Canvas(modifier = Modifier.size(200.dp, 15.dp)) {
         val width = size.width

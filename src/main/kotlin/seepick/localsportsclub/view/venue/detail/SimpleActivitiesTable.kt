@@ -130,16 +130,7 @@ data class SimpleActivity(
 
 fun Activity.simpleTableBgColor(): Color? {
     return when (state) {
-        ActivityState.Blank -> {
-            val weighted = (remarkRating?.weightedValue ?: 0) + (teacherRemarkRating?.weightedValue ?: 0)
-            val max = RemarkRating.Amazing.weightedValue * 2
-            val min = RemarkRating.Bad.weightedValue * 2
-            val range = max + abs(min)
-            val weightedAdjusted = weighted + abs(min)
-            val percentage = weightedAdjusted.toFloat() / range.toFloat()
-            if (weighted == 0) null else calcRatingColor(percentage)
-        }
-
+        ActivityState.Blank -> calcColorForBlankActivity()
         ActivityState.Booked -> Lsc.colors.booked
         ActivityState.Checkedin -> Lsc.colors.checkins
         ActivityState.Noshow -> Color.Red
@@ -147,12 +138,13 @@ fun Activity.simpleTableBgColor(): Color? {
     }
 }
 
-/* 1.0 => green, 0.5 => orange, 0.0 => red */
-private fun calcRatingColor(distance: Float): Color {
-    require(distance in 0.0..1.0)
-    return Color.hsv(
-        hue = 120f * distance,
-        saturation = 1f,
-        value = 1f,
-    )
+private fun Activity.calcColorForBlankActivity(): Color? {
+    val weighted = (remarkRating?.weightedValue ?: 0) + (teacherRemarkRating?.weightedValue ?: 0)
+    if (weighted == 0) return null
+    val max = RemarkRating.Amazing.weightedValue * 2
+    val min = RemarkRating.Bad.weightedValue * 2
+    val range = max + abs(min)
+    val weightedAdjusted = weighted + abs(min)
+    val percentage = weightedAdjusted.toDouble() / range.toDouble()
+    return Lsc.colors.forActivitySimpleTable(percentage)
 }
