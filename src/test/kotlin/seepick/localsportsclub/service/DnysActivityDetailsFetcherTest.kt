@@ -11,7 +11,6 @@ import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import seepick.localsportsclub.adjustHours
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.persistence.venueDbo
@@ -44,7 +43,7 @@ class DnysActivityDetailsFetcherTest : StringSpec({
         )
         val eventTeacher = "new teacher name"
         val dnysEvent = Arb.dnysEvent().next().copy(
-            dateTimeRange = dateTimeRange.adjustHours(-2), // adjust to UTC
+            dateTimeRange = dateTimeRange,
             teacher = eventTeacher,
         )
         val activityDetails = Arb.activityDetails().next().copy(
