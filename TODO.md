@@ -3,7 +3,6 @@
 ## v1.17.0
 
 * 🎨 rethink general highlight-color scheme (no more blue for reserved, as it is used for clickable indicator)
-* 🖋 venue detail, visit limit, table value can be "Classic Not included"
 
 ## Backlog
 
