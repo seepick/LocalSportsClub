@@ -1,31 +1,35 @@
 # TODO
 
-## v1.17.0
+## v1.18.0
 
-* 🎨 rethink general highlight-color scheme (no more blue for reserved, as it is used for clickable indicator)
-
-## Backlog
+* 🎨 no more blue for reserved/checkedin (it's used for clickable indicator)
+* 🖋 calculate score for each activity (simple calculation for now; only use "local data")
+* 🎨 redo table bg color based on score (instead only faved/wishlisted); big-tables + mini-tables
+* 🎨 change fav/wishlisted emojis
 
 * 🖋 in search.category, only show those where there would be activities existing to book
     * this "bug" is due to past-checkin activities, and those where venue is hidden (implicit search criteria)
 * 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
-* 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
+
+## Backlog
+
+* 🎨 table column numbers bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
+* 🎨 make date search options less wide
+* 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
+* 🤖 fix file resorver design issue; passing to error dialog for log retrieval; always assume PROD ;)
+* 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
+* 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
+* 🤖 UI tests not working anymore... NoSuchMethodError :-/
 * 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories); annotated string with color
     * also check venues which are hidden, if all from same category -> decrease score
-* 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
-* 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
-* 🎨 table column numberes bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
-* 🤖 fix file resorver design issue (passing to error dialog for log retrieval...)
-* 🤖 UI tests not working anymore... NoSuchMethodError :-/
-* 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
-* 🎨 redo carousel view: on click, load data in bg, and slide images left/right (like website does)
-    * plus: if go beyond end, start from beginning; and vice versa
-* 🎨 make date search options less wide
 
 ## Low Prio
 
+* 🎨 redo carousel view: on click, load data in bg, and slide images left/right (like website does)
+    * plus: if go beyond end, start from beginning; and vice versa
+* 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
 * 🖋 autosync on startup checkbox in prefs
 * 🤖test fixtures from usc-client don't work; right now copy'n'pasted all
 * 🐞DateParser dutch locale doesn't work when packaged as app...?!
