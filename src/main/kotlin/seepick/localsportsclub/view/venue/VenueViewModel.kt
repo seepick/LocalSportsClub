@@ -42,14 +42,17 @@ class VenueViewModel(
     clock,
     remarkViewModel,
 ) {
-
     override val tableColumns = venuesTableColumns(clock.today())
     override val selectedVenue = MutableStateFlow<Venue?>(null)
     override val selectedItem = selectedVenue
     override val showLinkedVenues = true
 
     override fun buildSearch(resetItems: () -> Unit) =
-        VenueSearch(clock.today(), dataStorage.venuesCategories, resetItems)
+        VenueSearch(
+            today = clock.today(),
+            allCategories = dataStorage.venueCategories,
+            resetItems = resetItems,
+        )
 
     override fun DataStorage.selectAllItems() = selectVisibleVenues()
 

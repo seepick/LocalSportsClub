@@ -59,7 +59,12 @@ class ActivityViewModel(
         syncDates = (0..<syncDaysAhead).map { today.plusDays(it.toLong()) }
     }
 
-    override fun buildSearch(resetItems: () -> Unit) = ActivitySearch(dataStorage.activitiesCategories, resetItems)
+    override fun buildSearch(resetItems: () -> Unit) =
+        ActivitySearch(
+            allCategories = dataStorage.availableActivityCategories,
+            resetItems = resetItems,
+        )
+
     override fun DataStorage.selectAllItems() = selectVisibleActivities()
 
     override fun onActivitiesAdded(activities: List<Activity>) {

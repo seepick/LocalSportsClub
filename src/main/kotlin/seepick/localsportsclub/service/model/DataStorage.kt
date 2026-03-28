@@ -87,15 +87,30 @@ class DataStorage(
         } ?: mutableMapOf()
     }
 
-    val venuesCategories: List<Category> by lazy {
-        venuesById.values.asSequence().flatMap { it.categories }.distinct().filter { it.name.isNotEmpty() }.sorted()
-            .toList()
+    val venueCategories: List<Category> by lazy {
+        venuesById.values
+            .asSequence().flatMap { it.categories }
+            // TODO should we filter here as well?
+            .distinct()
+            .filter { it.name.isNotEmpty() }
+            .sorted().toList()
     }
 
-    val activitiesCategories: List<Category> by lazy {
-        allActivitiesByVenueId.values.asSequence().flatten().map { it.category }.distinct()
-            .filter { it.name.isNotEmpty() }.sorted().toList()
+    val availableActivityCategories: List<Category> by lazy {
+        collectCategories {
+            // remove categories from past activities (checkedin)
+            it.dateTimeRange.from.isAfter(clock.now()) &&
+                    !it.venue.isHidden
+        }
     }
+
+    private fun collectCategories(filter: (Activity) -> Boolean = { true }): List<Category> =
+        allActivitiesByVenueId.values
+            .asSequence().flatten()
+            .filter { filter(it) }
+            .map { it.category }.distinct()
+            .filter { it.name.isNotEmpty() }
+            .sorted().toList()
 
     val freetrainingsCategories: List<Category> by lazy {
         allFreetrainingsByVenueId.values.asSequence().flatten().map { it.category }.distinct()

@@ -9,11 +9,15 @@
 
 * 🖋 in search.category, only show those where there would be activities existing to book
     * this "bug" is due to past-checkin activities, and those where venue is hidden (implicit search criteria)
+* 🖋 category new property: activitiesCount
 * 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
+* 🎨 rating table col, bg colored red-green based on rating (1-5; 0 = transparent)
+* 🖋 research auto-update for macos (create sample project)
 
 ## Backlog
 
+* 🖋 customize about dialog (app description, github url; all content copyright USC)
 * 🎨 table column numbers bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
 * 🎨 make date search options less wide

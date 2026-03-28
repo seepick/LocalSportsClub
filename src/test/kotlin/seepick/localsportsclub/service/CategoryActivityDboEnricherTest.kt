@@ -48,6 +48,8 @@ class CategoryActivityDboEnricherTest : StringSpec({
         newActivity(venueId = Venue.Ids.MassageSchoolItmThaiHandAmsterdam) to "Massage",
 
         newActivity(venueId = Venue.Ids.EmsHealthStudio) to "EMS",
+
+        newActivity(name = "Zumba") to "Dancing",
     )
         .forEach { (dbo, expectedCategory) ->
             "enrich should return '$expectedCategory' for '${dbo.name}/${dbo.category}/${dbo.venueId}'" {

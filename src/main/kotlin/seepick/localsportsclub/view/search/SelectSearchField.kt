@@ -28,6 +28,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.search.SelectSearchOption
 import seepick.localsportsclub.view.common.LscVScroll
@@ -63,6 +64,7 @@ fun <T> SelectSearchField(
                         Text(
                             text = select.text,
                             color = Lsc.colors.onBackground,
+                            fontSize = 10.sp,
                             modifier = Modifier
                                 .fillMaxWidth(1.0f)
                                 .background(backgroundColor) // must be before padding!

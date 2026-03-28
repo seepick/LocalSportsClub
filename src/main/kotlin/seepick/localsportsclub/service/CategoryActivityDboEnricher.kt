@@ -71,7 +71,7 @@ class CategoryActivityDboEnricher : ActivityDboEnricher {
         }
 
         if (dbo.name.contains("zumba", ignoreCase = true) && dbo.category != "Dance") {
-            return dbo.copy(category = "Dance")
+            return dbo.copy(category = "Dancing")
         }
         if ((dbo.name.contains("breathwork", ignoreCase = true) && dbo.category != "Meditation")
         ) {
