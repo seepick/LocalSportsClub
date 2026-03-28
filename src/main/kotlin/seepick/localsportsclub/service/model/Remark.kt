@@ -29,8 +29,8 @@ enum class RemarkRating(
     val weightedValue: Int,
     val color: Color,
 ) {
-    Amazing("Amazing", "💖", 3, 3, Lsc.colors.remarkRatingAmazing),
-    Good("Good", "💚", 2, 2, Lsc.colors.remarkRatingGood),
+    Amazing("Amazing", "💚", 3, 3, Lsc.colors.remarkRatingAmazing),
+    Good("Good", "☘️", 2, 2, Lsc.colors.remarkRatingGood),
     Meh("Meh", "😕", 1, -1, Lsc.colors.remarkRatingMeh),
     Bad("Bad", "❌", 0, -3, Lsc.colors.remarkRatingBad),
     ;

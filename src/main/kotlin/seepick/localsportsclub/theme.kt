@@ -82,10 +82,12 @@ interface LscColors {
     val hoverIndicator: Color get() = onBackground // alpha will be calculated internally
 
 
-    val checkins: Color get() = Color(0xFF0076BA)
-    val booked: Color get() = Color(0xFF00A2FF)
-    val available: Color get() = Color(0xFF6AC43C)
-    val backgroundGray: Color get() = Color(0xFF9B9B9B)
+    val activityCheckedin: Color get() = Color(0xFF9437FF)
+    val activityNoShow: Color get() = Color.Red
+    val activityCancelledLate: Color get() = Color.Red
+    val activityBooked: Color get() = Color(0xFFFF85FF)
+    val visitLimitsAvailable: Color get() = Color(0xFF6AC43C)
+    val widgetBackground: Color get() = Color(0x669B9B9B)
 
     val remarkRatingAmazing: Color
     val remarkRatingGood: Color
@@ -110,7 +112,6 @@ interface LscColors {
         value = 1f,
         alpha = alpha,
     )
-
 }
 
 private val colorUnset = Color.Red

@@ -82,17 +82,17 @@ fun MonthlyVisitsPanel(
                 roundedCornerMask(width, height) {
                     drawRect(
                         topLeft = Offset(0.0f, 0.0f),
-                        color = Lsc.colors.checkins,
+                        color = Lsc.colors.activityCheckedin,
                         size = Size(checkinsWidth, height),
                     )
                     drawRect(
                         topLeft = Offset(checkinsWidth, 0.0f),
-                        color = Lsc.colors.booked,
+                        color = Lsc.colors.activityBooked,
                         size = Size(bookedWidth, height),
                     )
                     drawRect(
                         topLeft = Offset(availableX, 0.0f),
-                        color = Lsc.colors.available,
+                        color = Lsc.colors.visitLimitsAvailable,
                         size = Size(availableWidth, height),
                     )
                 }

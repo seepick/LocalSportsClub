@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @Suppress("ConstPropertyName")
 object LscIcons {
 
-    const val favoritedEmoji = "❤️"
+    const val favoritedEmoji = "👍🏻"
     const val wishlistedEmoji = "💡"
     val favoritedIndicator = VisualIndicator.EmojiIndicator(favoritedEmoji)
     val wishlistedIndicator = VisualIndicator.EmojiIndicator(wishlistedEmoji)
@@ -23,7 +23,7 @@ object LscIcons {
     val dateIndicator = VisualIndicator.EmojiIndicator("📆")
     const val checkedinEmoji = "📝"
     val checkedinIndicator = VisualIndicator.EmojiIndicator(checkedinEmoji)
-    const val reservedEmoji = "👟" // booked (activity) or scheduled (freetraining)
+    const val reservedEmoji = "👟" // booked (activity) or scheduled (freetraining); no "☑️" not rendered nicely :-(
     val reservedIndicator = VisualIndicator.EmojiIndicator(reservedEmoji)
     const val distanceEmoji = "🚌"
     val distanceIndicator = VisualIndicator.EmojiIndicator(distanceEmoji)

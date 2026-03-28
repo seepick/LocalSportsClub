@@ -24,7 +24,7 @@ class GlobalKeyboard {
     fun process(event: KeyEvent) {
         if (event.key == Key.MetaLeft || event.key == Key.MetaRight) {
             isMetaKeyDown = event.type == KeyEventType.KeyDown
-            log.debug { "changed meta key down to: $isMetaKeyDown" }
+            log.trace { "changed meta key down to: $isMetaKeyDown" }
         }
         if (event.type == KeyEventType.KeyDown && event.isMetaPressed) {
             when (event.key) {

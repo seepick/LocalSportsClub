@@ -131,20 +131,27 @@ data class SimpleActivity(
 fun Activity.simpleTableBgColor(): Color? {
     return when (state) {
         ActivityState.Blank -> calcColorForBlankActivity()
-        ActivityState.Booked -> Lsc.colors.booked
-        ActivityState.Checkedin -> Lsc.colors.checkins
-        ActivityState.Noshow -> Color.Red
-        ActivityState.CancelledLate -> Color.Yellow
+        ActivityState.Booked -> Lsc.colors.activityBooked
+        ActivityState.Checkedin -> Lsc.colors.activityCheckedin
+        ActivityState.Noshow -> Lsc.colors.activityNoShow
+        ActivityState.CancelledLate -> Lsc.colors.activityCancelledLate
     }
 }
 
+private val ratingMax = RemarkRating.Amazing.weightedValue * 2
+private val ratingMin = RemarkRating.Bad.weightedValue * 2
+private val ratingRange = ratingMax + abs(ratingMin)
+
 private fun Activity.calcColorForBlankActivity(): Color? {
+    if (remarkRating == RemarkRating.Bad || teacherRemarkRating == RemarkRating.Bad) {
+        return Lsc.colors.forActivitySimpleTable(0.0)
+    }
+    if (remarkRating == null && teacherRemarkRating == null) {
+        return null
+    }
     val weighted = (remarkRating?.weightedValue ?: 0) + (teacherRemarkRating?.weightedValue ?: 0)
-    if (weighted == 0) return null
-    val max = RemarkRating.Amazing.weightedValue * 2
-    val min = RemarkRating.Bad.weightedValue * 2
-    val range = max + abs(min)
-    val weightedAdjusted = weighted + abs(min)
-    val percentage = weightedAdjusted.toDouble() / range.toDouble()
-    return Lsc.colors.forActivitySimpleTable(percentage)
+    val weightedAdjusted = weighted + abs(ratingMin)
+    val distance = weightedAdjusted.toDouble() / ratingRange.toDouble()
+    // log.trace { "name=[$name, teacher=[$teacher], remarkRating=$remarkRating teacherRating=$teacherRemarkRating ... weighted: $weighted; distance: $distance" }
+    return Lsc.colors.forActivitySimpleTable(distance)
 }

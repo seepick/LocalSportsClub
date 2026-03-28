@@ -28,6 +28,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.Clock
@@ -51,8 +52,7 @@ fun UsageView(
 
     if (showStatsDialog) {
         UsageStatsDialog(
-            onClose = { showStatsDialog = false }
-        )
+            onClose = { showStatsDialog = false })
     }
     val checkedinCount by usageStorage.checkedinCount.collectAsState(0)
     val bookedCount by usageStorage.reservedCount.collectAsState(0)
@@ -73,14 +73,20 @@ fun UsageView(
             Row {
                 Text(buildAnnotatedString {
                     append("Usage: ")
-                    withStyle(style = SpanStyle(color = Lsc.colors.checkins, fontWeight = FontWeight.Bold)) {
-                        append(checkedinCount.toString())
+                    withStyle(SpanStyle(fontSize = 10.sp)) {
+                        append("(")
+                        withStyle(SpanStyle(color = Lsc.colors.activityCheckedin, fontWeight = FontWeight.Bold)) {
+                            append(checkedinCount.toString())
+                        }
+                        append("+")
+                        withStyle(SpanStyle(color = Lsc.colors.activityBooked, fontWeight = FontWeight.Bold)) {
+                            append(bookedCount.toString())
+                        }
+                        append(")")
                     }
-                    append("+")
-                    withStyle(style = SpanStyle(color = Lsc.colors.booked, fontWeight = FontWeight.Bold)) {
-                        append(bookedCount.toString())
+                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(" ${checkedinCount + bookedCount} / ${usageStorage.maxBookingsForPeriod}")
                     }
-                    append(" / ${usageStorage.maxBookingsForPeriod}")
                 }, modifier = Modifier.padding(bottom = 3.dp))
             }
             UsageIndicator(
@@ -94,8 +100,7 @@ fun UsageView(
             TextButton(
                 onClick = { showStatsDialog = true },
                 contentPadding = PaddingValues(0.dp),
-                modifier = Modifier
-                    .padding(0.dp)
+                modifier = Modifier.padding(0.dp)
             ) {
                 Icon(Icons.Default.Info, null, modifier = Modifier.padding(0.dp))
             }
@@ -146,7 +151,7 @@ fun UsageIndicator(
         roundedCornerMask(width, height) {
             drawRect(
                 topLeft = Offset.Zero,
-                color = Lsc.colors.backgroundGray,
+                color = Lsc.colors.widgetBackground,
                 size = Size(width, height),
             )
             drawRect(
@@ -163,12 +168,12 @@ fun UsageIndicator(
             } else {
                 drawRect(
                     topLeft = Offset(0.0f, height / 2),
-                    color = Lsc.colors.checkins,
+                    color = Lsc.colors.activityCheckedin,
                     size = Size(checkedinWidth, height / 2),
                 )
                 drawRect(
                     topLeft = Offset(checkedinWidth, height / 2),
-                    color = Lsc.colors.booked,
+                    color = Lsc.colors.activityBooked,
                     size = Size(bookedWidth, height / 2),
                 )
             }
