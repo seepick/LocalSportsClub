@@ -18,7 +18,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer.TextRenderer
 import seepick.localsportsclub.view.common.table.CellValue
-import seepick.localsportsclub.view.common.table.Table
+import seepick.localsportsclub.view.common.table.MainTable
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.shared.DistanceColumn
@@ -102,7 +102,7 @@ fun VenuesTable(
     viewModel: VenueViewModel = koinViewModel(),
 ) {
     val selectedVenue by viewModel.selectedVenue.collectAsState()
-    Table(
+    MainTable(
         itemsLabel = "venues",
         allItemsCount = viewModel.allItems.size,
         items = viewModel.items,

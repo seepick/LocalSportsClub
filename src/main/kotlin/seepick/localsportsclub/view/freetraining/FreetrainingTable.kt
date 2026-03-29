@@ -13,7 +13,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellValue
-import seepick.localsportsclub.view.common.table.Table
+import seepick.localsportsclub.view.common.table.MainTable
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.shared.CategoryColumn
@@ -59,7 +59,7 @@ fun FreetrainingsTable(
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
     val selectedFreetraining = selectedSubEntity?.maybeFreetraining
 
-    Table(
+    MainTable(
         itemsLabel = "freetrainings",
         items = viewModel.items,
         selectedItem = selectedFreetraining,

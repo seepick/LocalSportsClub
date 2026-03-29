@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.Lsc
+
+val scrollbarWidthPadding = 12.dp
 
 @Composable
 fun BoxScope.LscVScroll(scrollAdapter: androidx.compose.foundation.v2.ScrollbarAdapter) {

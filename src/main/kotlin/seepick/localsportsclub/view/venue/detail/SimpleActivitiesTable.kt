@@ -33,7 +33,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellValue
-import seepick.localsportsclub.view.common.table.Table
+import seepick.localsportsclub.view.common.table.MainTable
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.common.table.VDirection
@@ -82,7 +82,7 @@ fun SimpleActivitiesTable(
             val pastText = if (pastCount > 0) " ($pastCount past)" else ""
             Text("$upcomingCount Activities$pastText:")
         }
-        Table(
+        MainTable(
             items = activities.map { SimpleActivity(it) },
             headerEnabled = false,
             selectedItem = selectedActivity?.toSimpleActivity(),

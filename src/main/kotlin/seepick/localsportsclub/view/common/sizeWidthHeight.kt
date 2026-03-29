@@ -21,6 +21,17 @@ sealed interface WidthOrFill {
 sealed interface WidthOrWeight {
     data class Weight(val value: Float) : WidthOrWeight
     data class Width(val value: Dp) : WidthOrWeight
+    companion object {
+        fun ofEither(width: Dp?, weight: Float?): WidthOrWeight {
+            if (width != null) {
+                return Width(width)
+            }
+            if (weight != null) {
+                return Weight(weight)
+            }
+            error("Either width or weight must be provided!")
+        }
+    }
 }
 
 @Suppress("FunctionName")

@@ -1,7 +1,11 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.model.Venue
@@ -15,6 +19,31 @@ sealed interface SortableColumn {
 
     class Enabled(val initialDirection: SortDirection = SortDirection.Asc) : SortableColumn
     object Disabled : SortableColumn
+}
+
+@Composable
+fun <T> RowScope.renderComposable(item: T, col: TableColumn<T>) {
+    when (col.renderer) {
+        is CellRenderer.CustomRenderer -> {
+            col.renderer.invoke(this, item, col)
+        }
+
+        is CellRenderer.TextRenderer -> {
+            TableTextCell(
+                value = col.renderer.valueExtractor(item),
+                size = col.size,
+                textAlign = col.renderer.textAlign,
+                modifier = Modifier.let { m1 ->
+                    val m2 = if (col.renderer.paddingLeft) {
+                        m1.padding(start = 8.dp)
+                    } else m1
+                    val m3 = if (col.renderer.paddingRight) {
+                        m2.padding(end = 8.dp)
+                    } else m2
+                    m3
+                })
+        }
+    }
 }
 
 data class TableColumn<T>(

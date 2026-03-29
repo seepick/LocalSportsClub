@@ -1,6 +1,7 @@
 package seepick.localsportsclub.view.common.table
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.onClick
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
@@ -38,9 +39,10 @@ import seepick.localsportsclub.view.common.darker
 @OptIn(ExperimentalFoundationApi::class)
 fun <T> LazyListScope.renderTableHeader(
     columns: List<TableColumn<T>>,
-    sortColumn: TableColumn<T>?,
-    sortDirection: SortDirection,
-    onHeaderClicked: (TableColumn<T>) -> Unit,
+    sortColumn: TableColumn<T>? = null,
+    sortDirection: SortDirection = SortDirection.Asc,
+    solidBg: Color? = null,
+    onHeaderClicked: (TableColumn<T>) -> Unit = {},
 ) {
     stickyHeader {
         Row(
@@ -52,6 +54,7 @@ fun <T> LazyListScope.renderTableHeader(
                     tooltip = col.tooltip,
                     size = col.size,
                     isSortEnabled = col.sorting.isEnabled,
+                    solidBg = solidBg,
                     isSortActive = col == sortColumn,
                     sortDirection = sortDirection,
                     onClick = { onHeaderClicked(col) },
@@ -70,18 +73,24 @@ fun RowScope.TableHeader(
     isSortEnabled: Boolean,
     isSortActive: Boolean,
     sortDirection: SortDirection,
+    solidBg: Color? = null,
     onClick: () -> Unit,
 ) {
     var isHovered by remember { mutableStateOf(false) }
-    val background: ColorOrBrush = tableHeaderBgColor(isSortEnabled, isSortActive, isHovered, sortDirection)
     Tooltip(tooltip) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = applyColSize(Modifier, size)
                 .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                 .onPointerEvent(PointerEventType.Exit) { isHovered = false }
-                .background(background)
-                .bottomBorder(1.dp, Lsc.colors.primary)
+                .let {
+                    if (solidBg != null) {
+                        it.background(solidBg)
+                    } else {
+                        it.background(tableHeaderBgColor(isSortEnabled, isSortActive, isHovered, sortDirection))
+                            .bottomBorder(1.dp, Lsc.colors.primary)
+                    }
+                }
                 .padding(top = 5.dp, bottom = 5.dp) // after bg color!
                 .fillMaxHeight(1f)
                 .let {
@@ -115,7 +124,6 @@ fun RowScope.TableHeader(
     }
 }
 
-@Composable
 private fun tableHeaderBgColor(
     isSortEnabled: Boolean,
     isSortActive: Boolean,
@@ -134,5 +142,7 @@ private fun tableHeaderBgColor(
 } else if (isHovered && isSortEnabled) {
     ColorOrBrush.ColorOr(Lsc.colors.itemHoverBg)
 } else {
-    ColorOrBrush.ColorOr(MaterialTheme.colors.surface)
+    // @Composable
+//    ColorOrBrush.ColorOr(MaterialTheme.colors.surface) // TODO verify correct
+    ColorOrBrush.ColorOr(Lsc.colors.surface)
 }

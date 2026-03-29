@@ -19,7 +19,7 @@ import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
-import seepick.localsportsclub.view.common.table.Table
+import seepick.localsportsclub.view.common.table.MainTable
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.VDirection
 
@@ -47,7 +47,7 @@ fun SimpleFreetrainingsTable(
             val pastText = if (pastCount > 0) " ($pastCount past)" else ""
             Text("$upcomingCount Freetrainings$pastText:")
         }
-        Table(
+        MainTable(
             items = freetrainings,
             headerEnabled = false,
             selectedItem = selectedFreetraining,

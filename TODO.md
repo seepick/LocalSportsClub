@@ -8,6 +8,8 @@
 
 ## Backlog
 
+* 🎨 improve remark dialog suggest dropdown UX
+* 🎨 adjust dialog size dynamically based on window size (while resizing)
 * 🖋 category gets a rating (autocalced/manual in prefs), and then extend activity/venue ratings based on that
 * 🎨 change hover color, when e.g. yellow-greenish, not really visible (more contrast)
 * 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)

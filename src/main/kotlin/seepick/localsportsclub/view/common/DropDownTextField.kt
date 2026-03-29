@@ -38,6 +38,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import seepick.localsportsclub.LocalTextFieldColors
@@ -90,6 +91,7 @@ fun <T> DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean = false,
+    slimHeight: Dp = 26.dp,
     textAlign: TextAlign = TextAlign.Center,
     paddingMode: PaddingMode = PaddingMode.Zero,
 ) {
@@ -100,6 +102,7 @@ fun <T> DropDownTextField(
         selectedItem = selectedItem,
         onItemSelected = onItemSelected,
         enabled = enabled,
+        slimHeight = slimHeight,
         textSize = textSize,
         textFieldEdits = textFieldEdits,
         useSlimDisplay = useSlimDisplay,
@@ -119,6 +122,7 @@ private fun <T> _DropDownTextField(
     textSize: WidthOrFill,
     textFieldEdits: DropDownTextFieldEdits? = null,
     useSlimDisplay: Boolean,
+    slimHeight: Dp = 26.dp,
     textAlign: TextAlign = TextAlign.Center,
     paddingMode: PaddingMode = PaddingMode.Zero,
 ) {
@@ -140,7 +144,9 @@ private fun <T> _DropDownTextField(
     var isFocused by remember { mutableStateOf(false) }
     val icon = if (isMenuExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
-    Column {
+    Column(
+//        modifier = Modifier.background(Color.Red)
+    ) {
         if (textFieldEdits == null) {
             if (useSlimDisplay) {
                 TextFieldSlim(
@@ -154,7 +160,7 @@ private fun <T> _DropDownTextField(
                     interactionSource = source,
                     modifier = Modifier
                         .widthOrFill(textSize)
-                        .defaultMinSize(minHeight = 1.dp).height(26.dp)
+                        .defaultMinSize(minHeight = 1.dp).height(slimHeight)
                         .onGloballyPositioned { coordinates ->
                             textFieldSize = coordinates.size.toSize()
                         }

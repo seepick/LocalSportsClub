@@ -40,6 +40,7 @@ import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.autoScroll
 import seepick.localsportsclub.view.common.rowBgColor
+import seepick.localsportsclub.view.common.scrollbarWidthPadding
 
 interface TableItemBgColor {
     val tableBgColor: Color?
@@ -48,8 +49,6 @@ interface TableItemBgColor {
 interface TableItemAlpha {
     val isTransparent: Boolean
 }
-
-private val scrollbarWidthPadding = 12.dp
 
 enum class VDirection {
     Up, Down;
@@ -70,7 +69,7 @@ fun <T> List<T>.navigate(currentlySelected: T, direction: VDirection): T? {
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun <T> Table(
+fun <T> MainTable(
     items: List<T>,
     columns: List<TableColumn<T>>,
     selectedItem: T? = null,
@@ -170,27 +169,7 @@ fun <T> Table(
                             }
                         }) {
                     columns.forEach { col ->
-                        when (col.renderer) {
-                            is CellRenderer.CustomRenderer -> {
-                                col.renderer.invoke(this, item, col)
-                            }
-
-                            is CellRenderer.TextRenderer -> {
-                                TableTextCell(
-                                    value = col.renderer.valueExtractor(item),
-                                    size = col.size,
-                                    textAlign = col.renderer.textAlign,
-                                    modifier = Modifier.let { m1 ->
-                                        val m2 = if (col.renderer.paddingLeft) {
-                                            m1.padding(start = 8.dp)
-                                        } else m1
-                                        val m3 = if (col.renderer.paddingRight) {
-                                            m2.padding(end = 8.dp)
-                                        } else m2
-                                        m3
-                                    })
-                            }
-                        }
+                        renderComposable(item, col)
                     }
                 }
             }

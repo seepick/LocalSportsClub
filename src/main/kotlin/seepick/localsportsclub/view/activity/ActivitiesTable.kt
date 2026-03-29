@@ -16,7 +16,7 @@ import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
 import seepick.localsportsclub.view.common.table.CellValue
-import seepick.localsportsclub.view.common.table.Table
+import seepick.localsportsclub.view.common.table.MainTable
 import seepick.localsportsclub.view.common.table.TableColumn
 import seepick.localsportsclub.view.common.table.tableColumnVenueImage
 import seepick.localsportsclub.view.shared.CategoryColumn
@@ -67,7 +67,7 @@ fun ActivitiesTable(
     val selectedSubEntity by viewModel.selectedSubEntity.collectAsState()
     val selectedActivity = selectedSubEntity?.maybeActivity
 
-    Table(
+    MainTable(
         itemsLabel = "activities",
         columns = viewModel.tableColumns,
         allItemsCount = viewModel.allItems.size,
