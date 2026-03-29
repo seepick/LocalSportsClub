@@ -35,10 +35,11 @@ class RemarkRatingSearchOption<T>(
 
     override fun buildPredicate(): (T) -> Boolean = {
         val extracted = extractor(it)
+
         if (extracted != null) {
             searchComparator.compareThose(extracted.numericValue, searchRating.numericValue)
         } else {
-            false
+            searchComparator == FullNumericComparator.Not // if operator is "!=" & rating is null => true
         }
     }
 }

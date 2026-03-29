@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.LscColors
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
@@ -125,12 +126,12 @@ fun Activity.toSimpleActivity() = SimpleActivity(this)
 data class SimpleActivity(
     val activity: Activity,
 ) : TableItemBgColor {
-    override val tableBgColor = activity.simpleTableBgColor()
+    override val tableBgColor = Lsc.colors.forSimpleTableBg(activity)
 }
 
-fun Activity.simpleTableBgColor(): Color? {
-    return when (state) {
-        ActivityState.Blank -> calcColorForBlankActivity()
+fun LscColors.forSimpleTableBg(activity: Activity): Color? {
+    return when (activity.state) {
+        ActivityState.Blank -> forSimpleTableBgBlank(activity)
         ActivityState.Booked -> Lsc.colors.activityBooked
         ActivityState.Checkedin -> Lsc.colors.activityCheckedin
         ActivityState.Noshow -> Lsc.colors.activityNoShow
@@ -142,14 +143,15 @@ private val ratingMax = RemarkRating.Amazing.weightedValue * 2
 private val ratingMin = RemarkRating.Bad.weightedValue * 2
 private val ratingRange = ratingMax + abs(ratingMin)
 
-private fun Activity.calcColorForBlankActivity(): Color? {
-    if (remarkRating == RemarkRating.Bad || teacherRemarkRating == RemarkRating.Bad) {
+private fun LscColors.forSimpleTableBgBlank(activity: Activity): Color? {
+    require(activity.state == ActivityState.Blank)
+    if (activity.remarkRating == RemarkRating.Bad || activity.teacherRemarkRating == RemarkRating.Bad) {
         return Lsc.colors.forTableBg(0.0)
     }
-    if (remarkRating == null && teacherRemarkRating == null) {
+    if (activity.remarkRating == null && activity.teacherRemarkRating == null) {
         return null
     }
-    val weighted = (remarkRating?.weightedValue ?: 0) + (teacherRemarkRating?.weightedValue ?: 0)
+    val weighted = (activity.remarkRating?.weightedValue ?: 0) + (activity.teacherRemarkRating?.weightedValue ?: 0)
     val weightedAdjusted = weighted + abs(ratingMin)
     val distance = weightedAdjusted.toDouble() / ratingRange.toDouble()
     // log.trace { "name=[$name, teacher=[$teacher], remarkRating=$remarkRating teacherRating=$teacherRemarkRating ... weighted: $weighted; distance: $distance" }

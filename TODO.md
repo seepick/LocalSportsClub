@@ -9,15 +9,18 @@
 
 ## Backlog
 
+* 🖋 category gets a rating (autocalced/manual in prefs), and then extend activity/venue ratings based on that
 * 🎨 change hover color, when e.g. yellow-greenish, not really visible (more contrast)
 * 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
 * 🤖 change Rating to proper enum
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
-* 🖋 trim activity.name { .*⭐︎ } (when transform from DBO to entity; or directly on sync when insert in DB?)
+* 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)
+    * not [ + ] (too many 60+ etc
     * see venue "Change with pilates", has an emoji as a prefix :-/
 * 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 customize about dialog (app description, github url; all content copyright USC)
+* 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
 * 🎨 make date search options less wide
 * 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
