@@ -8,11 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.view.common.WidthOrWeight
 
 sealed interface CellValue {
@@ -64,7 +69,35 @@ fun RowScope.TableTextCell(
         )
 
         is CellValue.IntValue -> Text(
-            text = value.int.toString(),
+            text = buildAnnotatedString {
+                var fontWeight: FontWeight? = null
+                val color = if (value.int == 0) {
+                    Lsc.colors.onBackground.copy(alpha = 0.3f)
+                } else {
+                    Lsc.colors.onBackground
+                }
+                val fontSize = if (value.int == 0) {
+                    10.sp
+                } else if (value.int < 10) {
+                    11.sp
+                } else if (value.int < 50) {
+                    12.sp
+                } else {
+                    13.sp
+                }
+                if (value.int >= 100) {
+                    fontWeight = FontWeight.Bold
+                }
+                withStyle(
+                    SpanStyle(
+                        color = color,
+                        fontWeight = fontWeight,
+                        fontSize = fontSize,
+                    )
+                ) {
+                    append(value.int.toString())
+                }
+            },
             textDecoration = textDecoration,
             maxLines = 1,
             textAlign = textAlign,
@@ -76,6 +109,7 @@ fun RowScope.TableTextCell(
 }
 
 sealed interface CellRenderer<T> {
+
     data class TextRenderer<T>(
         val valueExtractor: (T) -> CellValue,
         val sortExtractor: (T) -> Any?,
@@ -112,7 +146,9 @@ sealed interface CellRenderer<T> {
         }
     }
 
-    data class CustomRenderer<T>(val invoke: @Composable RowScope.(T, TableColumn<T>) -> Unit) : CellRenderer<T>
+    data class CustomRenderer<T>(
+        val invoke: @Composable RowScope.(T, TableColumn<T>) -> Unit,
+    ) : CellRenderer<T>
 }
 
 fun RowScope.applyColSize(mod: Modifier, size: WidthOrWeight) = mod.let {

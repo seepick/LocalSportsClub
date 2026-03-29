@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
@@ -42,6 +43,10 @@ import seepick.localsportsclub.view.common.rowBgColor
 
 interface TableItemBgColor {
     val tableBgColor: Color?
+}
+
+interface TableItemAlpha {
+    val isTransparent: Boolean
 }
 
 private val scrollbarWidthPadding = 12.dp
@@ -153,6 +158,7 @@ fun <T> Table(
                 Row(
                     Modifier
                         .background(color = bgColor)
+                        .let { if (item is TableItemAlpha && item.isTransparent) it.alpha(0.4f) else it }
                         .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                         .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                         // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Mouse_Events#mouse-event-listeners

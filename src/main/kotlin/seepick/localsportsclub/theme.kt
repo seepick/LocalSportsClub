@@ -93,8 +93,9 @@ interface LscColors {
     val remarkRatingMeh: Color
     val remarkRatingBad: Color
 
-    val isFavoritedText: Color get() = Color(0xFF008F00)
-    val isWishlistedText: Color get() = Color(0xFF304F4B)
+    val favoritedText: Color get() = Color(0xFF008F00)
+    val wishlistedText: Color get() = Color(0xFF304F4B)
+    val hiddenText: Color get() = Color(0xFF999999)
     val wishlistedBgColor: Color get() = Color(0xFF00FFFF)
 
     /* 1.0 => green, 0.5 => orange, 0.0 => red */

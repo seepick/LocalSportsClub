@@ -15,6 +15,7 @@ import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
+import seepick.localsportsclub.view.common.table.TableItemAlpha
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 import java.util.TreeSet
@@ -70,7 +71,7 @@ class Venue(
     isAutoSync: Boolean,
     visitLimits: VisitLimits?,
     lastSync: LocalDate?,
-) : HasVenue, HasLabel, HasPlan, HasDistance, TableItemBgColor {
+) : HasVenue, HasLabel, HasPlan, HasDistance, TableItemBgColor, TableItemAlpha {
     override val label = name
 
     override val venue = this // for ScreenItem
@@ -91,20 +92,21 @@ class Venue(
 
     val score: Score? by derivedStateOf { calcScore() }
     override val tableBgColor: Color? get() = Lsc.colors.forScore(score, this)
+    override val isTransparent = isHidden
 
     val nameAndFavWishEmojiPrefixedAnnotated
         get() = buildAnnotatedString {
-            if (isFavorited) {
-                append("${Lsc.icons.favoritedEmoji} ")
-                withStyle(style = SpanStyle(color = Lsc.colors.isFavoritedText)) {
-                    append(venue.name)
-                }
-            } else if (isWishlisted) {
-                append("${Lsc.icons.wishlistedEmoji} ")
-                withStyle(style = SpanStyle(color = Lsc.colors.isWishlistedText)) {
-                    append(venue.name)
-                }
-            } else {
+            val emoji =
+                if (isFavorited) Lsc.icons.favoritedEmoji
+                else if (isWishlisted) Lsc.icons.wishlistedEmoji
+                else null
+            val color =
+                if (isFavorited) Lsc.colors.favoritedText
+                else if (isWishlisted) Lsc.colors.wishlistedText
+                else Color.Unspecified
+
+            emoji?.also { append("$it ") }
+            withStyle(style = SpanStyle(color = color)) {
                 append(venue.name)
             }
         }
@@ -227,7 +229,6 @@ class Rating private constructor(val value: Int) : Comparable<Rating>, HasLabel 
 
         fun byValue(rating: Int): Rating = ratingByValue[rating] ?: error("Invalid rating value: $rating")
 
-        // TODO change to enum?!
         val R0 = Rating(0)
         val R1 = Rating(1)
         val R2 = Rating(2)

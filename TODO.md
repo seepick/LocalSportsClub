@@ -2,7 +2,6 @@
 
 ## v1.18.0
 
-* 🎨 grey bg for hidden venues (transparent font color (?)); could then remove column "hidden"
 * 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
 * 🎨 rating table col, bg colored red-green based on rating (1-5; 0 = transparent)
@@ -10,13 +9,15 @@
 
 ## Backlog
 
+* 🎨 change hover color, when e.g. yellow-greenish, not really visible (more contrast)
+* 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
+* 🤖 change Rating to proper enum
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🖋 trim activity.name { .*⭐︎ } (when transform from DBO to entity; or directly on sync when insert in DB?)
     * see venue "Change with pilates", has an emoji as a prefix :-/
 * 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 customize about dialog (app description, github url; all content copyright USC)
-* 🎨 table column numbers bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
 * 🎨 make date search options less wide
 * 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
@@ -34,9 +35,9 @@
     * plus: if go beyond end, start from beginning; and vice versa
 * 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
 * 🖋 autosync on startup checkbox in prefs
-* 🤖test fixtures from usc-client don't work; right now copy'n'pasted all
-* 🐞DateParser dutch locale doesn't work when packaged as app...?!
-* 🎨don't display distance (column/search) if home coordinates not set
+* 🤖 test fixtures from usc-client don't work; right now copy'n'pasted all
+* 🐞 DateParser dutch locale doesn't work when packaged as app...?!
+* 🎨 don't display distance (column/search) if home coordinates not set
 * 🖋 mark wishlisted-like (maybe a new label?) based on activity title (like remarks now)
 * 🖋 prvoide an adaptive "suggested" or "liked" venues/activities based on past bookings
 * 🖋 search filter for time only (evenings), without specifying day/date; in general think about using a ranged slider
