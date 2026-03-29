@@ -108,7 +108,7 @@ fun MainView(
                     .widthIn(min = 200.dp, max = winSize.width.dp)
                     .heightIn(min = 200.dp, max = winSize.height.dp),
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colors.surface,
+                color = Lsc.colors.surface,
                 elevation = 24.dp,
             ) {
                 Column(modifier = Modifier.padding(top = 20.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)) {
@@ -118,7 +118,8 @@ fun MainView(
                     val scrollState = rememberScrollState()
                     Box(Modifier.weight(1.0f, false).fillMaxWidth(1.0f)) {
                         Column(modifier = Modifier.verticalScroll(scrollState)) {
-                            customDialog!!.content()
+                            val roughlyConsumedHeight = 128
+                            customDialog!!.content(winSize.height - roughlyConsumedHeight)
                         }
                         LscVScroll(rememberScrollbarAdapter(scrollState))
                     }

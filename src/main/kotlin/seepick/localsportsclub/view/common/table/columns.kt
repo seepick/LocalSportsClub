@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.model.Venue
@@ -53,6 +54,7 @@ data class TableColumn<T>(
     val initialSortDirection: SortDirection = SortDirection.Asc,
     val sorting: SortableColumn = SortableColumn.Enabled(initialSortDirection),
     val tooltip: String? = null,
+    val overrideHeaderBg: Color? = null,
     var sortValueExtractor: ((T) -> Any?)? = null,
 ) {
     init {

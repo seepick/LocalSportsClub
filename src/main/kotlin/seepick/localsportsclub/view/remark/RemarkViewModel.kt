@@ -57,7 +57,7 @@ class RemarkViewModel(
 
         sharedModel.customDialog.value = CustomDialog(
             title = "${if (isActivity) "Activity" else "Teacher"} Remarks",
-            content = { RemarkView() },
+            content = { RemarkView(it) },
             confirmLabel = "Save",
             confirmButtonTooltip = "Restart app to take effect",
             showDismissButton = false,

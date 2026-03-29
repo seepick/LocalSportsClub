@@ -2,19 +2,23 @@
 
 ## v1.18.0
 
-* 🎨 less vspace use for inputs in remarks dialog
 * 🎨 rating table col, bg colored red-green based on rating (1-5; 0 = transparent)
 * 🖋 research auto-update for macos (create sample project)
 
 ## Backlog
 
-* 🎨 improve remark dialog suggest dropdown UX
-* 🎨 adjust dialog size dynamically based on window size (while resizing)
-* 🖋 category gets a rating (autocalced/manual in prefs), and then extend activity/venue ratings based on that
-* 🎨 change hover color, when e.g. yellow-greenish, not really visible (more contrast)
-* 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
+* 🎨 improve colors
+    * change hover color, when e.g. yellow-greenish, not really visible (more contrast)
+    * in dark theme almost invisible
+* 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
+
 * 🤖 change Rating to proper enum
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
+* 🖋 give category ratings (define in prefs), and then extend activity/venue ratings based on that
+    * OR: auto-infer favorite category + annotated string with color
+        * check venue rating and those which are hidden (if all from same category -> decrease score)
+        * look at past activity checkins (usage stats' top categories)
+* 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
 * 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)
     * not [ + ] (too many 60+ etc
     * see venue "Change with pilates", has an emoji as a prefix :-/
@@ -24,17 +28,15 @@
 * 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
 * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
 * 🎨 make date search options less wide
-* 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
 * 🤖 fix file resorver design issue; passing to error dialog for log retrieval; always assume PROD ;)
 * 🐞 after synced, trying to book, BookingService#bookOrCancelActivity lookup of activity returns null
 * 🐞 while full sync, then sync single activity -> CRASH; simple solution: block whole UI on either sync
-* 🤖 UI tests not working anymore... NoSuchMethodError :-/
-* 🖋 auto-infer favorite category by looking at past activity checkins (usage stats' top categories); annotated string with color
-    * also check venues which are hidden, if all from same category -> decrease score
 * 🖋 category new property: activitiesCount
 
 ## Low Prio
 
+* 🤖 UI tests not working anymore... NoSuchMethodError :-/
+* 🎨 make longtext (if clickable, as overspill) with some blue indicator ("..." or "[...]" or "more")
 * 🎨 redo carousel view: on click, load data in bg, and slide images left/right (like website does)
     * plus: if go beyond end, start from beginning; and vice versa
 * 🎨 idea search panel: only show emoji, when hover show label-text, when click also show inputs
@@ -48,3 +50,4 @@
 * 🖋 highlight "info usage statistic" icon with red badge (away-clickable), if new penalty was synced
 * 🎨 manually adjustable table column width (e.g. wanting to make name wider)
 * 🖋️ FreetrainingRemarks
+* 🎨 adjust dialog size dynamically based on window size (while resizing)

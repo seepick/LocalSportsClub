@@ -54,6 +54,7 @@ fun <T> LazyListScope.renderTableHeader(
                     tooltip = col.tooltip,
                     size = col.size,
                     isSortEnabled = col.sorting.isEnabled,
+                    overrideHeaderBg = col.overrideHeaderBg,
                     solidBg = solidBg,
                     isSortActive = col == sortColumn,
                     sortDirection = sortDirection,
@@ -71,6 +72,7 @@ fun RowScope.TableHeader(
     tooltip: String?,
     size: WidthOrWeight,
     isSortEnabled: Boolean,
+    overrideHeaderBg: Color? = null,
     isSortActive: Boolean,
     sortDirection: SortDirection,
     solidBg: Color? = null,
@@ -84,7 +86,9 @@ fun RowScope.TableHeader(
                 .onPointerEvent(PointerEventType.Enter) { isHovered = true }
                 .onPointerEvent(PointerEventType.Exit) { isHovered = false }
                 .let {
-                    if (solidBg != null) {
+                    if (overrideHeaderBg != null) {
+                        it.background(overrideHeaderBg)
+                    } else if (solidBg != null) {
                         it.background(solidBg)
                     } else {
                         it.background(tableHeaderBgColor(isSortEnabled, isSortActive, isHovered, sortDirection))
@@ -142,7 +146,5 @@ private fun tableHeaderBgColor(
 } else if (isHovered && isSortEnabled) {
     ColorOrBrush.ColorOr(Lsc.colors.itemHoverBg)
 } else {
-    // @Composable
-//    ColorOrBrush.ColorOr(MaterialTheme.colors.surface) // TODO verify correct
     ColorOrBrush.ColorOr(Lsc.colors.surface)
 }

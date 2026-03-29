@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
@@ -37,6 +38,7 @@ import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.DropdownMenuX
 import seepick.localsportsclub.view.common.LscVScroll
+import seepick.localsportsclub.view.common.ModifierWith
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrFill
@@ -83,28 +85,32 @@ fun <T> simpleTableColumn(
     headerTitle: String,
     width: Dp? = null,
     weight: Float? = null,
+    overrideHeaderBg: Color? = null,
     renderer: @Composable RowScope.(T, TableColumn<T>) -> Unit,
 ) = TableColumn(
     header = VisualIndicator.StringIndicator(headerTitle),
     size = WidthOrWeight.ofEither(width, weight),
     renderer = CellRenderer.CustomRenderer(renderer),
     sorting = SortableColumn.Disabled,
+    overrideHeaderBg = overrideHeaderBg,
 )
 
 fun buildRemarkColumns(
     suggestions: List<String>,
     onDelete: (RemarkViewEntity) -> Unit,
-) =
-    listOf<TableColumn<RemarkViewEntity>>(
-        simpleTableColumn("Name", weight = 0.3f) { remark, _ ->
+) = listOf<TableColumn<RemarkViewEntity>>(
+    simpleTableColumn("Name", width = 300.dp) { remark, col ->
+        Row(ModifierWith(col.size)) {
             SuggestTextField(
                 text = remark.name,
                 width = 300.dp,
                 suggestions = suggestions,
-//                    TODO textModifier = if (index == 0) Modifier.focusRequester(focusRequester) else Modifier,
+//              textModifier = if (index == 0) Modifier.focusRequester(focusRequester) else Modifier,
             )
-        },
-        simpleTableColumn("Rating", width = 300.dp) { remark, _ ->
+        }
+    },
+    simpleTableColumn("Rating", width = 150.dp) { remark, col ->
+        Row(ModifierWith(col.size)) {
             DropDownTextField(
                 items = RemarkRating.entries,
                 useSlimDisplay = true,
@@ -112,18 +118,22 @@ fun buildRemarkColumns(
                 itemFormatter = { "${it.emoji} ${it.label}" },
                 selectedItem = remark.rating,
                 onItemSelected = { remark.rating = it },
-                textSize = WidthOrFill.Width(150.dp)
+                textSize = WidthOrFill.FillWidth,
             )
-        },
-        simpleTableColumn("Note", weight = 0.7f) { remark, _ ->
+        }
+    },
+    simpleTableColumn("Note", weight = 0.7f) { remark, col ->
+        Row(ModifierWith(col.size)) {
             TextField(
                 value = remark.remark,
                 onValueChange = { remark.remark = it },
                 colors = LocalTextFieldColors.current,
                 modifier = Modifier.weight(1f),
             )
-        },
-        simpleTableColumn("", width = 80.dp) { remark, _ ->
+        }
+    },
+    simpleTableColumn("", width = 80.dp, overrideHeaderBg = Lsc.colors.surface) { remark, col ->
+        Row(ModifierWith(col.size)) {
             Tooltip("Delete") {
                 TextButton(
                     onClick = { onDelete(remark) },
@@ -133,10 +143,12 @@ fun buildRemarkColumns(
                 }
             }
         }
-    )
+    },
+)
 
 @Composable
 fun RemarkView(
+    height: Int,
     viewModel: RemarkViewModel = koinViewModel(),
 ) {
 //    val focusRequester = remember { FocusRequester() }
@@ -158,23 +170,21 @@ fun RemarkView(
         }
         Spacer(Modifier.height(5.dp))
 
-        RemarkTable()
+        val roughlyConsumedHeight = 55
+        RemarkTable(boxModifier = Modifier.height((height - roughlyConsumedHeight).dp))
     }
 }
 
 @Composable
 fun RemarkTable(
+    boxModifier: Modifier = Modifier,
     viewModel: RemarkViewModel = koinViewModel(),
 ) {
     val remarkColumns = buildRemarkColumns(
         suggestions = viewModel.nameSuggestions,
         onDelete = { viewModel.deleteRemark(it) },
     )
-    Box(
-        modifier = Modifier
-            .height(500.dp) // FIXME height layout hack
-            .fillMaxWidth(),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().then(boxModifier)) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
@@ -182,7 +192,7 @@ fun RemarkTable(
         ) {
             renderTableHeader(remarkColumns, solidBg = Lsc.colors.onSurface)
             itemsIndexed(viewModel.remarks) { index, item ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.Bottom) {
                     remarkColumns.forEach { remarkCol ->
                         renderComposable(item, remarkCol)
                     }

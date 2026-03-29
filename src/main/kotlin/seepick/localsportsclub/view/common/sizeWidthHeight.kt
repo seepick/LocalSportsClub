@@ -41,4 +41,3 @@ fun RowScope.ModifierWith(widthOrWeight: WidthOrWeight) = Modifier.let {
         is WidthOrWeight.Width -> it.width(widthOrWeight.value)
     }
 }
-

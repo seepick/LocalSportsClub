@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 
 data class CustomDialog(
     val title: String,
-    val content: @Composable () -> Unit,
+    val content: @Composable (Int) -> Unit,
     val confirmLabel: String = "Close",
     val confirmButtonTooltip: String? = null,
     val onConfirm: () -> Unit = {},
