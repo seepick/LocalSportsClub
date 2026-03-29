@@ -2,7 +2,6 @@ package seepick.localsportsclub.devApp
 
 import com.github.seepick.uscclient.login.Credentials
 import seepick.localsportsclub.LscConfig
-import seepick.localsportsclub.gcal.noopGcalModule
 import seepick.localsportsclub.startApplication
 import java.io.File
 
@@ -26,7 +25,7 @@ object LocalSportsClubDevApp {
 //                    uscCredentials = creds, // view it in UI
 //                )
             },
-            gcalModule = noopGcalModule(),
+//            gcalModule = noopGcalModule(),
 //            uscClientModule = mockUscClientModule(),
 //            syncModule = devSyncModule(SyncMode.Dummy, config),
 //            persistenceModule = inmemoryPersistenceModule(),

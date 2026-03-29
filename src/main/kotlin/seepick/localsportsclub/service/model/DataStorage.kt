@@ -125,8 +125,10 @@ class DataStorage(
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val today = clock.today()
-            activityRepo.selectAll(cityId).filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
-                .sortedByDescending { it.from }.map { activityDbo ->
+            activityRepo.selectAll(cityId)
+                .filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
+                .sortedByDescending { it.from }
+                .map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
                     activityDbo.toActivity(venueForActivity).also {
                         venueForActivity.addActivities(setOf(it))

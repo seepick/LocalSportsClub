@@ -87,7 +87,14 @@ class Activity(
     )
 
     override fun toString() =
-        "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"
+        "Activity[" +
+                "id=$id, " +
+                "name=$name, " +
+                "venue.slug=${venue.slug}, " +
+                "date=${dateTimeRange.prettyFromShorterPrint(0)}, " +
+                "state=$state, " +
+                "teacher=$teacher" +
+                "]"
 
     companion object {
         fun comparator(today: LocalDate) = Comparator<Activity> { a1, a2 ->

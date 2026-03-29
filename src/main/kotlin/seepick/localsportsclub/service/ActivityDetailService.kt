@@ -24,16 +24,15 @@ class ActivityDetailService(
         log.debug { "Initialized with ${detailsEnrichers.size} enrichers." }
     }
 
-    suspend fun syncSingle(activity: Activity) {
+    suspend fun syncSingle(activity: Activity): ActivityDbo =
         syncSingle(activityRepo.selectById(activity.id) ?: error("Activity with id ${activity.id} not found"))
-    }
 
-    suspend fun syncSingle(activity: ActivityDbo) {
+    suspend fun syncSingle(activity: ActivityDbo): ActivityDbo {
         log.debug { "syncSingle(activity=$activity)" }
-        syncBulk(listOf(activity))
+        return syncBulk(listOf(activity)).first()
     }
 
-    suspend fun syncBulk(activityDbos: List<ActivityDbo>) {
+    suspend fun syncBulk(activityDbos: List<ActivityDbo>): List<ActivityDbo> {
         log.debug { "syncBulk(activities.size=${activityDbos.size})" }
         val activitiesDone = AtomicInteger(0)
         val activitiesCount = activityDbos.size
@@ -43,7 +42,7 @@ class ActivityDetailService(
         val enrichedDboDetails = detailsEnrichers.fold(originalDboDetails) { acc, enricher ->
             enricher.enrich(acc)
         }
-        enrichedDboDetails.forEach { (dbo, details) ->
+        return enrichedDboDetails.map { (dbo, details) ->
             updateDboAndDispatch(dbo, details)
         }
     }
@@ -62,7 +61,7 @@ class ActivityDetailService(
         return dbo to details
     }
 
-    private fun updateDboAndDispatch(activity: ActivityDbo, details: ActivityDetails) {
+    private fun updateDboAndDispatch(activity: ActivityDbo, details: ActivityDetails): ActivityDbo {
         val oldActivityDbo = activityRepo.selectById(activity.id)!! // could also just use `activity`?!
         val newActivityDbo = oldActivityDbo.copy(
             teacher = details.teacher ?: activity.teacher,
@@ -96,5 +95,6 @@ class ActivityDetailService(
                 field = ActivityFieldUpdate.CancellationLimit
             )
         }
+        return newActivityDbo
     }
 }

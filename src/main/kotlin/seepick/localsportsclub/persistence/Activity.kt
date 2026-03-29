@@ -118,6 +118,7 @@ object ExposedActivityRepo : ActivityRepo {
     private val log = logger {}
 
     override fun selectAll(cityId: Int): List<ActivityDbo> = transaction {
+        log.debug { "selectAll(cityId=$cityId)" }
         ActivityDboTable
             .join(VenueDboTable, JoinType.LEFT, onColumn = ActivityDboTable.venueId, otherColumn = VenueDboTable.id)
             .selectAll().where { VenueDboTable.cityId.eq(cityId) }.orderBy(ActivityDboTable.from).map {

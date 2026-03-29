@@ -48,6 +48,7 @@ class BookingValidator(
     }
 
     fun canBook(activity: Activity): BookingValidation {
+        log.debug { "can book: $activity" }
         if (!usageStorage.isUsageVisible) {
             // don't know any better...
             return BookingValidation.Valid

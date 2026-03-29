@@ -31,6 +31,7 @@ class BookingService(
     private val freetrainingRepo: FreetrainingRepo,
     private val gcalService: GcalService,
     private val singlesService: SinglesService,
+    private val activityDetailService: ActivityDetailService,
 ) {
     private val log = logger {}
 
@@ -88,9 +89,14 @@ class BookingService(
         apiOperation: suspend UscApi.(Int) -> T,
         operationSucceeded: (T) -> Boolean,
     ): T {
-        log.debug { "book=$isBooking (Gcal: can=$canGcal/should=$shouldGcal) => $subEntity" }
+        log.info { "${if (isBooking) "Booking" else "Cancel"} started (Gcal: can=$canGcal/should=$shouldGcal) for: $subEntity" }
         require(if (isBooking) subEntity.isBookable else subEntity.isCancellable)
-        log.info { "${if (isBooking) "Booking" else "Cancel"} started for: $subEntity" }
+
+        if (isBooking && subEntity is SubEntity.ActivityEntity && subEntity.activity.teacher == null) {
+            activityDetailService.syncSingle(subEntity.activity)
+            // the activity has mutable state which will be communicated through to below ;)
+        }
+
         val result = uscApi.apiOperation(subEntity.id)
         if (operationSucceeded(result)) {
             when (subEntity) {

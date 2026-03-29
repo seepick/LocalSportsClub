@@ -2,7 +2,6 @@
 
 ## v1.18.0
 
-* 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
 * 🎨 rating table col, bg colored red-green based on rating (1-5; 0 = transparent)
 * 🖋 research auto-update for macos (create sample project)
