@@ -27,7 +27,7 @@ class VenueSearch(
 ) : AbstractSearch<Venue>(globalKeyboard, resetItems) {
 
     val name = newStringSearchOption(
-        label = "Name", initiallyEnabled = true, extractors = listOf { it.name },
+        label = "Search", initiallyEnabled = true, extractors = listOf { it.name },
     )
     val activities = newIntSearchOption(
         label = "Activities",

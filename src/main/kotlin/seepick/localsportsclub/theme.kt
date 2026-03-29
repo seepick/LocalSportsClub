@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
+import seepick.localsportsclub.service.model.Score
 import seepick.localsportsclub.view.common.LscIcons
 
 // https://mdigi.tools/lighten-color/#337be2
@@ -30,8 +31,6 @@ interface LscColors {
     val cancelBookingWithin: Color
     val cancelBookingOutside: Color
 
-    val isFavorited: Color get() = Color(0xFFC12600)
-    val isWishlisted: Color get() = Color(0xFFD0C742)
     val backgroundToolip: Color
 
     // custom
@@ -94,8 +93,15 @@ interface LscColors {
     val remarkRatingMeh: Color
     val remarkRatingBad: Color
 
+    val isFavoritedText: Color get() = Color(0xFF008F00)
+    val isWishlistedText: Color get() = Color(0xFF304F4B)
+    val wishlistedBgColor: Color get() = Color(0xFF00FFFF)
+
     /* 1.0 => green, 0.5 => orange, 0.0 => red */
-    fun forActivitySimpleTable(distance: Double) = redGreenGradient(distance)
+    fun forTableBg(score: Score, saturation: Float = 0.8f) = redGreenGradient(
+        modifier = score,
+        saturation = saturation,
+    )
 
     /** 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°) */
     fun forPeriod(distance: Double) = redGreenGradient(1 - (distance * 2.0f).coerceIn(0.0, 1.0))
@@ -106,9 +112,10 @@ interface LscColors {
     private fun redGreenGradient(
         modifier: Double,
         alpha: Float = 1f,
+        saturation: Float = 1f,
     ) = Color.hsv(
         hue = 120f * modifier.toFloat(),
-        saturation = 1f,
+        saturation = saturation,
         value = 1f,
         alpha = alpha,
     )

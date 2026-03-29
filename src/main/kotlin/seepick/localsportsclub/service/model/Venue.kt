@@ -1,5 +1,6 @@
 package seepick.localsportsclub.service.model
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +15,6 @@ import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
-import seepick.localsportsclub.view.common.darker
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 import java.util.TreeSet
@@ -72,9 +72,7 @@ class Venue(
     lastSync: LocalDate?,
 ) : HasVenue, HasLabel, HasPlan, HasDistance, TableItemBgColor {
     override val label = name
-    override val tableBgColor get() = computeBgColor(isFavorited = isFavorited, isWishlisted = isWishlisted)
 
-    //  val linkedVenues: MutableList<Venue>,
     override val venue = this // for ScreenItem
     var notes: String by mutableStateOf(notes)
     var rating: Rating by mutableStateOf(rating)
@@ -91,16 +89,19 @@ class Venue(
     val activityRemarks = mutableStateListOf<ActivityRemark>()
     val teacherRemarks = mutableStateListOf<TeacherRemark>()
 
+    val score: Score? by derivedStateOf { calcScore() }
+    override val tableBgColor: Color? get() = Lsc.colors.forScore(score, this)
+
     val nameAndFavWishEmojiPrefixedAnnotated
         get() = buildAnnotatedString {
             if (isFavorited) {
                 append("${Lsc.icons.favoritedEmoji} ")
-                withStyle(style = SpanStyle(color = Lsc.colors.isFavorited.darker())) {
+                withStyle(style = SpanStyle(color = Lsc.colors.isFavoritedText)) {
                     append(venue.name)
                 }
             } else if (isWishlisted) {
                 append("${Lsc.icons.wishlistedEmoji} ")
-                withStyle(style = SpanStyle(color = Lsc.colors.isWishlisted.darker())) {
+                withStyle(style = SpanStyle(color = Lsc.colors.isWishlistedText)) {
                     append(venue.name)
                 }
             } else {
@@ -161,12 +162,12 @@ class Venue(
         openingTimes: String? = this.openingTimes,
         uscWebsite: String = this.uscWebsite,
         isWishlisted: Boolean = this.isWishlisted,
+        isFavorited: Boolean = this.isFavorited,
         isHidden: Boolean = this.isHidden,
         isAutoSync: Boolean = this.isAutoSync,
         isDeleted: Boolean = this.isDeleted,
         notes: String = this.notes,
         rating: Rating = this.rating,
-        isFavorited: Boolean = this.isFavorited,
         plan: Plan.UscPlan = this.plan,
         visitLimits: VisitLimits? = this.visitLimits,
         lastSync: LocalDate? = this.lastSync,
@@ -208,16 +209,6 @@ class Venue(
                 notes == other.notes && imageFileName == other.imageFileName && isFavorited == other.isFavorited && rating == other.rating
     }
 
-    companion object {
-        private fun computeBgColor(
-            isFavorited: Boolean,
-            isWishlisted: Boolean,
-        ): Color? =
-            (if (isFavorited) Lsc.colors.isFavorited else if (isWishlisted) Lsc.colors.isWishlisted else null)?.copy(
-                alpha = 0.6f
-            )
-    }
-
     object Ids {
         val EmsHealthStudio = 106
         val HotFlowYogaJordaan = 178
@@ -236,6 +227,7 @@ class Rating private constructor(val value: Int) : Comparable<Rating>, HasLabel 
 
         fun byValue(rating: Int): Rating = ratingByValue[rating] ?: error("Invalid rating value: $rating")
 
+        // TODO change to enum?!
         val R0 = Rating(0)
         val R1 = Rating(1)
         val R2 = Rating(2)

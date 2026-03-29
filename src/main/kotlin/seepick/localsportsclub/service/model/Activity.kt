@@ -1,15 +1,29 @@
 package seepick.localsportsclub.service.model
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
+import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 import java.time.LocalDateTime
+
+fun <R : Remark> List<R>.findMatchingRating(name: String): RemarkRating? {
+    val matching = this.filter { name.contains(it.name, ignoreCase = true) }
+    return when (matching.size) {
+        0 -> null
+        1 -> matching.single()
+        else -> {
+            matching.maxBy { it.name.length }
+        }
+    }?.rating
+}
 
 class Activity(
     val id: Int,
@@ -23,10 +37,7 @@ class Activity(
     spotsLeft: Int,
     state: ActivityState,
     cancellationLimit: LocalDateTime?,
-) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor by venue {
-
-    val remarkRating: RemarkRating?
-    val teacherRemarkRating: RemarkRating?
+) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor {
 
     var state: ActivityState by mutableStateOf(state)
     var teacher: String? by mutableStateOf(teacher)
@@ -34,34 +45,46 @@ class Activity(
     var spotsLeft: Int by mutableStateOf(spotsLeft)
     var cancellationLimit: LocalDateTime? by mutableStateOf(cancellationLimit)
 
+    val score: Score? by derivedStateOf { calcScore() }
+    //    override val tableBgColor: Color? get() = Lsc.colors.forScore(venue)
+    override val tableBgColor: Color? by derivedStateOf { Lsc.colors.forScore(score, venue) }
+
     // not possible due to mixed setup of table columns (doing logic in view/composable together)
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    val nameWithTeacherIfPresent: Flow<String> = snapshotFlow { name to teacher }
 //        .mapLatest { (name, teacher) -> if (teacher == null) name else "$name /$teacher" }
 
-    init {
-        val matchingActivityRemarks = venue.activityRemarks.filter { name.contains(it.name, ignoreCase = true) }
-        remarkRating = when (matchingActivityRemarks.size) {
-            0 -> null
-            1 -> matchingActivityRemarks.single()
-            else -> {
-                matchingActivityRemarks.maxBy { it.name.length }
-            }
-        }?.rating
-        teacherRemarkRating = if (teacher == null) null else {
-            val matchingTeacherRemarks = venue.teacherRemarks.filter { teacher.contains(it.name, ignoreCase = true) }
-            when (matchingTeacherRemarks.size) {
-                0 -> null
-                1 -> matchingTeacherRemarks.single()
-                else -> {
-                    matchingTeacherRemarks.maxBy { it.name.length }
-                }
-            }
-        }?.rating
+    val remarkRating: RemarkRating? by derivedStateOf {
+        venue.activityRemarks.findMatchingRating(name)
+    }
+
+    val teacherRemarkRating: RemarkRating? by derivedStateOf {
+        this.teacher?.let { venue.teacherRemarks.findMatchingRating(it) }
     }
 
     fun isInPast(today: LocalDate): Boolean =
         dateTimeRange.from.toLocalDate() < today
+
+    fun copy(
+        name: String = this.name,
+        teacher: String? = this.teacher,
+        state: ActivityState = this.state,
+        venue: Venue = this.venue,
+        dateTimeRange: DateTimeRange = this.dateTimeRange,
+        cancellationLimit: LocalDateTime? = this.cancellationLimit,
+    ) = Activity(
+        id = id,
+        venue = venue,
+        name = name,
+        category = category,
+        dateTimeRange = dateTimeRange,
+        plan = plan,
+        teacher = teacher,
+        description = description,
+        spotsLeft = spotsLeft,
+        state = state,
+        cancellationLimit = cancellationLimit,
+    )
 
     override fun toString() =
         "Activity[id=$id, name=$name, date=${dateTimeRange.prettyFromShorterPrint(0)} state=$state, venue.slug=${venue.slug}, teacher=$teacher]"

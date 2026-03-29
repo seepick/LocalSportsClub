@@ -20,7 +20,7 @@ class FreetrainingSearch(
     ) { it.venue.isHidden }
 
     val name = newStringSearchOption(
-        "Freetraining/Venue", initiallyEnabled = true, extractors = listOf({ it.name }, { it.venue.name })
+        "Search", initiallyEnabled = true, extractors = listOf({ it.name }, { it.venue.name })
     )
     val date = newDateSearchOption(
         "Date", initialDate = searchDates.first(), visualIndicator = Lsc.icons.dateIndicator

@@ -7,6 +7,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.HasCategory
@@ -66,9 +67,19 @@ fun <T : HasPlan> PlanColumn() = TableColumn<T>(
     size = WidthOrWeight.Width(40.dp),
     tooltip = "Plan: ${Plan.UscPlan.entries.joinToString(" ") { "${it.emoji} ${it.apiString}" }}",
     renderer = CellRenderer.TextRenderer(
-        textAlign = TextAlign.Center,
         sortExtractor = { it.plan.id },
         valueExtractor = { CellValue(it.plan.emoji) },
+        textAlign = TextAlign.Center,
+    )
+)
+
+fun ScoreColumn() = TableColumn<Activity>( // interface HasScore
+    header = VisualIndicator.StringIndicator("Score"),
+    size = WidthOrWeight.Width(100.dp),
+    renderer = CellRenderer.TextRenderer(
+        valueExtractor = { CellValue(it.score.toString()) },
+        sortExtractor = { it.score },
+        textAlign = TextAlign.Right,
     )
 )
 
@@ -85,10 +96,10 @@ fun <T : HasVenue> VenueColumn(
     header = VisualIndicator.StringIndicator(headerLabel),
     size = size,
     sortValueExtractor = { it.venue.name.lowercase() },
-    renderer = CellRenderer.CustomRenderer { venueHaving, col ->
+    renderer = CellRenderer.CustomRenderer { venueHaving, column ->
         TableTextCell(
             value = CellValue(venueHaving.venue.nameAndFavWishEmojiPrefixedAnnotated),
-            size = col.size,
+            size = column.size,
             textDecoration = if (venueHaving.venue.isDeleted) TextDecoration.LineThrough else null,
             paddingLeft = paddingLeft,
         )

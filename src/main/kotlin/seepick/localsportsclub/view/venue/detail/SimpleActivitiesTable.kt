@@ -144,7 +144,7 @@ private val ratingRange = ratingMax + abs(ratingMin)
 
 private fun Activity.calcColorForBlankActivity(): Color? {
     if (remarkRating == RemarkRating.Bad || teacherRemarkRating == RemarkRating.Bad) {
-        return Lsc.colors.forActivitySimpleTable(0.0)
+        return Lsc.colors.forTableBg(0.0)
     }
     if (remarkRating == null && teacherRemarkRating == null) {
         return null
@@ -153,5 +153,5 @@ private fun Activity.calcColorForBlankActivity(): Color? {
     val weightedAdjusted = weighted + abs(ratingMin)
     val distance = weightedAdjusted.toDouble() / ratingRange.toDouble()
     // log.trace { "name=[$name, teacher=[$teacher], remarkRating=$remarkRating teacherRating=$teacherRemarkRating ... weighted: $weighted; distance: $distance" }
-    return Lsc.colors.forActivitySimpleTable(distance)
+    return Lsc.colors.forTableBg(distance)
 }

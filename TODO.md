@@ -2,10 +2,7 @@
 
 ## v1.18.0
 
-* 🖋 calculate score for each activity (simple calculation for now; only use "local data")
-* 🎨 redo table bg color based on score (instead only faved/wishlisted); big-tables + mini-tables
-* 🎨 grey bg for hidden venues (transparent font color (?))
-
+* 🎨 grey bg for hidden venues (transparent font color (?)); could then remove column "hidden"
 * 🖋 before booking, fetch activity details (teacher persisted!)
 * 🎨 less vspace use for inputs in remarks dialog
 * 🎨 rating table col, bg colored red-green based on rating (1-5; 0 = transparent)
@@ -13,9 +10,10 @@
 
 ## Backlog
 
+* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🖋 trim activity.name { .*⭐︎ } (when transform from DBO to entity; or directly on sync when insert in DB?)
     * see venue "Change with pilates", has an emoji as a prefix :-/
-* 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow)
+* 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 customize about dialog (app description, github url; all content copyright USC)
 * 🎨 table column numbers bookings/activities/freetrainigs support visually a bit; e.g. if 0 then grey; if > 100 then bold

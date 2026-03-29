@@ -6,11 +6,12 @@ import androidx.compose.ui.text.withStyle
 import seepick.localsportsclub.service.model.Activity
 
 fun AnnotatedString.Builder.appendRatedName(activity: Activity) {
-    if (activity.remarkRating != null) {
-        append("${activity.remarkRating.emoji} ")
+    val remarkRating = activity.remarkRating
+    if (remarkRating != null) {
+        append("${remarkRating.emoji} ")
     }
-    if (activity.remarkRating != null) {
-        withStyle(style = SpanStyle(color = activity.remarkRating.color)) {
+    if (remarkRating != null) {
+        withStyle(style = SpanStyle(color = remarkRating.color)) {
             append(activity.name)
         }
     } else {

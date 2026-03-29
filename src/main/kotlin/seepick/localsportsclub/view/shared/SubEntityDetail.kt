@@ -60,7 +60,7 @@ fun SubEntityDetail(
     modifier: Modifier = Modifier,
 ) {
     val year = clock.today().year
-    val (isBooked, isCheckedin, isNoshow) = extractStatesOf(subEntity)
+    val (isBooked, isCheckedin, isNoshow, isCancelledLate) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
         val remarkRatingEmoji = subEntity.maybeActivity?.remarkRating?.let { "${it.emoji} " } ?: ""
@@ -108,10 +108,13 @@ fun SubEntityDetail(
                             append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
                         }
                         if (isCheckedin) {
-                            "${Icons.Lsc.checkedinEmoji} checked-in "
+                            append("${Icons.Lsc.checkedinEmoji} checked-in ")
                         }
                         if (isNoshow) {
-                            Text("${Icons.Lsc.noshowEmoji} no-show")
+                            append("${Icons.Lsc.noshowEmoji} no-show ")
+                        }
+                        if (isCancelledLate) {
+                            append("${Icons.Lsc.cancelledLateEmoji} cancelled-late ")
                         }
                         append(subEntity.category.nameAndMaybeEmoji)
 
@@ -194,20 +197,29 @@ fun SubEntityDetail(
     }
 }
 
+data class SubEntityStates(
+    val isBooked: Boolean,
+    val isCheckedIn: Boolean,
+    val isNoshow: Boolean,
+    val isCancelledLate: Boolean,
+)
+
 private fun extractStatesOf(subEntity: SubEntity) = when (subEntity) {
     is SubEntity.ActivityEntity -> {
-        Triple(
+        SubEntityStates(
             subEntity.activity.state == ActivityState.Booked,
             subEntity.activity.state == ActivityState.Checkedin,
-            subEntity.activity.state == ActivityState.Noshow
+            subEntity.activity.state == ActivityState.Noshow,
+            subEntity.activity.state == ActivityState.CancelledLate,
         )
     }
 
     is SubEntity.FreetrainingEntity -> {
-        Triple(
+        SubEntityStates(
             subEntity.freetraining.state == FreetrainingState.Scheduled,
             subEntity.freetraining.state == FreetrainingState.Checkedin,
-            false
+            false,
+            false,
         )
     }
 }

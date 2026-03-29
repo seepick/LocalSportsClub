@@ -21,7 +21,6 @@ import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.activity
-import seepick.localsportsclub.service.model.copy
 import seepick.localsportsclub.service.model.toDbo
 import seepick.localsportsclub.service.model.venue
 import seepick.localsportsclub.service.model.visitLimits
@@ -98,12 +97,12 @@ class BookingValidatorTest : DescribeSpec() {
     ) =
         Arb.activity().next().let {
             val inPeriod = it.copy(
-                copyDateTimeRange = DateTimeRange(
+                dateTimeRange = DateTimeRange(
                     from = now, to = now.plusHours(1)
                 ),
-                copyCancellationLimit = cancellationLimit,
+                cancellationLimit = cancellationLimit,
             )
-            if (venue == null) inPeriod else inPeriod.copy(copyVenue = venue)
+            if (venue == null) inPeriod else inPeriod.copy(venue = venue)
         }
 
     private fun insertVenueForCity(visitLimits: VisitLimits? = null): Venue {

@@ -23,7 +23,7 @@ fun rowBgColor(
             if (isSelected) selectedColor.copy(0.8f)
             else if (isClickable && isHovered) hoverColor.copy(0.4f)
             else alternateBgColor(index).let {
-                primaryColor?.copy(0.2f)?.compositeOver(it) ?: it
+                primaryColor?.copy(0.4f)?.compositeOver(it) ?: it
             }
             ).compositeOver(alternateColor)
 }
