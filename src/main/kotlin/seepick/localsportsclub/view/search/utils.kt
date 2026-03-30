@@ -20,7 +20,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.search.SearchOption
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.applyTestTag

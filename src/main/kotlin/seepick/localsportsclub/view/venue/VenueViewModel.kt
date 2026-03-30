@@ -1,7 +1,7 @@
 package seepick.localsportsclub.view.venue
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import seepick.localsportsclub.GlobalKeyboard
+import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator

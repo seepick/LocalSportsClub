@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyShortPrint

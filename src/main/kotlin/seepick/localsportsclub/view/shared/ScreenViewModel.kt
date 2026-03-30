@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation

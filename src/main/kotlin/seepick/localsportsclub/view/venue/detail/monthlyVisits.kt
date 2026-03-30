@@ -18,7 +18,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.venue.VisitLimits
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.view.common.Tooltip

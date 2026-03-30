@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
-import seepick.localsportsclub.Lsc
-import seepick.localsportsclub.MainWindowState
+import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.MainWindowState
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining

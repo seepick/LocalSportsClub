@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.WidthOrWeight
 
 sealed interface CellValue {

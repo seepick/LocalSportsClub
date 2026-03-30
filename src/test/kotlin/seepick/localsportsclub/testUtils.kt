@@ -4,6 +4,7 @@ import com.github.seepick.uscclient.shared.DateTimeRange
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
+import seepick.localsportsclub.service.readFromClasspath
 import java.time.LocalDate
 import java.time.LocalTime
 

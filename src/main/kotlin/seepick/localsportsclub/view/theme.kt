@@ -1,4 +1,4 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.view
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.CheckboxColors
@@ -21,6 +21,24 @@ import seepick.localsportsclub.service.model.Score
 import seepick.localsportsclub.view.common.LscIcons
 
 // https://mdigi.tools/lighten-color/#337be2
+
+fun overrideTheme(isDark: Boolean) {
+    System.setProperty("lsc.theme.override", if (isDark) "dark" else "light")
+}
+
+object Lsc {
+
+    private fun readTheme(): Boolean {
+        val sysProp = System.getProperty("lsc.theme.override", "").let {
+            if (it == "dark") true else if (it == "light") false else null
+        }
+        return sysProp ?: (currentSystemTheme == SystemTheme.DARK)
+    }
+
+    val isDarkTheme = readTheme()
+    val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
+    val icons = LscIcons
+}
 
 // see ColorScheme for description of colors
 interface LscColors {
@@ -178,11 +196,6 @@ object LightLscColors : LscColors {
     override val remarkRatingBad = Color(0xFF924944)
 }
 
-object Lsc {
-    val isDarkTheme = currentSystemTheme == SystemTheme.DARK
-    val colors: LscColors = if (isDarkTheme) DarkLscColors else LightLscColors
-    val icons = LscIcons
-}
 
 val LocalTextFieldColors = compositionLocalOf<TextFieldColors> {
     error("No text field could be found")

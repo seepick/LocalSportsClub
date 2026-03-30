@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 
 @Composable
 fun LongText(

@@ -1,7 +1,6 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.view.common.showErrorDialog
 import java.awt.desktop.QuitHandler
 

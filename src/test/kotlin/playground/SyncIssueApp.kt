@@ -30,7 +30,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import seepick.localsportsclub.persistence.SingleDboTable
-import seepick.localsportsclub.reconfigureLog
+import seepick.localsportsclub.service.reconfigureLog
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.workParallel
 import seepick.localsportsclub.tools.connectToDatabaseEnvAware

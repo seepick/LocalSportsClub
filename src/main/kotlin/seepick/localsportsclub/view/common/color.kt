@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import kotlin.math.max
 import kotlin.math.min
 

@@ -10,7 +10,7 @@ import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.UscConnector
 import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.gcal.GcalConnectionTest
 import seepick.localsportsclub.gcal.RealGcalService
 import seepick.localsportsclub.service.FileEntry

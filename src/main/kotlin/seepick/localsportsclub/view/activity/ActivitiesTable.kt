@@ -7,7 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.service.model.Activity

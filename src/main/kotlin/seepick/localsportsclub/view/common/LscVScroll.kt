@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 
 val scrollbarWidthPadding = 12.dp
 

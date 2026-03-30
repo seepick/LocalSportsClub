@@ -6,8 +6,11 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import seepick.localsportsclub.service.ApplicationLifecycle
 import seepick.localsportsclub.service.serviceModule
 import seepick.localsportsclub.sync.syncInfraModule
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.MainWindowState
 import seepick.localsportsclub.view.viewModule
 import kotlin.reflect.full.isSubclassOf
 

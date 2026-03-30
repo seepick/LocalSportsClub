@@ -48,7 +48,6 @@ import androidx.compose.ui.window.DialogProperties
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.usage.UsageView
 import seepick.localsportsclub.view.activity.ActivitiesScreen

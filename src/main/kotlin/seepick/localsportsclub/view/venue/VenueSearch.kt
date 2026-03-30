@@ -2,8 +2,8 @@ package seepick.localsportsclub.view.venue
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import seepick.localsportsclub.GlobalKeyboard
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState

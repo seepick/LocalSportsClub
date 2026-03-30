@@ -1,4 +1,4 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.view
 
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
@@ -7,7 +7,6 @@ import androidx.compose.ui.input.key.isMetaPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.view.Screen
 
 class GlobalKeyboard {
 

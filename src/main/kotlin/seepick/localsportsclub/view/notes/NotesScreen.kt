@@ -11,7 +11,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.view.LocalTextFieldColors
 import seepick.localsportsclub.view.common.LscVScroll
 
 @Composable

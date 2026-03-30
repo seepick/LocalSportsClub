@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 
 @Composable
 fun <T : HasLabel> DropdownMenuX(

@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor

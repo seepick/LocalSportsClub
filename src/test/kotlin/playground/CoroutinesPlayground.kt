@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import seepick.localsportsclub.reconfigureLog
+import seepick.localsportsclub.service.reconfigureLog
 import kotlin.time.measureTime
 
 object CoroutinesPlayground {

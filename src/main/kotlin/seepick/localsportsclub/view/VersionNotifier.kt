@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import seepick.localsportsclub.AppPropertiesProvider
-import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.service.AppPropertiesProvider
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VersionChecker
 import seepick.localsportsclub.service.VersionResult

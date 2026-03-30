@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.view.LocalTextFieldColors
 
 enum class PaddingMode {
     Default, Zero, Horizontal,

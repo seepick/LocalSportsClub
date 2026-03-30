@@ -26,7 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
-import seepick.localsportsclub.openFromClasspath
+import seepick.localsportsclub.service.openFromClasspath
 import seepick.localsportsclub.service.FileResolver
 import java.awt.Dimension
 import java.awt.KeyboardFocusManager

@@ -1,4 +1,4 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.service
 
 import java.util.Properties
 

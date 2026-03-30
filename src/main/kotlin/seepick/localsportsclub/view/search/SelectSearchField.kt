@@ -37,7 +37,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.search.SelectSearchOption
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.Tooltip

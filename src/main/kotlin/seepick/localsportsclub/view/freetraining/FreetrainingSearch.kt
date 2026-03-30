@@ -1,7 +1,7 @@
 package seepick.localsportsclub.view.freetraining
 
-import seepick.localsportsclub.GlobalKeyboard
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.FreetrainingState

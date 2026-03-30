@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import seepick.localsportsclub.LocalTextFieldColors
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.LocalTextFieldColors
+import seepick.localsportsclub.view.Lsc
 
 @Composable
 fun PasswordField(password: String, onChange: (String) -> Unit) {

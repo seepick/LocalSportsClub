@@ -41,8 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import seepick.localsportsclub.LocalTextFieldColors
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.LocalTextFieldColors
+import seepick.localsportsclub.view.Lsc
 
 data class DropDownTextFieldEdits(
     val text: MutableState<String>,

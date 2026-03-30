@@ -3,7 +3,7 @@ package seepick.localsportsclub.service.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import seepick.localsportsclub.GlobalKeyboard
+import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.common.table.navigate

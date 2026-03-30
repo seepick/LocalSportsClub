@@ -1,4 +1,4 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.view
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

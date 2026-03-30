@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.LocalCheckboxColors
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.LocalCheckboxColors
+import seepick.localsportsclub.view.Lsc
 
 private val checkboxRipple = ripple({ Lsc.colors.hoverIndicator })
 

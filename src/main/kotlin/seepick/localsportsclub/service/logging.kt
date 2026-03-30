@@ -1,4 +1,4 @@
-package seepick.localsportsclub
+package seepick.localsportsclub.service
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
@@ -19,7 +19,7 @@ private fun buildLogFilePattern(suffix: String) = "app_logs$suffix-%d{yyyy-MM-dd
 
 fun prelog(message: String) {
     println("[LSC] $message")
-}
+}m
 
 fun reconfigureLog(logsDirForFileAppender: File?, packageSettings: Map<String, Level>) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext

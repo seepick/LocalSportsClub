@@ -1,8 +1,8 @@
 package seepick.localsportsclub.service.model
 
 import androidx.compose.ui.graphics.Color
-import seepick.localsportsclub.Lsc
-import seepick.localsportsclub.LscColors
+import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.LscColors
 import kotlin.math.roundToInt
 
 /** 0.0 (red) to 1.0 (green); 0.5 = neutral */

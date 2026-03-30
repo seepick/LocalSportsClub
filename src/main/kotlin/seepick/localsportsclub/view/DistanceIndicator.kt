@@ -16,7 +16,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.service.model.HasDistance
 
 @Composable

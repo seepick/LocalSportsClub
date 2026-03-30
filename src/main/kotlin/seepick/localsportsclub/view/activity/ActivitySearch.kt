@@ -1,7 +1,7 @@
 package seepick.localsportsclub.view.activity
 
-import seepick.localsportsclub.GlobalKeyboard
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category

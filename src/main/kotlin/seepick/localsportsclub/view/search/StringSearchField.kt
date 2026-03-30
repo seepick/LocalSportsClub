@@ -17,7 +17,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.view.LocalTextFieldColors
 import seepick.localsportsclub.service.search.StringSearchOption
 
 @Composable

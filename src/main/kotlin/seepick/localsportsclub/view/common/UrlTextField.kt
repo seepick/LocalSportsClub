@@ -33,8 +33,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import seepick.localsportsclub.LocalTextFieldColors
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.LocalTextFieldColors
+import seepick.localsportsclub.view.Lsc
 
 @Preview
 @Composable

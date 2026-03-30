@@ -30,7 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.view.common.Tooltip

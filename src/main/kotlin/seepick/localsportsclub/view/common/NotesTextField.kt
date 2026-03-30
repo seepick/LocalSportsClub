@@ -10,7 +10,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import seepick.localsportsclub.LocalTextFieldColors
+import seepick.localsportsclub.view.LocalTextFieldColors
 
 @Composable
 fun ColumnScope.NotesTextField(

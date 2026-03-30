@@ -9,8 +9,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
-import seepick.localsportsclub.ApplicationLifecycleListener
-import seepick.localsportsclub.GlobalKeyboardListener
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.singles.SinglesService

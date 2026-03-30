@@ -19,7 +19,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.resolveVenueImage

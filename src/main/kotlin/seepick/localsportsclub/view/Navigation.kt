@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.Lsc
 import seepick.localsportsclub.view.common.Tooltip
 
 enum class Screen(

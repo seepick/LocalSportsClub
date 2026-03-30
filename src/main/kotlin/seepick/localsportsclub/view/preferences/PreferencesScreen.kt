@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.Country
 import com.github.seepick.uscclient.plan.Plan
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.LocalTextFieldColors
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.LocalTextFieldColors
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.DoubleField
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PasswordField

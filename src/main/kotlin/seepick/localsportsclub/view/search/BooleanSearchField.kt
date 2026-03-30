@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import seepick.localsportsclub.LocalCheckboxColors
+import seepick.localsportsclub.view.LocalCheckboxColors
 import seepick.localsportsclub.service.search.BooleanSearchOption
 import seepick.localsportsclub.view.common.applyTestTag
 

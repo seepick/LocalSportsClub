@@ -1,7 +1,7 @@
 package seepick.localsportsclub.view.common
 
-import seepick.localsportsclub.AppPropertiesProvider
-import seepick.localsportsclub.readRecentLogEntries
+import seepick.localsportsclub.service.AppPropertiesProvider
+import seepick.localsportsclub.service.readRecentLogEntries
 import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.view.common.swing.SwingImage

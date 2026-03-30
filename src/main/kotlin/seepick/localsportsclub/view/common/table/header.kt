@@ -24,7 +24,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.ColorOrBrush
 import seepick.localsportsclub.view.common.Tooltip

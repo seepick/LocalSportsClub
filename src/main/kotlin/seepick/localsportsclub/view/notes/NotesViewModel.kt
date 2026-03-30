@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import seepick.localsportsclub.ApplicationLifecycleListener
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.singles.SinglesService
 
 class NotesViewModel(

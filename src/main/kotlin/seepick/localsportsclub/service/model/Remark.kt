@@ -1,7 +1,7 @@
 package seepick.localsportsclub.service.model
 
 import androidx.compose.ui.graphics.Color
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.persistence.ActivityRemarkDbo
 import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo

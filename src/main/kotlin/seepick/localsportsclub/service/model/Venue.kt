@@ -12,7 +12,7 @@ import androidx.compose.ui.text.withStyle
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.venue.VisitLimits
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemAlpha

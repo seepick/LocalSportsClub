@@ -3,7 +3,7 @@ package seepick.localsportsclub.view.search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
-import seepick.localsportsclub.Lsc
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasPlan
 import seepick.localsportsclub.service.model.HasVenue
