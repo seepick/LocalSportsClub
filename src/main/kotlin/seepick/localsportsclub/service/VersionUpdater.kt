@@ -2,7 +2,6 @@ package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.awt.Desktop
-import java.io.File
 import java.net.URI
 
 object VersionUpdater {
@@ -13,12 +12,12 @@ object VersionUpdater {
     private val scriptLocation = "/Applications/LocalSportsClub.app/Contents/Resources/update.scpt"
 
     fun downloadLatestVersion() {
-        if (OsSniffer.os == OsSniffer.Os.mac && File(scriptLocation).exists()) {
-            autoUpdate()
-        } else {
-            log.debug { "Downloading latest version at: $latestDownloadUrl" }
-            Desktop.getDesktop().browse(URI(latestDownloadUrl))
-        }
+//        if (OsSniffer.os == OsSniffer.Os.mac && File(scriptLocation).exists()) {
+//            autoUpdate()
+//        } else {
+        log.debug { "Downloading latest version at: $latestDownloadUrl" }
+        Desktop.getDesktop().browse(URI(latestDownloadUrl))
+//        }
     }
 
     private fun autoUpdate() {

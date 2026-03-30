@@ -111,18 +111,6 @@ compose.desktop {
     }
 }
 
-val extraMacResource = layout.projectDirectory.file("src/main/distribution/update.scpt")
-tasks.matching { it.name == "createDistributable" }.configureEach {
-    doLast {
-        val appBundle = layout.buildDirectory.dir("compose/binaries/main/app/LocalSportsClub.app").get().asFile
-        val resourcesDir = File(appBundle, "Contents/Resources")
-        copy {
-            from(extraMacResource.asFile)
-            into(resourcesDir)
-        }
-    }
-}
-
 tasks.withType<Test>().configureEach { // to be able to run kotests
     useJUnitPlatform()
 }
