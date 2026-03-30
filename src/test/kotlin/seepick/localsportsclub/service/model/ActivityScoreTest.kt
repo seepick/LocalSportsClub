@@ -95,13 +95,13 @@ class ActivityScoreTest : DescribeSpec({
             scoreOf { rating = Rating.R2 } shouldBeIn 0.2..0.4
         }
         it("R3") {
-            scoreOf { rating = Rating.R3 } shouldBeIn 0.3..0.49
+            scoreOf { rating = Rating.R3 } shouldBeIn 0.5..0.6
         }
         it("R4") {
-            scoreOf { rating = Rating.R4 } shouldBeIn 0.5..0.8
+            scoreOf { rating = Rating.R4 } shouldBeIn 0.6..0.8
         }
         it("R5") {
-            scoreOf { rating = Rating.R5 } shouldBeIn 0.6..0.9
+            scoreOf { rating = Rating.R5 } shouldBeIn 0.7..0.9
         }
         it("ratings in order") {
             scoreOf { rating = Rating.R1 } shouldBeLessThan
