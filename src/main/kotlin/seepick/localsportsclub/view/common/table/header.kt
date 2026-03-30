@@ -23,9 +23,11 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.ColorOrBrush
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.common.VisualIndicator
@@ -42,17 +44,20 @@ fun <T> LazyListScope.renderTableHeader(
     sortColumn: TableColumn<T>? = null,
     sortDirection: SortDirection = SortDirection.Asc,
     solidBg: Color? = null,
+    rowHeight: Dp = 30.dp,
+    fontSize: TextUnit = TextUnit.Unspecified,
     onHeaderClicked: (TableColumn<T>) -> Unit = {},
 ) {
     stickyHeader {
         Row(
-            modifier = Modifier.height(30.dp)
+            modifier = Modifier.height(rowHeight)
         ) {
             columns.forEach { col ->
                 TableHeader(
                     header = col.header,
                     tooltip = col.tooltip,
                     size = col.size,
+                    fontSize = fontSize,
                     isSortEnabled = col.sorting.isEnabled,
                     overrideHeaderBg = col.overrideHeaderBg,
                     solidBg = solidBg,
@@ -76,6 +81,7 @@ fun RowScope.TableHeader(
     isSortActive: Boolean,
     sortDirection: SortDirection,
     solidBg: Color? = null,
+    fontSize: TextUnit = TextUnit.Unspecified,
     onClick: () -> Unit,
 ) {
     var isHovered by remember { mutableStateOf(false) }
@@ -120,7 +126,8 @@ fun RowScope.TableHeader(
                         value = CellValue(headerText),
                         size = size,
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSizeForStringCellValue = fontSize,
                     )
                 }
             }
@@ -133,18 +140,19 @@ private fun tableHeaderBgColor(
     isSortActive: Boolean,
     isHovered: Boolean,
     sortDirection: SortDirection,
-): ColorOrBrush = if (isSortActive) {
-    val gradient1 = if (isHovered) Lsc.colors.primaryBrighter.brighter() else Lsc.colors.primary.brighter()
-    val gradient2 = if (isHovered) Lsc.colors.primaryBrighter else Lsc.colors.primary
-    val gradient3 = if (isHovered) Lsc.colors.primaryBrighter.darker() else Lsc.colors.primary.darker()
-    ColorOrBrush.BrushOr(
-        Brush.verticalGradient(
-            if (sortDirection == SortDirection.Asc) listOf(gradient1, gradient2, gradient3)
-            else listOf(gradient3, gradient2, gradient1)
+): ColorOrBrush =
+    if (isSortActive) {
+        val gradient1 = if (isHovered) Lsc.colors.primaryBrighter.brighter() else Lsc.colors.primary.brighter()
+        val gradient2 = if (isHovered) Lsc.colors.primaryBrighter else Lsc.colors.primary
+        val gradient3 = if (isHovered) Lsc.colors.primaryBrighter.darker() else Lsc.colors.primary.darker()
+        ColorOrBrush.BrushOr(
+            Brush.verticalGradient(
+                if (sortDirection == SortDirection.Asc) listOf(gradient1, gradient2, gradient3)
+                else listOf(gradient3, gradient2, gradient1)
+            )
         )
-    )
-} else if (isHovered && isSortEnabled) {
-    ColorOrBrush.ColorOr(Lsc.colors.itemHoverBg)
-} else {
-    ColorOrBrush.ColorOr(Lsc.colors.surface)
-}
+    } else if (isHovered && isSortEnabled) {
+        ColorOrBrush.ColorOr(Lsc.colors.itemHoverBg)
+    } else {
+        ColorOrBrush.ColorOr(Lsc.colors.surface)
+    }

@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.view.Lsc
@@ -39,6 +40,7 @@ fun RowScope.TableTextCell(
     textDecoration: TextDecoration? = null,
     fontWeight: FontWeight? = null,
     textAlign: TextAlign? = null,
+    fontSizeForStringCellValue: TextUnit = TextUnit.Unspecified,
     modifier: Modifier = Modifier,
     paddingLeft: Boolean = false,
 ) {
@@ -55,7 +57,7 @@ fun RowScope.TableTextCell(
             textAlign = textAlign,
             fontWeight = fontWeight,
             overflow = TextOverflow.Ellipsis,
-            modifier = finalModifier
+            modifier = finalModifier,
         )
 
         is CellValue.StringValue -> Text(
@@ -64,8 +66,9 @@ fun RowScope.TableTextCell(
             maxLines = 1,
             textAlign = textAlign,
             fontWeight = fontWeight,
+            fontSize = fontSizeForStringCellValue,
             overflow = TextOverflow.Ellipsis,
-            modifier = finalModifier
+            modifier = finalModifier,
         )
 
         is CellValue.IntValue -> Text(

@@ -2,7 +2,6 @@ package seepick.localsportsclub.devApp
 
 import com.github.seepick.uscclient.login.Credentials
 import seepick.localsportsclub.LscConfig
-import seepick.localsportsclub.view.overrideTheme
 import seepick.localsportsclub.startApplication
 import java.io.File
 
@@ -15,7 +14,7 @@ object LocalSportsClubDevApp {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        overrideTheme(isDark = true)
+//        overrideTheme(isDark = false)
 
         val config = LscConfig.development
         startApplication(

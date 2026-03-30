@@ -20,10 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.LocalTextFieldColors
 import seepick.localsportsclub.view.Lsc
-import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.ModifierWith
@@ -48,14 +49,19 @@ fun RemarkTable(
         suggestions = viewModel.nameSuggestions,
         onDelete = { viewModel.deleteRemark(it) },
     )
-    Box(modifier = Modifier.Companion.fillMaxWidth().then(boxModifier)) {
+    Box(modifier = Modifier.fillMaxWidth().then(boxModifier)) {
         val tableScrollState = rememberLazyListState()
         LazyColumn(
             state = tableScrollState,
-            modifier = Modifier.Companion.padding(end = scrollbarWidthPadding),
+            modifier = Modifier.padding(end = scrollbarWidthPadding),
         ) {
-            renderTableHeader(remarkColumns, solidBg = Lsc.colors.onSurface)
-            itemsIndexed(viewModel.remarks) { index, item ->
+            renderTableHeader(
+                columns = remarkColumns,
+                solidBg = Lsc.colors.surface,
+                rowHeight = 45.dp,
+                fontSize = 15.sp,
+            )
+            itemsIndexed(viewModel.remarks) { _, item ->
                 Row(verticalAlignment = Alignment.Bottom) {
                     remarkColumns.forEach { remarkCol ->
                         renderComposable(item, remarkCol)
@@ -118,7 +124,7 @@ fun buildRemarkColumns(
             )
         }
     },
-    simpleTableColumn("", width = 80.dp, overrideHeaderBg = Lsc.colors.surface) { remark, col ->
+    simpleTableColumn("", width = 80.dp, overrideHeaderBg = Lsc.colors.customDialogSurface) { remark, col ->
         Row(ModifierWith(col.size)) {
             Tooltip("Delete") {
                 TextButton(

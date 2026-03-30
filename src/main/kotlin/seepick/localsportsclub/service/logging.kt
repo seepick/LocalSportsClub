@@ -19,7 +19,7 @@ private fun buildLogFilePattern(suffix: String) = "app_logs$suffix-%d{yyyy-MM-dd
 
 fun prelog(message: String) {
     println("[LSC] $message")
-}m
+}
 
 fun reconfigureLog(logsDirForFileAppender: File?, packageSettings: Map<String, Level>) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext

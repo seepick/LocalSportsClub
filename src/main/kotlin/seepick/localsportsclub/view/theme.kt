@@ -22,8 +22,8 @@ import seepick.localsportsclub.view.common.LscIcons
 
 // https://mdigi.tools/lighten-color/#337be2
 
-fun overrideTheme(isDark: Boolean) {
-    System.setProperty("lsc.theme.override", if (isDark) "dark" else "light")
+fun overrideTheme(isDark: Boolean?) {
+    System.setProperty("lsc.theme.override", if (isDark == true) "dark" else if (isDark == false) "light" else "")
 }
 
 object Lsc {
@@ -84,6 +84,7 @@ interface LscColors {
 
     // buttons bg, table header, tick in checkboxes
     val surface: Color
+    val customDialogSurface: Color
 
     // borders/bg inputfields, borders table, labels, disabled buttons, outline checkboxes, snackbar bg
     val onSurface: Color
@@ -156,6 +157,7 @@ object DarkLscColors : LscColors {
     override val backgroundVariant = Color(0xFF26282B)
     override val onBackground = Color.White
     override val surface = Color(0xFF2A2C2F)
+    override val customDialogSurface = Color(0xFF2F3134)
     override val onSurface = Color(0xFF48494B)
     override val error = colorUnset
     override val onError = colorUnset
@@ -183,6 +185,7 @@ object LightLscColors : LscColors {
     override val backgroundVariant = Color(0xFFF9F9F9)
     override val onBackground = Color.Black
     override val surface = Color(0xFFF9F9F9)
+    override val customDialogSurface = Color(0xFFDCDCDC)
     override val onSurface = Color(0xFF48494B)
     override val error = colorUnset
     override val onError = colorUnset
