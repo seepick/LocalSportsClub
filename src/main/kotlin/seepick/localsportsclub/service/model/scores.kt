@@ -8,6 +8,7 @@ import kotlin.math.roundToInt
 /** 0.0 (red) to 1.0 (green); 0.5 = neutral */
 typealias Score = Double
 
+@Suppress("UnusedReceiverParameter")
 fun LscColors.forScore(score: Score?, venue: Venue): Color? =
     if (venue.isWishlisted) {
         Lsc.colors.wishlistedBgColor
@@ -36,7 +37,6 @@ val Rating.scoreModiferForActivity: Double
         Rating.R3 -> 0.05
         Rating.R4 -> 0.14
         Rating.R5 -> 0.2
-        else -> error("Unhandled Rating: $this")
     }
 val Rating.scoreModiferForVenue: Double
     get() = when (this) {
@@ -46,7 +46,6 @@ val Rating.scoreModiferForVenue: Double
         Rating.R3 -> 0.05
         Rating.R4 -> 0.15
         Rating.R5 -> 0.25
-        else -> error("Unhandled Rating: $this")
     }
 
 fun Venue.calcScore(): Score? {

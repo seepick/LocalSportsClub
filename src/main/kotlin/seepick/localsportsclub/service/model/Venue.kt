@@ -12,8 +12,8 @@ import androidx.compose.ui.text.withStyle
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.venue.VisitLimits
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.Location
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemAlpha
 import seepick.localsportsclub.view.common.table.TableItemBgColor
@@ -221,30 +221,23 @@ class Venue(
     }
 }
 
-class Rating private constructor(val value: Int) : Comparable<Rating>, HasLabel {
+enum class Rating(val value: Int) : Comparable<Rating>, HasLabel {
+    R0(0),
+    R1(1),
+    R2(2),
+    R3(3),
+    R4(4),
+    R5(5);
+
     companion object {
         private val ratingByValue by lazy {
             entries.associateBy { it.value }
         }
 
         fun byValue(rating: Int): Rating = ratingByValue[rating] ?: error("Invalid rating value: $rating")
-
-        val R0 = Rating(0)
-        val R1 = Rating(1)
-        val R2 = Rating(2)
-        val R3 = Rating(3)
-        val R4 = Rating(4)
-        val R5 = Rating(5)
-        val entries = listOf(R0, R1, R2, R3, R4, R5)
     }
 
     override val label = (0..<value).fold("") { acc, _ -> "${acc}${Lsc.icons.ratingEmoji}" }
-    override operator fun compareTo(other: Rating): Int = value.compareTo(other.value)
 
     override fun toString(): String = "Rating$value"
-    override fun hashCode(): Int = value.hashCode()
-    override fun equals(other: Any?): Boolean {
-        if (other !is Rating) return false
-        return value == other.value
-    }
 }

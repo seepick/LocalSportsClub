@@ -3,7 +3,6 @@
 ## v1.19.0
 
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
-* 🤖 change Rating to proper enum
 * 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)
     * not [ + ] (too many 60+ etc
     * see venue "Change with pilates", has an emoji as a prefix :-/

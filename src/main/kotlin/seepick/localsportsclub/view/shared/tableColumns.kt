@@ -42,10 +42,11 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
 fun <T : HasVenue> RatingColumn(paddingRight: Boolean = false) = TableColumn<T>(
     header = VisualIndicator.StringIndicator("Rating"),
     size = WidthOrWeight.Width(90.dp + if (paddingRight) 8.dp else 0.dp),
-    renderer = CellRenderer.TextRenderer.forString(
+    renderer = CellRenderer.TextRenderer(
         textAlign = TextAlign.Center,
         paddingRight = paddingRight,
-        extractor = { it.venue.rating.label },
+        valueExtractor = { CellValue(it.venue.rating.label) },
+        sortExtractor = { it.venue.rating.value },
     ),
     initialSortDirection = SortDirection.Desc,
 )
