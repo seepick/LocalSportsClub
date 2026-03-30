@@ -5,7 +5,6 @@
 * 🎨 improve change hover color, when e.g. yellow-greenish, not really visible (more contrast)
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
 * 🤖 change Rating to proper enum
-* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)
     * not [ + ] (too many 60+ etc
     * see venue "Change with pilates", has an emoji as a prefix :-/
@@ -13,6 +12,7 @@
 
 ## Backlog
 
+* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🎨 height of v-scrollbars minus table header
 * 🖋 give category ratings (define in prefs); annotated string with color
 * 🖋 extend activity/venue ratings based on category ratings
