@@ -14,9 +14,9 @@ join VENUES v on a.VENUE_ID = v.ID
 where a.STATE != 'Blank'
 group by a.NAME, a.CATEGORY
  */
-class CategoryActivityDboEnricher : ActivityDboEnricher {
+class CategoryActivityDboProcessor : ActivityDboProcessor {
 
-    override fun enrich(dbo: ActivityDbo): ActivityDbo {
+    override fun process(dbo: ActivityDbo): ActivityDbo {
         // @formatter:off
         if ((dbo.name == "HOT C" && dbo.category == "Fitness") ||
             (dbo.name == "Energizing Yoga" && dbo.category == "Fitness") ||

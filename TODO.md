@@ -3,9 +3,6 @@
 ## v1.19.0
 
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
-* 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)
-    * not [ + ] (too many 60+ etc
-    * see venue "Change with pilates", has an emoji as a prefix :-/
 * 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
 
 ## Backlog

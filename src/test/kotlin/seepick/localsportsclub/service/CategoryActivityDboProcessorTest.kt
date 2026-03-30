@@ -8,7 +8,7 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.activityDbo
 import seepick.localsportsclub.service.model.Venue
 
-class CategoryActivityDboEnricherTest : StringSpec({
+class CategoryActivityDboProcessorTest : StringSpec({
     val originalCategory = "original category"
     val anyVenue = 9999
 
@@ -53,7 +53,7 @@ class CategoryActivityDboEnricherTest : StringSpec({
     )
         .forEach { (dbo, expectedCategory) ->
             "enrich should return '$expectedCategory' for '${dbo.name}/${dbo.category}/${dbo.venueId}'" {
-                CategoryActivityDboEnricher().enrich(dbo).category shouldBe expectedCategory
+                CategoryActivityDboProcessor().process(dbo).category shouldBe expectedCategory
             }
         }
 })

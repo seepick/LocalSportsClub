@@ -10,9 +10,9 @@ import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.persistence.ActivityRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.ActivityDboEnricher
-import seepick.localsportsclub.service.enrich
+import seepick.localsportsclub.service.ActivityDboProcessor
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.service.process
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
@@ -28,7 +28,7 @@ class ActivitiesSyncer(
     private val venueSyncInserter: VenueSyncInserter,
     private val dispatcher: SyncerListenerDispatcher,
     private val progress: SyncProgress,
-    private val activityEnrichers: List<ActivityDboEnricher>,
+    private val processors: List<ActivityDboProcessor>,
 ) {
     private val log = logger {}
 
@@ -74,7 +74,7 @@ class ActivitiesSyncer(
         log.debug { "For $day going to insert ${missingActivities.size} missing activities." }
         val dbos = missingActivities.map { activity ->
             val venueId = venuesBySlug[activity.venueSlug]?.id ?: rescueVenue(city, activity, venuesBySlug)
-            val dbo = activity.toDbo(venueId).enrich(activityEnrichers)
+            val dbo = activity.toDbo(venueId).process(processors)
             activityRepo.insert(dbo)
             dbo
         }

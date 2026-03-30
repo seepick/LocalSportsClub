@@ -19,17 +19,17 @@ import testfixtUsc.activityDetails
 import testfixtUsc.dnysEvent
 import java.time.LocalDateTime
 
-class DnysActivityDetailsFetcherTest : StringSpec({
+class DnysActivityDetailsEnricherTest : StringSpec({
     val now = LocalDateTime.parse("2025-12-01T10:00:00")
     lateinit var venueRepo: VenueRepo
     lateinit var api: UscApi
     lateinit var progress: SyncProgress
-    lateinit var fetcher: DnysActivityDetailsEnricher
+    lateinit var enricher: DnysActivityDetailsEnricher
     beforeTest {
         venueRepo = mockk()
         api = mockk()
         progress = mockk(relaxed = true)
-        fetcher = DnysActivityDetailsEnricher(venueRepo, api, progress)
+        enricher = DnysActivityDetailsEnricher(venueRepo, api, progress)
     }
 
     "simple case" {
@@ -53,7 +53,7 @@ class DnysActivityDetailsFetcherTest : StringSpec({
         every { venueRepo.selectBySlug("de-nieuwe-yogaschool") } returns venueDbo
         coEvery { api.fetchDnysEvents(DateRange(now.toLocalDate(), now.toLocalDate())) } returns listOf(dnysEvent)
 
-        val result = fetcher.enrich(mapOf(activityDbo to activityDetails))
+        val result = enricher.enrich(mapOf(activityDbo to activityDetails))
 
         result.entries.shouldBeSingleton().first().value.teacher shouldBe eventTeacher
     }

@@ -23,7 +23,9 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::BookingValidator)
     singleOf(::VenueService)
     singleOf(::RemarkService)
-    singleOf(::CategoryActivityDboEnricher)
+    singleOf(::CategoryActivityDboProcessor)
+    singleOf(::NameFixingActivityDboProcessor)
+
     single {
         ActivityDetailService(get(), get(), get(), get(), getKoinBeansByType())
     }

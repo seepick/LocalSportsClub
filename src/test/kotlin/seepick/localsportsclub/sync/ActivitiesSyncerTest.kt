@@ -61,7 +61,7 @@ class ActivitiesSyncerTest : DescribeSpec() {
         dispatcher = syncerListenerDispatcher,
         venueSyncInserter = venueSyncInserter,
         progress = syncProgress,
-        activityEnrichers = emptyList(),
+        processors = emptyList(),
     )
 
     init {
