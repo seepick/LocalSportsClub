@@ -11,7 +11,7 @@
     * change hover color, when e.g. yellow-greenish, not really visible (more contrast)
     * in dark theme almost invisible
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
-
+* 🎨 height of v-scrollbars minus table header
 * 🤖 change Rating to proper enum
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🖋 give category ratings (define in prefs), and then extend activity/venue ratings based on that

@@ -112,9 +112,8 @@ interface LscColors {
     val remarkRatingMeh: Color
     val remarkRatingBad: Color
 
-    val favoritedText: Color get() = Color(0xFF008F00)
-    val wishlistedText: Color get() = Color(0xFF304F4B)
-    val hiddenText: Color get() = Color(0xFF999999)
+    val favoritedText: Color
+    val wishlistedText: Color
     val wishlistedBgColor: Color get() = Color(0xFF00FFFF)
 
     /* 1.0 => green, 0.5 => orange, 0.0 => red */
@@ -165,10 +164,13 @@ object DarkLscColors : LscColors {
     override val cancelBookingWithin = Color(0xFF3EDE5F)
     override val cancelBookingOutside = Color(0xFFEA6065)
 
-    override val remarkRatingAmazing = Color(0xFF20A819)
-    override val remarkRatingGood = Color(0xFF4F7444)
-    override val remarkRatingMeh = Color(0xFF927444)
-    override val remarkRatingBad = Color(0xFF924944)
+    override val favoritedText = Color(0xFF57CF57)
+    override val wishlistedText = Color(0xFF96EFE4)
+
+    override val remarkRatingAmazing = Color(0xff7fff79)
+    override val remarkRatingGood = Color(0xff76b560)
+    override val remarkRatingMeh = Color(0xffedba6f)
+    override val remarkRatingBad = Color(0xffea5f56)
 }
 
 object LightLscColors : LscColors {
@@ -192,6 +194,9 @@ object LightLscColors : LscColors {
     override val backgroundToolip = Color(255, 255, 210)
     override val cancelBookingWithin = Color(0xFF4CA631)
     override val cancelBookingOutside = Color(0xFFB3192A)
+
+    override val favoritedText = Color(0xFF008F00)
+    override val wishlistedText = Color(0xFF304F4B)
 
     override val remarkRatingAmazing = Color(0xFF20A819)
     override val remarkRatingGood = Color(0xFF4F7444)
