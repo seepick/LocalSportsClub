@@ -11,8 +11,8 @@ import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.VersionChecker
 import seepick.localsportsclub.service.VersionResult
+import seepick.localsportsclub.service.VersionUpdater
 import seepick.localsportsclub.view.common.launchBackgroundTask
-import java.net.URI
 import java.net.UnknownHostException
 
 class VersionNotifier(
@@ -51,16 +51,9 @@ class VersionNotifier(
             onResult = {
                 when (it) {
                     SnackbarResult.Dismissed -> log.debug { "Download newer version dismissed." }
-                    SnackbarResult.ActionPerformed -> downloadLatestVersion()
+                    SnackbarResult.ActionPerformed -> VersionUpdater.downloadLatestVersion()
                 }
             }
         )
-    }
-
-    private fun downloadLatestVersion() {
-        val url = "https://github.com/seepick/LocalSportsClub/releases/latest/download/LocalSportsClub." +
-                (if (System.getProperty("os.name") == "Mac OS X") "dmg" else "exe")
-        log.debug { "Downloading latest version at: $url" }
-        java.awt.Desktop.getDesktop().browse(URI(url))
     }
 }

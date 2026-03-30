@@ -97,6 +97,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe)
             packageName = "LocalSportsClub"
             packageVersion = appVersion
+//            appResourcesRootDir.set(project.layout.projectDirectory.dir("src/main/distribution"))
             modules(
                 "java.net.http",
                 "java.sql",
@@ -106,6 +107,18 @@ compose.desktop {
             macOS {
                 iconFile.set(project.file("src/main/distribution/icon.icns"))
             }
+        }
+    }
+}
+
+val extraMacResource = layout.projectDirectory.file("src/main/distribution/update.scpt")
+tasks.matching { it.name == "createDistributable" }.configureEach {
+    doLast {
+        val appBundle = layout.buildDirectory.dir("compose/binaries/main/app/LocalSportsClub.app").get().asFile
+        val resourcesDir = File(appBundle, "Contents/Resources")
+        copy {
+            from(extraMacResource.asFile)
+            into(resourcesDir)
         }
     }
 }

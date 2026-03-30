@@ -16,6 +16,7 @@
 * Forms: https://medium.com/@anandgaur22/jetpack-compose-chapter-7-forms-and-user-input-in-compose-f2ce3e355356
 * Text(style = MaterialTheme.typography.subtitle1)
 * Icons = https://fonts.google.com/icons
+* check: val assetFile = Path.of(System.getProperty("compose.application.resources.dir")).resolve("myFile.png")
 
 # Non-Todos
 
@@ -41,3 +42,4 @@
 * 🎨 when update venue leading to sort table change, then auto-scroll there
 * 🖋 string similarity search for "foopar" and find "foobar"
 * 🎨 enable tab focus cycling for remark dialog (textfield consumes tab... not worth it anyways)
+* 🖋 research auto-update for macos (create sample project; jdeploy, or old update4j) ... way too sophisticated/complex
