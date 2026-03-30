@@ -99,7 +99,6 @@ interface LscColors {
     // for CheckboxTexted hover bg color
     val hoverIndicator: Color get() = onBackground // alpha will be calculated internally
 
-
     val activityCheckedin: Color get() = Color(0xFF9437FF)
     val activityNoShow: Color get() = Color.Red
     val activityCancelledLate: Color get() = Color.Red
@@ -164,11 +163,11 @@ object DarkLscColors : LscColors {
     override val cancelBookingWithin = Color(0xFF3EDE5F)
     override val cancelBookingOutside = Color(0xFFEA6065)
 
-    override val favoritedText = Color(0xFF57CF57)
+    override val favoritedText = Color(0xff89ea89)
     override val wishlistedText = Color(0xFF96EFE4)
 
     override val remarkRatingAmazing = Color(0xff7fff79)
-    override val remarkRatingGood = Color(0xff76b560)
+    override val remarkRatingGood = Color(0xffb4dda5)
     override val remarkRatingMeh = Color(0xffedba6f)
     override val remarkRatingBad = Color(0xffea5f56)
 }

@@ -39,7 +39,6 @@ import kotlinx.coroutines.delay
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.autoScroll
-import seepick.localsportsclub.view.common.rowBgColor
 import seepick.localsportsclub.view.common.scrollbarWidthPadding
 
 interface TableItemBgColor {

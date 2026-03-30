@@ -2,7 +2,6 @@
 
 ## v1.19.0
 
-* 🎨 improve change hover color, when e.g. yellow-greenish, not really visible (more contrast)
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
 * 🤖 change Rating to proper enum
 * 🖋 trim activity.name [ _ . * ⭐︎ ] multiple times (when transform from DBO to entity; or directly on sync when insert in DB?)

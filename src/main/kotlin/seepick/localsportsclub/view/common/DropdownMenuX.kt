@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.common.table.rowBgColor
 
 @Composable
 fun <T : HasLabel> DropdownMenuX(

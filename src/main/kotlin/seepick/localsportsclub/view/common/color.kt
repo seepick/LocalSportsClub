@@ -4,35 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
-import seepick.localsportsclub.view.Lsc
 import kotlin.math.max
 import kotlin.math.min
 
-fun rowBgColor(
-    index: Int,
-    isHovered: Boolean,
-    isSelected: Boolean,
-    isClickable: Boolean,
-    primaryColor: Color? = null, // red for favorited, yellow for wishlisted
-): Color {
-    val alternateColor = alternateBgColor(index)
-    val selectedColor = primaryColor?.adjustHSB() ?: Lsc.colors.clickableSelected.brighter()
-    val hoverColor = primaryColor?.brighter() ?: Lsc.colors.itemHoverBg
-    return (
-            if (isSelected) selectedColor.copy(0.8f)
-            else if (isClickable && isHovered) hoverColor.copy(0.4f)
-            else alternateBgColor(index).let {
-                primaryColor?.copy(0.4f)?.compositeOver(it) ?: it
-            }
-            ).compositeOver(alternateColor)
-}
-
-private fun alternateBgColor(index: Int): Color =
-    if (index % 2 == 0) Lsc.colors.backgroundVariant
-    else Lsc.colors.background
-
-private fun Color.adjustHSB(): Color {
+fun Color.adjustHSB(addSaturation: Float = 0.1f, addBrightness: Float = 0.1f): Color {
     val (hue, saturation, brightness) = java.awt.Color.RGBtoHSB(
         (this.red * 255).toInt(),
         (this.green * 255).toInt(),
@@ -41,14 +16,17 @@ private fun Color.adjustHSB(): Color {
     )
     return Color.hsv(
         hue = hue * 360f,
-        saturation = min(saturation + 0.1f, 1f),
-        value = max(0f, min(brightness + 0.1f, 1f)),
+        saturation = min(saturation + addSaturation, 1f),
+        value = max(0f, min(brightness + addBrightness, 1f)),
     )
 }
 
 // maybe simple use AWT's Color to do this
-fun Color.darker(): Color = copy(alpha = alpha, red = red - 0.2f, green = green - 0.2f, blue = blue - 0.2f)
-fun Color.brighter(): Color = copy(alpha = alpha, red = red + 0.2f, green = green + 0.2f, blue = blue + 0.2f)
+fun Color.darker(amount: Float = 0.2f): Color =
+    copy(alpha = alpha, red = red - amount, green = green - amount, blue = blue - amount)
+
+fun Color.brighter(amount: Float = 0.2f): Color =
+    copy(alpha = alpha, red = red + amount, green = green + amount, blue = blue + amount)
 
 sealed interface ColorOrBrush {
     data class ColorOr(val color: Color) : ColorOrBrush
