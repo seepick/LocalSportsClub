@@ -10,8 +10,9 @@
 
 ## Backlog
 
-* 🖋 give category ratings (define in prefs); annotated string with color
-    * 🖋 extend activity/venue ratings based on category ratings
+* 🖋 global remarks (category / activity / teacher)
+    * 🖋 give category ratings (define in prefs); annotated string with color
+    * 🖋 extend activity/venue score based on category ratings (needs to passed in, externally calced)
 * 🖋 auto infer category rating: check venue rating and those which are hidden (if all from same category -> decrease score); look at past activity checkins (usage stats' top categories)
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)

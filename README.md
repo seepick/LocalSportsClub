@@ -7,6 +7,8 @@ Landing page: https://seepick.github.io/LocalSportsClub/
 
 [![Screenshot](docs/screenshot-small.png)](docs/screenshot-big.png)
 
+Successor of the unofficial clients [AllFit](https://github.com/seepick/allfit) (for OneFit, R.I.P.) and [UrClubs](https://github.com/seepick/urclubs) (for [MyClubs](https://www.myclubs.com/)).
+
 ## ⚠️ Disclaimer
 
 This project is an unofficial tool created for **educational and experimental purposes only**.
