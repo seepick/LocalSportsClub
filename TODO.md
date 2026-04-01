@@ -2,8 +2,6 @@
 
 ## v1.19.0
 
-* 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
-* 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
 * 🖋 gcal entry, add teacher remark rating (remark note in event description)
 * 🖋 global remarks (category / activity / teacher)
     * 🖋 give category ratings (define in prefs); annotated string with color

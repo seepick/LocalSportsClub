@@ -21,18 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.firstUpper
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.activity.appendRatedTeacher
 import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.CustomDialog
@@ -104,17 +106,28 @@ fun SubEntityDetail(
             SelectionContainer {
                 Text(
                     text = buildAnnotatedString {
+                        /*
+                        also use color for checkedin/booked/cancel&noshow
+                         */
                         if (isBooked) {
-                            append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
+                            withStyle(SpanStyle(color = Lsc.colors.activityBooked)) {
+                                append("${Icons.Lsc.reservedEmoji} ${subEntity.bookedLabel.firstUpper()} ")
+                            }
                         }
                         if (isCheckedin) {
-                            append("${Icons.Lsc.checkedinEmoji} checked-in ")
+                            withStyle(SpanStyle(color = Lsc.colors.activityCheckedin)) {
+                                append("${Icons.Lsc.checkedinEmoji} checked-in ")
+                            }
                         }
                         if (isNoshow) {
-                            append("${Icons.Lsc.noshowEmoji} no-show ")
+                            withStyle(SpanStyle(color = Lsc.colors.activityNoShow)) {
+                                append("${Icons.Lsc.noshowEmoji} no-show ")
+                            }
                         }
                         if (isCancelledLate) {
-                            append("${Icons.Lsc.cancelledLateEmoji} cancelled-late ")
+                            withStyle(SpanStyle(color = Lsc.colors.activityCancelledLate)) {
+                                append("${Icons.Lsc.cancelledLateEmoji} cancelled-late ")
+                            }
                         }
                         append(subEntity.category.nameAndMaybeEmoji)
 
