@@ -4,15 +4,17 @@
 
 * 🎨 improve remark dialog suggest dropdown UX (add trailing icon instead)
 * 🎨 render activity state in SubEntityDetails view (booked already; checkedin, and explain emojis for latecancel/noshow); also use color for checkedin/booked/cancel&noshow
-* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
-* 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
-    * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
-
-## Backlog
-
+* 🖋 gcal entry, add teacher remark rating (remark note in event description)
 * 🖋 global remarks (category / activity / teacher)
     * 🖋 give category ratings (define in prefs); annotated string with color
     * 🖋 extend activity/venue score based on category ratings (needs to passed in, externally calced)
+
+## Backlog
+
+* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
+* 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
+    * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
+* 🖋 ? share same remarks (teacher, activity) for all linked venues
 * 🖋 auto infer category rating: check venue rating and those which are hidden (if all from same category -> decrease score); look at past activity checkins (usage stats' top categories)
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
