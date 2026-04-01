@@ -6,7 +6,7 @@ import androidx.compose.ui.text.withStyle
 import seepick.localsportsclub.service.model.Activity
 
 fun AnnotatedString.Builder.appendRatedName(activity: Activity) {
-    val remarkRating = activity.remarkRating
+    val remarkRating = activity.remark?.rating
     if (remarkRating != null) {
         append("${remarkRating.emoji} ")
     }
@@ -23,7 +23,7 @@ fun AnnotatedString.Builder.appendRatedTeacher(activity: Activity) {
     if (activity.teacher == null) {
         return
     }
-    val rating = activity.teacherRemarkRating
+    val rating = activity.teacherRemark?.rating
     val teacherString = " /${activity.teacher}"
     if (rating == null) {
         append(teacherString)

@@ -18,14 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import seepick.localsportsclub.view.Lsc
-import seepick.localsportsclub.view.LscColors
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.RemarkRating
+import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.LscColors
 import seepick.localsportsclub.view.activity.appendRatedName
 import seepick.localsportsclub.view.activity.appendRatedTeacher
 import seepick.localsportsclub.view.common.Tooltip
@@ -145,13 +145,13 @@ private val ratingRange = ratingMax + abs(ratingMin)
 
 private fun LscColors.forSimpleTableBgBlank(activity: Activity): Color? {
     require(activity.state == ActivityState.Blank)
-    if (activity.remarkRating == RemarkRating.Bad || activity.teacherRemarkRating == RemarkRating.Bad) {
+    if (activity.remark?.rating == RemarkRating.Bad || activity.teacherRemark?.rating == RemarkRating.Bad) {
         return Lsc.colors.forTableBg(0.0)
     }
-    if (activity.remarkRating == null && activity.teacherRemarkRating == null) {
+    if (activity.remark?.rating == null && activity.teacherRemark?.rating == null) {
         return null
     }
-    val weighted = (activity.remarkRating?.weightedValue ?: 0) + (activity.teacherRemarkRating?.weightedValue ?: 0)
+    val weighted = (activity.remark?.rating?.weightedValue ?: 0) + (activity.teacherRemark?.rating?.weightedValue ?: 0)
     val weightedAdjusted = weighted + abs(ratingMin)
     val distance = weightedAdjusted.toDouble() / ratingRange.toDouble()
     // log.trace { "name=[$name, teacher=[$teacher], remarkRating=$remarkRating teacherRating=$teacherRemarkRating ... weighted: $weighted; distance: $distance" }

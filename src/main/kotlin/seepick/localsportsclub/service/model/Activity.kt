@@ -7,14 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-fun <R : Remark> List<R>.findMatchingRating(name: String): RemarkRating? {
+fun <R : Remark> List<R>.findMatchingRemark(name: String): Remark? {
     val matching = this.filter { name.contains(it.name, ignoreCase = true) }
     return when (matching.size) {
         0 -> null
@@ -22,7 +22,7 @@ fun <R : Remark> List<R>.findMatchingRating(name: String): RemarkRating? {
         else -> {
             matching.maxBy { it.name.length }
         }
-    }?.rating
+    }
 }
 
 class Activity(
@@ -54,12 +54,12 @@ class Activity(
 //    val nameWithTeacherIfPresent: Flow<String> = snapshotFlow { name to teacher }
 //        .mapLatest { (name, teacher) -> if (teacher == null) name else "$name /$teacher" }
 
-    val remarkRating: RemarkRating? by derivedStateOf {
-        venue.activityRemarks.findMatchingRating(name)
+    val remark: Remark? by derivedStateOf {
+        venue.activityRemarks.findMatchingRemark(name)
     }
 
-    val teacherRemarkRating: RemarkRating? by derivedStateOf {
-        this.teacher?.let { venue.teacherRemarks.findMatchingRating(it) }
+    val teacherRemark: Remark? by derivedStateOf {
+        this.teacher?.let { venue.teacherRemarks.findMatchingRemark(it) }
     }
 
     fun isInPast(today: LocalDate): Boolean =

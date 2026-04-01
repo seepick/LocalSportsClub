@@ -1,11 +1,11 @@
 package seepick.localsportsclub.view.activity
 
-import seepick.localsportsclub.view.GlobalKeyboard
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.search.newDistanceSearchOption
 import seepick.localsportsclub.view.search.newFavoritedSearchOption
 import seepick.localsportsclub.view.search.newPlanSearchOption
@@ -44,10 +44,10 @@ class ActivitySearch(
     val rating = newRatingSearchOption(label = "Venue")
     val activityRating = newRemarkRatingSearchOption(
         "Activity", visualIndicator = Lsc.icons.activitiesIndicator
-    ) { it.remarkRating }
+    ) { it.remark?.rating }
     val teacherRating = newRemarkRatingSearchOption(
         "Teacher", visualIndicator = Lsc.icons.teachersIndicator
-    ) { it.teacherRemarkRating }
+    ) { it.teacherRemark?.rating }
 
     val categories = newSelectSearchOption(
         label = "Category",

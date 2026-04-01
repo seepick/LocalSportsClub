@@ -137,16 +137,12 @@ class BookingService(
 
     private fun createCalendarActivity(activity: Activity) {
         gcalService.create(
-            singlesService.readCalendarIdOrThrow(),
-            GcalEntry.GcalActivity(
+            singlesService.readCalendarIdOrThrow(), GcalEntry.GcalActivity(
                 activityId = activity.id,
                 title = activity.gcalEntryTitle(),
                 dateTimeRange = activity.dateTimeRange,
                 location = activity.venue.gcalEntryLocation(),
-                notes = buildString {
-                    append("[LSC] created")
-                    activity.venue.officialWebsite?.also { append("\n$it") }
-                },
+                notes = activity.gcalEntryNotes(),
             )
         )
     }
@@ -194,8 +190,7 @@ class BookingService(
     private fun createCalendarFreetraining(freetrainingDbo: FreetrainingDbo) {
         val venue = venueRepo.selectById(freetrainingDbo.venueId) ?: error("Venue not found for: $freetrainingDbo")
         gcalService.create(
-            singlesService.readCalendarIdOrThrow(),
-            GcalEntry.GcalFreetraining(
+            singlesService.readCalendarIdOrThrow(), GcalEntry.GcalFreetraining(
                 freetrainingId = freetrainingDbo.id,
                 title = freetrainingDbo.name,
                 date = freetrainingDbo.date,
@@ -221,11 +216,17 @@ class BookingService(
 }
 
 private fun Activity.gcalEntryTitle() = buildString {
-    remarkRating?.also { append("$it ") }
+    remark?.also { append("${it.rating.emoji} ") }
     category.emoji?.also { append("$it ") }
     append(name)
     teacher?.also { append(" /$it") }
-    teacherRemarkRating?.also { append(" $it") }
+    teacherRemark?.also { append(" ${it.rating.emoji}") }
+}
+
+private fun Activity.gcalEntryNotes() = buildString {
+    append("Created by LSC 🧙🏻‍♂️")
+    venue.officialWebsite?.also { append("\n$it") }
+    teacherRemark?.also { append("\n${teacher}: ${it.remark}") }
 }
 
 private fun VenueDbo.gcalEntryLocation() = "${name}, $street, $postalCode $addressLocality"

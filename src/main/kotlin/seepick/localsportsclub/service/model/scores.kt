@@ -67,12 +67,12 @@ fun Activity.calcScore(): Score? {
     if (venue.isFavorited) score += 0.20
     if (venue.isWishlisted) score += 0.15
     score += venue.rating.scoreModiferForActivity
-    score += remarkRating?.scoreModifier ?: 0.0
-    score += teacherRemarkRating?.scoreModifier ?: 0.0
+    score += remark?.rating?.scoreModifier ?: 0.0
+    score += teacherRemark?.rating?.scoreModifier ?: 0.0
     return ((score.coerceIn(0.0..1.0) * 100).roundToInt()) / 100.0
 }
 
 private fun Venue.isAnyScoreRelevantSet() = venue.isFavorited || venue.isWishlisted || venue.rating != Rating.R0
 
 private fun Activity.isAnyScoreRelevantSet() =
-    venue.isAnyScoreRelevantSet() || remarkRating != null || teacherRemarkRating != null
+    venue.isAnyScoreRelevantSet() || remark != null || teacherRemark != null

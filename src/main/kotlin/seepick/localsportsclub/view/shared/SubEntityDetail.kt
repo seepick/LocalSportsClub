@@ -65,7 +65,7 @@ fun SubEntityDetail(
     val (isBooked, isCheckedin, isNoshow, isCancelledLate) = extractStatesOf(subEntity)
 
     Column(modifier = modifier) {
-        val remarkRatingEmoji = subEntity.maybeActivity?.remarkRating?.let { "${it.emoji} " } ?: ""
+        val remarkRatingEmoji = subEntity.maybeActivity?.remark?.rating?.let { "${it.emoji} " } ?: ""
         TitleText(remarkRatingEmoji + subEntity.name)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
