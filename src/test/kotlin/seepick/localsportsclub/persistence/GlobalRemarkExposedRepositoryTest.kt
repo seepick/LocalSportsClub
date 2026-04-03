@@ -54,18 +54,6 @@ class GlobalRemarkExposedRepositoryTest : DescribeSpec({
             repo.selectAll().shouldBeSingleton().first() shouldBeEqual remark
         }
     }
-    // TODO delete this
-//    describe("update") {
-//        it("Given existing When update Then return updated") {
-//            val remark = Arb.globalRemarkDbo().next().copy(id = 1)
-//            repo.insert(listOf(remark))
-//            val remarkUpdated = remark.copy(remark = remark.remark + " updated")
-//
-//            repo.update(listOf(remarkUpdated))
-//
-//            repo.selectAll().shouldBeSingleton().first() shouldBeEqual remarkUpdated
-//        }
-//    }
     describe("deleteAll") {
         it("Given existing When delete proper type Then return empty") {
             repo.insertAll(listOf(Arb.globalRemarkDbo().next().copy(type = remarkType)))

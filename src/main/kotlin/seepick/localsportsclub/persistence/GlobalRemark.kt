@@ -81,25 +81,4 @@ object GlobalRemarkExposedRepository : GlobalRemarkRepository {
         stmt[GlobalRemarkDboTable.rating] = dbo.rating
         stmt[GlobalRemarkDboTable.remark] = dbo.remark
     }
-
-    // TODO delete this
-//    override fun update(remarks: List<GlobalRemarkDbo>): Unit = transaction {
-//        log.debug { "update: $remarks" }
-//        remarks.forEach { remark ->
-//            GlobalRemarkDboTable.update(
-//                where = { GlobalRemarkDboTable.id.eq(remark.id) }
-//            ) {
-//                it[GlobalRemarkDboTable.name] = remark.name
-//                it[GlobalRemarkDboTable.rating] = remark.rating
-//                it[GlobalRemarkDboTable.remark] = remark.remark
-//            }
-//        }
-//    }
-//    override fun delete(remarks: List<GlobalRemarkDbo>): Unit = transaction {
-//        log.debug { "delete: $remarks" }
-//        val ids = remarks.map { it.id }
-//        GlobalRemarkDboTable.deleteWhere {
-//            this.id inList ids
-//        }
-//    }
 }

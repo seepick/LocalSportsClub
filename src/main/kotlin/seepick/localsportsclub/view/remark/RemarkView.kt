@@ -31,7 +31,7 @@ fun RemarkView(
 //    }
     Column {
         Button(
-            onClick = onAddNewClicked  // FIXME viewModel.addNewRemark()
+            onClick = onAddNewClicked
 //            shouldRequestFocus = true
         ) {
             Icon(Icons.Default.Add, contentDescription = null)

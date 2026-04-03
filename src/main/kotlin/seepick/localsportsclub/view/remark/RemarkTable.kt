@@ -92,7 +92,6 @@ fun buildRemarkColumns(
     suggestions: List<String>,
     onDelete: (RemarkViewEntity) -> Unit,
 ) = listOf<TableColumn<RemarkViewEntity>>(
-    // TODO get rid of venue ID ...
     simpleTableColumn("Name", width = 300.dp) { remark, col ->
         Row(ModifierWith(col.size)) {
             SuggestTextField(
