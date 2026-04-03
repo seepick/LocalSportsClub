@@ -11,6 +11,7 @@ import seepick.localsportsclub.persistence.FreetrainingRepo
 import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
+import seepick.localsportsclub.service.CategoryService
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.RemarkService
 import seepick.localsportsclub.service.date.Clock
@@ -56,6 +57,7 @@ object NoopDataStorageListener : DataStorageListener {
 class DataStorage(
     private val venueRepo: VenueRepo,
     private val remarkService: RemarkService,
+    private val categoryService: CategoryService,
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
     private val freetrainingRepo: FreetrainingRepo,
@@ -67,12 +69,18 @@ class DataStorage(
     private val log = logger {}
     private val listeners = mutableListOf<DataStorageListener>()
 
+
     private val venuesById: MutableMap<Int, Venue> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val remarks = remarkService.selectAll()
 
-            val venuesById = venueRepo.selectAllByCity(cityId)
-                .map { it.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(it)) }.associateBy { it.id }
+            val venuesById = venueRepo.selectAllByCity(cityId).map { dbo ->
+                    dbo.toVenue(
+                        baseUrl = baseUrl,
+                        locationDistance = singlesService.calculateLocatioAndDistance(dbo),
+                        categories = categoryService.findCategories(dbo),
+                    )
+                }.associateBy { it.id }
             venuesById.forEach { (_, venue) ->
                 venue.activityRemarks.addAll(remarks.forActivities(venue.id))
                 venue.teacherRemarks.addAll(remarks.forTeachers(venue.id))
@@ -88,17 +96,12 @@ class DataStorage(
     }
 
     val venueCategories: List<Category> by lazy {
-        venuesById.values
-            .asSequence().flatMap { it.categories }
-            .distinct()
-            .filter { it.name.isNotEmpty() }
-            .sorted().toList()
+        venuesById.values.asSequence().flatMap { it.categories }.distinct().filter { it.name.isNotEmpty() }.sorted()
+            .toList()
     }
 
     val allCategories: List<Category> by lazy {
-        (collectActivityCategories() + collectFreetrainingCategories() + allVenueCategories)
-            .distinct()
-            .sorted()
+        (collectActivityCategories() + collectFreetrainingCategories() + allVenueCategories).distinct().sorted()
     }
 
     private val allVenueCategories: List<Category> by lazy {
@@ -114,14 +117,8 @@ class DataStorage(
     }
 
     private fun collectActivityCategories(filter: (Activity) -> Boolean = { true }): List<Category> =
-        allActivitiesByVenueId.values
-            .asSequence().flatten()
-            .filter { filter(it) }
-            .map { it.category }
-            .distinct()
-            .filter { it.name.isNotEmpty() }
-            .sorted()
-            .toList()
+        allActivitiesByVenueId.values.asSequence().flatten().filter { filter(it) }.map { it.category }.distinct()
+            .filter { it.name.isNotEmpty() }.sorted().toList()
 
     val freetrainingsCategories: List<Category> by lazy {
         val today = clock.today()
@@ -131,28 +128,24 @@ class DataStorage(
     }
 
     private fun collectFreetrainingCategories(filter: (Freetraining) -> Boolean = { true }): List<Category> =
-        allFreetrainingsByVenueId.values
-            .asSequence().flatten()
-            .filter { filter(it) }
-            .map { it.category }
-            .distinct()
-            .filter { it.name.isNotEmpty() }
-            .sorted().toList()
+        allFreetrainingsByVenueId.values.asSequence().flatten().filter { filter(it) }.map { it.category }.distinct()
+            .filter { it.name.isNotEmpty() }.sorted().toList()
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val today = clock.today()
-            activityRepo.selectAll(cityId)
-                .filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
-                .sortedByDescending { it.from }
-                .map { activityDbo ->
+            activityRepo.selectAll(cityId).filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
+                .sortedByDescending { it.from }.map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
-                    activityDbo.toActivity(venueForActivity).also {
-                        venueForActivity.addActivities(setOf(it))
-                    }
+
+                    activityDbo.toActivity(venueForActivity, categoryService.findCategoryByName(activityDbo.category))
+                        .also {
+                            venueForActivity.addActivities(setOf(it))
+                        }
                 }.groupByTo(mutableMapOf()) { it.venue.id }
         } ?: mutableMapOf()
     }
+
 
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
@@ -161,7 +154,9 @@ class DataStorage(
                 .sortedByDescending { it.date }.map { freetrainingDbo ->
                     val venueForFreetraining =
                         venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
-                    freetrainingDbo.toFreetraining(venueForFreetraining).also {
+                    freetrainingDbo.toFreetraining(
+                        venueForFreetraining, categoryService.findCategoryByName(freetrainingDbo.category)
+                    ).also {
                         venueForFreetraining.addFreetrainings(setOf(it))
                     }
                 }.groupByTo(mutableMapOf()) { it.venue.id }
@@ -190,7 +185,11 @@ class DataStorage(
     override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
         log.debug { "onVenueDbosAdded(venueDbos.size=${addedVenues.size})" }
         val venues = addedVenues.map { venueDbo ->
-            val venue = venueDbo.toVenue(baseUrl, singlesService.calculateLocatioAndDistance(venueDbo))
+            val venue = venueDbo.toVenue(
+                baseUrl = baseUrl,
+                locationDistance = singlesService.calculateLocatioAndDistance(venueDbo),
+                categories = categoryService.findCategories(venueDbo)
+            )
             venuesById[venue.id] = venue
             venue
         }
@@ -228,7 +227,7 @@ class DataStorage(
         val activities = addedActivities.map { activityDbo ->
             val venue = venuesById[activityDbo.venueId]
                 ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
-            val activity = activityDbo.toActivity(venue)
+            val activity = activityDbo.toActivity(venue, categoryService.findCategoryByName(activityDbo.category))
             // venue.activities += activity ... NO: done in SyncerViewModel (concurrency issues, IO vs Compose)
             allActivitiesByVenueId.getOrPut(activity.venue.id) { mutableListOf() }.add(activity)
             activity
@@ -240,7 +239,8 @@ class DataStorage(
         val freetrainings = addedFreetrainings.map { freetrainingDbo ->
             val venue = venuesById[freetrainingDbo.venueId]
                 ?: error("Failed to add freetraining! Could not find venue by ID for: $addedFreetrainings")
-            val freetraining = freetrainingDbo.toFreetraining(venue)
+            val freetraining =
+                freetrainingDbo.toFreetraining(venue, categoryService.findCategoryByName(freetrainingDbo.category))
             // venue.freetrainings += freetraining // NO! do it in SyncerViewModel
             allFreetrainingsByVenueId.getOrPut(freetraining.venue.id) { mutableListOf() }.add(freetraining)
             freetraining
@@ -340,6 +340,11 @@ class DataStorage(
             it.onFreetrainingsDeleted(freetrainings)
         }
     }
+
+    private fun CategoryService.findCategories(dbo: VenueDbo): List<Category> =
+        dbo.facilities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+            .map { Category(name = it, rating = findCategoryByName(it).rating) }
+
 }
 
 private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location, Double> {
@@ -351,11 +356,11 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
     return location to round(distance(home, location), 1)
 }
 
-fun ActivityDbo.toActivity(venue: Venue) = Activity(
+fun ActivityDbo.toActivity(venue: Venue, category: Category) = Activity(
     id = id,
     venue = venue,
     name = name,
-    category = Category(category),
+    category = category,
     spotsLeft = spotsLeft,
     teacher = teacher,
     description = description,
@@ -365,11 +370,11 @@ fun ActivityDbo.toActivity(venue: Venue) = Activity(
     cancellationLimit = cancellationLimit,
 )
 
-fun FreetrainingDbo.toFreetraining(venue: Venue) = Freetraining(
+fun FreetrainingDbo.toFreetraining(venue: Venue, category: Category) = Freetraining(
     id = id,
     venue = venue,
     name = name,
-    category = Category(category),
+    category = category,
     date = date,
     state = state,
 )
@@ -405,11 +410,12 @@ fun Venue.toDbo() = VenueDbo(
 fun VenueDbo.toVenue(
     baseUrl: URL,
     locationDistance: Pair<Location, Double>,
+    categories: List<Category>,
 ) = Venue(
     id = id,
     name = name,
     slug = slug,
-    categories = facilities.split(",").filter { it.isNotEmpty() }.map { Category(it) },
+    categories = categories,
     city = City.byId(cityId),
     rating = Rating.byValue(rating),
     notes = notes,

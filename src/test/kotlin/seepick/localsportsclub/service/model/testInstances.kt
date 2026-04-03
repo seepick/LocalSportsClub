@@ -80,5 +80,8 @@ fun Arb.Companion.activity() = arbitrary {
 }
 
 fun Arb.Companion.category() = arbitrary {
-    Category(name = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).bind())
+    Category(
+        name = string(minSize = 3, maxSize = 5, codepoints = Codepoint.az()).bind(),
+        rating = enum<RemarkRating>().orNull().bind(),
+    )
 }

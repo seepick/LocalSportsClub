@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 data class Category(
     val name: String,
+    val rating: RemarkRating?,
 ) : Comparable<Category> {
     val emoji: String? = when (name.lowercase()) {
         "aerial" -> "🪂"

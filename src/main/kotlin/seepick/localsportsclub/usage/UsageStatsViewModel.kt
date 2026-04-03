@@ -94,7 +94,7 @@ class CategoryCount(
     category: String,
     val checkinsCount: Int,
 ) {
-    val category = Category(category)
+    val category = Category(category, rating = null)
 }
 
 data class VenueCheckin(

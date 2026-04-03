@@ -2,8 +2,12 @@ package seepick.localsportsclub.view.shared
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.service.SortDirection
@@ -87,7 +91,18 @@ fun ScoreColumn() = TableColumn<Activity>( // interface HasScore
 fun <T : HasCategory> CategoryColumn() = TableColumn<T>(
     VisualIndicator.StringIndicator("Category"),
     WidthOrWeight.Width(80.dp),
-    CellRenderer.TextRenderer.forString { it.category.nameAndMaybeEmoji })
+    CellRenderer.TextRenderer(
+        valueExtractor = {
+            CellValue(buildAnnotatedString {
+                withStyle(SpanStyle(color = it.category.rating?.color ?: Color.Unspecified)) {
+                    it.category.rating?.emoji?.let { append("$it ") }
+                    append(it.category.nameAndMaybeEmoji)
+                }
+            })
+        },
+        sortExtractor = { it.category.name.lowercase() },
+    )
+)
 
 fun <T : HasVenue> VenueColumn(
     headerLabel: String,

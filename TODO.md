@@ -7,12 +7,13 @@
     * [✅] UI for managing remarks in prefs (reuse RemarksView)
     * [✅] transform DBOs to business objects (sealed type)
     * [✅] service business logic to update remarks (simple reset ~~figure out add/remove/update logic~~)
-    * [ ] category annotated string with color (in table, etc.)
-    * [ ] extend activity/venue score based on category ratings (needs to passed in, externally calced)
+    * category annotated string with color: [✅] in table [ ] for venue details [ ] for activity details
+    * [ ] extend activity & venue score based on category ratings (needs to passed in, externally calced)
         * local takes precedence over global remark
 
 ## Backlog
 
+* show with every category, activity count assigned to it (ignore venue?!)
 * ad adapative suggestions: remove those already used
 * could provide ultra long list to global remark for teacher/activity, and make suggest "prefilter it dynamically"
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
