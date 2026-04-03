@@ -14,4 +14,5 @@ fun exposedPersistenceModule(config: LscConfig) = module {
     single { ExposedSinglesRepo } bind SinglesRepo::class
     single { ExposedActivityRemarkRepo } bind ActivityRemarkRepo::class
     single { ExposedTeacherRemarkRepo } bind TeacherRemarkRepo::class
+    single { GlobalRemarkExposedRepository } bind GlobalRemarkRepository::class
 }

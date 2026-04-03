@@ -8,4 +8,5 @@ val allTables = arrayOf(
     SingleDboTable,
     ActivityRemarkDboTable,
     TeacherRemarkDboTable,
+    GlobalRemarkDboTable,
 )

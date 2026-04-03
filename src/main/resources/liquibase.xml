@@ -219,4 +219,23 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="9" author="owner" failOnError="true">
+        <createTable tableName="GLOBAL_REMARKS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TYPE" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REMARK" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RATING" type="varchar(32)"><!-- enum by name -->
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
