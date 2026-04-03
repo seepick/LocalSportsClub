@@ -12,6 +12,7 @@ import seepick.localsportsclub.view.activity.ActivityViewModel
 import seepick.localsportsclub.view.freetraining.FreetrainingViewModel
 import seepick.localsportsclub.view.notes.NotesViewModel
 import seepick.localsportsclub.view.preferences.PreferencesViewModel
+import seepick.localsportsclub.view.remark.GlobalRemarkViewModel
 import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueViewModel
@@ -22,6 +23,7 @@ fun viewModule(config: LscConfig) = module {
     viewModelOf(::VenueViewModel)
     viewModelOf(::CarouselViewModel)
     singleOf(::RemarkViewModel)
+    singleOf(::GlobalRemarkViewModel)
 
     viewModel {
         ActivityViewModel(

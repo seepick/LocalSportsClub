@@ -111,7 +111,7 @@ fun RowScope.TableHeader(
         ) {
             when (header) {
                 is VisualIndicator.BitmapIndicator, is VisualIndicator.VectorIndicator -> {
-                    header.composeIt(1.0f)
+                    header.composeIt()
                 }
 
                 VisualIndicator.NoIndicator, is VisualIndicator.StringIndicator, is VisualIndicator.EmojiIndicator -> {

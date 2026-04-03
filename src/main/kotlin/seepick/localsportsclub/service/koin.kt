@@ -23,6 +23,7 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::BookingValidator)
     singleOf(::VenueService)
     singleOf(::RemarkService)
+    singleOf(::GlobalRemarkService)
     singleOf(::CategoryActivityDboProcessor)
     singleOf(::NameFixingActivityDboProcessor)
 

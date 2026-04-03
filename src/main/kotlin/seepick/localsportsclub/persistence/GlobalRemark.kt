@@ -4,13 +4,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.statements.UpdateBuilder
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.jetbrains.exposed.v1.jdbc.update
+import seepick.localsportsclub.service.model.GlobalRemarkType
 
 object GlobalRemarkDboTable : IntIdTable("GLOBAL_REMARKS", "ID") {
     val type = enumerationByName<GlobalRemarkType>("TYPE", 32)
@@ -37,17 +36,12 @@ data class GlobalRemarkDbo(
     }
 }
 
-enum class GlobalRemarkType {
-    Category,
-    Activity,
-    Teacher,
-}
-
 interface GlobalRemarkRepository {
     fun selectAll(): List<GlobalRemarkDbo>
-    fun insert(remarks: List<GlobalRemarkDbo>): List<GlobalRemarkDbo>
-    fun update(remarks: List<GlobalRemarkDbo>)
-    fun delete(remarks: List<GlobalRemarkDbo>)
+    fun deleteAll(type: GlobalRemarkType)
+    fun insertAll(remarks: List<GlobalRemarkDbo>): List<GlobalRemarkDbo>
+//    fun update(remarks: List<GlobalRemarkDbo>)
+//    fun delete(remarks: List<GlobalRemarkDbo>)
 }
 
 object GlobalRemarkExposedRepository : GlobalRemarkRepository {
@@ -60,7 +54,14 @@ object GlobalRemarkExposedRepository : GlobalRemarkRepository {
         }
     }
 
-    override fun insert(remarks: List<GlobalRemarkDbo>): List<GlobalRemarkDbo> = transaction {
+    override fun deleteAll(type: GlobalRemarkType): Unit = transaction {
+        log.debug { "deleteAll($type)" }
+        GlobalRemarkDboTable.deleteWhere {
+            this.type eq type
+        }
+    }
+
+    override fun insertAll(remarks: List<GlobalRemarkDbo>) = transaction {
         log.debug { "insert: $remarks" }
 
         val nextId = GlobalRemarkDboTable.nextId()
@@ -81,24 +82,24 @@ object GlobalRemarkExposedRepository : GlobalRemarkRepository {
         stmt[GlobalRemarkDboTable.remark] = dbo.remark
     }
 
-    override fun update(remarks: List<GlobalRemarkDbo>): Unit = transaction {
-        log.debug { "update: $remarks" }
-        remarks.forEach { remark ->
-            GlobalRemarkDboTable.update(
-                where = { GlobalRemarkDboTable.id.eq(remark.id) }
-            ) {
-                it[GlobalRemarkDboTable.name] = remark.name
-                it[GlobalRemarkDboTable.rating] = remark.rating
-                it[GlobalRemarkDboTable.remark] = remark.remark
-            }
-        }
-    }
-
-    override fun delete(remarks: List<GlobalRemarkDbo>): Unit = transaction {
-        log.debug { "delete: $remarks" }
-        val ids = remarks.map { it.id }
-        GlobalRemarkDboTable.deleteWhere {
-            this.id inList ids
-        }
-    }
+    // TODO delete this
+//    override fun update(remarks: List<GlobalRemarkDbo>): Unit = transaction {
+//        log.debug { "update: $remarks" }
+//        remarks.forEach { remark ->
+//            GlobalRemarkDboTable.update(
+//                where = { GlobalRemarkDboTable.id.eq(remark.id) }
+//            ) {
+//                it[GlobalRemarkDboTable.name] = remark.name
+//                it[GlobalRemarkDboTable.rating] = remark.rating
+//                it[GlobalRemarkDboTable.remark] = remark.remark
+//            }
+//        }
+//    }
+//    override fun delete(remarks: List<GlobalRemarkDbo>): Unit = transaction {
+//        log.debug { "delete: $remarks" }
+//        val ids = remarks.map { it.id }
+//        GlobalRemarkDboTable.deleteWhere {
+//            this.id inList ids
+//        }
+//    }
 }

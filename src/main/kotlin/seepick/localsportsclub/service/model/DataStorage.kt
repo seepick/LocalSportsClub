@@ -95,32 +95,49 @@ class DataStorage(
             .sorted().toList()
     }
 
+    val allCategories: List<Category> by lazy {
+        (collectActivityCategories() + collectFreetrainingCategories() + allVenueCategories)
+            .distinct()
+            .sorted()
+    }
+
+    private val allVenueCategories: List<Category> by lazy {
+        venuesById.values.map { it.categories }.flatten().distinct()
+    }
+
     val availableActivityCategories: List<Category> by lazy {
         val now = clock.now()
-        collectCategories {
+        collectActivityCategories {
             // remove categories from past activities (checkedin)
             it.dateTimeRange.from >= now && !it.venue.isHidden
         }
     }
 
-    private fun collectCategories(filter: (Activity) -> Boolean = { true }): List<Category> =
+    private fun collectActivityCategories(filter: (Activity) -> Boolean = { true }): List<Category> =
         allActivitiesByVenueId.values
             .asSequence().flatten()
             .filter { filter(it) }
-            .map { it.category }.distinct()
+            .map { it.category }
+            .distinct()
             .filter { it.name.isNotEmpty() }
-            .sorted().toList()
+            .sorted()
+            .toList()
 
     val freetrainingsCategories: List<Category> by lazy {
         val today = clock.today()
+        collectFreetrainingCategories {
+            it.date >= today && !it.venue.isHidden
+        }
+    }
+
+    private fun collectFreetrainingCategories(filter: (Freetraining) -> Boolean = { true }): List<Category> =
         allFreetrainingsByVenueId.values
             .asSequence().flatten()
-            .filter { it.date >= today && !it.venue.isHidden }
+            .filter { filter(it) }
             .map { it.category }
             .distinct()
             .filter { it.name.isNotEmpty() }
             .sorted().toList()
-    }
 
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->

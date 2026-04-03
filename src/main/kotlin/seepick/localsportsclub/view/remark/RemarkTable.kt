@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.compose.viewmodel.koinViewModel
 import seepick.localsportsclub.service.model.RemarkRating
 import seepick.localsportsclub.view.LocalTextFieldColors
 import seepick.localsportsclub.view.Lsc
@@ -42,12 +41,14 @@ import seepick.localsportsclub.view.common.table.renderTableHeader
 
 @Composable
 fun RemarkTable(
+    nameSuggestions: List<String>,
+    onDelete: (RemarkViewEntity) -> Unit,
+    remarks: List<RemarkViewEntity>,
     boxModifier: Modifier = Modifier.Companion,
-    viewModel: RemarkViewModel = koinViewModel(),
 ) {
     val remarkColumns = buildRemarkColumns(
-        suggestions = viewModel.nameSuggestions,
-        onDelete = { viewModel.deleteRemark(it) },
+        suggestions = nameSuggestions, //viewModel.nameSuggestions,
+        onDelete = onDelete, //{ viewModel.deleteRemark(it) },
     )
     Box(modifier = Modifier.fillMaxWidth().then(boxModifier)) {
         val tableScrollState = rememberLazyListState()
@@ -61,7 +62,7 @@ fun RemarkTable(
                 rowHeight = 45.dp,
                 fontSize = 15.sp,
             )
-            itemsIndexed(viewModel.remarks) { _, item ->
+            itemsIndexed(remarks) { _, item ->
                 Row(verticalAlignment = Alignment.Bottom) {
                     remarkColumns.forEach { remarkCol ->
                         renderComposable(item, remarkCol)
@@ -91,6 +92,7 @@ fun buildRemarkColumns(
     suggestions: List<String>,
     onDelete: (RemarkViewEntity) -> Unit,
 ) = listOf<TableColumn<RemarkViewEntity>>(
+    // TODO get rid of venue ID ...
     simpleTableColumn("Name", width = 300.dp) { remark, col ->
         Row(ModifierWith(col.size)) {
             SuggestTextField(

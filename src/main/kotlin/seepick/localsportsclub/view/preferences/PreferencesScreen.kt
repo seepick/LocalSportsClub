@@ -36,13 +36,17 @@ import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.Country
 import com.github.seepick.uscclient.plan.Plan
 import org.koin.compose.viewmodel.koinViewModel
+import seepick.localsportsclub.service.model.GlobalRemarkType
 import seepick.localsportsclub.view.LocalTextFieldColors
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.DoubleField
 import seepick.localsportsclub.view.common.DropDownTextField
 import seepick.localsportsclub.view.common.PasswordField
 import seepick.localsportsclub.view.common.Tooltip
+import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrFill
+import seepick.localsportsclub.view.common.composeIt
+import seepick.localsportsclub.view.remark.GlobalRemarkViewModel
 
 private val col1width = 180.dp
 
@@ -80,6 +84,9 @@ fun PreferencesScreen(
         }
         PreferencesItem("Google Calendar") {
             GCalRow()
+        }
+        PreferencesItem("Remarks") {
+            RemarksRow()
         }
 
         if (viewModel.entity.isDirty()) {
@@ -215,6 +222,48 @@ private fun PeriodTextField(periodFirstDay: MutableState<Int?>) {
                 }
             })
     }
+}
+
+
+@Composable
+fun RemarksButton(
+    label: String,
+    icon: VisualIndicator,
+    tooltip: String,
+    onClick: () -> Unit,
+) {
+    Tooltip(tooltip) {
+        Button(onClick = onClick) {
+            icon.composeIt(paddingEnd = 5.dp)
+            Text(label)
+        }
+    }
+}
+
+@Composable
+fun RemarksRow(
+    viewModel: GlobalRemarkViewModel = koinViewModel(),
+) {
+    RemarksButton(
+        label = "Category Remarks",
+        icon = Lsc.icons.categoryIndicator,
+        tooltip = "Open category remarks dialog ...",
+        onClick = { viewModel.onViewDialog(GlobalRemarkType.Category) },
+    )
+    Spacer(Modifier.width(5.dp))
+    RemarksButton(
+        label = "Activity Remarks",
+        icon = Lsc.icons.activitiesIndicator,
+        tooltip = "Open activity remarks dialog ...",
+        onClick = { viewModel.onViewDialog(GlobalRemarkType.Activity) },
+    )
+    Spacer(Modifier.width(5.dp))
+    RemarksButton(
+        label = "Teacher Remarks",
+        icon = Lsc.icons.teachersIndicator,
+        tooltip = "Open teacher remarks dialog ...",
+        onClick = { viewModel.onViewDialog(GlobalRemarkType.Teacher) },
+    )
 }
 
 @Composable

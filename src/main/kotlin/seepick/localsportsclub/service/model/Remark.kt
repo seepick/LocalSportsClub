@@ -1,10 +1,10 @@
 package seepick.localsportsclub.service.model
 
 import androidx.compose.ui.graphics.Color
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.persistence.ActivityRemarkDbo
 import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo
+import seepick.localsportsclub.view.Lsc
 
 interface Remark {
     val id: Int
@@ -40,6 +40,13 @@ enum class RemarkRating(
     }
 }
 
+fun RemarkRating.toRemarkDboRating() = when (this) {
+    RemarkRating.Amazing -> RemarkDboRating.Amazing
+    RemarkRating.Good -> RemarkDboRating.Good
+    RemarkRating.Meh -> RemarkDboRating.Meh
+    RemarkRating.Bad -> RemarkDboRating.Bad
+}
+
 fun ActivityRemarkDbo.toActivityRemark() = ActivityRemark(
     id = this.id,
     venueId = this.venueId,
@@ -48,7 +55,7 @@ fun ActivityRemarkDbo.toActivityRemark() = ActivityRemark(
     rating = this.rating.toRemarkRating(),
 )
 
-private fun RemarkDboRating.toRemarkRating() = when (this) {
+fun RemarkDboRating.toRemarkRating() = when (this) {
     RemarkDboRating.Amazing -> RemarkRating.Amazing
     RemarkDboRating.Good -> RemarkRating.Good
     RemarkDboRating.Meh -> RemarkRating.Meh

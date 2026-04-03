@@ -38,12 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
-import seepick.localsportsclub.view.Lsc
-import seepick.localsportsclub.view.MainWindowState
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
+import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.MainWindowState
 import seepick.localsportsclub.view.common.CheckboxTexted
 import seepick.localsportsclub.view.common.CopyTextToClipboard
 import seepick.localsportsclub.view.common.CustomDialog
@@ -249,14 +249,14 @@ fun VenueDetail(
             Spacer(Modifier.width(16.dp))
             SmallButton(
                 text = "Activity Remarks ($activityRemarksCount)",
-                icon = Lsc.icons.activities,
+                icon = Lsc.icons.activitiesIndicator,
                 onClick = onViewActivityRemarks,
                 tooltip = "Open activity remarks dialog ...",
             )
             Spacer(Modifier.width(5.dp))
             SmallButton(
                 text = "Teacher Remarks ($teacherRemarksCount)",
-                icon = Lsc.icons.teachers,
+                icon = Lsc.icons.teachersIndicator,
                 onClick = onViewTeacherRemarks,
                 tooltip = "Open teacher remarks dialog ...",
             )

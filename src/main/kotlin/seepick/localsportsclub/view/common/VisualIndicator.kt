@@ -23,7 +23,7 @@ sealed interface VisualIndicator {
 
 @Composable
 fun VisualIndicator.composeIt(
-    alpha: Float,
+    alpha: Float = 1.0f,
     paddingEnd: Dp? = 2.dp,
 ) {
     val modifier2 = Modifier.let {

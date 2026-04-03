@@ -3,11 +3,18 @@
 ## v1.19.0
 
 * 🖋 global remarks (category / activity / teacher)
-    * 🖋 give category ratings (define in prefs); annotated string with color
-    * 🖋 extend activity/venue score based on category ratings (needs to passed in, externally calced)
+    * [✅] persistence layer
+    * [✅] UI for managing remarks in prefs (reuse RemarksView)
+    * [✅] transform DBOs to business objects (sealed type)
+    * [✅] service business logic to update remarks (simple reset ~~figure out add/remove/update logic~~)
+    * [ ] category annotated string with color (in table, etc.)
+    * [ ] extend activity/venue score based on category ratings (needs to passed in, externally calced)
+        * local takes precedence over global remark
 
 ## Backlog
 
+* ad adapative suggestions: remove those already used
+* could provide ultra long list to global remark for teacher/activity, and make suggest "prefilter it dynamically"
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🖋 maybe make activity&freetraining search isHidden implicit search filter visible; just as did with venue.isDeleted
 * 🖋 provide custom emoji for venues (just a simple string, which is added to a venue's name)
