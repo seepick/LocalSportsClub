@@ -17,6 +17,7 @@ import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.HasLabel
 import seepick.localsportsclub.view.common.table.TableItemAlpha
 import seepick.localsportsclub.view.common.table.TableItemBgColor
+import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.time.LocalDate
 import java.util.TreeSet
 
@@ -87,8 +88,8 @@ class Venue(
     var visitLimits: VisitLimits? by mutableStateOf(visitLimits)
     var lastSync: LocalDate? by mutableStateOf(lastSync)
 
-    val activityRemarks = mutableStateListOf<ActivityRemark>()
-    val teacherRemarks = mutableStateListOf<TeacherRemark>()
+    val activityRemarks = mutableStateListOf<RemarkViewEntity>()
+    val teacherRemarks = mutableStateListOf<RemarkViewEntity>()
 
     val score: Score? by derivedStateOf { calcScore() }
     override val tableBgColor: Color? get() = Lsc.colors.forScore(score, this)

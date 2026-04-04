@@ -2,6 +2,7 @@ package seepick.localsportsclub.service.model
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
+import seepick.localsportsclub.view.remark.RemarkViewEntity
 
 fun ActivityState.someOther() = ActivityState.entries.toSet().minus(this).random()
 
@@ -17,8 +18,8 @@ class ActivityBuilder {
     var teacher: String? = null
     var state = ActivityState.Blank
 
-    val activityRemarks = mutableListOf<ActivityRemark>()
-    val teacherRemarks = mutableListOf<TeacherRemark>()
+    val activityRemarks = mutableListOf<RemarkViewEntity>()
+    val teacherRemarks = mutableListOf<RemarkViewEntity>()
 
     fun build(): Activity {
         val venue = Arb.venue().next().copy(

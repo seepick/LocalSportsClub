@@ -85,7 +85,7 @@ fun PreferencesScreen(
         PreferencesItem("Google Calendar") {
             GCalRow()
         }
-        PreferencesItem("Remarks") {
+        PreferencesItem("Global Remarks") {
             RemarksRow()
         }
 

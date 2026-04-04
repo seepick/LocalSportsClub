@@ -5,6 +5,8 @@ import seepick.localsportsclub.persistence.ActivityRemarkDbo
 import seepick.localsportsclub.persistence.RemarkDboRating
 import seepick.localsportsclub.persistence.TeacherRemarkDbo
 import seepick.localsportsclub.view.Lsc
+import seepick.localsportsclub.view.remark.RemarkViewEntity
+import seepick.localsportsclub.view.remark.RemarkViewType
 
 interface Remark {
     val id: Int
@@ -50,6 +52,22 @@ fun RemarkRating.toRemarkDboRating() = when (this) {
 fun ActivityRemarkDbo.toActivityRemark() = ActivityRemark(
     id = this.id,
     venueId = this.venueId,
+    name = this.name,
+    remark = this.remark,
+    rating = this.rating.toRemarkRating(),
+)
+
+fun ActivityRemarkDbo.toRemarkViewEntity() = RemarkViewEntity(
+    id = this.id,
+    type = RemarkViewType.WithVenue(this.venueId),
+    name = this.name,
+    remark = this.remark,
+    rating = this.rating.toRemarkRating(),
+)
+
+fun TeacherRemarkDbo.toRemarkViewEntity() = RemarkViewEntity(
+    id = this.id,
+    type = RemarkViewType.WithVenue(this.venueId),
     name = this.name,
     remark = this.remark,
     rating = this.rating.toRemarkRating(),

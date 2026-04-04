@@ -15,23 +15,22 @@ class GlobalRemarkFinder(
     }
 
     fun findForActivity(name: String): RemarkViewEntity? =
-        activityRemarks.filter { name.contains(it.name.value, ignoreCase = true) }.let {
-            when (it.size) {
-                0 -> null
-                1 -> it.single()
-                else -> it.maxBy { it.name.value.length }
-            }
-        }
+        activityRemarks.findMatchingRemark(name)
 
-    fun findForTeacher(teacher: String?): RemarkViewEntity? {
-        if (teacher == null) {
-            return null
-        }
-        return teacherRemarks.filter { teacher.contains(it.name.value, ignoreCase = true) }.let {
-            when (it.size) {
-                0 -> null
-                1 -> it.single()
-                else -> it.maxBy { it.name.value.length }
+    fun findForTeacher(teacher: String?): RemarkViewEntity? =
+        teacherRemarks.findMatchingRemark(teacher)
+}
+
+fun List<RemarkViewEntity>.findMatchingRemark(name: String?): RemarkViewEntity? {
+    if (name == null) {
+        return null
+    }
+    return this.filter { name.contains(it.name.value, ignoreCase = true) }.let {
+        when (it.size) {
+            0 -> null
+            1 -> it.single()
+            else -> {
+                it.maxBy { it.name.value.length }
             }
         }
     }

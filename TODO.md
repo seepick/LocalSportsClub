@@ -2,15 +2,6 @@
 
 ## v1.19.0
 
-* 🖋 global remarks (category / activity / teacher)
-    * [✅] persistence layer
-    * [✅] UI for managing remarks in prefs (reuse RemarksView)
-    * [✅] transform DBOs to business objects (sealed type)
-    * [✅] service business logic to update remarks (simple reset ~~figure out add/remove/update logic~~)
-    * [✅] category annotated string with color: [✅] in table [✅] for venue details [✅] for activity details
-    * [✅] extend activity & venue score based on category ratings
-    * [ ] apply global activity/teacher remarks (local remark takes precedence over global one)
-
 ## Backlog
 
 * show with every category, activity count assigned to it (ignore venue?!)

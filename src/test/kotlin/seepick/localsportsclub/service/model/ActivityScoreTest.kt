@@ -12,6 +12,8 @@ import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
+import seepick.localsportsclub.view.remark.RemarkViewEntity
+import seepick.localsportsclub.view.remark.RemarkViewType
 
 class ActivityScoreTest : DescribeSpec({
 
@@ -158,16 +160,26 @@ fun Arb.Companion.teacherRemark() = arbitrary {
 
 fun ActivityBuilder.activityRemark(rating: RemarkRating, name: String = "activity name with remark") {
     this.name = name
-    activityRemarks += Arb.activityRemark().next().copy(
-        name = name,
-        rating = rating,
-    )
+    activityRemarks += Arb.remarkViewEntity().next().also {
+        it.name.value = name
+        it.rating = rating
+    }
 }
 
 fun ActivityBuilder.teacherRemark(rating: RemarkRating, name: String = "teacher name with remark") {
     this.teacher = name
-    teacherRemarks += Arb.teacherRemark().next().copy(
-        name = name,
-        rating = rating,
+    teacherRemarks += Arb.remarkViewEntity().next().also {
+        it.name.value = name
+        it.rating = rating
+    }
+}
+
+fun Arb.Companion.remarkViewEntity() = arbitrary {
+    RemarkViewEntity(
+        id = int(1..1_000).bind(),
+        name = string().bind(),
+        type = RemarkViewType.WithVenue(42),
+        remark = string().bind(),
+        rating = enum<RemarkRating>().bind(),
     )
 }
