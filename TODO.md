@@ -4,6 +4,7 @@
 
 ## Backlog
 
+* change scoring colors: -1.0 red, +1.0 green, 0.0 nothing/null; +0.1 already greenish! (nothing yellow!)
 * show with every category, activity count assigned to it (ignore venue?!)
 * ad adapative suggestions: remove those already used
 * could provide ultra long list to global remark for teacher/activity, and make suggest "prefilter it dynamically"

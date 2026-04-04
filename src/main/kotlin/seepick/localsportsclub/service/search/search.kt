@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.service.model.RemarkRating
+import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.common.VisualIndicator
 import java.time.LocalDate
 
@@ -162,9 +162,9 @@ abstract class AbstractSearch<T>(
     fun newSelectSearchOption(
         label: String,
         initiallyEnabled: Boolean = false,
-        allOptions: List<String>,
+        allOptions: List<SearchOpt>,
         visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
-        extractor: (T) -> List<String>,
+        extractor: (T) -> List<SearchOpt>,
     ) =
         SelectSearchOption(
             label = label,

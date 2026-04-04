@@ -3,14 +3,15 @@ package seepick.localsportsclub.view.search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasPlan
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.service.search.ComparingNumericComparator
 import seepick.localsportsclub.service.search.RatingSearchOption
+import seepick.localsportsclub.service.search.SearchOpt
 import seepick.localsportsclub.service.search.SelectSearchOption
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 
 fun <E : HasVenue> AbstractSearch<E>.newFavoritedSearchOption() = newBooleanSearchOption(
@@ -56,6 +57,6 @@ fun <T : HasPlan> PlanSearchField(searchOption: SelectSearchOption<T>) {
 fun <T : HasPlan> AbstractSearch<T>.newPlanSearchOption() = newSelectSearchOption(
     visualIndicator = VisualIndicator.EmojiIndicator(Plan.UscPlan.emoji),
     label = "Plan",
-    allOptions = Plan.UscPlan.entries.map { it.fullLabel },
-    extractor = { listOf(it.plan.fullLabel) },
+    allOptions = Plan.UscPlan.entries.map { SearchOpt(it.fullLabel) },
+    extractor = { listOf(SearchOpt(it.plan.fullLabel)) },
 )

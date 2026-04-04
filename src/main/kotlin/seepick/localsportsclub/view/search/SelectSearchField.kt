@@ -81,7 +81,7 @@ fun <T> SelectSearchField(
                                 isClickable = true,
                             ) else MaterialTheme.colors.background
                             Text(
-                                text = select.text,
+                                text = select.opt.renderedLabel,
                                 color = Lsc.colors.onBackground,
                                 fontSize = 10.sp,
                                 modifier = Modifier.fillMaxWidth(1.0f)

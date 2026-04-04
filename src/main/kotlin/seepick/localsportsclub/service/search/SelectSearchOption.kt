@@ -9,7 +9,7 @@ import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.common.table.navigate
 
 data class SearchSelect(
-    val text: String,
+    val opt: SearchOpt,
 ) {
     var isSelected: Boolean by mutableStateOf(false)
     fun toggleSelected() {
@@ -17,10 +17,15 @@ data class SearchSelect(
     }
 }
 
+data class SearchOpt(
+    val renderedLabel: String,
+    val compareValue: String = renderedLabel,
+)
+
 class SelectSearchOption<T>(
     label: String,
-    allOptions: List<String>,
-    private val extractor: (T) -> List<String>,
+    allOptions: List<SearchOpt>,
+    private val extractor: (T) -> List<SearchOpt>,
     initiallyEnabled: Boolean = false,
     reset: () -> Unit,
     visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
@@ -60,10 +65,10 @@ class SelectSearchOption<T>(
     }
 
     override fun buildPredicate(): (T) -> Boolean {
-        val selected = allSelects.filter { it.isSelected }.map { it.text }
+        val selected = allSelects.filter { it.isSelected }.map { it.opt.compareValue }
         return if (selected.isEmpty()) alwaysTruePredicate
         else { item ->
-            val itemsOptions = extractor(item)
+            val itemsOptions = extractor(item).map { it.compareValue }
             selected.any { itemsOptions.contains(it) }
         }
     }

@@ -1,11 +1,12 @@
 package seepick.localsportsclub.view.freetraining
 
-import seepick.localsportsclub.view.GlobalKeyboard
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.service.search.SearchOpt
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.search.newRatingSearchOption
 import java.time.LocalDate
 
@@ -37,8 +38,11 @@ class FreetrainingSearch(
     val rating = newRatingSearchOption()
     val category = newSelectSearchOption(
         label = "Category",
-        allOptions = allCategories.map { it.nameAndMaybeEmoji },
+        allOptions = allCategories.map { it.toSearchOpt() },
         visualIndicator = Lsc.icons.categoryIndicator,
-        extractor = { listOf(it.category.nameAndMaybeEmoji) },
+        extractor = { listOf(it.category.toSearchOpt()) },
     )
 }
+
+private fun Category.toSearchOpt() =
+    SearchOpt(renderedLabel = nameAndEmojiAndFreetrainingCount, compareValue = name)

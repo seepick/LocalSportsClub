@@ -4,6 +4,7 @@ import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.service.search.SearchOpt
 import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.search.newDistanceSearchOption
@@ -52,8 +53,11 @@ class ActivitySearch(
     val categories = newSelectSearchOption(
         label = "Category",
         visualIndicator = Lsc.icons.categoryIndicator,
-        allOptions = allCategories.map { it.nameAndMaybeEmoji },
-        extractor = { listOf(it.category.nameAndMaybeEmoji) },
+        allOptions = allCategories.map { it.toSearchOpt() },
+        extractor = { listOf(it.category.toSearchOpt()) },
     )
     val plan = newPlanSearchOption()
 }
+
+private fun Category.toSearchOpt() =
+    SearchOpt(renderedLabel = nameAndEmojiAndActivityCount, compareValue = name)

@@ -16,6 +16,7 @@ import seepick.localsportsclub.service.GlobalRemarkFinder
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.RemarkService
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.distance
 import seepick.localsportsclub.service.round
 import seepick.localsportsclub.service.singles.SinglesService
@@ -71,7 +72,6 @@ class DataStorage(
 
     private val log = logger {}
     private val listeners = mutableListOf<DataStorageListener>()
-
 
     private val venuesById: MutableMap<Int, Venue> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
@@ -140,15 +140,14 @@ class DataStorage(
             activityRepo.selectAll(cityId).filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
                 .sortedByDescending { it.from }.map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
-
                     activityDbo.toActivity(
                         venue = venueForActivity,
                         category = categoryService.findCategoryByName(activityDbo.category),
                         globalActivityRemark = globalRemarkFinder.findForActivity(activityDbo.name),
                         globalTeacherRemark = globalRemarkFinder.findForTeacher(activityDbo.teacher),
                     )
-                        .also {
-                            venueForActivity.addActivities(setOf(it))
+                        .also { finalActivity ->
+                            venueForActivity.addActivities(setOf(finalActivity))
                         }
                 }.groupByTo(mutableMapOf()) { it.venue.id }
         } ?: mutableMapOf()
@@ -355,8 +354,11 @@ class DataStorage(
     }
 
     private fun CategoryService.findCategories(dbo: VenueDbo): List<Category> =
-        dbo.facilities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            .map { Category(name = it, rating = findCategoryByName(it).rating) }
+        dbo.facilities
+            .split(",")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .map { findCategoryByName(it) }
 
 }
 
@@ -369,7 +371,7 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
     return location to round(distance(home, location), 1)
 }
 
-fun ActivityDbo.toActivity(
+private fun ActivityDbo.toActivity(
     venue: Venue,
     category: Category,
     globalActivityRemark: RemarkViewEntity?,
@@ -388,46 +390,28 @@ fun ActivityDbo.toActivity(
     cancellationLimit = cancellationLimit,
     globalActivityRemark = globalActivityRemark,
     globalTeacherRemark = globalTeacherRemark,
-)
+).also {
+    // nice hack ;)
+    if (!it.venue.isHidden && it.dateTimeRange.from.isAfter(SystemClock.now())) {
+        it.category.activityCount++
+    }
+}
 
-fun FreetrainingDbo.toFreetraining(venue: Venue, category: Category) = Freetraining(
+private fun FreetrainingDbo.toFreetraining(venue: Venue, category: Category) = Freetraining(
     id = id,
     venue = venue,
     name = name,
     category = category,
     date = date,
     state = state,
-)
+).also {
+    // nice hack ;)
+    if (!it.venue.isHidden && !it.date.isBefore(SystemClock.today())) {
+        it.category.freetrainingCount++
+    }
+}
 
-fun Venue.toDbo() = VenueDbo(
-    id = id,
-    name = name,
-    slug = slug,
-    facilities = categories.joinToString(",") { it.name },
-    cityId = city.id,
-    officialWebsite = officialWebsite,
-    rating = rating.value,
-    notes = notes,
-    description = description,
-    longitude = location.longitude.toString(),
-    latitude = location.latitude.toString(),
-    street = street,
-    addressLocality = addressLocality,
-    postalCode = postalCode,
-    importantInfo = importantInfo,
-    openingTimes = openingTimes,
-    imageFileName = imageFileName,
-    isFavorited = isFavorited,
-    isWishlisted = isWishlisted,
-    isHidden = isHidden,
-    isAutoSync = isAutoSync,
-    isDeleted = isDeleted,
-    planId = plan.id,
-    visitLimits = visitLimits,
-    lastSync = lastSync,
-)
-
-fun VenueDbo.toVenue(
+private fun VenueDbo.toVenue(
     baseUrl: URL,
     locationDistance: Pair<Location, Double>,
     categories: List<Category>,
@@ -456,6 +440,39 @@ fun VenueDbo.toVenue(
     isDeleted = isDeleted,
     isAutoSync = isAutoSync,
     plan = Plan.UscPlan.byId(planId),
+    visitLimits = visitLimits,
+    lastSync = lastSync,
+).also {
+    // nice hack ;)
+    if (!it.isDeleted) {
+        it.categories.forEach { it.venueCount++ }
+    }
+}
+
+fun Venue.toDbo() = VenueDbo(
+    id = id,
+    name = name,
+    slug = slug,
+    facilities = categories.joinToString(",") { it.name },
+    cityId = city.id,
+    officialWebsite = officialWebsite,
+    rating = rating.value,
+    notes = notes,
+    description = description,
+    longitude = location.longitude.toString(),
+    latitude = location.latitude.toString(),
+    street = street,
+    addressLocality = addressLocality,
+    postalCode = postalCode,
+    importantInfo = importantInfo,
+    openingTimes = openingTimes,
+    imageFileName = imageFileName,
+    isFavorited = isFavorited,
+    isWishlisted = isWishlisted,
+    isHidden = isHidden,
+    isAutoSync = isAutoSync,
+    isDeleted = isDeleted,
+    planId = plan.id,
     visitLimits = visitLimits,
     lastSync = lastSync,
 )

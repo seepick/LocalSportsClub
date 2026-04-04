@@ -8,6 +8,7 @@ import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.service.search.FullNumericComparator
+import seepick.localsportsclub.service.search.SearchOpt
 import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.Lsc
@@ -52,10 +53,7 @@ class VenueSearch(
         it.activities.count { it.state == ActivityState.Checkedin } + it.freetrainings.count { it.state == FreetrainingState.Checkedin }
     }
     val hidden = newBooleanSearchOption(
-        label = "Hidden",
-        initialValue = false,
-        initiallyEnabled = true,
-        visualIndicator = Lsc.icons.hiddenIndicator
+        label = "Hidden", initialValue = false, initiallyEnabled = true, visualIndicator = Lsc.icons.hiddenIndicator
     ) { it.isHidden }
     val distance = newDistanceSearchOption()
     val favorited = newFavoritedSearchOption()
@@ -64,9 +62,9 @@ class VenueSearch(
     val rating = newRatingSearchOption()
     val category = newSelectSearchOption(
         label = "Category",
-        allOptions = allCategories.map { it.nameAndMaybeEmoji },
+        allOptions = allCategories.map { it.toSearchOpt() },
         visualIndicator = Lsc.icons.categoryIndicator,
-        extractor = { venue -> venue.categories.map { cat -> cat.nameAndMaybeEmoji } },
+        extractor = { venue -> venue.categories.map { it.toSearchOpt() } },
     )
     val autoSync = newBooleanSearchOption(
         label = "Auto-Sync",
@@ -80,3 +78,6 @@ class VenueSearch(
         visualIndicator = VisualIndicator.VectorIndicator(Icons.Default.Delete),
     ) { it.isDeleted }
 }
+
+private fun Category.toSearchOpt() =
+    SearchOpt(renderedLabel = nameAndEmojiAndVenueCount, compareValue = name)

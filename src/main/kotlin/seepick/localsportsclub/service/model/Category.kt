@@ -1,9 +1,22 @@
 package seepick.localsportsclub.service.model
 
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
 data class Category(
     val name: String,
     val rating: RemarkRating?,
 ) : Comparable<Category> {
+
+    var activityCount by mutableStateOf(0)
+    var freetrainingCount by mutableStateOf(0)
+    var venueCount by mutableStateOf(0)
+    val nameAndEmojiAndActivityCount by derivedStateOf { "$nameAndMaybeEmoji ($activityCount)" }
+    val nameAndEmojiAndFreetrainingCount by derivedStateOf { "$nameAndMaybeEmoji ($freetrainingCount)" }
+    val nameAndEmojiAndVenueCount by derivedStateOf { "$nameAndMaybeEmoji ($venueCount)" }
+
     val emoji: String? = when (name.lowercase()) {
         "aerial" -> "🪂"
         "aqua", "swimming" -> "🏊🏻‍♀️"
@@ -32,6 +45,8 @@ data class Category(
         "wellness" -> "🧖🏻‍♀️"
         else -> null
     }
+
     val nameAndMaybeEmoji = name + if (emoji != null) " $emoji" else ""
+
     override fun compareTo(other: Category) = name.compareTo(other.name)
 }
