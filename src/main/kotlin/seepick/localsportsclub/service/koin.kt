@@ -15,7 +15,7 @@ fun serviceModule(config: LscConfig) = module {
     single { buildHttpClient() }
     single { SystemClock } bind Clock::class
     single {
-        DataStorage(get(), get(), get(), get(), get(), get(), get(), get(), config.baseUrl)
+        DataStorage(get(), get(), get(), get(), get(), get(), get(), get(), get(), config.baseUrl)
     }
     single { FileResolverImpl(config.appDirectory) } bind FileResolver::class
     singleOf(::SinglesServiceImpl) bind SinglesService::class
@@ -24,6 +24,7 @@ fun serviceModule(config: LscConfig) = module {
     singleOf(::VenueService)
     singleOf(::RemarkService)
     singleOf(::GlobalRemarkService)
+    singleOf(::GlobalRemarkFinder)
     singleOf(::CategoryService)
     singleOf(::CategoryActivityDboProcessor)
     singleOf(::NameFixingActivityDboProcessor)

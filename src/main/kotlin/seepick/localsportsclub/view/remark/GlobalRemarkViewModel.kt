@@ -11,7 +11,7 @@ import seepick.localsportsclub.view.shared.SharedModel
 
 class GlobalRemarkViewModel(
     private val sharedModel: SharedModel,
-    private val remarkService: GlobalRemarkService,
+    private val globalRemarkService: GlobalRemarkService,
     private val dataStorage: DataStorage,
 ) : ViewModel() {
 
@@ -25,7 +25,7 @@ class GlobalRemarkViewModel(
         currentRemarkType = type
 
         remarks.clear()
-        remarks.addAll(remarkService.selectAll(type).sortedBy { it.name.value.lowercase() })
+        remarks.addAll(globalRemarkService.selectAll(type).sortedBy { it.name.value.lowercase() })
         nameSuggestions.clear()
         nameSuggestions.addAll(
             when (type) {
@@ -61,7 +61,7 @@ class GlobalRemarkViewModel(
 
     private fun saveCurrentRemarks() {
         log.debug { "saveCurrentRemarks()" }
-        remarkService.reset(currentRemarkType, remarks)
+        globalRemarkService.reset(currentRemarkType, remarks)
         // no global view storage (mutable thingy), thus requires app restart to take effect ;)
     }
 

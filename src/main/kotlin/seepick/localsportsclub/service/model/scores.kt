@@ -29,6 +29,14 @@ val RemarkRating.scoreModifier: Double
         RemarkRating.Bad -> -100.0
     }
 
+val RemarkRating.categoryScoreModifier: Double
+    get() = when (this) {
+        RemarkRating.Amazing -> 0.08
+        RemarkRating.Good -> 0.05
+        RemarkRating.Meh -> -0.06
+        RemarkRating.Bad -> -0.15
+    }
+
 val Rating.scoreModiferForActivity: Double
     get() = when (this) {
         Rating.R0 -> 0.0
@@ -53,6 +61,9 @@ fun Venue.calcScore(): Score? {
         return null
     }
     var score = 0.5
+    score += venue.categories.mapNotNull { it.rating }.fold(0.0) { acc, rating ->
+        acc + rating.categoryScoreModifier
+    }
     if (venue.isFavorited) score += 0.25
     if (venue.isWishlisted) score += 0.15
     score += venue.rating.scoreModiferForVenue
@@ -64,6 +75,9 @@ fun Activity.calcScore(): Score? {
         return null
     }
     var score = 0.5
+    category.rating?.categoryScoreModifier?.let {
+        score += it * 2.0
+    }
     if (venue.isFavorited) score += 0.20
     if (venue.isWishlisted) score += 0.15
     score += venue.rating.scoreModiferForActivity
@@ -72,7 +86,8 @@ fun Activity.calcScore(): Score? {
     return ((score.coerceIn(0.0..1.0) * 100).roundToInt()) / 100.0
 }
 
-private fun Venue.isAnyScoreRelevantSet() = venue.isFavorited || venue.isWishlisted || venue.rating != Rating.R0
+private fun Venue.isAnyScoreRelevantSet() =
+    venue.isFavorited || venue.isWishlisted || venue.rating != Rating.R0 || venue.categories.any { it.rating != null }
 
 private fun Activity.isAnyScoreRelevantSet() =
-    venue.isAnyScoreRelevantSet() || remark != null || teacherRemark != null
+    venue.isAnyScoreRelevantSet() || remark != null || teacherRemark != null || category.rating != null

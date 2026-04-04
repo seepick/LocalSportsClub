@@ -2,14 +2,14 @@ package seepick.localsportsclub.view.venue
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import seepick.localsportsclub.view.GlobalKeyboard
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.search.AbstractSearch
 import seepick.localsportsclub.service.search.FullNumericComparator
+import seepick.localsportsclub.view.GlobalKeyboard
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.search.newDistanceSearchOption
@@ -52,7 +52,10 @@ class VenueSearch(
         it.activities.count { it.state == ActivityState.Checkedin } + it.freetrainings.count { it.state == FreetrainingState.Checkedin }
     }
     val hidden = newBooleanSearchOption(
-        "Hidden", initialValue = true, visualIndicator = Lsc.icons.hiddenIndicator
+        label = "Hidden",
+        initialValue = false,
+        initiallyEnabled = true,
+        visualIndicator = Lsc.icons.hiddenIndicator
     ) { it.isHidden }
     val distance = newDistanceSearchOption()
     val favorited = newFavoritedSearchOption()

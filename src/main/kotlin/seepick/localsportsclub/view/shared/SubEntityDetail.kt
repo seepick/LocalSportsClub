@@ -43,6 +43,7 @@ import seepick.localsportsclub.view.common.Lsc
 import seepick.localsportsclub.view.common.TitleText
 import seepick.localsportsclub.view.common.Tooltip
 import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
+import seepick.localsportsclub.view.remark.withColor
 
 @Composable
 fun SubEntityDetail(
@@ -129,7 +130,9 @@ fun SubEntityDetail(
                                 append("${Icons.Lsc.cancelledLateEmoji} cancelled-late ")
                             }
                         }
-                        append(subEntity.category.nameAndMaybeEmoji)
+                        withColor(subEntity.category.rating) {
+                            append(subEntity.category.nameAndMaybeEmoji)
+                        }
 
                         if (subEntity is SubEntity.ActivityEntity) {
                             appendRatedTeacher(subEntity.activity)
@@ -236,3 +239,4 @@ private fun extractStatesOf(subEntity: SubEntity) = when (subEntity) {
         )
     }
 }
+

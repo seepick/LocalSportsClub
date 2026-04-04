@@ -76,6 +76,8 @@ fun Arb.Companion.activity() = arbitrary {
         cancellationLimit = if (boolean().bind()) null else dateTimeRange.from.minusHours(2),
         description = string().orNull().bind(),
         plan = enum<Plan.UscPlan>().bind(),
+        globalActivityRemark = null,
+        globalTeacherRemark = null,
     )
 }
 

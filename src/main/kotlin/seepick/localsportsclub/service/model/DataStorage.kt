@@ -12,6 +12,7 @@ import seepick.localsportsclub.persistence.VenueDbo
 import seepick.localsportsclub.persistence.VenueLinksRepo
 import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.CategoryService
+import seepick.localsportsclub.service.GlobalRemarkFinder
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.RemarkService
 import seepick.localsportsclub.service.date.Clock
@@ -21,6 +22,7 @@ import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncerListener
+import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.net.URL
 
 interface DataStorageListener {
@@ -57,6 +59,7 @@ object NoopDataStorageListener : DataStorageListener {
 class DataStorage(
     private val venueRepo: VenueRepo,
     private val remarkService: RemarkService,
+    private val globalRemarkFinder: GlobalRemarkFinder,
     private val categoryService: CategoryService,
     private val venueLinksRepo: VenueLinksRepo,
     private val activityRepo: ActivityRepo,
@@ -75,12 +78,12 @@ class DataStorage(
             val remarks = remarkService.selectAll()
 
             val venuesById = venueRepo.selectAllByCity(cityId).map { dbo ->
-                    dbo.toVenue(
-                        baseUrl = baseUrl,
-                        locationDistance = singlesService.calculateLocatioAndDistance(dbo),
-                        categories = categoryService.findCategories(dbo),
-                    )
-                }.associateBy { it.id }
+                dbo.toVenue(
+                    baseUrl = baseUrl,
+                    locationDistance = singlesService.calculateLocatioAndDistance(dbo),
+                    categories = categoryService.findCategories(dbo),
+                )
+            }.associateBy { it.id }
             venuesById.forEach { (_, venue) ->
                 venue.activityRemarks.addAll(remarks.forActivities(venue.id))
                 venue.teacherRemarks.addAll(remarks.forTeachers(venue.id))
@@ -138,7 +141,12 @@ class DataStorage(
                 .sortedByDescending { it.from }.map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
 
-                    activityDbo.toActivity(venueForActivity, categoryService.findCategoryByName(activityDbo.category))
+                    activityDbo.toActivity(
+                        venue = venueForActivity,
+                        category = categoryService.findCategoryByName(activityDbo.category),
+                        globalActivityRemark = globalRemarkFinder.findForActivity(activityDbo.name),
+                        globalTeacherRemark = globalRemarkFinder.findForTeacher(activityDbo.teacher),
+                    )
                         .also {
                             venueForActivity.addActivities(setOf(it))
                         }
@@ -227,7 +235,12 @@ class DataStorage(
         val activities = addedActivities.map { activityDbo ->
             val venue = venuesById[activityDbo.venueId]
                 ?: error("Failed to add activity! Could not find venue by ID for: $activityDbo")
-            val activity = activityDbo.toActivity(venue, categoryService.findCategoryByName(activityDbo.category))
+            val activity = activityDbo.toActivity(
+                venue = venue,
+                category = categoryService.findCategoryByName(activityDbo.category),
+                globalActivityRemark = globalRemarkFinder.findForActivity(activityDbo.name),
+                globalTeacherRemark = globalRemarkFinder.findForTeacher(activityDbo.teacher),
+            )
             // venue.activities += activity ... NO: done in SyncerViewModel (concurrency issues, IO vs Compose)
             allActivitiesByVenueId.getOrPut(activity.venue.id) { mutableListOf() }.add(activity)
             activity
@@ -356,7 +369,12 @@ private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair
     return location to round(distance(home, location), 1)
 }
 
-fun ActivityDbo.toActivity(venue: Venue, category: Category) = Activity(
+fun ActivityDbo.toActivity(
+    venue: Venue,
+    category: Category,
+    globalActivityRemark: RemarkViewEntity?,
+    globalTeacherRemark: RemarkViewEntity?,
+) = Activity(
     id = id,
     venue = venue,
     name = name,
@@ -368,6 +386,8 @@ fun ActivityDbo.toActivity(venue: Venue, category: Category) = Activity(
     state = state,
     plan = Plan.UscPlan.byId(planId),
     cancellationLimit = cancellationLimit,
+    globalActivityRemark = globalActivityRemark,
+    globalTeacherRemark = globalTeacherRemark,
 )
 
 fun FreetrainingDbo.toFreetraining(venue: Venue, category: Category) = Freetraining(

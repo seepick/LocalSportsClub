@@ -11,6 +11,7 @@ import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.table.TableItemBgColor
+import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -32,6 +33,8 @@ class Activity(
     override val category: Category, // aka disciplines/facilities
     val dateTimeRange: DateTimeRange,
     override val plan: Plan.UscPlan,
+    val globalActivityRemark: RemarkViewEntity?,
+    val globalTeacherRemark: RemarkViewEntity?,
     teacher: String?,
     description: String?,
     spotsLeft: Int,
@@ -55,7 +58,7 @@ class Activity(
 //        .mapLatest { (name, teacher) -> if (teacher == null) name else "$name /$teacher" }
 
     val remark: Remark? by derivedStateOf {
-        venue.activityRemarks.findMatchingRemark(name)
+        venue.activityRemarks.findMatchingRemark(name) // FIXME ?: globalActivityRemark
     }
 
     val teacherRemark: Remark? by derivedStateOf {
@@ -84,6 +87,8 @@ class Activity(
         spotsLeft = spotsLeft,
         state = state,
         cancellationLimit = cancellationLimit,
+        globalActivityRemark = globalActivityRemark,
+        globalTeacherRemark = globalTeacherRemark,
     )
 
     override fun toString() =

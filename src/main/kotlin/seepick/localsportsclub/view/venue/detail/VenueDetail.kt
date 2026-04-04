@@ -66,6 +66,7 @@ import java.net.URLEncoder
 import kotlin.math.max
 import kotlin.math.min
 
+
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun VenueDetail(
@@ -110,18 +111,25 @@ fun VenueDetail(
             }
             Spacer(Modifier.width(5.dp))
             Column {
-                val text = buildString {
+                val text = buildXString {
                     append(venue.plan.emoji)
                     if (venue.categories.isNotEmpty()) {
                         append(" | ")
-                        append(venue.categories.joinToString(", ") { it.nameAndMaybeEmoji })
+                        venue.categories.forEachIndexed { i, category ->
+                            if (i != 0) {
+                                append(", ")
+                            }
+                            withColor(category.rating) {
+                                append(category.nameAndMaybeEmoji)
+                            }
+                        }
                     }
                 }
                 var isOverflowing by remember { mutableStateOf(false) }
                 Tooltip(if (isOverflowing) text else null) {
                     SelectionContainer {
                         Text(
-                            text = text,
+                            text = text.asAnnotatedString,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

@@ -4,17 +4,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.withStyle
 import seepick.localsportsclub.service.model.Activity
+import seepick.localsportsclub.view.remark.withColor
 
 fun AnnotatedString.Builder.appendRatedName(activity: Activity) {
     val remarkRating = activity.remark?.rating
     if (remarkRating != null) {
         append("${remarkRating.emoji} ")
     }
-    if (remarkRating != null) {
-        withStyle(style = SpanStyle(color = remarkRating.color)) {
-            append(activity.name)
-        }
-    } else {
+    withColor(remarkRating) {
         append(activity.name)
     }
 }
