@@ -4,7 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -39,11 +39,7 @@ fun Tooltip(
         TooltipArea(
             tooltip = {
                 Surface(
-                    modifier = Modifier.shadow(4.dp).let {
-                        if (text.asString.length > 60) it.width(400.dp) else it
-                    }
-//                     TODO verify this works   .widthIn(max = 400.dp)
-                    ,
+                    modifier = Modifier.shadow(4.dp).widthIn(max = 400.dp),
                     color = Lsc.colors.backgroundToolip,
                     shape = RoundedCornerShape(4.dp)
                 ) {
