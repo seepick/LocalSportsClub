@@ -2,7 +2,6 @@
 
 ## v1.19.0
 
-* change scoring colors: -1.0 red, +1.0 green, 0.0 nothing/null; +0.1 already greenish! (nothing yellow!)
 * 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🎨 height of v-scrollbars minus table header
 

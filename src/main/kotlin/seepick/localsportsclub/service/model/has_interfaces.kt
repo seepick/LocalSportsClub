@@ -28,3 +28,7 @@ interface HasVenue {
 interface HasCategory {
     val category: Category
 }
+
+interface HasScore {
+    val score: Score?
+}

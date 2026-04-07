@@ -11,12 +11,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.github.seepick.uscclient.plan.Plan
 import seepick.localsportsclub.service.SortDirection
-import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.HasCategory
 import seepick.localsportsclub.service.model.HasDistance
 import seepick.localsportsclub.service.model.HasPlan
+import seepick.localsportsclub.service.model.HasScore
 import seepick.localsportsclub.service.model.HasVenue
 import seepick.localsportsclub.view.DistanceIndicator
 import seepick.localsportsclub.view.common.LscIcons
@@ -78,7 +78,7 @@ fun <T : HasPlan> PlanColumn() = TableColumn<T>(
     )
 )
 
-fun ScoreColumn() = TableColumn<Activity>( // interface HasScore
+fun <T : HasScore> ScoreColumn() = TableColumn<T>(
     header = VisualIndicator.StringIndicator("Score"),
     size = WidthOrWeight.Width(100.dp),
     renderer = CellRenderer.TextRenderer(

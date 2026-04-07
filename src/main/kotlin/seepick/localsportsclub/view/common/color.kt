@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import kotlin.math.max
-import kotlin.math.min
 
 fun Color.adjustHSB(addSaturation: Float = 0.1f, addBrightness: Float = 0.1f): Color {
     val (hue, saturation, brightness) = java.awt.Color.RGBtoHSB(
@@ -16,8 +14,8 @@ fun Color.adjustHSB(addSaturation: Float = 0.1f, addBrightness: Float = 0.1f): C
     )
     return Color.hsv(
         hue = hue * 360f,
-        saturation = min(saturation + addSaturation, 1f),
-        value = max(0f, min(brightness + addBrightness, 1f)),
+        saturation = (saturation + addSaturation).coerceIn(0.0f..1.0f),
+        value = (brightness + addBrightness).coerceIn(0.0f..1.0f),
     )
 }
 

@@ -7,11 +7,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyFromShorterPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
 import seepick.localsportsclub.view.common.table.CellRenderer
@@ -48,17 +48,21 @@ fun activitiesTableColumns(clock: Clock) = listOf<TableColumn<Activity>>(
     VenueColumn("Venue"),
     CategoryColumn(),
     TableColumn(
-        VisualIndicator.StringIndicator("Date"), WidthOrWeight.Width(100.dp), CellRenderer.TextRenderer(
+        header = VisualIndicator.StringIndicator("Date"),
+        size = WidthOrWeight.Width(100.dp),
+        renderer = CellRenderer.TextRenderer(
             valueExtractor = { CellValue(it.dateTimeRange.prettyFromShorterPrint(clock.today().year)) },
             sortExtractor = { it.dateTimeRange },
             textAlign = TextAlign.Right,
         )
     ),
+//    ScoreColumn(),
     CheckedinColumn(paddingRight = true),
     PlanColumn(),
     RatingColumn(paddingRight = true),
     DistanceColumn(),
 )
+
 
 @Composable
 fun ActivitiesTable(

@@ -30,7 +30,7 @@ class Activity(
     spotsLeft: Int,
     state: ActivityState,
     cancellationLimit: LocalDateTime?,
-) : HasVenue, HasCategory, HasDistance by venue, HasPlan, TableItemBgColor {
+) : HasVenue, HasCategory, HasScore, HasDistance by venue, HasPlan, TableItemBgColor {
 
     var state: ActivityState by mutableStateOf(state)
     var teacher: String? by mutableStateOf(teacher)
@@ -38,9 +38,10 @@ class Activity(
     var spotsLeft: Int by mutableStateOf(spotsLeft)
     var cancellationLimit: LocalDateTime? by mutableStateOf(cancellationLimit)
 
-    val score: Score? by derivedStateOf { calcScore() }
-    //    override val tableBgColor: Color? get() = Lsc.colors.forScore(venue)
-    override val tableBgColor: Color? by derivedStateOf { Lsc.colors.forScore(score, venue) }
+    override val score: Score? by derivedStateOf { calcScore() }
+    override val tableBgColor: Color? by derivedStateOf {
+        Lsc.colors.forScore(score, venue)
+    }
 
     // not possible due to mixed setup of table columns (doing logic in view/composable together)
 //    @OptIn(ExperimentalCoroutinesApi::class)

@@ -19,6 +19,7 @@ import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
 import seepick.localsportsclub.service.model.Score
 import seepick.localsportsclub.view.common.LscIcons
+import kotlin.math.abs
 
 // https://mdigi.tools/lighten-color/#337be2
 
@@ -115,11 +116,34 @@ interface LscColors {
     val wishlistedText: Color
     val wishlistedBgColor: Color get() = Color(0xFF00FFFF)
 
-    /* 1.0 => green, 0.5 => orange, 0.0 => red */
-    fun forTableBg(score: Score, saturation: Float = 0.8f) = redGreenGradient(
-        modifier = score,
-        saturation = saturation,
-    )
+    /* 1.0 => green, 0.5 => white, 0.0 => red */
+    fun forTableBg(score: Score, saturation: Double = 0.8): Color {
+        val (actualScore, actualSaturation) = makeMiddleMoreSubtle(score, saturation)
+        return redGreenGradient(
+            modifier = actualScore,
+            saturation = actualSaturation.toFloat(),
+        )
+    }
+
+    private fun makeMiddleMoreSubtle(score: Score, saturation: Double): Pair<Score, Double> {
+        var actualScore = score
+        val scoreDistance = abs(score - 0.5) * 2.0 // distance 0.0-1.0 (1.0 = max far away)
+        val scoreChanger = (0.05 * (1.0 - scoreDistance))
+        val scoreExtension = 0.15
+        if (score in (0.5 - scoreExtension)..0.49) {
+            actualScore -= scoreChanger
+        }
+        if (score in 0.51..(0.5 + scoreExtension)) {
+            actualScore += scoreChanger
+        }
+        val satDistance = abs(score - 0.5) * 4.0 // distance 0.0-2.0 (2.0 = max far away)
+        var actualSaturation = saturation
+        if (satDistance <= 0.3) {
+            val satChanger = abs((1.0 - (satDistance * 3.0)))
+            actualSaturation = (actualSaturation - (0.5 * satChanger)).coerceIn(0.0..1.0)
+        }
+        return actualScore to actualSaturation
+    }
 
     /** 0.0 => green (120°), 0.5 => orange (30°), 1.0 => red (0°) */
     fun forPeriod(distance: Double) = redGreenGradient(1 - (distance * 2.0f).coerceIn(0.0, 1.0))
@@ -267,8 +291,7 @@ fun LscTheme(
         checkedColor = Lsc.colors.clickableSelected,
     )
     CompositionLocalProvider(
-        LocalTextFieldColors provides textFieldColors,
-        LocalCheckboxColors provides checkboxFieldColors
+        LocalTextFieldColors provides textFieldColors, LocalCheckboxColors provides checkboxFieldColors
     ) {
         MaterialTheme(
             colors = colors,

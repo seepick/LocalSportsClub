@@ -22,7 +22,7 @@ fun rowBgColor(
             else it.brighter(0.3f)
         }
     } else if (isClickable && isHovered) {
-        val additionSat = if (Lsc.isDarkTheme) -0.3f else 1.0f
+        val additionSat = if (Lsc.isDarkTheme) -0.2f else 1.0f
         val additionBright = if (Lsc.isDarkTheme) -0.3f else 0.3f
         primaryColor?.adjustHSB(addSaturation = additionSat, addBrightness = additionBright) ?: Lsc.colors.itemHoverBg
     } else {

@@ -16,7 +16,7 @@ fun LscColors.forScore(score: Score?, venue: Venue): Color? =
         score?.let { nonNullScore ->
             Lsc.colors.forTableBg(
                 score = nonNullScore,
-                saturation = if (venue.isFavorited && nonNullScore > 0.7f) 1.0f else 0.6f,
+                saturation = if (venue.isFavorited && nonNullScore > 0.7) 1.0 else 0.6,
             )
         }
     }
@@ -83,7 +83,8 @@ fun Activity.calcScore(): Score? {
     score += venue.rating.scoreModiferForActivity
     score += remark?.rating?.scoreModifier ?: 0.0
     score += teacherRemark?.rating?.scoreModifier ?: 0.0
-    return ((score.coerceIn(0.0..1.0) * 100).roundToInt()) / 100.0
+    val finalScore = ((score.coerceIn(0.0..1.0) * 100).roundToInt()) / 100.0
+    return if (finalScore in 0.49..0.51) null else finalScore // drop insignificants
 }
 
 private fun Venue.isAnyScoreRelevantSet() =
