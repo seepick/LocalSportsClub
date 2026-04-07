@@ -47,8 +47,8 @@ fun RemarkTable(
     boxModifier: Modifier = Modifier.Companion,
 ) {
     val remarkColumns = buildRemarkColumns(
-        suggestions = nameSuggestions, //viewModel.nameSuggestions,
-        onDelete = onDelete, //{ viewModel.deleteRemark(it) },
+        suggestions = nameSuggestions,
+        onDelete = onDelete,
     )
     Box(modifier = Modifier.fillMaxWidth().then(boxModifier)) {
         val tableScrollState = rememberLazyListState()

@@ -43,12 +43,23 @@ class RemarkViewModel(
         val realRemarks = if (isActivity) venue.activityRemarks else venue.teacherRemarks
         remarks.clear()
         remarks.addAll(realRemarks.sortedBy { it.name.value })
-
+        val allRemarkNames = remarks.map { it.name.value }.toSet()
         nameSuggestions.clear()
         nameSuggestions.addAll(
-            if (isActivity) venue.activities.map { it.name.trim(' ', '.', '_') }
-                .filter { !it.endsWith("[OneFit]") }.distinct().sorted()
-            else venue.activities.mapNotNull { it.teacher?.trim() }.distinct().sorted()
+            if (isActivity) {
+                venue.activities
+                    .map { it.name.trim(' ', '.', '_') }
+                    .filter { !it.endsWith("[OneFit]") }
+                    .filter { it !in allRemarkNames } // don't suggest what's already remarked
+                    .distinct()
+                    .sorted()
+            } else {
+                venue.activities
+                    .mapNotNull { it.teacher?.trim() }
+                    .filter { it !in allRemarkNames }
+                    .distinct()
+                    .sorted()
+            }
         )
 
         sharedModel.customDialog.value = CustomDialog(

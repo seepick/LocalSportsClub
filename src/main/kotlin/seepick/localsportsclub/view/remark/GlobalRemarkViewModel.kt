@@ -26,11 +26,14 @@ class GlobalRemarkViewModel(
 
         remarks.clear()
         remarks.addAll(globalRemarkService.selectAll(type).sortedBy { it.name.value.lowercase() })
+        val allRemarkNames = remarks.map { it.name.value }
         nameSuggestions.clear()
         nameSuggestions.addAll(
             when (type) {
                 GlobalRemarkType.Category -> {
-                    dataStorage.allCategories.map { it.name }
+                    dataStorage.allCategories // already distincted&sorted in data-storage
+                        .map { it.name }
+                        .filter { it !in allRemarkNames }
                 }
 
                 GlobalRemarkType.Activity -> emptyList()
