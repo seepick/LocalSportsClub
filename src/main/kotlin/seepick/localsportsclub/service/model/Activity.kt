@@ -63,6 +63,7 @@ class Activity(
         teacher: String? = this.teacher,
         state: ActivityState = this.state,
         venue: Venue = this.venue,
+        category: Category = this.category,
         dateTimeRange: DateTimeRange = this.dateTimeRange,
         cancellationLimit: LocalDateTime? = this.cancellationLimit,
     ) = Activity(

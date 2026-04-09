@@ -17,6 +17,7 @@ class ActivityBuilder {
     var name: String = "test activity"
     var teacher: String? = null
     var state = ActivityState.Blank
+    var category = Category("category", null)
 
     val activityRemarks = mutableListOf<RemarkViewEntity>()
     val teacherRemarks = mutableListOf<RemarkViewEntity>()
@@ -34,6 +35,7 @@ class ActivityBuilder {
             name = name,
             teacher = teacher,
             state = state,
+            category = category,
             venue = venue,
         )
     }

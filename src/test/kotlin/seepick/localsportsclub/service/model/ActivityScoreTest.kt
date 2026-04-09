@@ -3,6 +3,7 @@ package seepick.localsportsclub.service.model
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeLessThan
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.ranges.shouldBeIn
 import io.kotest.matchers.shouldBe
@@ -20,7 +21,9 @@ class ActivityScoreTest : DescribeSpec({
     fun scoreResetActivity(code: ActivityBuilder.() -> Unit) = Activity.build {
         isFavorited = false
         isWishlisted = false
+        state = ActivityState.Blank
         rating = Rating.R0
+        category = Category("category", null)
         name = "test activity"
         teacher = null
         code()
@@ -88,6 +91,12 @@ class ActivityScoreTest : DescribeSpec({
                 teacherRemark(RemarkRating.Meh)
             } shouldBeIn 0.05..0.2
         }
+        it("When score near middle Then nullify") {
+            nullableScoreOf {
+                isWishlisted = true
+                rating = Rating.R2
+            }.shouldBeNull()
+        }
     }
     describe("rating") {
         it("R1") {
@@ -106,11 +115,11 @@ class ActivityScoreTest : DescribeSpec({
             scoreOf { rating = Rating.R5 } shouldBeIn 0.7..0.9
         }
         it("ratings in order") {
-            scoreOf { rating = Rating.R1 } shouldBeLessThan
-                    scoreOf { rating = Rating.R2 } shouldBeLessThan
-                    scoreOf { rating = Rating.R3 } shouldBeLessThan
-                    scoreOf { rating = Rating.R4 } shouldBeLessThan
-                    scoreOf { rating = Rating.R5 }
+            scoreOf { rating = Rating.R1 } shouldBeLessThan scoreOf {
+                rating = Rating.R2
+            } shouldBeLessThan scoreOf { rating = Rating.R3 } shouldBeLessThan scoreOf {
+                rating = Rating.R4
+            } shouldBeLessThan scoreOf { rating = Rating.R5 }
         }
     }
     describe("comparative") {
