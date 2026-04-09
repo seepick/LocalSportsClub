@@ -20,6 +20,17 @@
 
 # Backlog of moved out Todos
 
+## Newer
+
+* 🖋 new property venue.dateCreated & dateDeleted
+* 🎨 improve tab focus cycling; e.g. see remark dialog
+* 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
+    * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
+
+## Older
+
+* 🎨 RowScope.TableHeader missing VisualIndicator for bitmap and vector
+* 🖋 when book activity which can't be booked, parse response and show proper message; not needed, just pass through msg
 * 🎨 notes with rich format text-editor (bold, italic, colors, fontsize)
 * 🎨 could provide ultra long list to global remark for teacher/activity, and make suggest "prefilter it dynamically"
 * 🎨 make date search options less wide
