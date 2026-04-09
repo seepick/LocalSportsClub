@@ -10,6 +10,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import seepick.localsportsclub.view.LocalTextFieldColors
 
 @Composable
@@ -30,6 +31,9 @@ fun ColumnScope.NotesTextField(
             modifier = modifier.fillMaxWidth()
                 .verticalScroll(state),
         )
-        LscVScroll(rememberScrollbarAdapter(state))
+        LscVScroll(
+            scrollAdapter = rememberScrollbarAdapter(state),
+            gapTop = 8.dp,
+        )
     }
 }

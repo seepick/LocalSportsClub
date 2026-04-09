@@ -2,8 +2,6 @@
 
 ## v1.19.0
 
-* 🎨 height of v-scrollbars minus table header
-
 ## v2.[0-4].0
 
 ## Tech Backlog

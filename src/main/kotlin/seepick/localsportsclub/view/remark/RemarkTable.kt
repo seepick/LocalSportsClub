@@ -70,7 +70,10 @@ fun RemarkTable(
                 }
             }
         }
-        LscVScroll(rememberScrollbarAdapter(tableScrollState))
+        LscVScroll(
+            scrollAdapter = rememberScrollbarAdapter(tableScrollState),
+            gapTop = 45.dp,
+        )
     }
 }
 

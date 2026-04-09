@@ -173,7 +173,11 @@ fun <T> MainTable(
             }
         }
 
-        LscVScroll(rememberScrollbarAdapter(tableScrollState))
+        LscVScroll(
+            scrollAdapter = rememberScrollbarAdapter(tableScrollState),
+            gapTop = if (headerEnabled) 30.dp else 0.dp,
+            gapBottom = if (itemsLabel != null) 14.dp else 0.dp,
+        )
         if (itemsLabel != null) {
             Text(
                 text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,

@@ -66,7 +66,6 @@ import seepick.localsportsclub.view.preferences.tooltipTextVerifyUscFirst
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueScreen
 import seepick.localsportsclub.view.venue.detail.CarouselDialog
-import seepick.localsportsclub.view.venue.detail.CarouselViewModel
 import java.awt.Dimension
 
 private val log = logger {}
@@ -75,7 +74,6 @@ private val log = logger {}
 fun MainView(
     mainModel: MainViewModel = koinViewModel(),
     sharedModel: SharedModel = koinInject(),
-    carouselModel: CarouselViewModel = koinInject(),
     snackbarService: SnackbarService = koinInject(),
 ) {
     var snackbarEvent by remember { mutableStateOf<SnackbarEvent?>(null) }
