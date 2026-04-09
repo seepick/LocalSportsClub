@@ -40,7 +40,7 @@ class Activity(
 
     override val score: Score? by derivedStateOf { calcScore() }
     override val tableBgColor: Color? by derivedStateOf {
-        Lsc.colors.forScore(score, venue)
+        if (state == ActivityState.Booked) Lsc.colors.activityBooked else Lsc.colors.forScore(score, venue)
     }
 
     // not possible due to mixed setup of table columns (doing logic in view/composable together)
@@ -56,8 +56,7 @@ class Activity(
         venue.teacherRemarks.findMatchingRemark(this.teacher) ?: globalTeacherRemark
     }
 
-    fun isInPast(today: LocalDate): Boolean =
-        dateTimeRange.from.toLocalDate() < today
+    fun isInPast(today: LocalDate): Boolean = dateTimeRange.from.toLocalDate() < today
 
     fun copy(
         name: String = this.name,
@@ -82,15 +81,9 @@ class Activity(
         globalTeacherRemark = globalTeacherRemark,
     )
 
-    override fun toString() =
-        "Activity[" +
-                "id=$id, " +
-                "name=$name, " +
-                "venue.slug=${venue.slug}, " +
-                "date=${dateTimeRange.prettyFromShorterPrint(0)}, " +
-                "state=$state, " +
-                "teacher=$teacher" +
-                "]"
+    override fun toString() = "Activity[" + "id=$id, " + "name=$name, " + "venue.slug=${venue.slug}, " + "date=${
+        dateTimeRange.prettyFromShorterPrint(0)
+    }, " + "state=$state, " + "teacher=$teacher" + "]"
 
     companion object {
         fun comparator(today: LocalDate) = Comparator<Activity> { a1, a2 ->
@@ -109,11 +102,9 @@ class Activity(
 
 enum class ActivityState(val label: String) {
     // CAVE: names are used for DB mapping!
-    Blank("blank"),
-    Booked("booked"), // reserved for future (called "scheduled" for freetrainings)
+    Blank("blank"), Booked("booked"), // reserved for future (called "scheduled" for freetrainings)
     Checkedin("checked-in"), // past activities i actually attended
-    Noshow("no-show"),
-    CancelledLate("cancelled late");
+    Noshow("no-show"), CancelledLate("cancelled late");
 
     fun iconStringAndSuffix() = when (this) {
         Blank -> ""
