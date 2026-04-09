@@ -1,7 +1,5 @@
 # TODO
 
-## v1.19.0
-
 ## v2.[0-4].0
 
 ## Tech Backlog
