@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import seepick.localsportsclub.service.search.SelectSearchOption
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.Tooltip
+import seepick.localsportsclub.view.common.autoScroll
 import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.common.table.rowBgColor
 
@@ -51,7 +53,6 @@ fun <T> SelectSearchField(
     width: Dp = 150.dp,
 ) {
     val focusRequester = remember { FocusRequester() }
-    val tableScrollState = rememberLazyListState()
     Row(verticalAlignment = Alignment.CenterVertically) {
         searchOption.ClickableSearchText()
         if (searchOption.enabled) {
@@ -68,6 +69,10 @@ fun <T> SelectSearchField(
                             }
                             false
                         }) {
+                    val tableScrollState = rememberLazyListState()
+                    LaunchedEffect(searchOption.allSelects, searchOption.recentNavigatedItem) {
+                        autoScroll(tableScrollState, searchOption.allSelects, searchOption.recentNavigatedItem)
+                    }
                     LazyColumn(
                         state = tableScrollState,
                         modifier = Modifier.padding(end = 12.dp) // for the scrollbar to the right

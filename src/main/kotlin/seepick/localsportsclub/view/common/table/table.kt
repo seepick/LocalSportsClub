@@ -123,7 +123,6 @@ fun <T> MainTable(
             .focusProperties { canFocus = true }
             .then(boxModifier)
     ) {
-
         val tableScrollState = rememberLazyListState()
         LaunchedEffect(items, selectedItem) {
             autoScroll(tableScrollState, items, selectedItem)

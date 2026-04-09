@@ -2,7 +2,6 @@
 
 ## v1.19.0
 
-* 🎨 autoscroll on navigation for SelectSearchOption (e.g. categories)
 * 🎨 height of v-scrollbars minus table header
 
 ## v2.[0-4].0

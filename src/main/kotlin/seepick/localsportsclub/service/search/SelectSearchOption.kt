@@ -37,6 +37,9 @@ class SelectSearchOption<T>(
 
     private var recentSearchSelect: SearchSelect? = null
 
+    var recentNavigatedItem: SearchSelect? by mutableStateOf(null)
+        private set
+
     fun toggleSelect(select: SearchSelect) {
         if (!select.isSelected && !globalKeyboard.isMetaKeyDown) {
             disableAllSelected()
@@ -55,6 +58,7 @@ class SelectSearchOption<T>(
                 recentSearchSelect = target
                 disableAllSelected()
                 target.toggleSelected()
+                recentNavigatedItem = target // for auto-scroll
                 reset()
             }
         }
