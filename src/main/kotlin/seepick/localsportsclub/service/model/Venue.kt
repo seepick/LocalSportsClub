@@ -11,6 +11,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
+import com.github.seepick.uscclient.venue.VenueIds
 import com.github.seepick.uscclient.venue.VisitLimits
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.view.Lsc
@@ -19,30 +20,6 @@ import seepick.localsportsclub.view.common.table.TableItemAlpha
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.time.LocalDate
-import java.util.TreeSet
-
-data class Foo(
-    val id: Int,
-    val isNew: Boolean,
-)
-
-fun main() {
-    val tree = TreeSet<Foo>(object : Comparator<Foo> {
-        override fun compare(o1: Foo, o2: Foo): Int = if (o1.isNew && o2.isNew) {
-            o1.id.compareTo(o2.id)
-        } else if (!o1.isNew && !o2.isNew) {
-            o2.id.compareTo(o1.id)
-        } else {
-            if (o1.isNew) -1 else 1
-        }
-    })
-    tree.add(Foo(3, true))
-    tree.add(Foo(4, false))
-    tree.add(Foo(5, true))
-    tree.add(Foo(1, false))
-    tree.add(Foo(2, true))
-    println(tree)
-}
 
 class Venue(
     val id: Int,
@@ -212,14 +189,7 @@ class Venue(
                 notes == other.notes && imageFileName == other.imageFileName && isFavorited == other.isFavorited && rating == other.rating
     }
 
-    object Ids {
-        val EmsHealthStudio = 106
-        val HotFlowYogaJordaan = 178
-        val MassageSchoolItmThaiHandAmsterdam = 217
-        val MovementAmsterdam = 233
-        val MovementCity = 235
-        val RelaxLoungOvertoom = 277
-    }
+    object Ids : VenueIds
 }
 
 enum class Rating(val value: Int) : Comparable<Rating>, HasLabel {

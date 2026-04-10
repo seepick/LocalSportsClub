@@ -2,18 +2,13 @@
 
 ## v2.0.0 - submodules; simple ones
 
-* 🤖 introduce submodules: app, ui, domain, persistence (keep pretty empty at first, most remains in app)
-
 * Geographic Coordinates Stored as String in the Persistence Layer
     * VenueDbo declares val latitude: String and val longitude: String, and VenueDboTable maps them to VARCHAR(16). Every use of coordinates (e.g., in DataStorage.calculateLocatioAndDistance) requires an explicit .toDouble() conversion, and Venue.toDbo() converts back with .toString().
     * The service-layer Location data class correctly uses Double. This type inconsistency at the persistence boundary is error-prone and prevents the database engine from performing range queries on numeric columns.
     * => Add a Liquibase migration to convert the existing VARCHAR columns to REAL.
     * => Change VenueDbo.latitude/longitude to Double and update VenueDboTable to use Exposed's double("LATITUDE") / double("LONGITUDE") columns
 
-* move Hardcoded Venue IDs to usc-client library (Venue.kt)
-
-* delete scratch code (Venue.kt)
-    * => place them in src/test or a dedicated scratch file
+* 🤖 introduce submodules; keep empty at first, most remains in app; only check its technical workings (build, assemble)
 
 ## v2.1.0 - UI tests; simple ones
 
@@ -32,7 +27,6 @@
 ## v2.2.0 - sync
 
 * E2E tests first
-* move code to submodule (domain or custom "sync" one?!)
 
 * SyncReporter Mixes Sync Domain Logic with Compose UI Rendering
     * lives in the sync package and implements SyncerListener — a pure domain/infrastructure concern.
