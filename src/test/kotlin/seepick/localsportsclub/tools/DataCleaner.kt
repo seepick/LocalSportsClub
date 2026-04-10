@@ -135,8 +135,8 @@ object DataCleaner {
                     street = "Rijnstraat 63",
                     postalCode = "1079 GW",
                     addressLocality = "Amsterdam, Netherlands",
-                    latitude = "52.3459377",
-                    longitude = "4.9056754"
+                    latitude = 52.3459377,
+                    longitude = 4.9056754,
                 )
             )
         }

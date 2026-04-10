@@ -20,6 +20,7 @@ import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
@@ -72,8 +73,8 @@ fun Arb.Companion.venueDetails() = arbitrary {
         importantInfo = string(minSize = 3, maxSize = 50).orNull().bind(),
         openingTimes = string(minSize = 3, maxSize = 50).orNull().bind(),
         disciplines = list(string(minSize = 3, maxSize = 6), 0..3).bind(),
-        longitude = string(minSize = 3, maxSize = 50).bind(),
-        latitude = string(minSize = 3, maxSize = 50).bind(),
+        longitude = double(0.0, 100.0, false).bind().toString(),
+        latitude = double(0.0, 100.0, false).bind().toString(),
         postalCode = string(minSize = 3, maxSize = 50).bind(),
         addressLocality = string(minSize = 3, maxSize = 50).bind(),
         streetAddress = string(minSize = 3, maxSize = 50).bind(),

@@ -41,15 +41,15 @@ object MigrationProcessor {
         var postalCode = ""
         var street = ""
         var addressLocality = ""
-        var latitude = "0.0"
-        var longitude = "0.0"
+        var latitude = 0.0
+        var longitude = 0.0
         if (partner.locations.isNotEmpty()) {
             val loc = partner.locations.first()
             postalCode = loc.zipCode
             addressLocality = loc.city
             street = "${loc.streetName} ${loc.houseNumber} ${loc.addition}"
-            latitude = loc.latitude.toString()
-            longitude = loc.longitude.toString()
+            latitude = loc.latitude
+            longitude = loc.longitude
         }
         val dbo = VenueDbo(
             id = -1,

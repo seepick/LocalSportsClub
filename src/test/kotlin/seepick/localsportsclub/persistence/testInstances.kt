@@ -47,8 +47,8 @@ fun Arb.Companion.venueDbo() = arbitrary {
         addressLocality = string(minSize = 5, maxSize = 50).bind(),
         street = string(minSize = 5, maxSize = 50).bind(),
         postalCode = string(minSize = 5, maxSize = 6).bind(),
-        longitude = double(0.0, 5.0, false).bind().toString().take(5),
-        latitude = double(0.0, 5.0, false).bind().toString().take(5),
+        longitude = double(0.0, 50.0, false).bind(),
+        latitude = double(0.0, 50.0, false).bind(),
         planId = enum<Plan.UscPlan>().bind().id,
         isAutoSync = boolean().bind(),
         visitLimits = visitLimits().bind(),
@@ -128,8 +128,8 @@ fun Arb.Companion.gcal() = arbitrary {
 
 fun Arb.Companion.location() = arbitrary {
     Location(
-        latitude = double(min = -90.0, max = 90.0).bind(),
-        longitude = double(min = -180.0, max = 180.0).bind(),
+        latitude = double(min = -90.0, max = 90.0, false).bind(),
+        longitude = double(min = -180.0, max = 180.0, false).bind(),
     )
 }
 

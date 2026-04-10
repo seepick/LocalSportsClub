@@ -29,8 +29,8 @@ data class VenueDbo(
     val postalCode: String,
     val street: String,
     val addressLocality: String,
-    val latitude: String,
-    val longitude: String,
+    val latitude: Double,
+    val longitude: Double,
     val description: String,
     val importantInfo: String?,
     val openingTimes: String?,
@@ -74,8 +74,8 @@ object VenueDboTable : IntIdTable("VENUES", "ID") {
     val postalCode = varchar("POSTAL_CODE", 64) // sync details
     val street = varchar("STREET", 128) // sync details
     val addressLocality = varchar("ADDRESS_LOCALITY", 128) // sync details; "Amsterdam, Netherlands"
-    val latitude = varchar("LATITUDE", 16) // sync details
-    val longitude = varchar("LONGITUDE", 16) // sync details
+    val latitude = double("LOCATION_LATITUDE") // sync details
+    val longitude = double("LOCATION_LONGITUDE") // sync details
     val imageFileName = text("IMAGE_FILE_NAME").nullable() // custom
     val description = text("DESCRIPTION") // sync details
     val importantInfo = text("IMPORTANT_INFO").nullable() // sync details

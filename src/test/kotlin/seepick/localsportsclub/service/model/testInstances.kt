@@ -19,7 +19,10 @@ import seepick.localsportsclub.slug
 import testfixtUsc.dateTimeRange
 
 fun Arb.Companion.location() = arbitrary {
-    Location(double(min = 4.0, max = 6.0).bind(), double(min = 3.0, max = 4.0).bind())
+    Location(
+        latitude = double(min = 4.0, max = 6.0, false).bind(),
+        longitude = double(min = 3.0, max = 4.0, false).bind(),
+    )
 }
 
 fun Arb.Companion.venue() = arbitrary {
@@ -35,7 +38,7 @@ fun Arb.Companion.venue() = arbitrary {
         addressLocality = "",
         street = "",
         location = location().bind(),
-        distanceInKm = double(min = 0.1, max = 13.0).bind(),
+        distanceInKm = double(min = 0.1, max = 13.0, false).bind(),
         imageFileName = string(minSize = 3, maxSize = 20, codepoints = Codepoint.az()).orNull().bind(),
         importantInfo = null,
         openingTimes = null,
