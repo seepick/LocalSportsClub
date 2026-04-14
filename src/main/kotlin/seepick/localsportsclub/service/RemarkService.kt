@@ -1,7 +1,7 @@
 package seepick.localsportsclub.service
 
-import seepick.localsportsclub.persistence.ActivityRemarkRepo
-import seepick.localsportsclub.persistence.TeacherRemarkRepo
+import lsc.repo.ActivityRemarkRepo
+import lsc.repo.TeacherRemarkRepo
 import seepick.localsportsclub.service.model.toRemarkViewEntity
 import seepick.localsportsclub.view.remark.RemarkViewEntity
 import seepick.localsportsclub.view.remark.RemarkViewType

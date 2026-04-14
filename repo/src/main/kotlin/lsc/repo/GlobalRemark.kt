@@ -1,0 +1,91 @@
+package lsc.repo
+
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import lsc.repo.internal.nextId
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.statements.UpdateBuilder
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
+enum class GlobalRemarkTypeDbo {
+    // CAVE: names are used for database descriminator
+    Category,
+    Activity,
+    Teacher,
+}
+
+object GlobalRemarkDboTable : IntIdTable("GLOBAL_REMARKS", "ID") {
+    val type = enumerationByName<GlobalRemarkTypeDbo>("TYPE", 32)
+    val name = varchar("NAME", 128)
+    val rating = enumerationByName<RemarkDboRating>("RATING", 32)
+    val remark = text("REMARK")
+}
+
+data class GlobalRemarkDbo(
+    val id: Int,
+    val type: GlobalRemarkTypeDbo,
+    val name: String,
+    val rating: RemarkDboRating,
+    val remark: String,
+) {
+    companion object {
+        fun fromRow(row: ResultRow) = GlobalRemarkDbo(
+            id = row[GlobalRemarkDboTable.id].value,
+            type = row[GlobalRemarkDboTable.type],
+            name = row[GlobalRemarkDboTable.name],
+            rating = row[GlobalRemarkDboTable.rating],
+            remark = row[GlobalRemarkDboTable.remark],
+        )
+    }
+}
+
+interface GlobalRemarkRepository {
+    fun selectAll(): List<GlobalRemarkDbo>
+    fun deleteAll(type: GlobalRemarkTypeDbo)
+    fun insertAll(remarks: List<GlobalRemarkDbo>): List<GlobalRemarkDbo>
+//    fun update(remarks: List<GlobalRemarkDbo>)
+//    fun delete(remarks: List<GlobalRemarkDbo>)
+}
+
+object GlobalRemarkExposedRepository : GlobalRemarkRepository {
+
+    private val log = logger {}
+
+    override fun selectAll(): List<GlobalRemarkDbo> = transaction {
+        GlobalRemarkDboTable.selectAll().map {
+            GlobalRemarkDbo.fromRow(it)
+        }
+    }
+
+    override fun deleteAll(type: GlobalRemarkTypeDbo): Unit = transaction {
+        log.debug { "deleteAll($type)" }
+        GlobalRemarkDboTable.deleteWhere {
+            this.type eq type
+        }
+    }
+
+    override fun insertAll(remarks: List<GlobalRemarkDbo>) = transaction {
+        log.debug { "insert: $remarks" }
+
+        val nextId = GlobalRemarkDboTable.nextId()
+        remarks.mapIndexed { index, oldDbo ->
+            val newDbo = oldDbo.copy(id = nextId + index)
+            GlobalRemarkDboTable.insert {
+                prepareStmt(it, newDbo)
+            }
+            newDbo
+        }
+    }
+
+    private fun prepareStmt(stmt: UpdateBuilder<Number>, dbo: GlobalRemarkDbo) {
+        stmt[GlobalRemarkDboTable.id] = dbo.id
+        stmt[GlobalRemarkDboTable.type] = dbo.type
+        stmt[GlobalRemarkDboTable.name] = dbo.name
+        stmt[GlobalRemarkDboTable.rating] = dbo.rating
+        stmt[GlobalRemarkDboTable.remark] = dbo.remark
+    }
+}

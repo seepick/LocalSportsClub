@@ -1,9 +1,9 @@
 package seepick.localsportsclub.sync
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.VenueDbo
+import lsc.repo.ActivityDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.VenueDbo
 import seepick.localsportsclub.service.model.ActivityState
 
 interface Syncer {
@@ -12,6 +12,7 @@ interface Syncer {
 }
 
 interface SyncerListener {
+
     fun alsoRegisterForBooking(): Boolean = true
     fun onVenueDbosAdded(addedVenues: List<VenueDbo>)
     fun onVenueDbosMarkedDeleted(deletedVenues: List<VenueDbo>)

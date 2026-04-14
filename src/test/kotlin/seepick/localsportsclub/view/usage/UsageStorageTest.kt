@@ -9,15 +9,16 @@ import io.kotest.matchers.doubles.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.InMemoryActivityRepo
+import lsc.repo.InMemoryFreetrainingRepo
+import lsc.repo.activityDbo
+import lsc.repo.freetrainingDbo
 import seepick.localsportsclub.StaticClock
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.InMemoryActivityRepo
-import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
-import seepick.localsportsclub.persistence.activityDbo
-import seepick.localsportsclub.persistence.freetrainingDbo
 import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Preferences
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.usage.UsageStorage
@@ -98,7 +99,7 @@ class UsageStorageTest : DescribeSpec() {
         }
         describe("When starting up") {
             it("Given fitting activity Then checkedin counter increased") {
-                activityRepo.insert(activity("2.5.") { copy(state = ActivityState.Checkedin) })
+                activityRepo.insert(activity("2.5.") { copy(state = ActivityStateDbo.Checkedin) })
 
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
                 usage.onStartUp()
@@ -106,7 +107,7 @@ class UsageStorageTest : DescribeSpec() {
                 usage checkedinCountShouldBe 1
             }
             it("Given fitting freetraining Then checkedin counter increased") {
-                freetrainingRepo.insert(freetraining("5.5.") { copy(state = FreetrainingState.Checkedin) })
+                freetrainingRepo.insert(freetraining("5.5.") { copy(state = FreetrainingStateDbo.Checkedin) })
 
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
                 usage.onStartUp()
@@ -118,31 +119,31 @@ class UsageStorageTest : DescribeSpec() {
             it("When fitting activity added Then counter increased") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
 
-                usage.onActivityAdded(activity("5.5.") { copy(state = ActivityState.Checkedin) })
+                usage.onActivityAdded(activity("5.5.") { copy(state = ActivityStateDbo.Checkedin) })
 
                 usage checkedinCountShouldBe 1
             }
             it("When too early activity added Then counter stays") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
 
-                usage.onActivityAdded(activity("18.4.") { copy(state = ActivityState.Checkedin) })
+                usage.onActivityAdded(activity("18.4.") { copy(state = ActivityStateDbo.Checkedin) })
 
                 usage checkedinCountShouldBe 0
             }
             it("When too late activity added Then counter stays") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
 
-                usage.onActivityAdded(activity("18.6.") { copy(state = ActivityState.Checkedin) })
+                usage.onActivityAdded(activity("18.6.") { copy(state = ActivityStateDbo.Checkedin) })
 
                 usage checkedinCountShouldBe 0
             }
             it("Given fitting activity added When update making it unfitting Then counter decreased") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
-                val activity = activity("5.5.") { copy(state = ActivityState.Checkedin) }
+                val activity = activity("5.5.") { copy(state = ActivityStateDbo.Checkedin) }
                 usage.onActivityAdded(activity)
 
                 usage.onActivityDboUpdated(
-                    activity.copy(state = ActivityState.Blank),
+                    activity.copy(state = ActivityStateDbo.Blank),
                     ActivityFieldUpdate.State(ActivityState.Blank)
                 )
 
@@ -151,7 +152,7 @@ class UsageStorageTest : DescribeSpec() {
         }
         describe("activity booked") {
             it("Given fitting activity Then booked counter increased") {
-                activityRepo.insert(activity("20.5.") { copy(state = ActivityState.Booked) })
+                activityRepo.insert(activity("20.5.") { copy(state = ActivityStateDbo.Booked) })
 
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
                 usage.onStartUp()
@@ -163,7 +164,7 @@ class UsageStorageTest : DescribeSpec() {
             it("When fitting freetraining added Then checkedin counter increased") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
 
-                usage.onFreetrainingAdded(freetraining("5.5.") { copy(state = FreetrainingState.Checkedin) })
+                usage.onFreetrainingAdded(freetraining("5.5.") { copy(state = FreetrainingStateDbo.Checkedin) })
 
                 usage checkedinCountShouldBe 1
             }
@@ -172,8 +173,8 @@ class UsageStorageTest : DescribeSpec() {
             it("then added count") {
                 val usage = usage(today = "15.5.", periodFirstDay = 1)
 
-                usage.onActivityAdded(activity("4.5.") { copy(state = ActivityState.Checkedin) })
-                usage.onFreetrainingAdded(freetraining("6.5.") { copy(state = FreetrainingState.Checkedin) })
+                usage.onActivityAdded(activity("4.5.") { copy(state = ActivityStateDbo.Checkedin) })
+                usage.onFreetrainingAdded(freetraining("6.5.") { copy(state = FreetrainingStateDbo.Checkedin) })
 
                 usage checkedinCountShouldBe 2
             }
@@ -196,7 +197,7 @@ class UsageStorageTest : DescribeSpec() {
                 suspend fun percentageCheckedinShouldBe(countCheckins: Int, expected: Double) {
                     usage(today = "1.12.", periodFirstDay = 1, plan = Plan.UscPlan.Medium).also { usage ->
                         repeat(countCheckins) {
-                            usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingState.Checkedin) })
+                            usage.onFreetrainingAdded(freetraining("3.12.") { copy(state = FreetrainingStateDbo.Checkedin) })
                         }
                     }.percentageCheckedinShouldBe(expected)
                 }
@@ -209,7 +210,7 @@ class UsageStorageTest : DescribeSpec() {
                 suspend fun percentageBookedShouldBe(countCheckins: Int, expected: Double) {
                     usage(today = "1.12.", periodFirstDay = 1, plan = Plan.UscPlan.Medium).also { usage ->
                         repeat(countCheckins) {
-                            usage.onActivityAdded(activity("3.12.") { copy(state = ActivityState.Booked) })
+                            usage.onActivityAdded(activity("3.12.") { copy(state = ActivityStateDbo.Booked) })
                         }
                     }.percentageBookedShouldBe(expected)
                 }

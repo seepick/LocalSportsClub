@@ -10,10 +10,10 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
 import kotlinx.serialization.json.Json
-import seepick.localsportsclub.persistence.InMemorySinglesRepo
-import seepick.localsportsclub.persistence.SinglesDbo
-import seepick.localsportsclub.persistence.location
-import seepick.localsportsclub.persistence.preferences
+import lsc.repo.InMemorySinglesRepo
+import lsc.repo.SinglesDbo
+import seepick.localsportsclub.location
+import seepick.localsportsclub.preferences
 import seepick.localsportsclub.service.Encrypter
 import testfixtUsc.credentials
 import java.time.LocalDateTime

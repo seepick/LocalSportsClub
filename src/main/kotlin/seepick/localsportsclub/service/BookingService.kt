@@ -4,20 +4,23 @@ import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.booking.BookingResult
 import com.github.seepick.uscclient.booking.CancelResult
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.gcal.GcalDeletion
 import seepick.localsportsclub.gcal.GcalEntry
 import seepick.localsportsclub.gcal.GcalService
 import seepick.localsportsclub.gcal.readCalendarIdOrThrow
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
+import seepick.localsportsclub.service.model.toActivityState
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
@@ -71,15 +74,15 @@ class BookingService(
             is SubEntity.FreetrainingEntity -> freetraining.state == FreetrainingState.Scheduled
         }
 
-    private val ActivityDbo.isBookable: Boolean get() = state == ActivityState.Blank
-    private val ActivityDbo.isCancellable: Boolean get() = state == ActivityState.Booked
-    private val FreetrainingDbo.isSchedulable: Boolean get() = state == FreetrainingState.Blank
-    private val FreetrainingDbo.isCancellable: Boolean get() = state == FreetrainingState.Scheduled
+    private val ActivityDbo.isBookable: Boolean get() = state == ActivityStateDbo.Blank
+    private val ActivityDbo.isCancellable: Boolean get() = state == ActivityStateDbo.Booked
+    private val FreetrainingDbo.isSchedulable: Boolean get() = state == FreetrainingStateDbo.Blank
+    private val FreetrainingDbo.isCancellable: Boolean get() = state == FreetrainingStateDbo.Scheduled
     private fun ActivityDbo.Companion.bookingState(isBooking: Boolean) =
-        if (isBooking) ActivityState.Booked else ActivityState.Blank
+        if (isBooking) ActivityStateDbo.Booked else ActivityStateDbo.Blank
 
     private fun FreetrainingDbo.Companion.bookingState(isBooking: Boolean) =
-        if (isBooking) FreetrainingState.Scheduled else FreetrainingState.Blank
+        if (isBooking) FreetrainingStateDbo.Scheduled else FreetrainingStateDbo.Blank
 
     private suspend fun <T> bookOrCancel(
         subEntity: SubEntity,
@@ -131,7 +134,10 @@ class BookingService(
             }
         }
         listeners.forEach {
-            it.onActivityDboUpdated(updatedActivityDbo, ActivityFieldUpdate.State(oldState = activityDbo.state))
+            it.onActivityDboUpdated(
+                updatedActivityDbo,
+                ActivityFieldUpdate.State(oldState = activityDbo.state.toActivityState())
+            )
         }
     }
 
@@ -207,10 +213,10 @@ class BookingService(
         log.debug { "changeActivityToCheckedin($activity)" }
         require(activity.state != ActivityState.Checkedin) // no-show, or cancelled-late
         val oldDbo = activityRepo.selectById(activity.id)!!
-        val updated = oldDbo.copy(state = ActivityState.Checkedin)
+        val updated = oldDbo.copy(state = ActivityStateDbo.Checkedin)
         activityRepo.update(updated)
         listeners.forEach {
-            it.onActivityDboUpdated(updated, ActivityFieldUpdate.State(oldState = oldDbo.state))
+            it.onActivityDboUpdated(updated, ActivityFieldUpdate.State(oldState = oldDbo.state.toActivityState()))
         }
     }
 }

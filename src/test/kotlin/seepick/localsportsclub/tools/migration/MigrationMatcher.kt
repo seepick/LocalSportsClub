@@ -1,6 +1,6 @@
 package seepick.localsportsclub.tools.migration
 
-import seepick.localsportsclub.persistence.VenueDbo
+import lsc.repo.VenueDbo
 
 data class MigrationMatch(
     val partner: OnefitPartner,
@@ -14,7 +14,7 @@ sealed interface MatchType {
 
 data class CreateMapping(
     val partnerName: String,
-    val linkedVenueSlugs: List<String> = emptyList()
+    val linkedVenueSlugs: List<String> = emptyList(),
 )
 
 object MigrationMatcher {

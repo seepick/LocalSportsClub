@@ -5,16 +5,16 @@ import com.github.seepick.uscclient.activity.ActivityDetails
 import com.github.seepick.uscclient.activity.FreetrainingDetails
 import com.github.seepick.uscclient.model.City
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.ActivityDboProcessor
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.process
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.Month
@@ -78,7 +78,7 @@ class DataSyncRescuerImpl(
         spotsLeft = spotsLeft,
         from = dateTimeRange.from,
         to = dateTimeRange.to,
-        state = ActivityState.Blank,
+        state = ActivityStateDbo.Blank,
         cancellationLimit = cancellationDateLimit,
         planId = plan.id,
         teacher = null,
@@ -126,7 +126,7 @@ class DataSyncRescuerImpl(
         name = name,
         category = category,
         date = date,
-        state = FreetrainingState.Blank,
+        state = FreetrainingStateDbo.Blank,
         planId = plan.id,
     )
 }

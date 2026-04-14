@@ -4,13 +4,15 @@ import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import com.github.seepick.uscclient.shared.DateTimeRange
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueLinksRepo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.CategoryService
 import seepick.localsportsclub.service.GlobalRemarkFinder
 import seepick.localsportsclub.service.Location
@@ -137,7 +139,8 @@ class DataStorage(
     private val allActivitiesByVenueId: MutableMap<Int, MutableList<Activity>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val today = clock.today()
-            activityRepo.selectAll(cityId).filter { it.state != ActivityState.Blank || it.from.toLocalDate() >= today }
+            activityRepo.selectAll(cityId)
+                .filter { it.state != ActivityStateDbo.Blank || it.from.toLocalDate() >= today }
                 .sortedByDescending { it.from }.map { activityDbo ->
                     val venueForActivity = venuesById[activityDbo.venueId] ?: error("Venue not found for: $activityDbo")
                     activityDbo.toActivity(
@@ -157,7 +160,7 @@ class DataStorage(
     private val allFreetrainingsByVenueId: MutableMap<Int, MutableList<Freetraining>> by lazy {
         singlesService.preferences.city?.id?.let { cityId ->
             val today = clock.today()
-            freetrainingRepo.selectAll(cityId).filter { it.state != FreetrainingState.Blank || it.date >= today }
+            freetrainingRepo.selectAll(cityId).filter { it.state != FreetrainingStateDbo.Blank || it.date >= today }
                 .sortedByDescending { it.date }.map { freetrainingDbo ->
                     val venueForFreetraining =
                         venuesById[freetrainingDbo.venueId] ?: error("Venue not found for: $freetrainingDbo")
@@ -264,7 +267,7 @@ class DataStorage(
         allActivitiesByVenueId[updatedActivity.venueId]?.singleOrNull { it.id == updatedActivity.id }
             ?.also { activity ->
                 when (field) {
-                    is ActivityFieldUpdate.State -> activity.state = updatedActivity.state
+                    is ActivityFieldUpdate.State -> activity.state = updatedActivity.state.toActivityState()
                     ActivityFieldUpdate.Teacher -> activity.teacher = updatedActivity.teacher
                     ActivityFieldUpdate.Description -> activity.description = updatedActivity.description
                     ActivityFieldUpdate.SpotsLeft -> activity.spotsLeft = updatedActivity.spotsLeft
@@ -280,7 +283,8 @@ class DataStorage(
         allFreetrainingsByVenueId.values.flatten().firstOrNull { it.id == updatedFreetraining.id }
             ?.also { freetraining ->
                 when (field) {
-                    FreetrainingFieldUpdate.State -> freetraining.state = updatedFreetraining.state
+                    FreetrainingFieldUpdate.State -> freetraining.state =
+                        updatedFreetraining.state.toFreetrainingState()
                 }
             } ?: log.warn {
             "Couldn't find freetraining in data storage. " + "Most likely trying to update something which is too old and not visible on the UI anyway. " + "Freetraining: $updatedFreetraining"
@@ -385,7 +389,7 @@ private fun ActivityDbo.toActivity(
     teacher = teacher,
     description = description,
     dateTimeRange = DateTimeRange(from, to),
-    state = state,
+    state = state.toActivityState(),
     plan = Plan.UscPlan.byId(planId),
     cancellationLimit = cancellationLimit,
     globalActivityRemark = globalActivityRemark,
@@ -403,7 +407,7 @@ private fun FreetrainingDbo.toFreetraining(venue: Venue, category: Category) = F
     name = name,
     category = category,
     date = date,
-    state = state,
+    state = state.toFreetrainingState(),
 ).also {
     // nice hack ;)
     if (!it.venue.isHidden && !it.date.isBefore(SystemClock.today())) {
@@ -440,7 +444,7 @@ private fun VenueDbo.toVenue(
     isDeleted = isDeleted,
     isAutoSync = isAutoSync,
     plan = Plan.UscPlan.byId(planId),
-    visitLimits = visitLimits,
+    visitLimits = visitLimits?.toVisitLimits(),
     lastSync = lastSync,
 ).also {
     // nice hack ;)
@@ -473,6 +477,6 @@ fun Venue.toDbo() = VenueDbo(
     isAutoSync = isAutoSync,
     isDeleted = isDeleted,
     planId = plan.id,
-    visitLimits = visitLimits,
+    visitLimits = visitLimits?.toVisitLimits(),
     lastSync = lastSync,
 )

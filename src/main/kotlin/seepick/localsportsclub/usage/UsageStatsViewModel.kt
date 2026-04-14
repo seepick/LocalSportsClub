@@ -2,16 +2,17 @@ package seepick.localsportsclub.usage
 
 import androidx.lifecycle.ViewModel
 import com.github.seepick.uscclient.venue.forPlanOrNull
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.sameYearMonth
-import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
+import seepick.localsportsclub.service.model.toVisitLimits
 import seepick.localsportsclub.service.singles.SinglesService
 import java.time.LocalDate
 
@@ -37,7 +38,7 @@ class UsageStatsViewModel(
         return StatsValues(
             totalCheckins = checkedinActivities.size + checkedinFreetrainings.size,
             penalties = activities
-                .filter { it.state == ActivityState.Noshow || it.state == ActivityState.CancelledLate }
+                .filter { it.state == ActivityStateDbo.Noshow || it.state == ActivityStateDbo.CancelledLate }
                 .sortedByDescending { it.from }
                 .take(numberOfRecentPenalties),
             topCategories = checkedinActivities
@@ -74,7 +75,7 @@ class UsageStatsViewModel(
                 VenueCheckin(
                     venue = venue,
                     checkinsCount = it.value,
-                    maxCheckinsMonth = venue.visitLimits.forPlanOrNull(singlesService.plan),
+                    maxCheckinsMonth = venue.visitLimits?.toVisitLimits().forPlanOrNull(singlesService.plan),
                 )
             }) +
                 (checkedinFreetrainings.filter { it.date.sameYearMonth(now) }.groupingBy { it.venueId }
@@ -83,7 +84,7 @@ class UsageStatsViewModel(
                         VenueCheckin(
                             venue = venue,
                             checkinsCount = it.value,
-                            maxCheckinsMonth = venue.visitLimits.forPlanOrNull(singlesService.plan),
+                            maxCheckinsMonth = venue.visitLimits?.toVisitLimits().forPlanOrNull(singlesService.plan),
                         )
                     }))
             .sortedByDescending { it.checkinsCount }
@@ -105,7 +106,7 @@ data class VenueCheckin(
 
 data class StatsValues(
     val totalCheckins: Int,
-    val penalties: List<ActivityDbo>,
+    val penalties: List<ActivityDbo>, // TODO don't expose repo classes to view!
     val topCategories: List<CategoryCount>,
     val topVenues: List<VenueCheckin>,
     val monthlyVenueCheckins: List<VenueCheckin>, // per month, NOT period (max 6)

@@ -5,8 +5,8 @@ import com.github.seepick.uscclient.activity.ActivityDetails
 import com.github.seepick.uscclient.shared.DateRange
 import com.github.seepick.uscclient.thirdparty.DnysEvent
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.sync.SyncProgress
 
 class DnysActivityDetailsEnricher(

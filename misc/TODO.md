@@ -2,7 +2,11 @@
 
 ## v2.0.0 - submodules; simple ones
 
-* 🤖 introduce submodules
+* ad repo module: mark all public/internal; restructure packages
+
+LATER:
+
+* no DBO stuff in domain or view (portnadapter); define interfaces in domain with clean domain objects
 
 ## v2.1.0 - UI tests; simple ones
 

@@ -10,15 +10,15 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.InMemoryActivityRepo
+import lsc.repo.InMemoryFreetrainingRepo
+import lsc.repo.InMemoryVenueRepo
+import lsc.repo.VenueRepo
+import lsc.repo.activityDbo
 import seepick.localsportsclub.StaticClock
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.InMemoryActivityRepo
-import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
-import seepick.localsportsclub.persistence.InMemoryVenueRepo
-import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.persistence.activityDbo
-import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.activity
 import seepick.localsportsclub.service.model.toDbo
@@ -58,13 +58,13 @@ class BookingValidatorTest : DescribeSpec() {
     }
 
     private fun ActivityRepo.insertCheckedinActivityDbo(prefix: Int, from: LocalDateTime, venueId: Int = 0) {
-        insertActivityDbo(prefix, from, ActivityState.Checkedin, venueId)
+        insertActivityDbo(prefix, from, ActivityStateDbo.Checkedin, venueId)
     }
 
     private fun ActivityRepo.insertActivityDbo(
         prefix: Int,
         from: LocalDateTime,
-        state: ActivityState = ActivityState.Blank,
+        state: ActivityStateDbo = ActivityStateDbo.Blank,
         venueId: Int = 0,
         cancellationLimit: LocalDateTime? = null,
     ) {
@@ -156,7 +156,7 @@ class BookingValidatorTest : DescribeSpec() {
                 val venue = insertVenueForCity()
                 given {
                     repeat(usageInfo.maxReservationsPerDay) { i ->
-                        activityRepo.insertActivityDbo(i, now, ActivityState.Booked, venueId = venue.id)
+                        activityRepo.insertActivityDbo(i, now, ActivityStateDbo.Booked, venueId = venue.id)
                     }
                 }
 
@@ -168,7 +168,7 @@ class BookingValidatorTest : DescribeSpec() {
                 val venue = insertVenueForCity()
                 given {
                     repeat(usageInfo.maxReservationsPerVenue) { i ->
-                        activityRepo.insertActivityDbo(i, now.plusDays(1), ActivityState.Booked, venueId = venue.id)
+                        activityRepo.insertActivityDbo(i, now.plusDays(1), ActivityStateDbo.Booked, venueId = venue.id)
                     }
                 }
 
@@ -185,7 +185,7 @@ class BookingValidatorTest : DescribeSpec() {
                         activityRepo.insertActivityDbo(
                             i,
                             now.plusDays(1),
-                            ActivityState.Booked,
+                            ActivityStateDbo.Booked,
                             venueId = if (i % 2 == 0) venue1.id else venue2.id
                         )
                     }

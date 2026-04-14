@@ -1,8 +1,8 @@
 package seepick.localsportsclub.tools
 
+import lsc.repo.connect
 import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.devApp.development
-import seepick.localsportsclub.persistence.connect
 import seepick.localsportsclub.production
 import seepick.localsportsclub.service.DirectoryEntry
 

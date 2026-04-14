@@ -3,22 +3,22 @@ package seepick.localsportsclub.sync
 import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.delay
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueIdLink
+import lsc.repo.VenueLinksRepo
+import lsc.repo.VenueRepo
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.devApp.DummyGenerator
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueIdLink
-import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
 import java.time.LocalDate
 
 enum class SyncMode {
@@ -198,11 +198,11 @@ class SyncerDummy(
             from = now.plusDays(3), to = now.plusDays(3).plusMinutes(20)
         )
         this += dummyActivity(activityId++, 4).copy(
-            name = "You will be there", state = ActivityState.Booked, teacher = "Brittany Mock",
+            name = "You will be there", state = ActivityStateDbo.Booked, teacher = "Brittany Mock",
             from = now.plusHours(3), to = now.plusHours(4),
         )
         this += dummyActivity(activityId++, 4).copy(
-            name = "You were there", state = ActivityState.Checkedin,
+            name = "You were there", state = ActivityStateDbo.Checkedin,
             from = now.minusDays(1), to = now.minusDays(1).plusHours(1)
         )
         this += dummyActivity(activityId++, 4).copy(
@@ -230,7 +230,7 @@ class SyncerDummy(
             name = "Free Sport",
             category = "Wellness",
             date = LocalDate.now().plusDays(1),
-            state = FreetrainingState.Checkedin,
+            state = FreetrainingStateDbo.Checkedin,
         )
         this += dummyFreetraining().copy(
             venueId = 4,
@@ -262,7 +262,7 @@ class SyncerDummy(
             to = now.plusDays(1).plusMinutes(75),
             teacher = null,
             description = null,
-            state = ActivityState.Blank,
+            state = ActivityStateDbo.Blank,
             cancellationLimit = null,
             planId = Plan.UscPlan.Small.id,
         )
@@ -274,7 +274,7 @@ class SyncerDummy(
         name = "Name",
         category = "",
         date = LocalDate.now().plusDays(3),
-        state = FreetrainingState.Blank,
+        state = FreetrainingStateDbo.Blank,
         planId = Plan.UscPlan.Medium.id,
     )
 }

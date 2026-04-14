@@ -1,9 +1,7 @@
 package seepick.localsportsclub.service.model
 
 import androidx.compose.ui.graphics.Color
-import seepick.localsportsclub.persistence.ActivityRemarkDbo
-import seepick.localsportsclub.persistence.RemarkDboRating
-import seepick.localsportsclub.persistence.TeacherRemarkDbo
+import lsc.repo.ActivityRemarkDbo
 import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.remark.RemarkViewEntity
 import seepick.localsportsclub.view.remark.RemarkViewType
@@ -42,21 +40,6 @@ enum class RemarkRating(
     }
 }
 
-fun RemarkRating.toRemarkDboRating() = when (this) {
-    RemarkRating.Amazing -> RemarkDboRating.Amazing
-    RemarkRating.Good -> RemarkDboRating.Good
-    RemarkRating.Meh -> RemarkDboRating.Meh
-    RemarkRating.Bad -> RemarkDboRating.Bad
-}
-
-fun ActivityRemarkDbo.toActivityRemark() = ActivityRemark(
-    id = this.id,
-    venueId = this.venueId,
-    name = this.name,
-    remark = this.remark,
-    rating = this.rating.toRemarkRating(),
-)
-
 fun ActivityRemarkDbo.toRemarkViewEntity() = RemarkViewEntity(
     id = this.id,
     type = RemarkViewType.WithVenue(this.venueId),
@@ -65,21 +48,6 @@ fun ActivityRemarkDbo.toRemarkViewEntity() = RemarkViewEntity(
     rating = this.rating.toRemarkRating(),
 )
 
-fun TeacherRemarkDbo.toRemarkViewEntity() = RemarkViewEntity(
-    id = this.id,
-    type = RemarkViewType.WithVenue(this.venueId),
-    name = this.name,
-    remark = this.remark,
-    rating = this.rating.toRemarkRating(),
-)
-
-fun RemarkDboRating.toRemarkRating() = when (this) {
-    RemarkDboRating.Amazing -> RemarkRating.Amazing
-    RemarkDboRating.Good -> RemarkRating.Good
-    RemarkDboRating.Meh -> RemarkRating.Meh
-    RemarkDboRating.Bad -> RemarkRating.Bad
-}
-
 data class TeacherRemark(
     override val id: Int,
     override val venueId: Int,
@@ -87,11 +55,3 @@ data class TeacherRemark(
     override val remark: String,
     override val rating: RemarkRating,
 ) : Remark
-
-fun TeacherRemarkDbo.toTeacherRemark() = TeacherRemark(
-    id = this.id,
-    venueId = this.venueId,
-    name = this.name,
-    remark = this.remark,
-    rating = this.rating.toRemarkRating(),
-)

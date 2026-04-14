@@ -2,11 +2,12 @@ package seepick.localsportsclub
 
 import com.github.seepick.uscclient.model.UscLang
 import io.kotest.core.spec.style.StringSpec
+import lsc.repo.VenueRepo
+import lsc.repo.exposedPersistenceModule
 import org.koin.core.context.startKoin
 import seepick.localsportsclub.devApp.development
 import seepick.localsportsclub.gcal.gcalModule
-import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.persistence.exposedPersistenceModule
+import seepick.localsportsclub.service.DirectoryEntry
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.sync.Downloader
@@ -29,7 +30,7 @@ class AppStartupKoinTest : StringSpec() {
                 modules(
                     allModules(
                         config,
-                        persistenceModule = exposedPersistenceModule(config),
+                        persistenceModule = exposedPersistenceModule(config.fileResolver.resolve(DirectoryEntry.Database)),
                         gcalModule = gcalModule(),
                         uscClientModule = uscClientModule(config),
                         syncModule = syncModule(config),

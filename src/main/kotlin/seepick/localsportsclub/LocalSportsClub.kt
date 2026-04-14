@@ -11,6 +11,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import ch.qos.logback.classic.Level
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import lsc.repo.exposedPersistenceModule
 import org.koin.compose.KoinApplication
 import org.koin.compose.getKoin
 import org.koin.compose.koinInject
@@ -18,7 +19,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.Koin
 import org.koin.core.module.Module
 import seepick.localsportsclub.gcal.gcalModule
-import seepick.localsportsclub.persistence.exposedPersistenceModule
 import seepick.localsportsclub.service.AppPropertiesProvider
 import seepick.localsportsclub.service.ApplicationLifecycle
 import seepick.localsportsclub.service.ApplicationLifecycleListener
@@ -67,7 +67,7 @@ fun LscConfig.Companion.production() = LscConfig(
 fun startApplication(
     config: LscConfig,
     onStartup: ((Koin) -> Unit)? = null,
-    persistenceModule: Module = exposedPersistenceModule(config),
+    persistenceModule: Module = exposedPersistenceModule(config.fileResolver.resolve(DirectoryEntry.Database)),
     gcalModule: Module = gcalModule(),
     uscClientModule: Module = uscClientModule(config),
     syncModule: Module = syncModule(config),

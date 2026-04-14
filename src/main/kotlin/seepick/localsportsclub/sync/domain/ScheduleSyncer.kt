@@ -5,12 +5,13 @@ import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.schedule.BookedActivity
 import com.github.seepick.uscclient.schedule.ScheduledFreetraining
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import seepick.localsportsclub.service.model.toActivityState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress
@@ -74,7 +75,7 @@ class ScheduleSyncer(
         extractor: suspend (T) -> ActivityDbo,
     ) {
         log.debug { "Marking ${activities.size} activities as booked=$toBeBooked" }
-        val targetState = if (toBeBooked) ActivityState.Booked else ActivityState.Blank
+        val targetState = if (toBeBooked) ActivityStateDbo.Booked else ActivityStateDbo.Blank
         activities.forEach {
             val activity = extractor(it)
             require(activity.state != targetState) { "Expected activity state not to be $targetState: $activity" }
@@ -82,7 +83,7 @@ class ScheduleSyncer(
             activityRepo.update(updatedActivity)
             dispatcher.dispatchOnActivityDboUpdated(
                 updatedActivity,
-                ActivityFieldUpdate.State(oldState = activity.state)
+                ActivityFieldUpdate.State(oldState = activity.state.toActivityState())
             )
         }
     }
@@ -93,7 +94,7 @@ class ScheduleSyncer(
         extractor: suspend (T) -> FreetrainingDbo,
     ) {
         log.debug { "Marking ${freetrainings.size} freetrainings as scheduled=$toBeScheduled" }
-        val targetState = if (toBeScheduled) FreetrainingState.Scheduled else FreetrainingState.Blank
+        val targetState = if (toBeScheduled) FreetrainingStateDbo.Scheduled else FreetrainingStateDbo.Blank
         freetrainings.forEach {
             val freetraining = extractor(it)
             require(freetraining.state != targetState) { "Expected freetraining state not to be $targetState: $freetraining" }

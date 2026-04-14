@@ -1,7 +1,7 @@
 package seepick.localsportsclub.service
 
 import com.github.seepick.uscclient.activity.ActivityDetails
-import seepick.localsportsclub.persistence.ActivityDbo
+import lsc.repo.ActivityDbo
 
 typealias ActivityDbosWithDetails = Map<ActivityDbo, ActivityDetails>
 

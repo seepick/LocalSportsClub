@@ -8,12 +8,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
 import seepick.localsportsclub.view.Lsc
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
 
 class SyncReporter : SyncerListener {
     var report = SyncReport()
@@ -44,11 +44,11 @@ class SyncReporter : SyncerListener {
     override fun onActivityDboUpdated(updatedActivity: ActivityDbo, field: ActivityFieldUpdate) {
         if (field is ActivityFieldUpdate.State) {
             when (updatedActivity.state) {
-                ActivityState.Blank -> {} // ignore
-                ActivityState.Booked -> report.activitiesBooked++
-                ActivityState.Checkedin -> report.activitiesCheckedin++
-                ActivityState.Noshow -> report.activitiesNoshow++
-                ActivityState.CancelledLate -> report.activitiesCancelledLate++
+                ActivityStateDbo.Blank -> {} // ignore
+                ActivityStateDbo.Booked -> report.activitiesBooked++
+                ActivityStateDbo.Checkedin -> report.activitiesCheckedin++
+                ActivityStateDbo.Noshow -> report.activitiesNoshow++
+                ActivityStateDbo.CancelledLate -> report.activitiesCancelledLate++
             }
         }
     }
@@ -60,9 +60,9 @@ class SyncReporter : SyncerListener {
     override fun onFreetrainingDboUpdated(updatedFreetraining: FreetrainingDbo, field: FreetrainingFieldUpdate) {
         if (field == FreetrainingFieldUpdate.State) {
             when (updatedFreetraining.state) {
-                FreetrainingState.Blank -> {} // ignore
-                FreetrainingState.Scheduled -> report.freetrainingsScheduled++
-                FreetrainingState.Checkedin -> report.freetrainingsCheckedin++
+                FreetrainingStateDbo.Blank -> {} // ignore
+                FreetrainingStateDbo.Scheduled -> report.freetrainingsScheduled++
+                FreetrainingStateDbo.Checkedin -> report.freetrainingsCheckedin++
             }
         }
     }

@@ -67,6 +67,10 @@ dependencies {
     implementation(Deps.logging.logback)
 
     // TEST
+    testImplementation(testFixtures(project(":repo")))
+    testImplementation(testFixtures(project(":domain")))
+    testImplementation(testFixtures(project(":view")))
+
     testImplementation(compose.desktop.uiTestJUnit4)
     testImplementation(Deps.testing.kotest.runnerJunit5)
     testImplementation(Deps.testing.kotest.assertionsCore)

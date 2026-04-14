@@ -6,12 +6,12 @@ import com.github.seepick.uscclient.activity.ActivityInfo
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.ActivityDboProcessor
-import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.process
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
@@ -105,7 +105,7 @@ class ActivitiesSyncer(
         spotsLeft = spotsLeft,
         from = dateTimeRange.from,
         to = dateTimeRange.to,
-        state = ActivityState.Blank,
+        state = ActivityStateDbo.Blank,
         cancellationLimit = null,
         planId = plan.id,
         teacher = null,

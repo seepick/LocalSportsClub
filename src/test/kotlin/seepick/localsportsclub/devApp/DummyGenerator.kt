@@ -2,8 +2,8 @@ package seepick.localsportsclub.devApp
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
-import com.github.seepick.uscclient.venue.VisitLimits
-import seepick.localsportsclub.persistence.VenueDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VisitLimitsDbo
 
 object DummyGenerator {
     fun venue() = VenueDbo(
@@ -30,7 +30,7 @@ object DummyGenerator {
         isDeleted = false,
         isAutoSync = false,
         planId = Plan.UscPlan.Small.id,
-        visitLimits = VisitLimits(small = 2, medium = 4, large = 6, xlarge = 8),
+        visitLimits = VisitLimitsDbo(small = 2, medium = 4, large = 6, xlarge = 8),
         lastSync = null,
     )
 }

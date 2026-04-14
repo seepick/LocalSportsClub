@@ -1,7 +1,7 @@
 package seepick.localsportsclub.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityRepo
+import lsc.repo.ActivityRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.sync.domain.VenueSyncer
 

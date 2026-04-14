@@ -3,17 +3,17 @@ package seepick.localsportsclub.tools
 import com.github.seepick.uscclient.activity.cleanActivityFreetrainingName
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.venue.cleanVenueInfo
+import lsc.repo.ActivityRepo
+import lsc.repo.ExposedActivityRepo
+import lsc.repo.ExposedFreetrainingRepo
+import lsc.repo.ExposedVenueLinksRepo
+import lsc.repo.ExposedVenueRepo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueIdLink
+import lsc.repo.VenueLinksRepo
+import lsc.repo.VenueRepo
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.ExposedActivityRepo
-import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
-import seepick.localsportsclub.persistence.ExposedVenueLinksRepo
-import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueIdLink
-import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenueRepo
 import seepick.localsportsclub.service.unescape
 
 object DataCleaner {
@@ -92,9 +92,10 @@ object DataCleaner {
         }
 
         venueRepo.selectAllByCity(City.Amsterdam.id).forEach { venue ->
-            if (venue.importantInfo != null) {
-                val cleanedInfo = cleanVenueInfo(venue.importantInfo)
-                if (cleanedInfo != venue.importantInfo) {
+            val info = venue.importantInfo // enable smartcast
+            if (info != null) {
+                val cleanedInfo = cleanVenueInfo(info)
+                if (cleanedInfo != info) {
                     venueRepo.update(venue.copy(importantInfo = cleanedInfo))
                 }
             }

@@ -1,10 +1,10 @@
 package seepick.localsportsclub.tools
 
 import kotlinx.coroutines.runBlocking
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.ExposedActivityRepo
-import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityRepo
+import lsc.repo.ExposedActivityRepo
+import lsc.repo.ExposedVenueRepo
+import lsc.repo.VenueRepo
 
 object BugfixDataCleaner {
 

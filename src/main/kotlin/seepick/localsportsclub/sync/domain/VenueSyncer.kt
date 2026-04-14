@@ -9,13 +9,14 @@ import com.github.seepick.uscclient.venue.VenueDetails
 import com.github.seepick.uscclient.venue.VenueInfo
 import com.github.seepick.uscclient.venue.VenuesFilter
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueIdLink
-import seepick.localsportsclub.persistence.VenueLinksRepo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueIdLink
+import lsc.repo.VenueLinksRepo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.FileResolver
 import seepick.localsportsclub.service.ImageStorage
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.model.toVisitLimits
 import seepick.localsportsclub.service.resolveVenueImage
 import seepick.localsportsclub.service.workParallel
 import seepick.localsportsclub.sync.Downloader
@@ -57,9 +58,13 @@ class VenueSyncer(
         venueRepo.update(venue.copyByDetails(clock.today(), details))
     }
 
-    fun VenueDbo.isReadyForSyncDetails(today: LocalDate): Boolean =
-        !isDeleted && !isHidden &&
-                (lastSync == null || lastSync.daysBetween(today) >= (Math.random() * 10 + 14).toLong())
+    fun VenueDbo.isReadyForSyncDetails(today: LocalDate): Boolean {
+        if (isDeleted || isHidden) {
+            return false
+        }
+        val maybeLastSync = lastSync // smartcast not possible for external modules
+        return maybeLastSync == null || maybeLastSync.daysBetween(today) >= (Math.random() * 10 + 14).toLong()
+    }
 
     private suspend fun updateDetails(city: City) {
         log.debug { "updateDetails($city)" }
@@ -270,7 +275,7 @@ class VenueSyncInserterImpl(
 
 private fun VenueDbo.copyByDetails(today: LocalDate, detail: VenueDetails) = copy(
     lastSync = today,
-    visitLimits = detail.visitLimits,
+    visitLimits = detail.visitLimits?.toVisitLimits(),
     description = detail.description,
     openingTimes = detail.openingTimes,
     importantInfo = detail.importantInfo,
@@ -310,6 +315,6 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = Ven
     isDeleted = false,
     isAutoSync = false,
     planId = planId,
-    visitLimits = visitLimits,
+    visitLimits = visitLimits?.toVisitLimits(),
     lastSync = today,
 )

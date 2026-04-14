@@ -1,7 +1,7 @@
 package seepick.localsportsclub.sync.domain
 
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingRepo
+import lsc.repo.ActivityRepo
+import lsc.repo.FreetrainingRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher

@@ -4,6 +4,7 @@ import com.github.seepick.uscclient.login.Credentials
 import com.github.seepick.uscclient.model.City
 import seepick.localsportsclub.service.Location
 
+// TODO remove any reference to uscclient (impl.detail hidden)
 data class Preferences(
     val uscCredentials: Credentials?,
     val city: City?,

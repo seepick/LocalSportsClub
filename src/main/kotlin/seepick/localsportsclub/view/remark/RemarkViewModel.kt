@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityRemarkDbo
-import seepick.localsportsclub.persistence.ActivityRemarkRepo
-import seepick.localsportsclub.persistence.TeacherRemarkDbo
-import seepick.localsportsclub.persistence.TeacherRemarkRepo
+import lsc.repo.ActivityRemarkDbo
+import lsc.repo.ActivityRemarkRepo
+import lsc.repo.TeacherRemarkDbo
+import lsc.repo.TeacherRemarkRepo
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.toRemarkDboRating
 import seepick.localsportsclub.service.model.toRemarkViewEntity

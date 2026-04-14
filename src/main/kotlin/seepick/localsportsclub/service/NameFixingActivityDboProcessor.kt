@@ -1,6 +1,6 @@
 package seepick.localsportsclub.service
 
-import seepick.localsportsclub.persistence.ActivityDbo
+import lsc.repo.ActivityDbo
 
 class NameFixingActivityDboProcessor : ActivityDboProcessor {
 

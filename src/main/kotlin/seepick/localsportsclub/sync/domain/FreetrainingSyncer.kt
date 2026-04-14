@@ -6,11 +6,11 @@ import com.github.seepick.uscclient.activity.FreetrainingInfo
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.FreetrainingRepo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.service.model.FreetrainingState
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.time.LocalDate
@@ -83,6 +83,6 @@ private fun FreetrainingInfo.toDbo(venueId: Int, date: LocalDate) = Freetraining
     name = name,
     category = category,
     date = date,
-    state = FreetrainingState.Blank,
+    state = FreetrainingStateDbo.Blank,
     planId = plan.id,
 )

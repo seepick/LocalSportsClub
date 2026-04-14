@@ -2,16 +2,16 @@ package seepick.localsportsclub.tools.migration
 
 import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ExposedActivityRepo
-import seepick.localsportsclub.persistence.ExposedFreetrainingRepo
-import seepick.localsportsclub.persistence.ExposedVenueLinksRepo
-import seepick.localsportsclub.persistence.ExposedVenueRepo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.VenueDbo
-import seepick.localsportsclub.persistence.VenueIdLink
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.ExposedActivityRepo
+import lsc.repo.ExposedFreetrainingRepo
+import lsc.repo.ExposedVenueLinksRepo
+import lsc.repo.ExposedVenueRepo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.FreetrainingStateDbo
+import lsc.repo.VenueDbo
+import lsc.repo.VenueIdLink
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -117,7 +117,7 @@ object MigrationProcessor {
                     to = parseZonedDateTimeToLocalDateTime(checkin.end),
                     teacher = null,
                     description = null,
-                    state = ActivityState.Checkedin,
+                    state = ActivityStateDbo.Checkedin,
                     cancellationLimit = null,
                     planId = Plan.UscPlan.Small.id,
                 )
@@ -134,7 +134,7 @@ object MigrationProcessor {
                     name = "DropIn $onefitNameMarker",
                     category = "",
                     date = parseZonedDateTimeToLocalDateTime(dropin.createdAt).toLocalDate(),
-                    state = FreetrainingState.Checkedin,
+                    state = FreetrainingStateDbo.Checkedin,
                     planId = Plan.UscPlan.Small.id,
                 )
             )

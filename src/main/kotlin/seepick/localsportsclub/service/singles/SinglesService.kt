@@ -6,8 +6,8 @@ import com.github.seepick.uscclient.model.City.Companion.byId
 import com.github.seepick.uscclient.plan.Plan
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.json.Json
-import seepick.localsportsclub.persistence.SinglesDbo
-import seepick.localsportsclub.persistence.SinglesRepo
+import lsc.repo.SinglesDbo
+import lsc.repo.SinglesRepo
 import seepick.localsportsclub.service.Encrypter
 import seepick.localsportsclub.service.Location
 import seepick.localsportsclub.service.WindowPref

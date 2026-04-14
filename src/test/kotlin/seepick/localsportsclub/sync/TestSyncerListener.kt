@@ -1,8 +1,8 @@
 package seepick.localsportsclub.sync
 
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.FreetrainingDbo
-import seepick.localsportsclub.persistence.VenueDbo
+import lsc.repo.ActivityDbo
+import lsc.repo.FreetrainingDbo
+import lsc.repo.VenueDbo
 
 abstract class TestSyncerListener : SyncerListener {
     override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {

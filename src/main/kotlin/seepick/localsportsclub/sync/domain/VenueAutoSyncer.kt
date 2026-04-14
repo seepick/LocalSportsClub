@@ -1,8 +1,8 @@
 package seepick.localsportsclub.sync.domain
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.VenueRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.VenueRepo
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.SyncProgress

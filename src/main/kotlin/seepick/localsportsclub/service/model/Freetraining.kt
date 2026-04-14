@@ -8,7 +8,6 @@ import seepick.localsportsclub.view.common.table.TableItemBgColor
 import java.time.LocalDate
 
 enum class FreetrainingState {
-    // CAVE: names are used for DB mapping!
     Blank, Scheduled, Checkedin;
 
     fun iconStringAndSuffix() = when (this) {

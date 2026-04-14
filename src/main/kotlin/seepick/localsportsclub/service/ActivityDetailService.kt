@@ -3,8 +3,8 @@ package seepick.localsportsclub.service
 import com.github.seepick.uscclient.UscApi
 import com.github.seepick.uscclient.activity.ActivityDetails
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.ActivityRepo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityRepo
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress

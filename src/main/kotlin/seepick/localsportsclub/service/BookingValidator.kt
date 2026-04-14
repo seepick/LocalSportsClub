@@ -4,7 +4,7 @@ import com.github.seepick.uscclient.venue.forPlanOrNull
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import seepick.localsportsclub.persistence.ActivityRepo
+import lsc.repo.ActivityRepo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.monthRange
 import seepick.localsportsclub.service.model.Activity

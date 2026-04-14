@@ -11,9 +11,9 @@ import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import seepick.localsportsclub.persistence.VenueRepo
-import seepick.localsportsclub.persistence.activityDbo
-import seepick.localsportsclub.persistence.venueDbo
+import lsc.repo.VenueRepo
+import lsc.repo.activityDbo
+import lsc.repo.venueDbo
 import seepick.localsportsclub.sync.SyncProgress
 import testfixtUsc.activityDetails
 import testfixtUsc.dnysEvent

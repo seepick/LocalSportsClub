@@ -13,11 +13,12 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.mockk.coEvery
 import io.mockk.mockk
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.InMemoryActivityRepo
-import seepick.localsportsclub.persistence.InMemoryFreetrainingRepo
-import seepick.localsportsclub.persistence.TestRepoFacade
-import seepick.localsportsclub.persistence.activityDbo
+import lsc.repo.ActivityDbo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.InMemoryActivityRepo
+import lsc.repo.InMemoryFreetrainingRepo
+import lsc.repo.TestRepoFacade
+import lsc.repo.activityDbo
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.sync.domain.CheckinSyncer
@@ -90,7 +91,7 @@ class CheckinSyncerTest : StringSpec() {
 
     init {
         "Given non-checkedin activity and page with entry for it Then update it" {
-            val activity = testRepo.insertActivity(state = ActivityState.Blank)
+            val activity = testRepo.insertActivity(state = ActivityStateDbo.Blank)
             val entry = Arb.activityCheckinEntry().next()
                 .copy(activityId = activity.id, type = ActivityCheckinEntryType.Checkedin)
             coEvery { uscApi.fetchCheckinsPage(1, today) } returns CheckinsPage(listOf(entry))
@@ -98,17 +99,17 @@ class CheckinSyncerTest : StringSpec() {
 
             syncer.sync(city)
 
-            val expected = activity.copy(state = ActivityState.Checkedin)
+            val expected = activity.copy(state = ActivityStateDbo.Checkedin)
             activityRepo.selectById(activity.id) shouldBe expected
             syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State(
                 ActivityState.Blank
             ))
         }
         "Given local checked-in activity Then sync until that time although more pages potentially available" {
-            val activity1 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
-            val activity2 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
-            val activity3 = testRepo.insertActivity(state = ActivityState.Blank, from = now.minusDays(5))
-            testRepo.insertActivity(state = ActivityState.Checkedin, from = now.minusDays(1)) // pivot activity
+            val activity1 = testRepo.insertActivity(state = ActivityStateDbo.Blank, from = now.minusDays(5))
+            val activity2 = testRepo.insertActivity(state = ActivityStateDbo.Blank, from = now.minusDays(5))
+            val activity3 = testRepo.insertActivity(state = ActivityStateDbo.Blank, from = now.minusDays(5))
+            testRepo.insertActivity(state = ActivityStateDbo.Checkedin, from = now.minusDays(1)) // pivot activity
 
             mockCheckinsPage(1, today, activity1.id)
             mockCheckinsPage(2, today.minusDays(1), activity2.id)
@@ -121,7 +122,7 @@ class CheckinSyncerTest : StringSpec() {
             val nonExistingActivityId = 42
             val checkinEntry = mockCheckinsPage(1, today, nonExistingActivityId)
             mockCheckinsEmptyPage(2, today)
-            val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityState.Blank)
+            val rescuedActivity = Arb.activityDbo().next().copy(state = ActivityStateDbo.Blank)
             coEvery {
                 dataSyncRescuer.fetchInsertAndDispatchActivity(
                     city,
@@ -136,16 +137,16 @@ class CheckinSyncerTest : StringSpec() {
 
             syncer.sync(city)
 
-            val expected = rescuedActivity.copy(state = ActivityState.Checkedin)
+            val expected = rescuedActivity.copy(state = ActivityStateDbo.Checkedin)
             activityRepo.selectById(expected.id) shouldBe expected
             syncActivityDbosUpdated.shouldBeSingleton().first() shouldBe (expected to ActivityFieldUpdate.State(
                 ActivityState.Blank
             ))
         }
         listOf(
-            ActivityState.Checkedin to ActivityCheckinEntryType.Checkedin,
-            ActivityState.CancelledLate to ActivityCheckinEntryType.CancelledLate,
-            ActivityState.Noshow to ActivityCheckinEntryType.Noshow,
+            ActivityStateDbo.Checkedin to ActivityCheckinEntryType.Checkedin,
+            ActivityStateDbo.CancelledLate to ActivityCheckinEntryType.CancelledLate,
+            ActivityStateDbo.Noshow to ActivityCheckinEntryType.Noshow,
         ).forEach { (state, type) ->
             "Given activity already ${state.name} When get it again Then do nothing" {
                 val activity = testRepo.insertActivity(state = state)
@@ -159,5 +160,4 @@ class CheckinSyncerTest : StringSpec() {
             }
         }
     }
-
 }

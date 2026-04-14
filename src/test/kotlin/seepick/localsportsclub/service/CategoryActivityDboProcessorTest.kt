@@ -4,8 +4,8 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import seepick.localsportsclub.persistence.ActivityDbo
-import seepick.localsportsclub.persistence.activityDbo
+import lsc.repo.ActivityDbo
+import lsc.repo.activityDbo
 import seepick.localsportsclub.service.model.Venue
 
 class CategoryActivityDboProcessorTest : StringSpec({

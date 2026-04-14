@@ -3,8 +3,8 @@ package seepick.localsportsclub.sync.domain
 import com.github.seepick.uscclient.UscApi
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
+import lsc.repo.ActivityDbo
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import seepick.localsportsclub.persistence.ActivityDbo
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.singles.SinglesService
 import seepick.localsportsclub.sync.SyncProgress

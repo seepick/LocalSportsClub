@@ -11,9 +11,11 @@ dependencies {
     implementation(Deps.logging.kotlin)
     implementation(Deps.koin.core)
 
+    testImplementation(Deps.testing.kotest.runnerJunit5)
     testImplementation(Deps.testing.kotest.assertionsCore)
     testImplementation(Deps.testing.kotest.property)
     testFixturesApi(Deps.testing.kotest.property)
+    testFixturesApi(Deps.koin.core)
     // koin-test?
     // mockk?
 }
@@ -31,4 +33,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(Versions.java)
     }
+}
+
+tasks.withType<Test>().configureEach { // to be able to run kotests
+    useJUnitPlatform()
 }

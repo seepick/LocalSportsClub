@@ -103,9 +103,11 @@ class Activity(
 
 enum class ActivityState(val label: String) {
     // CAVE: names are used for DB mapping!
-    Blank("blank"), Booked("booked"), // reserved for future (called "scheduled" for freetrainings)
+    Blank("blank"),
+    Booked("booked"), // reserved for future (called "scheduled" for freetrainings)
     Checkedin("checked-in"), // past activities i actually attended
-    Noshow("no-show"), CancelledLate("cancelled late");
+    Noshow("no-show"),
+    CancelledLate("cancelled late");
 
     fun iconStringAndSuffix() = when (this) {
         Blank -> ""

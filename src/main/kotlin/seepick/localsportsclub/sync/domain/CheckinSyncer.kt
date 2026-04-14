@@ -7,11 +7,12 @@ import com.github.seepick.uscclient.checkin.CheckinEntry
 import com.github.seepick.uscclient.checkin.FreetrainingCheckinEntry
 import com.github.seepick.uscclient.model.City
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import seepick.localsportsclub.persistence.ActivityRepo
-import seepick.localsportsclub.persistence.FreetrainingRepo
+import lsc.repo.ActivityRepo
+import lsc.repo.ActivityStateDbo
+import lsc.repo.FreetrainingRepo
+import lsc.repo.FreetrainingStateDbo
 import seepick.localsportsclub.service.date.Clock
-import seepick.localsportsclub.service.model.ActivityState
-import seepick.localsportsclub.service.model.FreetrainingState
+import seepick.localsportsclub.service.model.toActivityState
 import seepick.localsportsclub.sync.ActivityFieldUpdate
 import seepick.localsportsclub.sync.FreetrainingFieldUpdate
 import seepick.localsportsclub.sync.SyncProgress
@@ -67,10 +68,10 @@ class CheckinSyncer(
         return entries
     }
 
-    private fun ActivityCheckinEntryType.toActivityState() = when (this) {
-        ActivityCheckinEntryType.Checkedin -> ActivityState.Checkedin
-        ActivityCheckinEntryType.Noshow -> ActivityState.Noshow
-        ActivityCheckinEntryType.CancelledLate -> ActivityState.CancelledLate
+    private fun ActivityCheckinEntryType.toActivityStateDbo() = when (this) {
+        ActivityCheckinEntryType.Checkedin -> ActivityStateDbo.Checkedin
+        ActivityCheckinEntryType.Noshow -> ActivityStateDbo.Noshow
+        ActivityCheckinEntryType.CancelledLate -> ActivityStateDbo.CancelledLate
     }
 
     private suspend fun processActivity(city: City, entry: ActivityCheckinEntry) {
@@ -80,15 +81,18 @@ class CheckinSyncer(
             venueSlug = entry.venueSlug,
             prefilledVenueNotes = "[SYNC] rescued activity for past check-in"
         )
-        if (activity.state == entry.type.toActivityState()) {
+        if (activity.state == entry.type.toActivityStateDbo()) {
             log.debug { "Activity was already marked as ${activity.state.name}, skipping: $entry" }
             return
         }
         val updated = activity.copy(
-            state = entry.type.toActivityState()
+            state = entry.type.toActivityStateDbo()
         )
         activityRepo.update(updated)
-        dispatcher.dispatchOnActivityDboUpdated(updated, ActivityFieldUpdate.State(oldState = activity.state))
+        dispatcher.dispatchOnActivityDboUpdated(
+            updated,
+            ActivityFieldUpdate.State(oldState = activity.state.toActivityState())
+        )
     }
 
     private suspend fun processFreetraining(city: City, entry: FreetrainingCheckinEntry) {
@@ -103,7 +107,7 @@ class CheckinSyncer(
             log.debug { "Freetraining was already marked as checked-in, skipping: $entry" }
             return
         }
-        val updated = freetraining.copy(state = FreetrainingState.Checkedin)
+        val updated = freetraining.copy(state = FreetrainingStateDbo.Checkedin)
         freetrainingRepo.update(updated)
         dispatcher.dispatchOnFreetrainingDboUpdated(updated, FreetrainingFieldUpdate.State)
     }

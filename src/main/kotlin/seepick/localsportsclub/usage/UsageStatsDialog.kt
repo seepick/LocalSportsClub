@@ -28,6 +28,7 @@ import com.github.seepick.uscclient.shared.daysBetween
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.date.prettyPrint
+import seepick.localsportsclub.service.model.toActivityState
 import seepick.localsportsclub.view.common.LabeledText
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.Tooltip
@@ -78,7 +79,9 @@ fun UsageStatsDialog(
                             Tooltip(it.state.label) {
                                 SelectionContainer {
                                     Text(
-                                        "${it.state.iconStringAndSuffix()}${it.name} @ ${it.from.prettyPrint(currentYear)}"
+                                        "${
+                                            it.state.toActivityState().iconStringAndSuffix()
+                                        }${it.name} @ ${it.from.prettyPrint(currentYear)}"
                                     )
                                 }
                             }

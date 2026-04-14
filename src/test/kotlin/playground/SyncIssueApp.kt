@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import lsc.repo.SingleDboTable
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -29,9 +30,8 @@ import org.koin.compose.koinInject
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import seepick.localsportsclub.persistence.SingleDboTable
-import seepick.localsportsclub.service.reconfigureLog
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.reconfigureLog
 import seepick.localsportsclub.service.workParallel
 import seepick.localsportsclub.tools.connectToDatabaseEnvAware
 import seepick.localsportsclub.view.common.launchBackgroundTask
