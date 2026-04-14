@@ -364,8 +364,8 @@ class DataStorage(
 
 private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location, Double> {
     val location = Location(
-        latitude = venueDbo.latitude.toDouble(),
-        longitude = venueDbo.longitude.toDouble(),
+        latitude = venueDbo.latitude,
+        longitude = venueDbo.longitude,
     )
     val home = preferences.home ?: return location to 0.0
     return location to round(distance(home, location), 1)

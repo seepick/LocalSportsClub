@@ -18,3 +18,9 @@ pluginManagement {
 }
 
 rootProject.name = "LocalSportsClub"
+
+include(
+    "repo",
+    "domain",
+    "view",
+)

@@ -1,5 +1,8 @@
 package seepick.localsportsclub
 
+import lsc.domain.dummyServiceModule
+import lsc.repo.dummyRepoModule
+import lsc.view.dummyViewModule
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Kind
 import org.koin.core.module.Module
@@ -21,7 +24,7 @@ fun allModules(
     uscClientModule: Module,
     syncModule: Module,
 ) = listOf(
-
+    dummyRepoModule(), dummyServiceModule(), dummyViewModule(), // TODO delete me
     rootModule(),
     persistenceModule,
     uscClientModule,

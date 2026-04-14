@@ -1,11 +1,18 @@
 package seepick.localsportsclub.service
 
+import lsc.view.DummyView
 import seepick.localsportsclub.service.model.Category
 import seepick.localsportsclub.service.model.GlobalRemarkType
 
 class CategoryService(
     private val globalRemarkService: GlobalRemarkService,
+    private val dummyView: DummyView,
 ) {
+
+    init {
+        println("dummy invoke:")
+        dummyView.baz()
+    }
 
     private val globalCategoryRemarks by lazy {
         globalRemarkService.selectAll(GlobalRemarkType.Category)

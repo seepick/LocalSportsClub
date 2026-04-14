@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.ActivityDetailService
+import seepick.localsportsclub.service.ApplicationLifecycleListener
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
 import seepick.localsportsclub.service.BookingValidator
@@ -237,6 +237,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     }
 
     fun updateVenue() {
+        log.info { "updateVenue()" }
         venueEdit.updatePropertiesOf(selectedVenue.value!!)
         dataStorage.update(selectedVenue.value!!)
     }

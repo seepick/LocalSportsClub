@@ -59,11 +59,10 @@ object LocalSportsClub {
     }
 }
 
-fun LscConfig.Companion.production() =
-    LscConfig(
-        logbackFileEnabled = true,
-        appDirectory = File(File(System.getProperty("user.home")), ".lsc"),
-    )
+fun LscConfig.Companion.production() = LscConfig(
+    logbackFileEnabled = true,
+    appDirectory = File(File(System.getProperty("user.home")), ".lsc"),
+)
 
 fun startApplication(
     config: LscConfig,
@@ -76,6 +75,7 @@ fun startApplication(
     reconfigureLog(
         logsDirForFileAppender = config.fileResolver.resolve(DirectoryEntry.Logs), packageSettings = mapOf(
             "seepick.localsportsclub" to Level.TRACE,
+            "lsc" to Level.TRACE,
             "com.github.seepick.uscclient" to Level.DEBUG,
             "liquibase" to Level.INFO,
             "Exposed" to Level.INFO,

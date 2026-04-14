@@ -2,7 +2,7 @@
 
 ## v2.0.0 - submodules; simple ones
 
-* 🤖 introduce submodules; keep empty at first, most remains in app; only check its technical workings (build, assemble)
+* 🤖 introduce submodules
 
 ## v2.1.0 - UI tests; simple ones
 
@@ -80,6 +80,6 @@
 
 * 🤖 investigate with spike: room (flow-enabled sqlite MPP abstraction) instead exposed?
 
-* ...
-* ...
-* ...
+* configure detekt
+* configure logging for liquibase (seems logs before config happens; maybe revert to XML nevertheless?)
+* ... 3/3

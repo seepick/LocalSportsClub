@@ -3,11 +3,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "2.3.10"
+    kotlin("jvm") // version "2.3.10"
     id("org.jetbrains.compose") version "1.7.1" // NO! 1.9.3 NoSuchMethodError: SkiaLayer.<init>
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    kotlin("plugin.serialization") // version "2.3.10"
+    id("com.github.ben-manes.versions") // version "0.53.0"
 }
 
 val appVersion = project.properties["lsc_version"]?.toString() ?: "1.0.0"
@@ -18,9 +18,11 @@ group = "com.github.seepick.localsportsclub"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
-    val versionUscClient = "2000.0.SNAPSHOT"
-//    val versionUscClient = "2026.3.3"
-    implementation("com.github.seepick:usc-client:$versionUscClient")
+
+    implementation(project(":repo"))
+    implementation(project(":domain"))
+    implementation(project(":view"))
+    implementation(Deps.uscClient)
 
     // VIEW
     implementation(compose.desktop.currentOs)
@@ -31,19 +33,17 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2") // when "Module with the Main dispatcher is missing"
     implementation("net.coobird:thumbnailator:0.4.21") // resize images
 
-    // DEPENDENCY INJECTION - https://insert-koin.io/docs/reference/koin-compose/compose
-    val versionKoin = "4.0.2" // NO! 4.1.1 UnsatisfiedLinkError
-    listOf("compose", "compose-viewmodel").forEach {
-        implementation("io.insert-koin:koin-$it:$versionKoin")
-    }
+    implementation(Deps.koin.compose)
+    implementation(Deps.koin.composeViewmodel)
 
     // PERSISTENCE
-    listOf("core", "dao", "jdbc", "java-time").forEach {
-        implementation("org.jetbrains.exposed:exposed-$it:1.0.0")
-    }
-    implementation("org.xerial:sqlite-jdbc:3.51.2.0")
-    implementation("org.liquibase:liquibase-core:5.0.1")
-    implementation("com.mattbertolini:liquibase-slf4j:5.1.0")
+    implementation(Deps.database.exposed.core)
+    implementation(Deps.database.exposed.dao) // TODO delete this?
+    implementation(Deps.database.exposed.jdbc)
+    implementation(Deps.database.exposed.javaTime)
+    implementation(Deps.database.sqliteJdbc)
+    implementation(Deps.database.liquibase.core)
+    implementation(Deps.database.liquibase.slf4j)
 
     // WEB
     implementation("org.jsoup:jsoup:1.22.1")
@@ -63,22 +63,26 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.39.0")
     implementation("com.google.apis:google-api-services-calendar:v3-rev20251207-2.0.0")
 
-    // LOGGING
-    implementation("io.github.oshai:kotlin-logging:8.0.01")
-    implementation("ch.qos.logback:logback-classic:1.5.32")
+    implementation(Deps.logging.kotlin)
+    implementation(Deps.logging.logback)
 
     // TEST
     testImplementation(compose.desktop.uiTestJUnit4)
-    listOf("runner-junit5-jvm", "assertions-core", "property").forEach {
-        testImplementation("io.kotest:kotest-$it:6.1.3")
-    }
+    testImplementation(Deps.testing.kotest.runnerJunit5)
+    testImplementation(Deps.testing.kotest.assertionsCore)
+    testImplementation(Deps.testing.kotest.property)
     testImplementation("org.junit.vintage:junit-vintage-engine:6.0.3") // to run JUnit4 with JUnit5
-    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
-    testImplementation("io.mockk:mockk:1.14.9")
-    testImplementation("io.insert-koin:koin-test:$versionKoin")
+    testImplementation(Deps.ktor.client.mock)
+    testImplementation(Deps.testing.mockk)
+    testImplementation(Deps.koin.test)
     testImplementation("app.cash.turbine:turbine:1.2.1") // testing flows
 //    testImplementation(testFixtures("com.github.seepick:usc-client:$versionUscClient")) // doesn't work; jitpack?!
 }
+
+//subprojects {
+//    apply(plugin = "org.jetbrains.kotlin.jvm")
+//
+//}
 
 
 kotlin {
@@ -91,7 +95,7 @@ kotlin {
 compose.desktop {
     // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html
     application {
-        mainClass = "seepick.localsportsclub.LocalSportsClub"
+        mainClass = Constants.Fqn.mainClass
         jvmArgs += listOf("-Xmx1G", "--add-exports", "java.desktop/com.apple.eawt=ALL-UNNAMED")
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe)
