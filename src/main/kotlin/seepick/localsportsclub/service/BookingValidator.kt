@@ -53,10 +53,10 @@ class BookingValidator(
             // don't know any better...
             return BookingValidation.Valid
         }
-        if (activity.dateTimeRange.from.toLocalDate() in usageStorage.periodRange) {
-            if (checkedinCount >= maxCheckinsInPeriod!!) {
-                return BookingValidation.Invalid("Maximum check-ins per period of $maxCheckinsInPeriod already exhausted!")
-            }
+        if (activity.dateTimeRange.from.toLocalDate() in usageStorage.periodRange &&
+            checkedinCount >= maxCheckinsInPeriod!!
+        ) {
+            return BookingValidation.Invalid("Maximum check-ins per period of $maxCheckinsInPeriod already exhausted!")
         }
         val monthRange = clock.today().monthRange()
         val venueCheckinsThisMonth = activityRepo.selectAllForVenueId(activity.venue.id).count {

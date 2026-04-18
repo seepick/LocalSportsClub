@@ -1,9 +1,11 @@
 package seepick.localsportsclub
 
 import com.github.seepick.uscclient.shared.DateTimeRange
+import com.github.seepick.uscclient.venue.VisitLimits
 import io.ktor.util.StringValues
 import io.ktor.util.toMap
 import kotlinx.serialization.json.Json
+import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.readFromClasspath
 import java.time.LocalDate
 import java.time.LocalTime
@@ -28,3 +30,9 @@ fun DateTimeRange.adjustHours(hoursToAdd: Int) = copy(
     from = from.plusHours(hoursToAdd.toLong()),
     to = to.plusHours(hoursToAdd.toLong()),
 )
+
+operator fun VisitLimits.Companion.invoke(allLimits: Int) =
+    VisitLimits(allLimits, allLimits, allLimits, allLimits)
+
+fun Activity.copyWithSufficientVisitLimits(allLimits: Int = 5) =
+    copy(venue = venue.copy(visitLimits = VisitLimits(allLimits)))

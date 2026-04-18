@@ -19,6 +19,7 @@ import lsc.repo.InMemoryVenueRepo
 import lsc.repo.VenueRepo
 import lsc.repo.activityDbo
 import seepick.localsportsclub.StaticClock
+import seepick.localsportsclub.copyWithSufficientVisitLimits
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.model.activity
 import seepick.localsportsclub.service.model.toDbo
@@ -95,7 +96,7 @@ class BookingValidatorTest : DescribeSpec() {
         venue: Venue? = null,
         cancellationLimit: LocalDateTime? = null,
     ) =
-        Arb.activity().next().let {
+        Arb.activity().next().copyWithSufficientVisitLimits().let {
             val inPeriod = it.copy(
                 dateTimeRange = DateTimeRange(
                     from = now, to = now.plusHours(1)
@@ -114,8 +115,10 @@ class BookingValidatorTest : DescribeSpec() {
     init {
         describe("can book") {
             it("yes - all good") {
-                given {}
-                val activity = Arb.activity().next()
+                given {
+                    //  nothing
+                }
+                val activity = Arb.activity().next().copyWithSufficientVisitLimits()
                 val result = validator.canBook(activity)
 
                 result.shouldBeInstanceOf<BookingValidation.Valid>()
