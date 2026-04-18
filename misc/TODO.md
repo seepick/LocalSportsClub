@@ -1,15 +1,8 @@
 # TODO 2.x
 
-## v2.0.0 - submodules; simple ones
-
-* ad repo module: mark all public/internal; restructure packages
-
-LATER:
-
-* no DBO stuff in domain or view (portnadapter); define interfaces in domain with clean domain objects
-
 ## v2.1.0 - UI tests; simple ones
 
+* ad repo module: mark all public/internal; restructure packages
 * 🤖 fix UI tests, make run local & CI (derbauer); NoSuchMethodError; write "almost" e2e test for happy paths
 * 🤖 test fixtures from usc-client don't work; right now copy'n'pasted all
 
@@ -51,6 +44,7 @@ LATER:
 ## v2.3.0 - submodule layering
 
 * finish extraction of code into submodules
+* no DBO stuff in domain or view (portnadapter); define interfaces in domain with clean domain objects
 
 * split Domain Model (all 4 core domain entities) from Compose UI
     * using mutableStateOf, mutableStateListOf, derivedStateOf; Color, SpanStyle, Lsc, TableItemBgColor
