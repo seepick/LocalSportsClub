@@ -42,25 +42,17 @@ class RemarkViewModel(
         currentIsForActivity = isActivity
         val realRemarks = if (isActivity) venue.activityRemarks else venue.teacherRemarks
         remarks.clear()
-        remarks.addAll(realRemarks.sortedBy { it.name.value })
+        remarks.addAll(realRemarks.sortedWith { e1, e2 -> e1.name.value.compareTo(e2.name.value, ignoreCase = true) })
         val allRemarkNames = remarks.map { it.name.value }.toSet()
         nameSuggestions.clear()
         nameSuggestions.addAll(
             if (isActivity) {
-                venue.activities
-                    .map { it.name.trim(' ', '.', '_') }
-                    .filter { !it.endsWith("[OneFit]") }
-                    .filter { it !in allRemarkNames } // don't suggest what's already remarked
-                    .distinct()
-                    .sorted()
-            } else {
-                venue.activities
-                    .mapNotNull { it.teacher?.trim() }
-                    .filter { it !in allRemarkNames }
-                    .distinct()
-                    .sorted()
-            }
-        )
+            venue.activities.map { it.name.trim(' ', '.', '_') }.filter { !it.endsWith("[OneFit]") }
+                .filter { it !in allRemarkNames } // don't suggest what's already remarked
+                .distinct().sorted()
+        } else {
+            venue.activities.mapNotNull { it.teacher?.trim() }.filter { it !in allRemarkNames }.distinct().sorted()
+        })
 
         sharedModel.customDialog.value = CustomDialog(
             title = "${if (isActivity) "Activity" else "Teacher"} Remarks",
