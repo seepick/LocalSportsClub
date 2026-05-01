@@ -12,7 +12,6 @@ import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.localDate
-import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.service.Location
@@ -55,8 +54,8 @@ fun Arb.Companion.venue() = arbitrary {
         isAutoSync = boolean().bind(),
         visitLimits = visitLimits().bind(),
         lastSync = localDate().orNull().bind(),
-        createdAt = localDateTime().bind(),
-        deletedAt = if (isDeleted) localDateTime().bind() else null,
+        createdAt = localDate().bind(),
+        deletedAt = if (isDeleted) localDate().bind() else null,
     )
 }
 

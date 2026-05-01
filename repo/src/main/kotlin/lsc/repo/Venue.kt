@@ -6,14 +6,12 @@ import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.javatime.date
-import org.jetbrains.exposed.v1.javatime.datetime
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class VenueDbo(
     val id: Int,
@@ -42,8 +40,8 @@ data class VenueDbo(
     val isDeleted: Boolean,
     val visitLimits: VisitLimitsDbo?,
     val lastSync: LocalDate?,
-    val createdAt: LocalDateTime,
-    val deletedAt: LocalDateTime?,
+    val createdAt: LocalDate,
+    val deletedAt: LocalDate?,
 ) {
     companion object {}
 
@@ -91,8 +89,8 @@ object VenueDboTable : IntIdTable("VENUES", "ID") {
     val visitLimits =
         varchar("VISIT_LIMITS", 32).nullable() // comma-separated for all 4 plans (S, M, L, XL), e.g. "1,2,3,4"
     val lastSync = date("LAST_SYNC").nullable()
-    val dateCreated = datetime("DATE_CREATED")
-    val dateDeleted = datetime("DATE_DELETED").nullable()
+    val dateCreated = date("DATE_CREATED")
+    val dateDeleted = date("DATE_DELETED").nullable()
 }
 
 object ExposedVenueRepo : VenueRepo {

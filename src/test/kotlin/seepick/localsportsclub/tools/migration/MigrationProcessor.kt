@@ -12,6 +12,7 @@ import lsc.repo.FreetrainingDbo
 import lsc.repo.FreetrainingStateDbo
 import lsc.repo.VenueDbo
 import lsc.repo.VenueIdLink
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -77,9 +78,10 @@ object MigrationProcessor {
             planId = Plan.UscPlan.Small.id,
             visitLimits = null,
             lastSync = null,
-            createdAt = LocalDateTime.now(),
+            createdAt = LocalDate.now(),
             deletedAt = null,
         )
+
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id
         linkedVenueSlugs.forEach { otherSlug ->
             ExposedVenueLinksRepo.insert(VenueIdLink(insertedVenueId, venues.single { it.slug == otherSlug }.id))

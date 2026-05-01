@@ -20,7 +20,6 @@ import seepick.localsportsclub.view.common.table.TableItemAlpha
 import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class Venue(
     val id: Int,
@@ -39,8 +38,8 @@ class Venue(
     val openingTimes: String?,
     val uscWebsite: String, // inferred by static URL + slug
     override val plan: Plan.UscPlan,
-    val createdAt: LocalDateTime,
-    val deletedAt: LocalDateTime?,
+    val createdAt: LocalDate,
+    val deletedAt: LocalDate?,
     // those down below also mutable...
     officialWebsite: String?,
     isDeleted: Boolean,
@@ -154,8 +153,8 @@ class Venue(
         plan: Plan.UscPlan = this.plan,
         visitLimits: VisitLimits? = this.visitLimits,
         lastSync: LocalDate? = this.lastSync,
-        createdAt: LocalDateTime = this.createdAt,
-        deletedAt: LocalDateTime? = this.deletedAt,
+        createdAt: LocalDate = this.createdAt,
+        deletedAt: LocalDate? = this.deletedAt,
     ) = Venue(
         id = id,
         slug = slug,

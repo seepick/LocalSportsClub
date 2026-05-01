@@ -44,8 +44,8 @@ fun Arb.Companion.venueDbo() = arbitrary {
         isAutoSync = boolean().bind(),
         visitLimits = visitLimitsDbo().bind(),
         lastSync = localDate().orNull().bind(),
-        createdAt = localDateTime().bind(),
-        deletedAt = if (isDeleted) localDateTime().bind() else null,
+        createdAt = localDate().bind(),
+        deletedAt = if (isDeleted) localDate().bind() else null,
     )
 }
 

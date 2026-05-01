@@ -24,7 +24,6 @@ import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.net.URL
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
@@ -107,9 +106,9 @@ class VenueSyncer(
         val markDeleted = localUndeletedBySlug.minus(remoteVenuesBySlug.keys)
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
-        val now = clock.now()
+        val today = clock.today()
         markDeleted.values.forEach {
-            venueRepo.update(it.copy(isDeleted = true, deletedAt = now))
+            venueRepo.update(it.copy(isDeleted = true, deletedAt = today))
         }
     }
 
@@ -212,9 +211,9 @@ class VenueSyncInserterImpl(
         newLinks: MutableSet<VenueSlugLink>,
     ) {
         log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
-        val now = clock.now()
+        val today = clock.today()
         newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
-            fetchDetailsDownloadImage(city, meta, newLinks, now).copy(notes = prefilledNotes)
+            fetchDetailsDownloadImage(city, meta, newLinks, today).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
@@ -247,14 +246,14 @@ class VenueSyncInserterImpl(
         city: City,
         meta: VenueMeta,
         venueSlugLinks: MutableSet<VenueSlugLink>,
-        now: LocalDateTime,
+        today: LocalDate,
     ): VenueDbo {
         progress.onProgressVenueItem()
         val details = api.fetchVenueDetail(meta.slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, now = now)
+        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, today = today)
             .ensureHasImageIfPresent(details)
     }
 
@@ -294,7 +293,7 @@ private fun VenueDbo.copyByDetails(today: LocalDate, detail: VenueDetails) = cop
 //        facilities = disciplines.joinToString(","),
 )
 
-private fun VenueDetails.toDbo(cityId: Int, planId: Int, now: LocalDateTime) = VenueDbo(
+private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = VenueDbo(
     id = -1,
     name = title,
     slug = slug,
@@ -319,7 +318,7 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int, now: LocalDateTime) = V
     isAutoSync = false,
     planId = planId,
     visitLimits = visitLimits?.toVisitLimits(),
-    lastSync = now.toLocalDate(),
-    createdAt = now,
+    lastSync = today,
+    createdAt = today,
     deletedAt = null,
 )

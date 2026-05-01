@@ -18,8 +18,9 @@
 * Icons = https://fonts.google.com/icons
 * check: val assetFile = Path.of(System.getProperty("compose.application.resources.dir")).resolve("myFile.png")
 
-# Backlog of moved out Todos
+# Backlog
 
+* 🖋 merge venue { isDeleted & dateDeleted }
 * 🎨 improve tab focus cycling; e.g. see remark dialog
 * 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
     * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)

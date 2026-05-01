@@ -26,11 +26,12 @@ fun LongText(
     label: String? = null,
     text: String,
     onShowLongText: ((String) -> Unit)? = null,
+    enforceClickable: Boolean = false,
     maxLines: Int? = null,
     tooltip: String = "Click to show full text",
 ) {
     var isOverflowing by remember { mutableStateOf(false) }
-    val isClickable = onShowLongText != null && isOverflowing
+    val isClickable = enforceClickable || (onShowLongText != null && isOverflowing)
     val hoverInteractionSource = remember { MutableInteractionSource() }
     val isHovered by hoverInteractionSource.collectIsHoveredAsState()
     val hoverModifier = if (isClickable && isHovered) {

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.github.seepick.uscclient.model.City
 import org.koin.compose.koinInject
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.model.Venue
@@ -63,6 +64,7 @@ import seepick.localsportsclub.view.common.table.VDirection
 import seepick.localsportsclub.view.shared.SharedModel
 import seepick.localsportsclub.view.venue.VenueImage
 import java.net.URLEncoder
+import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
 
@@ -154,7 +156,7 @@ fun VenueDetail(
                         }
                     }
                     SelectionContainer {
-                        Text("${venue.distanceInKm} km away")
+                        Text("${venue.distanceInKm} km")
                     }
                 }
                 visitsModel?.let { visits ->
@@ -164,6 +166,7 @@ fun VenueDetail(
                     text = venue.description,
                     maxLines = null,
                     tooltip = "Click to open venue details dialog",
+                    enforceClickable = true,
                     onShowLongText = {
                         sharedModel.customDialog.value = CustomDialog(
                             title = venue.name,
@@ -327,6 +330,18 @@ fun VenueDetailDialogPanel(venue: Venue) {
             Text("Opening Times", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             SelectionContainer {
                 Text(times)
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+        Text("Metadata", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        val year = LocalDate.now().year
+        SelectionContainer {
+            Text("Created at ${venue.createdAt.prettyShortPrint(year)}")
+        }
+        if (venue.isDeleted) {
+            SelectionContainer {
+                Text("Deleted at ${venue.deletedAt?.prettyShortPrint(year)}")
             }
         }
     }
