@@ -152,6 +152,8 @@ object ExposedVenueRepo : VenueRepo {
             it[planId] = venue.planId
             it[visitLimits] = venue.visitLimits?.toSqlValue()
             it[lastSync] = venue.lastSync
+            it[dateCreated] = venue.createdAt
+            it[dateDeleted] = venue.deletedAt
         }
         log.trace { "New venue ID=$nextId" }
         venue.copy(id = nextId)
@@ -181,6 +183,8 @@ object ExposedVenueRepo : VenueRepo {
             it[planId] = venue.planId
             it[visitLimits] = venue.visitLimits?.toSqlValue()
             it[lastSync] = venue.lastSync
+            it[dateCreated] = venue.createdAt
+            it[dateDeleted] = venue.deletedAt
         }
         if (updated != 1) error("Expected 1 to be updated by ID ${venue.id}, but was: $updated")
         venue
