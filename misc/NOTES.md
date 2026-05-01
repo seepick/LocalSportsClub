@@ -22,6 +22,8 @@
 
 ## Newer
 
+* 🎨 ad remarks: case-insensitive sort (teacher names)
+* 🎨 ad activity main table: when booked, pink background
 * 🖋 new property venue.dateCreated & dateDeleted
 * 🎨 improve tab focus cycling; e.g. see remark dialog
 * 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
