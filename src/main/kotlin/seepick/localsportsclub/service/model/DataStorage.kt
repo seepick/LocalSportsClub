@@ -446,6 +446,8 @@ private fun VenueDbo.toVenue(
     plan = Plan.UscPlan.byId(planId),
     visitLimits = visitLimits?.toVisitLimits(),
     lastSync = lastSync,
+    createdAt = createdAt,
+    deletedAt = deletedAt,
 ).also {
     // nice hack ;)
     if (!it.isDeleted) {
@@ -479,4 +481,6 @@ fun Venue.toDbo() = VenueDbo(
     planId = plan.id,
     visitLimits = visitLimits?.toVisitLimits(),
     lastSync = lastSync,
+    createdAt = createdAt,
+    deletedAt = deletedAt,
 )

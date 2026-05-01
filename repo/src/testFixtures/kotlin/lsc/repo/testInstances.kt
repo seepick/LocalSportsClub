@@ -17,6 +17,7 @@ import io.kotest.property.arbitrary.string
 
 fun Arb.Companion.venueDbo() = arbitrary {
     val id = int(min = 1).bind()
+    val isDeleted = boolean().bind()
     VenueDbo(
         id = id,
         name = string(minSize = 3, maxSize = 20, codepoints = Codepoint.alphanumeric()).bind(),
@@ -33,7 +34,7 @@ fun Arb.Companion.venueDbo() = arbitrary {
         isFavorited = boolean().bind(),
         isWishlisted = boolean().bind(),
         isHidden = boolean().bind(),
-        isDeleted = boolean().bind(),
+        isDeleted = isDeleted,
         addressLocality = string(minSize = 5, maxSize = 50).bind(),
         street = string(minSize = 5, maxSize = 50).bind(),
         postalCode = string(minSize = 5, maxSize = 6).bind(),
@@ -43,6 +44,8 @@ fun Arb.Companion.venueDbo() = arbitrary {
         isAutoSync = boolean().bind(),
         visitLimits = visitLimitsDbo().bind(),
         lastSync = localDate().orNull().bind(),
+        createdAt = localDateTime().bind(),
+        deletedAt = if (isDeleted) localDateTime().bind() else null,
     )
 }
 

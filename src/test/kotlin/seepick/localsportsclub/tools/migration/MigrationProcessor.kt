@@ -77,6 +77,8 @@ object MigrationProcessor {
             planId = Plan.UscPlan.Small.id,
             visitLimits = null,
             lastSync = null,
+            createdAt = LocalDateTime.now(),
+            deletedAt = null,
         )
         val insertedVenueId = ExposedVenueRepo.insert(dbo).id
         linkedVenueSlugs.forEach { otherSlug ->

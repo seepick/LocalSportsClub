@@ -246,4 +246,9 @@
         <sql>alter table VENUES drop column LATITUDE</sql>
         <sql>alter table VENUES drop column LONGITUDE</sql>
     </changeSet>
+    <changeSet id="11" author="owner" failOnError="true">
+        <sql>alter table VENUES add column DATE_CREATED datetime not null default '2000-01-01 00:00:00'</sql>
+        <sql>alter table VENUES add column DATE_DELETED datetime default null</sql>
+        <sql>update VENUES set DATE_DELETED = '2000-12-31 00:00:00' where IS_DELETED = true</sql>
+    </changeSet>
 </databaseChangeLog>

@@ -12,6 +12,7 @@ import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.localDate
+import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import seepick.localsportsclub.service.Location
@@ -26,6 +27,7 @@ fun Arb.Companion.location() = arbitrary {
 }
 
 fun Arb.Companion.venue() = arbitrary {
+    val isDeleted = boolean().bind()
     Venue(
         id = int(min = 1).bind(),
         name = string(minSize = 5, maxSize = 20, codepoints = Codepoint.az()).bind(),
@@ -44,7 +46,7 @@ fun Arb.Companion.venue() = arbitrary {
         openingTimes = null,
         uscWebsite = "",
         officialWebsite = null,
-        isDeleted = boolean().bind(),
+        isDeleted = isDeleted,
         isFavorited = boolean().bind(),
         isWishlisted = boolean().bind(),
         isHidden = boolean().bind(),
@@ -53,6 +55,8 @@ fun Arb.Companion.venue() = arbitrary {
         isAutoSync = boolean().bind(),
         visitLimits = visitLimits().bind(),
         lastSync = localDate().orNull().bind(),
+        createdAt = localDateTime().bind(),
+        deletedAt = if (isDeleted) localDateTime().bind() else null,
     )
 }
 

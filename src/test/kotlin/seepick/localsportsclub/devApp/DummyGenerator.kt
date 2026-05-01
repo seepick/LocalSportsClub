@@ -4,6 +4,7 @@ import com.github.seepick.uscclient.model.City
 import com.github.seepick.uscclient.plan.Plan
 import lsc.repo.VenueDbo
 import lsc.repo.VisitLimitsDbo
+import java.time.LocalDateTime
 
 object DummyGenerator {
     fun venue() = VenueDbo(
@@ -32,5 +33,7 @@ object DummyGenerator {
         planId = Plan.UscPlan.Small.id,
         visitLimits = VisitLimitsDbo(small = 2, medium = 4, large = 6, xlarge = 8),
         lastSync = null,
+        createdAt = LocalDateTime.now(),
+        deletedAt = null,
     )
 }

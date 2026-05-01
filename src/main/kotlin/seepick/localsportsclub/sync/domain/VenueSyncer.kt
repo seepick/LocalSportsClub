@@ -24,6 +24,7 @@ import seepick.localsportsclub.sync.SyncProgress
 import seepick.localsportsclub.sync.SyncerListenerDispatcher
 import java.net.URL
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
@@ -93,7 +94,7 @@ class VenueSyncer(
         log.debug { "Going to mark ${venuesToBeUndeleted.size} venues as undeleted." }
         dispatcher.dispatchOnVenueDbosMarkedUndeleted(venuesToBeUndeleted)
         venuesToBeUndeleted.forEach {
-            venueRepo.update(it.copy(isDeleted = false))
+            venueRepo.update(it.copy(isDeleted = false, deletedAt = null))
         }
     }
 
@@ -106,8 +107,9 @@ class VenueSyncer(
         val markDeleted = localUndeletedBySlug.minus(remoteVenuesBySlug.keys)
         log.debug { "Going to mark ${markDeleted.size} venues as deleted." }
         dispatcher.dispatchOnVenueDbosMarkedDeleted(markDeleted.values.toList())
+        val now = clock.now()
         markDeleted.values.forEach {
-            venueRepo.update(it.copy(isDeleted = true))
+            venueRepo.update(it.copy(isDeleted = true, deletedAt = now))
         }
     }
 
@@ -164,6 +166,7 @@ class VenueSyncInserterImpl(
     private val log = logger {}
 
     private var venueCount = AtomicInteger(-1)
+
     private fun SyncProgress.onProgressVenueItem() {
         val current = venueCount.getAndDecrement().let { if (it < 0) 0 else it }
         if (current % 25 == 0) {
@@ -209,9 +212,9 @@ class VenueSyncInserterImpl(
         newLinks: MutableSet<VenueSlugLink>,
     ) {
         log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
-        val today = clock.today()
+        val now = clock.now()
         newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
-            fetchDetailsDownloadImage(city, meta, newLinks, today).copy(notes = prefilledNotes)
+            fetchDetailsDownloadImage(city, meta, newLinks, now).copy(notes = prefilledNotes)
         }.map { dbo ->
             venueRepo.insert(dbo)
         }
@@ -244,14 +247,14 @@ class VenueSyncInserterImpl(
         city: City,
         meta: VenueMeta,
         venueSlugLinks: MutableSet<VenueSlugLink>,
-        today: LocalDate,
+        now: LocalDateTime,
     ): VenueDbo {
         progress.onProgressVenueItem()
         val details = api.fetchVenueDetail(meta.slug)
         details.linkedVenueSlugs.forEach {
             venueSlugLinks += VenueSlugLink(details.slug, it)
         }
-        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, today = today)
+        return details.toDbo(cityId = city.id, planId = (meta.plan ?: Plan.UscPlan.default).id, now = now)
             .ensureHasImageIfPresent(details)
     }
 
@@ -291,7 +294,7 @@ private fun VenueDbo.copyByDetails(today: LocalDate, detail: VenueDetails) = cop
 //        facilities = disciplines.joinToString(","),
 )
 
-private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = VenueDbo(
+private fun VenueDetails.toDbo(cityId: Int, planId: Int, now: LocalDateTime) = VenueDbo(
     id = -1,
     name = title,
     slug = slug,
@@ -316,5 +319,7 @@ private fun VenueDetails.toDbo(cityId: Int, planId: Int, today: LocalDate) = Ven
     isAutoSync = false,
     planId = planId,
     visitLimits = visitLimits?.toVisitLimits(),
-    lastSync = today,
+    lastSync = now.toLocalDate(),
+    createdAt = now,
+    deletedAt = null,
 )
