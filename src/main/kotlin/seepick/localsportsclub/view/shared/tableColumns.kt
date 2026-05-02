@@ -35,8 +35,7 @@ fun <T : HasVenue> CheckedinColumn(paddingRight: Boolean = false) = TableColumn<
         textAlign = TextAlign.Right,
         paddingRight = paddingRight,
         extractor = {
-            it.venue.activities.filter { it.state == ActivityState.Checkedin }.size +
-                    it.venue.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
+            it.venue.activities.filter { it.state == ActivityState.Checkedin }.size + it.venue.freetrainings.filter { it.state == FreetrainingState.Checkedin }.size
         },
     ),
     tooltip = "Check-ins",
@@ -89,9 +88,9 @@ fun <T : HasScore> ScoreColumn() = TableColumn<T>(
 )
 
 fun <T : HasCategory> CategoryColumn() = TableColumn<T>(
-    VisualIndicator.StringIndicator("Category"),
-    WidthOrWeight.Width(80.dp),
-    CellRenderer.TextRenderer(
+    header = VisualIndicator.StringIndicator("Category"),
+    size = WidthOrWeight.Width(110.dp),
+    renderer = CellRenderer.TextRenderer(
         valueExtractor = {
             CellValue(buildAnnotatedString {
                 withStyle(SpanStyle(color = it.category.rating?.color ?: Color.Unspecified)) {

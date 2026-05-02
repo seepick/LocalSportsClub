@@ -20,7 +20,10 @@
 
 # Backlog
 
+* 🖋 new filter option for score
+* 🤖 merge venue { isDeleted & dateDeleted }
 * 🎨 remarks popup, table header, in dark-theme colors differ (depending on laptop vs monitor screen)
+
 * 🎨 improve tab focus cycling; e.g. see remark dialog
 * 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area
     * 🎨 vertical space venue notes/tables size divider adjustable/draggable; if window height big, then space left blank (notes text has max height?)
