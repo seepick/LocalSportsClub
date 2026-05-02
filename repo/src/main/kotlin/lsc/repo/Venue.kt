@@ -63,6 +63,8 @@ interface VenueRepo {
     fun selectBySlug(slug: String): VenueDbo?
 }
 
+fun VenueRepo.selectByIdOrThrow(id: Int): VenueDbo = selectById(id) ?: error("Venue with ID $id not found!")
+
 object VenueDboTable : IntIdTable("VENUES", "ID") {
     val name = varchar("NAME", 256) // sync details
     val slug = varchar("SLUG", 64).uniqueIndex("VENUES_SLUG_UNIQUE_INDEX") // sync details

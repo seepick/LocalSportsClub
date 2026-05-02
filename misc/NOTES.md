@@ -20,6 +20,9 @@
 
 # Backlog
 
+* add emoji for category "sauna"
+* widen main-table column "category" a bit
+* new filter option for score
 * 🖋 merge venue { isDeleted & dateDeleted }
 * 🎨 improve tab focus cycling; e.g. see remark dialog
 * 🎨 vertical space venue notes/tables: calc notes text area height dynamically; fill activity table height (if activities existing); if no activities, then fill whole space with notes text area

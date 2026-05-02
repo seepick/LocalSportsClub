@@ -75,6 +75,10 @@ public data class ActivityDbo(
         statement[ActivityDboTable.planId] = this.planId
     }
 
+    // no description, potentially too long...
+    override fun toString() = "ActivityDbo[id=$id, name=$name, category=$category, from=$from, to=$to, state=$state, " +
+            "teacher=$teacher, planId=$planId, spotsLeft=$spotsLeft, cancellationLimit=$cancellationLimit]"
+
     companion object {
         fun fromRow(row: ResultRow) = ActivityDbo(
             id = row[ActivityDboTable.id].value,
