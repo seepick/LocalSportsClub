@@ -14,9 +14,17 @@ import lsc.repo.VenueIdLink
 import lsc.repo.VenueLinksRepo
 import lsc.repo.VenueRepo
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import seepick.localsportsclub.service.CategoryActivityDboProcessor
 import seepick.localsportsclub.service.unescape
+import seepick.localsportsclub.sync.domain.CategoryVenueDboProcessor
 
 object DataCleaner {
+
+    private val activityRepo: ActivityRepo = ExposedActivityRepo
+    private val freetrainingRepo: FreetrainingRepo = ExposedFreetrainingRepo
+    private val venueRepo: VenueRepo = ExposedVenueRepo
+    private val venueLinksRepo: VenueLinksRepo = ExposedVenueLinksRepo
+    private val linkRepo: VenueLinksRepo = ExposedVenueLinksRepo
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -26,8 +34,31 @@ object DataCleaner {
 //        cleanTexts()
 //        linkMissingVenues()
 //        changeVenues()
-        linkThriveYogaVenues()
+//        linkThriveYogaVenues()
+        cleanCategories()
         println("Done ✅")
+    }
+
+    private fun cleanCategories() {
+        val venueProcessor = CategoryVenueDboProcessor()
+        println("venues:")
+        venueRepo.selectAllAnywhere().forEach { venue ->
+            val processedVenue = venueProcessor.process(venue)
+            if (venue != processedVenue) {
+                println("* ${venue.name}: [${venue.facilities}] => ${processedVenue.facilities}")
+                venueRepo.update(processedVenue)
+            }
+        }
+        println()
+        val activityProcessor = CategoryActivityDboProcessor()
+        println("activities:")
+        activityRepo.selectAllAnywhere().forEach { activity ->
+            val processedActivity = activityProcessor.process(activity)
+            if (activity != processedActivity) {
+                println("* ${activity.name}: [${activity.category}] => [${processedActivity.category}]")
+                activityRepo.update(processedActivity)
+            }
+        }
     }
 
     private fun linkThriveYogaVenues() {
@@ -47,12 +78,6 @@ object DataCleaner {
             venueRepo.update(venue.copy(facilities = "EMS"))
         }
     }
-
-    private val activityRepo: ActivityRepo = ExposedActivityRepo
-    private val freetrainingRepo: FreetrainingRepo = ExposedFreetrainingRepo
-    private val venueRepo: VenueRepo = ExposedVenueRepo
-    private val venueLinksRepo: VenueLinksRepo = ExposedVenueLinksRepo
-    private val linkRepo: VenueLinksRepo = ExposedVenueLinksRepo
 
     enum class VenueDboText {
         description {

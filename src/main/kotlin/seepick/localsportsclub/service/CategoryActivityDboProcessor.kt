@@ -18,19 +18,41 @@ class CategoryActivityDboProcessor : ActivityDboProcessor {
 
     override fun process(dbo: ActivityDbo): ActivityDbo {
         // @formatter:off
+
+        if(dbo.category.equals("hatha", ignoreCase = true)) {
+            return dbo.copy(category = "Yoga")
+        }
+
         if ((dbo.name == "HOT C" && dbo.category == "Fitness") ||
             (dbo.name == "Energizing Yoga" && dbo.category == "Fitness") ||
-            (dbo.name.contains("yoga") && dbo.category != "Yoga")
+            (dbo.name.contains("yoga", ignoreCase = true) &&
+                    !dbo.name.contains("yin", ignoreCase = true) &&
+                    !dbo.name.contains("restorative", ignoreCase = true) &&
+                    !dbo.name.contains("restoratiev", ignoreCase = true) &&
+                    !dbo.name.contains("aerial", ignoreCase = true) &&
+                    !dbo.name.contains("massge", ignoreCase = true) &&
+                    !dbo.name.contains("acroyoga", ignoreCase = true) &&
+                    !dbo.name.contains("acro yoga", ignoreCase = true) &&
+                    !dbo.name.contains("corepower", ignoreCase = true) &&
+                    !dbo.name.contains("nidra", ignoreCase = true) &&
+                    !dbo.name.contains("sound", ignoreCase = true) &&
+                    !dbo.name.contains("breathwork", ignoreCase = true) &&
+                    !dbo.name.contains("pilates", ignoreCase = true) &&
+                    dbo.category != "Yoga")
         ) {
             return dbo.copy(category = "Yoga")
         }
 
         if (
             (dbo.name.equals("pilates", ignoreCase = true) && dbo.category != "Pilates") ||
-            (dbo.name.contains("pilates", ignoreCase = true) && dbo.category != "Pilates") ||
+            (dbo.name.contains("pilates", ignoreCase = true) && !dbo.name.contains("reformer", ignoreCase = true) && dbo.category != "Pilates") ||
             (dbo.name == "CorePower" && dbo.category == "Yoga")
         ) {
             return dbo.copy(category = "Pilates")
+        }
+
+        if (dbo.category == "Modern Self Defence") {
+            return dbo.copy(category = "Modern Self Defense")
         }
 
         if (

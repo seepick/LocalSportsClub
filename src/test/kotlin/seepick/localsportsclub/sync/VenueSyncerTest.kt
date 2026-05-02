@@ -85,6 +85,7 @@ class VenueSyncerTest : StringSpec() {
                 syncProgress,
                 DummyFileResolver,
                 clock,
+                emptyList(),
             ),
             progress = syncProgress,
             clock = clock,

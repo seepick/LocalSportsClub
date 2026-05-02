@@ -7,6 +7,7 @@ import seepick.localsportsclub.LscConfig
 import seepick.localsportsclub.getKoinBeansByType
 import seepick.localsportsclub.service.DnysActivityDetailsEnricher
 import seepick.localsportsclub.sync.domain.ActivitiesSyncer
+import seepick.localsportsclub.sync.domain.CategoryVenueDboProcessor
 import seepick.localsportsclub.sync.domain.CheckinSyncer
 import seepick.localsportsclub.sync.domain.CleanupPostSync
 import seepick.localsportsclub.sync.domain.DataSyncRescuer
@@ -29,17 +30,13 @@ fun syncInfraModule(config: LscConfig) = module {
 fun syncModule(config: LscConfig) = module {
     single {
         DataSyncRescuerImpl(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            getKoinBeansByType()
+            get(), get(), get(), get(), get(), get(), get(), getKoinBeansByType()
         )
     } bind DataSyncRescuer::class
-    singleOf(::VenueSyncInserterImpl) bind VenueSyncInserter::class
+    single {
+        VenueSyncInserterImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), getKoinBeansByType())
+    } bind VenueSyncInserter::class
+    singleOf(::CategoryVenueDboProcessor)
     singleOf(::VenueSyncer)
     single {
         ActivitiesSyncer(get(), get(), get(), get(), get(), get(), getKoinBeansByType())

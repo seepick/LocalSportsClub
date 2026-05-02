@@ -161,6 +161,7 @@ class VenueSyncInserterImpl(
     private val progress: SyncProgress,
     private val fileResolver: FileResolver,
     private val clock: Clock,
+    private val processors: List<VenueDboProcessor>,
 ) : VenueSyncInserter {
     private val log = logger {}
 
@@ -212,11 +213,12 @@ class VenueSyncInserterImpl(
     ) {
         log.trace { "fetchAllInsertDispatch(venueMeta=$venueMeta, newLinks=$newLinks)" }
         val today = clock.today()
-        newDbos += workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
-            fetchDetailsDownloadImage(city, meta, newLinks, today).copy(notes = prefilledNotes)
-        }.map { dbo ->
-            venueRepo.insert(dbo)
-        }
+        newDbos +=
+            workParallel(min(venueMeta.size, 40), venueMeta) { meta ->
+                fetchDetailsDownloadImage(city, meta, newLinks, today).copy(notes = prefilledNotes)
+            }
+                .map { it.process(processors) }
+                .map { venueRepo.insert(it) }
         linkVenues(city, newDbos, newLinks)
     }
 
