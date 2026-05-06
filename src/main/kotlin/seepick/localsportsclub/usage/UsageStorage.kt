@@ -82,10 +82,9 @@ class UsageStorage(
     override fun onStartUp() {
         isUsageVisible = singlesService.plan != null && singlesService.preferences.periodFirstDay != null
 
-        singlesService.preferences.city?.id?.let { cityId ->
-            activityRepo.selectAll(cityId).forEach(::processActivity)
-            freetrainingRepo.selectAll(cityId).forEach(::processFreetraining)
-        }
+        // act globally; independent from current city
+        activityRepo.selectAllAnywhere().forEach(::processActivity)
+        freetrainingRepo.selectAllAnywhere().forEach(::processFreetraining)
     }
 
     override fun onVenueDbosAdded(addedVenues: List<VenueDbo>) {
