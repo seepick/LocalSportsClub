@@ -13,6 +13,7 @@ import seepick.localsportsclub.sync.domain.CleanupPostSync
 import seepick.localsportsclub.sync.domain.DataSyncRescuer
 import seepick.localsportsclub.sync.domain.DataSyncRescuerImpl
 import seepick.localsportsclub.sync.domain.FreetrainingSyncer
+import seepick.localsportsclub.sync.domain.HtmlEntityCleanerVenueDboProcessor
 import seepick.localsportsclub.sync.domain.ScheduleSyncer
 import seepick.localsportsclub.sync.domain.SyncerFacade
 import seepick.localsportsclub.sync.domain.VenueAutoSyncer
@@ -36,6 +37,7 @@ fun syncModule(config: LscConfig) = module {
     single {
         VenueSyncInserterImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), getKoinBeansByType())
     } bind VenueSyncInserter::class
+    singleOf(::HtmlEntityCleanerVenueDboProcessor)
     singleOf(::CategoryVenueDboProcessor)
     singleOf(::VenueSyncer)
     single {

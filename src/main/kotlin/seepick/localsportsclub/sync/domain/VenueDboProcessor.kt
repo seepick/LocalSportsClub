@@ -11,6 +11,18 @@ fun VenueDbo.process(processors: List<VenueDboProcessor>): VenueDbo =
         processor.process(acc)
     }
 
+class HtmlEntityCleanerVenueDboProcessor : VenueDboProcessor {
+    private val htmlSingleQuote = "&#039;"
+    private val htmlAnd = "&amp;"
+    override fun process(dbo: VenueDbo): VenueDbo {
+        var cleanedDbo = dbo
+        cleanedDbo = cleanedDbo.copy(street = cleanedDbo.street.replace(htmlSingleQuote, "'"))
+        cleanedDbo = cleanedDbo.copy(description = cleanedDbo.description.replace(htmlAnd, "&"))
+        cleanedDbo = cleanedDbo.copy(importantInfo = cleanedDbo.importantInfo?.replace(htmlAnd, "&"))
+        return cleanedDbo
+    }
+}
+
 class CategoryVenueDboProcessor : VenueDboProcessor {
     override fun process(dbo: VenueDbo): VenueDbo {
         val categories = dbo.facilities.split(",")
