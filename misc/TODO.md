@@ -1,5 +1,10 @@
 # TODO 2.x
 
+* add modules: domain-model, domain-repo, domain-logic
+* add dependency from root to them
+* step-by-step/incremental (!!!) replace from *Dbo to *Model
+* later add modules: view-common (domain independent), view-controller+model, view-compose (top most)
+
 ## v2.1.0 - UI tests; simple ones
 
 * ad repo module: mark all public/internal; restructure packages
