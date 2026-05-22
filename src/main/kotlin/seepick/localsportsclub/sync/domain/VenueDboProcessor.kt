@@ -14,10 +14,15 @@ fun VenueDbo.process(processors: List<VenueDboProcessor>): VenueDbo =
 class HtmlEntityCleanerVenueDboProcessor : VenueDboProcessor {
     private val htmlSingleQuote = "&#039;"
     private val htmlAnd = "&amp;"
+    private val htmlSpace = "&amp;"
+    private val htmlGreater = "&gt;"
+
     override fun process(dbo: VenueDbo): VenueDbo {
         var cleanedDbo = dbo
         cleanedDbo = cleanedDbo.copy(street = cleanedDbo.street.replace(htmlSingleQuote, "'"))
         cleanedDbo = cleanedDbo.copy(description = cleanedDbo.description.replace(htmlAnd, "&"))
+        cleanedDbo = cleanedDbo.copy(description = cleanedDbo.description.replace(htmlSpace, " "))
+        cleanedDbo = cleanedDbo.copy(description = cleanedDbo.description.replace(htmlGreater, ">"))
         cleanedDbo = cleanedDbo.copy(importantInfo = cleanedDbo.importantInfo?.replace(htmlAnd, "&"))
         return cleanedDbo
     }

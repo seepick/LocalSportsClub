@@ -7,6 +7,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 // https://latlongdata.com/distance-calculator/
+@Deprecated("duplicated", ReplaceWith("lsc.domain.model.Location")) // TODO delete
 data class Location(
     val latitude: Double, // somewhere around 50 north
     val longitude: Double, // somewhere around 4 east

@@ -341,7 +341,7 @@ fun VenueDetailDialogPanel(venue: Venue) {
         }
         if (venue.isDeleted) {
             SelectionContainer {
-                Text("Deleted at ${venue.deletedAt?.prettyShortPrint(year)}")
+                Text("Deleted at ${venue.deletedAt?.prettyShortPrint(year) ?: "N/A"}")
             }
         }
     }

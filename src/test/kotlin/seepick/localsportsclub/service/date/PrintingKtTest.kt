@@ -19,7 +19,7 @@ class PrintingKtTest : DescribeSpec() {
         }
         describe("LocalDate.prettyShortPrint") {
             it("simple") {
-                LocalDate.of(2001, 1, 2).prettyShortPrint(2001) shouldBe "2.1"
+                LocalDate.of(2001, 1, 2).prettyShortPrint(2001) shouldBe "2.1."
             }
             it("past") {
                 LocalDate.of(2001, 1, 2).prettyShortPrint(2002) shouldBe "2.1.01"

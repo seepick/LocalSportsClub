@@ -13,7 +13,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import java.time.LocalDate
 
-data class VenueDbo(
+public data class VenueDbo(
     val id: Int,
     val name: String,
     val slug: String,

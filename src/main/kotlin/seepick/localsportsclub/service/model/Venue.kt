@@ -21,6 +21,7 @@ import seepick.localsportsclub.view.common.table.TableItemBgColor
 import seepick.localsportsclub.view.remark.RemarkViewEntity
 import java.time.LocalDate
 
+@Deprecated("duplicated", ReplaceWith("lsc.domain.model.Venue")) // TODO delete
 class Venue(
     val id: Int,
     val name: String,
@@ -198,6 +199,7 @@ class Venue(
     object Ids : VenueIds
 }
 
+@Deprecated("duplicated", ReplaceWith("lsc.domain.model.Rating")) // TODO delete
 enum class Rating(val value: Int) : Comparable<Rating>, HasLabel {
     R0(0),
     R1(1),

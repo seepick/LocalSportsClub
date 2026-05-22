@@ -9,7 +9,7 @@ import java.util.Locale
 
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
-private val dateFormatter = DateTimeFormatter.ofPattern("d.M", Locale.ENGLISH)
+private val dateFormatter = DateTimeFormatter.ofPattern("d.M.", Locale.ENGLISH)
 private val dateFormatterWithYear = DateTimeFormatter.ofPattern("d.M.yy", Locale.ENGLISH)
 
 private val dayDateFormatter = DateTimeFormatter.ofPattern("E d.M", Locale.ENGLISH)

@@ -21,6 +21,12 @@ rootProject.name = "LocalSportsClub"
 
 include(
     "repo",
-    "domain",
+    "domain", // TODO delete me
+    "domain-model",
+    "domain-repo",
+    "domain-logic",
     "view",
+    // "view-common" (domain independent)
+    // "view-presentation" (@Component)
+    // "view-logic" (view-models, controllers)
 )
