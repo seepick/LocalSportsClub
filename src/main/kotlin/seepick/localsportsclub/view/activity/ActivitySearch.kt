@@ -3,7 +3,9 @@ package seepick.localsportsclub.view.activity
 import seepick.localsportsclub.service.model.Activity
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.Category
+import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.search.AbstractSearch
+import seepick.localsportsclub.service.search.FullNumericComparator
 import seepick.localsportsclub.service.search.SearchOpt
 import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.Lsc
@@ -36,6 +38,14 @@ class ActivitySearch(
     val date = newDateTimeRangeSearchOption(
         "Date", visualIndicator = Lsc.icons.dateIndicator
     ) { it.dateTimeRange }
+    val checkins = newIntSearchOption(
+        label = "Checkins",
+        visualIndicator = Lsc.icons.checkedinIndicator,
+        initialValue = 0,
+        initialComparator = FullNumericComparator.Equals,
+    ) {
+        it.venue.activities.count { it.state == ActivityState.Checkedin } + it.venue.freetrainings.count { it.state == FreetrainingState.Checkedin }
+    }
     val booked = newBooleanSearchOption(
         "Booked", initialValue = true, visualIndicator = Lsc.icons.reservedIndicator
     ) { it.state == ActivityState.Booked }

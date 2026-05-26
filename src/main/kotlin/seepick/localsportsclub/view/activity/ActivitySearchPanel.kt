@@ -7,6 +7,7 @@ import seepick.localsportsclub.view.search.BooleanSearchField
 import seepick.localsportsclub.view.search.DateTimeRangeSearchField
 import seepick.localsportsclub.view.search.DoubleSearchField
 import seepick.localsportsclub.view.search.GenericSearchPanel
+import seepick.localsportsclub.view.search.IntSearchField
 import seepick.localsportsclub.view.search.PlanSearchField
 import seepick.localsportsclub.view.search.RatingSearchField
 import seepick.localsportsclub.view.search.RemarkRatingSearchField
@@ -30,6 +31,7 @@ fun ActivitySearchPanel(
 
         BooleanSearchField(viewModel.searching.favorited)
         BooleanSearchField(viewModel.searching.wishlisted)
+        IntSearchField(viewModel.searching.checkins)
         BooleanSearchField(viewModel.searching.booked)
 
         RemarkRatingSearchField(viewModel.searching.activityRating, tooltip = "Activity Remark Rating")
