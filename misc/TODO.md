@@ -4,6 +4,55 @@
 * step-by-step/incremental (!!!) replace from *Dbo to *Model
 * later add modules: view-common (domain independent), view-controller, view-model, view-compose (top most)
 
+Loading carousel images failed (venue was deleted)
+
+LSC version 2.1.0
+
+com.github.seepick.uscclient.UscException: Expected status 200 OK but was [301 Moved Permanently] for: https://urbansportsclub.com/en/venues/vitalit-ferrier-reformer-pilates-studio. Response body was:
+at com.github.seepick.uscclient.shared.Http_utilsKt.requireStatusOk(http_utils.kt:50)
+at com.github.seepick.uscclient.shared.Http_utilsKt.safeAny(http_utils.kt:93)
+at com.github.seepick.uscclient.shared.Http_utilsKt.access$safeAny(http_utils.kt:1)
+at com.github.seepick.uscclient.shared.Http_utilsKt$safeAny$1.invokeSuspend(http_utils.kt)
+at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+
+LOG:
+11:47:17.035 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-ActivitySearch resetting search with options: hidden, Search  
+11:47:17.152 s.l.s.s.StringSearchOption.35@[AWT-EventQueue-0] DEBUG-Set search terms to: [ref]  
+11:47:17.153 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-ActivitySearch resetting search with options: hidden, Search  
+11:47:17.243 s.l.s.s.StringSearchOption.35@[AWT-EventQueue-0] DEBUG-Set search terms to: [refo]  
+11:47:17.243 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-ActivitySearch resetting search with options: hidden, Search  
+11:47:17.349 s.l.s.s.StringSearchOption.35@[AWT-EventQueue-0] DEBUG-Set search terms to: [refor]  
+11:47:17.349 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-ActivitySearch resetting search with options: hidden, Search  
+11:47:17.981 s.l.s.s.StringSearchOption.35@[AWT-EventQueue-0] DEBUG-Set search terms to: []  
+11:47:17.981 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-ActivitySearch resetting search with options: hidden, Search  
+11:47:21.317 s.l.s.s.SearchOption.219@[AWT-EventQueue-0] DEBUG-BooleanSearchOption - updateEnabled(isEnabled=false, suppressReset=false)  
+11:47:21.317 s.l.s.s.AbstractSearch.182@[AWT-EventQueue-0] DEBUG-VenueSearch resetting search with options: Search  
+11:47:22.487 s.l.v.c.Utils.69@[AWT-EventQueue-0] DEBUG-Executing task...  
+11:47:24.705 s.l.v.v.d.CarouselViewModel.47@[AWT-EventQueue-0] DEBUG-onVenueDetailImageClicked(Venue[id=407, slug=vitalit-ferrier-reformer-pilates-studio, name=Vitalité Ferrier Reformer Pilates Studio, rating=Rating0])  
+11:47:24.747 s.l.v.c.Utils.69@[DefaultDispatcher-worker-3] DEBUG-Executing task...  
+11:47:24.747 s.l.v.v.d.CarouselViewModel.60@[DefaultDispatcher-worker-3] DEBUG-Loading carousel images for: Vitalité Ferrier Reformer Pilates Studio  
+11:47:24.747 c.g.s.u.v.VenueHttpApi.71@[DefaultDispatcher-worker-3] DEBUG-Fetching details for: [vitalit-ferrier-reformer-pilates-studio]  
+11:47:24.972 s.l.v.c.Utils.52@[DefaultDispatcher-worker-3] ERROR-Executing task failed! com.github.seepick.uscclient.UscException: Expected status 200 OK but was [301 Moved Permanently] for: https://urbansportsclub.com/en/venues/vitalit-ferrier-reformer-pilates-studio. Response body was:
+at com.github.seepick.uscclient.shared.Http_utilsKt.requireStatusOk(http_utils.kt:50)
+at com.github.seepick.uscclient.shared.Http_utilsKt.safeAny(http_utils.kt:93)
+at com.github.seepick.uscclient.shared.Http_utilsKt.access$safeAny(http_utils.kt:1)
+at com.github.seepick.uscclient.shared.Http_utilsKt$safeAny$1.invokeSuspend(http_utils.kt)
+at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+
 ## v2.1.0 - UI tests; simple ones
 
 * ad repo module: mark all public/internal; restructure packages

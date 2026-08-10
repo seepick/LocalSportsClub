@@ -20,7 +20,9 @@
 
 # Backlog
 
+* 🎨 block UI while syncing (also "save" button for venue remarks)
 * 🖋 new filter option for score
+* 🖋 in venue table: column for date-deleted/created
 * 🤖 merge venue { isDeleted & dateDeleted }
 * 🎨 remarks popup, table header, in dark-theme colors differ (depending on laptop vs monitor screen)
 
