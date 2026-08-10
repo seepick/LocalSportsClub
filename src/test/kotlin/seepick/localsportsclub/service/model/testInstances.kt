@@ -34,7 +34,7 @@ fun Arb.Companion.venue() = arbitrary {
         description = string(minSize = 5, maxSize = 20).bind(),
         notes = string(minSize = 5, maxSize = 20).bind(),
         categories = emptyList(),
-        city = City.all.random(),
+        city = City.Amsterdam,
         postalCode = "",
         addressLocality = "",
         street = "",

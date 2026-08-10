@@ -27,7 +27,7 @@ fun Arb.Companion.windowPref() = arbitrary {
 fun Arb.Companion.preferences() = arbitrary {
     Preferences(
         uscCredentials = credentials().orNull().bind(),
-        city = City.all.random(),
+        city = City.Amsterdam,
         home = location().orNull().bind(),
         gcal = gcal().bind(),
         periodFirstDay = int(min = 1, max = 28).orNull().bind(),
