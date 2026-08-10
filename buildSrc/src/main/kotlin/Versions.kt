@@ -9,7 +9,7 @@ object Versions {
     val mockk = "1.14.6"
     val koin = "4.0.2" // NO! 4.1.1 UnsatisfiedLinkError
     val ktor = "3.3.2"
-    val uscClient = "2026.5.1"
+    val uscClient = "2026.8.1"
     //    val uscClient = "2000.0.SNAPSHOT"
     val testcontainers = "2.0.2"
 
