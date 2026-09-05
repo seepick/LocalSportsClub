@@ -36,5 +36,7 @@ fun ActivitySearchPanel(
 
         RemarkRatingSearchField(viewModel.searching.activityRating, tooltip = "Activity Remark Rating")
         RemarkRatingSearchField(viewModel.searching.teacherRating, tooltip = "Teacher Remark Rating")
+
+        BooleanSearchField(viewModel.searching.hidden)
     }
 }

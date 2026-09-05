@@ -20,8 +20,9 @@ class ActivitySearch(
     resetItems: () -> Unit,
     globalKeyboard: GlobalKeyboard,
 ) : AbstractSearch<Activity>(globalKeyboard, resetItems) {
-    val hidden = newBooleanSearchOption( // invisible to the user
-        label = "hidden",
+    val hidden = newBooleanSearchOption(
+        label = "Hidden",
+        visualIndicator = Lsc.icons.hiddenIndicator,
         initiallyEnabled = true,
         initialValue = false,
         extractor = { it.venue.isHidden }

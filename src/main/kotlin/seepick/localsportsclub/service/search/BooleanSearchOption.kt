@@ -9,7 +9,7 @@ class BooleanSearchOption<T>(
     label: String,
     private val extractor: (T) -> Boolean,
     reset: () -> Unit,
-    initialValue: Boolean = false,
+    private val initialValue: Boolean = false,
     initiallyEnabled: Boolean = false,
     visualIndicator: VisualIndicator = VisualIndicator.NoIndicator,
 ) : SearchOption<T>(
@@ -21,6 +21,10 @@ class BooleanSearchOption<T>(
 
     var searchBoolean by mutableStateOf(initialValue)
         private set
+
+    override fun resetPermanentEnabledState() {
+        searchBoolean = initialValue
+    }
 
     fun updateSearchBoolean(boolean: Boolean) {
         searchBoolean = boolean
