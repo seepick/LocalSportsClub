@@ -71,5 +71,6 @@ fun FreetrainingsTable(
         onItemClicked = viewModel::onFreetrainingSelected,
         onItemNavigation = viewModel::onItemNavigation,
         onHeaderClicked = viewModel.sorting::onSortColumn,
+        onExport = viewModel::onExport,
     )
 }

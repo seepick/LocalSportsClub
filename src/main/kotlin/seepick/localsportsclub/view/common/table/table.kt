@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import seepick.localsportsclub.service.SortDirection
+import seepick.localsportsclub.view.common.ClickableText
 import seepick.localsportsclub.view.common.LscVScroll
 import seepick.localsportsclub.view.common.autoScroll
 import seepick.localsportsclub.view.common.scrollbarWidthPadding
@@ -75,6 +76,7 @@ fun <T> MainTable(
     onItemClicked: ((T) -> Unit)?,
     onItemNavigation: ((VDirection, T) -> Unit)? = null,
     onHeaderClicked: (TableColumn<T>) -> Unit = {},
+    onExport: (() -> Unit)? = null,
     sortColumn: TableColumn<T>?,
     sortDirection: SortDirection,
     headerEnabled: Boolean = true,
@@ -178,11 +180,20 @@ fun <T> MainTable(
             gapTop = if (headerEnabled) 30.dp else 0.dp,
             gapBottom = if (itemsLabel != null) 14.dp else 0.dp,
         )
+        val footerFontSize = 10.sp
         if (itemsLabel != null) {
             Text(
                 text = " Showing ${items.size} " + (if (allItemsCount != null) "of $allItemsCount " else "") + itemsLabel,
-                fontSize = 10.sp,
+                fontSize = footerFontSize,
                 modifier = Modifier.align(Alignment.BottomStart)
+            )
+        }
+        onExport?.let {
+            ClickableText(
+                text = "Export",
+                fontSize = footerFontSize,
+                modifier = Modifier.align(Alignment.BottomEnd),
+                onClick = it
             )
         }
     }

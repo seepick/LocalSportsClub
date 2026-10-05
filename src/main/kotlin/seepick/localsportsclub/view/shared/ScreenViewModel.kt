@@ -26,6 +26,8 @@ import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidation
 import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.OdfGenerator
+import seepick.localsportsclub.service.OdfTable
 import seepick.localsportsclub.service.SortingDelegate
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.date.Clock
@@ -52,6 +54,8 @@ import seepick.localsportsclub.view.common.table.navigate
 import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.venue.VenueViewModel
 import seepick.localsportsclub.view.venue.detail.VenueEditModel
+import java.awt.FileDialog
+import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
@@ -64,7 +68,7 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     private val activityDetailService: ActivityDetailService,
     private val venueService: VenueService,
     private val fileResolver: FileResolver,
-    private val clock: Clock,
+    protected val clock: Clock,
     private val remarkViewModel: RemarkViewModel,
 ) : ViewModel(), DataStorageListener by NoopDataStorageListener, ApplicationLifecycleListener {
 
@@ -203,6 +207,27 @@ abstract class ScreenViewModel<ITEM : HasVenue, SEARCH : AbstractSearch<ITEM>>(
     fun onViewTeacherRemarks() {
         remarkViewModel.showTeacherRemarks(selectedVenue.value!!)
     }
+
+    fun onExport() {
+        log.debug { "onExport()" }
+        val target = showFileExportDialog() ?: return
+        OdfGenerator.generate(items, makeOdfTable(), target)
+    }
+
+    private fun showFileExportDialog(): File? = FileDialog(
+        null as java.awt.Frame?,
+        "Export to Spreadsheet",
+        FileDialog.SAVE
+    ).run {
+        file = "export.ods"
+        isVisible = true
+        if (file == null || directory == null) {
+            log.debug { "Export canceled by user" }
+            null
+        } else File(directory, file)
+    }
+
+    abstract fun makeOdfTable(): OdfTable<ITEM>
 
     fun onItemNavigation(navigation: VDirection, currentItem: ITEM) {
         log.trace { "onItemNavigation($navigation)" }

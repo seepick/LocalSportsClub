@@ -30,13 +30,12 @@ private val dayDateTimeYearFormatter = DateTimeFormatter.ofPattern("E d.M.yy HH:
 fun LocalDateTime.prettyPrint(currentYear: Int): String = if (year != currentYear) dayDateTimeYearFormatter.format(this)
 else dayDateTimeFormatter.format(this)
 
-/**
- * @return "Sat 3.11."
- */
+/** @return "Sat 3.11. */
 fun LocalDate.prettyPrint(currentYear: Int): String = if (year != currentYear) dayDateFormatterWithYear.format(this)
 else dayDateFormatter.format(this)
 
 private val machineDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+/** @return "2026-10-07" */
 fun LocalDate.machinePrint(): String = machineDateFormatter.format(this)
 
 /**

@@ -21,7 +21,7 @@ rootProject.name = "LocalSportsClub"
 
 include(
     "repo",
-    "domain", // TODO delete me
+    "domain",
     "domain-model",
     "domain-repo",
     "domain-logic",

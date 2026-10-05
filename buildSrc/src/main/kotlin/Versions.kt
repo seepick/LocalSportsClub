@@ -11,6 +11,7 @@ object Versions {
     val ktor = "3.3.2"
     val uscClient = "2026.10.1"
     //    val uscClient = "2000.0.SNAPSHOT"
+    val simpleOdf = "0.9.0"
     val testcontainers = "2.0.2"
 
     object logging {

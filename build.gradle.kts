@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":view"))
     implementation(Deps.uscClient)
+    implementation(Deps.simpleOdf)
 
     // VIEW
     implementation(compose.desktop.currentOs)

@@ -2,6 +2,7 @@
 object Deps {
 
     val uscClient = "com.github.seepick:usc-client:${Versions.uscClient}"
+    val simpleOdf = "org.odftoolkit:simple-odf:${Versions.simpleOdf}" // spreadsheet
     /*
         implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10") // enforce version for Exposed NoSuchMethodError
 

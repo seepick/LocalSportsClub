@@ -82,7 +82,7 @@ class DataStorage(
             val venuesById = venueRepo.selectAllByCity(cityId).map { dbo ->
                 dbo.toVenue(
                     baseUrl = baseUrl,
-                    locationDistance = singlesService.calculateLocatioAndDistance(dbo),
+                    locationDistance = singlesService.calculateLocationAndDistance(dbo),
                     categories = categoryService.findCategories(dbo),
                 )
             }.associateBy { it.id }
@@ -197,7 +197,7 @@ class DataStorage(
         val venues = addedVenues.map { venueDbo ->
             val venue = venueDbo.toVenue(
                 baseUrl = baseUrl,
-                locationDistance = singlesService.calculateLocatioAndDistance(venueDbo),
+                locationDistance = singlesService.calculateLocationAndDistance(venueDbo),
                 categories = categoryService.findCategories(venueDbo)
             )
             venuesById[venue.id] = venue
@@ -366,7 +366,7 @@ class DataStorage(
 
 }
 
-private fun SinglesService.calculateLocatioAndDistance(venueDbo: VenueDbo): Pair<Location, Double> {
+private fun SinglesService.calculateLocationAndDistance(venueDbo: VenueDbo): Pair<Location, Double> {
     val location = Location(
         latitude = venueDbo.latitude,
         longitude = venueDbo.longitude,

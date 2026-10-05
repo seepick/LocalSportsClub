@@ -6,13 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
-import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.service.SortDirection
 import seepick.localsportsclub.service.date.SystemClock
 import seepick.localsportsclub.service.date.prettyShortPrint
 import seepick.localsportsclub.service.model.ActivityState
 import seepick.localsportsclub.service.model.FreetrainingState
 import seepick.localsportsclub.service.model.Venue
+import seepick.localsportsclub.view.Lsc
 import seepick.localsportsclub.view.common.LscIcons
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.common.WidthOrWeight
@@ -114,5 +114,6 @@ fun VenuesTable(
         sortColumn = viewModel.sorting.sortColumn,
         sortDirection = viewModel.sorting.sortDirection,
         selectedItem = selectedVenue,
+        onExport = viewModel::onExport,
     )
 }

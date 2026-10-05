@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import seepick.localsportsclub.view.LocalTextFieldColors
@@ -90,6 +91,7 @@ fun CopyTextToClipboard(text: String, content: @Composable () -> Unit) {
 fun ClickableText(
     text: String,
     notHoveredColor: Color = Lsc.colors.primary,
+    fontSize: TextUnit = TextUnit.Unspecified,
     onClick: () -> Unit,
     testTag: String? = null,
     modifier: Modifier = Modifier,
@@ -99,6 +101,7 @@ fun ClickableText(
     Text(
         text = text,
         maxLines = 1,
+        fontSize = fontSize,
         overflow = TextOverflow.Ellipsis,
         color = color,
         modifier = Modifier

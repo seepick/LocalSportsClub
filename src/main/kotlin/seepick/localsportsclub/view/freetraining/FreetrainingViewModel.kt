@@ -1,16 +1,20 @@
 package seepick.localsportsclub.view.freetraining
 
 import kotlinx.coroutines.flow.map
-import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.LinkBuilder
+import seepick.localsportsclub.service.OdfColumn
+import seepick.localsportsclub.service.OdfTable
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.date.Clock
+import seepick.localsportsclub.service.date.prettyPrint
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Freetraining
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.common.VisualIndicator
 import seepick.localsportsclub.view.remark.RemarkViewModel
@@ -70,5 +74,19 @@ class FreetrainingViewModel(
 
     override fun onFreetrainingsDeleted(freetrainings: List<Freetraining>) {
         onItemsDeleted(freetrainings)
+    }
+
+    override fun makeOdfTable(): OdfTable<Freetraining> {
+        val currentYear = clock.today().year
+        return OdfTable(
+            listOf(
+                OdfColumn.byString("Name") { it.name },
+                OdfColumn.byString("Date") { it.date.prettyPrint(currentYear) },
+                OdfColumn.byString("Category") { it.category.nameAndMaybeEmoji },
+                OdfColumn.byString("Venue") { it.venue.name },
+                OdfColumn.byDouble("Distance") { it.venue.distanceInKm },
+                OdfColumn.byString("Link") { LinkBuilder.buildVenueLink(it) },
+            )
+        )
     }
 }

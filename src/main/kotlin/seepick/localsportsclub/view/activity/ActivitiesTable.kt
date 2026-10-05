@@ -83,5 +83,6 @@ fun ActivitiesTable(
         onItemClicked = viewModel::onActivitySelected,
         onHeaderClicked = viewModel.sorting::onSortColumn,
         onItemNavigation = viewModel::onItemNavigation,
+        onExport = viewModel::onExport,
     )
 }

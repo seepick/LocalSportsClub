@@ -1,16 +1,19 @@
 package seepick.localsportsclub.view.venue
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.service.ActivityDetailService
 import seepick.localsportsclub.service.BookingService
 import seepick.localsportsclub.service.BookingValidator
 import seepick.localsportsclub.service.FileResolver
+import seepick.localsportsclub.service.LinkBuilder
+import seepick.localsportsclub.service.OdfColumn
+import seepick.localsportsclub.service.OdfTable
 import seepick.localsportsclub.service.VenueService
 import seepick.localsportsclub.service.date.Clock
 import seepick.localsportsclub.service.model.DataStorage
 import seepick.localsportsclub.service.model.Venue
 import seepick.localsportsclub.service.singles.SinglesService
+import seepick.localsportsclub.view.GlobalKeyboard
 import seepick.localsportsclub.view.SnackbarService
 import seepick.localsportsclub.view.remark.RemarkViewModel
 import seepick.localsportsclub.view.shared.ScreenViewModel
@@ -28,7 +31,7 @@ class VenueViewModel(
     activityDetailService: ActivityDetailService,
     venueService: VenueService,
     fileResolver: FileResolver,
-    private val clock: Clock,
+    clock: Clock,
     remarkViewModel: RemarkViewModel,
     private val globalKeyboard: GlobalKeyboard,
 ) : ScreenViewModel<Venue, VenueSearch>(
@@ -67,5 +70,18 @@ class VenueViewModel(
 
     override fun onVenuesAdded(venues: List<Venue>) {
         onItemsAdded(venues)
+    }
+
+    override fun makeOdfTable(): OdfTable<Venue> {
+        val currentYear = clock.today().year
+        return OdfTable(
+            listOf(
+                OdfColumn.byString("Name") { it.name },
+                OdfColumn.byDouble("Distance") { it.venue.distanceInKm },
+                OdfColumn.byString("Plan") { it.plan.fullLabel },
+                OdfColumn.byString("Categories") { it.categories.joinToString { it.nameAndMaybeEmoji } },
+                OdfColumn.byString("Link") { LinkBuilder.buildVenueLink(it) },
+            )
+        )
     }
 }
